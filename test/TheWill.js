@@ -7,7 +7,7 @@ const { expect } = require("chai");
 const { ethers, network } = require("hardhat");
 const assert = require("assert");
 
-describe("Heritage", function () {
+describe("TheWill", function () {
   let heritage;
   let token;
   let signer, acc2, acc3, acc4;
@@ -20,7 +20,7 @@ describe("Heritage", function () {
 
   this.beforeAll(async() => {
     [signer, acc2, acc3, acc4] = await ethers.getSigners()
-		const Heritage = await ethers.getContractFactory("Heritage");
+		const Heritage = await ethers.getContractFactory("TheWill");
     const TokenForTests = await ethers.getContractFactory("TokenForTests")
     heritage = await Heritage.deploy()
     token = await TokenForTests.deploy('TokenForTests', 'TFT')
@@ -32,7 +32,7 @@ describe("Heritage", function () {
     //create allowance to contract
     await token.increaseAllowance(heritage.address, amount)
     //create heritage
-    await heritage.addAnHeir(acc2.address, token.address, timeWhenWithdraw, amount);
+    await heritage.addNewWill(acc2.address, token.address, timeWhenWithdraw, amount);
     heir = acc2
     const _heritage = await heritage.inheritanceData(0);
     //check if created
@@ -47,7 +47,7 @@ describe("Heritage", function () {
   it('Should update time', async () => {
     const _heritage = await heritage.inheritanceData(0);
     const newTime = parseInt(_heritage.timeWhenWithdraw) + secondsInADay
-    await heritage.updateAnHeirTimeWhenWithdraw(0, newTime)
+    await heritage.updateWillTimeWhenWithdraw(0, newTime)
     const _heritageUpdated = await heritage.inheritanceData(0);
     assert(newTime.toString() == _heritageUpdated.timeWhenWithdraw.toString(), "Time updated")
   })
@@ -64,7 +64,7 @@ describe("Heritage", function () {
     //create allowance to contract
     await token.increaseAllowance(heritage.address, amount)
     //create heritage
-    await heritage.addAnHeir(acc2.address, token.address, timeWhenWithdraw, amount);
+    await heritage.addNewWill(acc2.address, token.address, timeWhenWithdraw, amount);
     const _heritageBefore = await heritage.inheritanceData(1);
     //check if created
     assert.equal(_heritageBefore.owner, signer.address, "Added heritage owner right")
@@ -75,7 +75,7 @@ describe("Heritage", function () {
     assert.equal(_heritageBefore.done, false, "Added heritage done right")
     const tokenAmountBefore = await token.balanceOf(signer.address)
     //remove heir
-    await heritage.removeAnHeir(1)
+    await heritage.removeWill(1)
     const tokenAmountAfter = await token.balanceOf(signer.address)
     assert.equal(parseInt(tokenAmountBefore) + parseInt(amount), parseInt(tokenAmountAfter), "Get tokens back")
     const _heritageAfter = await heritage.inheritanceData(1);
@@ -92,7 +92,7 @@ describe("Heritage", function () {
 
   it('Should withdraw an heir', async () => {
     //increate time to one year + 1 day
-		await network.provider.send("evm_increaseTime", [secondsInADay * 1000 * 366])
+		await network.provider.send("evm_increaseTime", [secondsInADay * 366])
     const tokenAmountBefore = await token.balanceOf(heir.address)
     //tokens before equals 0
     assert(tokenAmountBefore == 0, "Tokens before")

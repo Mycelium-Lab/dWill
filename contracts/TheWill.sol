@@ -4,14 +4,14 @@ pragma solidity 0.8.17;
 import './Interfaces/IHeritage.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
-contract Heritage is IHeritage {
+contract TheWill is IHeritage {
 
     InheritanceData[] public inheritanceData;
     
     mapping(address => uint64) public inheritancesAmountOwner;
     mapping(address => uint64) public inheritancesAmountHeir;
 
-    function addAnHeir(
+    function addNewWill(
         address heir, 
         address token,
         uint256 timeWhenWithdraw, 
@@ -37,10 +37,11 @@ contract Heritage is IHeritage {
         emit AddAnHeir(inheritanceData.length - 1, heir, token, timeWhenWithdraw, amount);
     }
 
-    function updateAnHeirTimeWhenWithdraw(uint256 ID, uint256 newTime) public {
+    function updateWillTimeWhenWithdraw(uint256 ID, uint256 newTime) public {
         InheritanceData memory _data = inheritanceData[ID];
         require(_data.owner == msg.sender, "Heritage: You not owner");
         require(block.timestamp <= _data.timeWhenWithdraw, "Heritage: Time is over yet");
+        require(newTime > block.timestamp, "Heritage: Time when withdraw is lower then now");
         require(_data.done == false, "Heritage: Already withdrawn");
         _data.timeWhenWithdraw = newTime;
         inheritanceData[ID] = _data;
@@ -50,13 +51,14 @@ contract Heritage is IHeritage {
         InheritanceData memory _data = inheritanceData[ID];
         require(_data.owner == msg.sender, "Heritage: You not owner");
         require(_data.heir != _heir, "Heritage: Same heir");
+        require(_data.heir != address(0), "Heritage: Heir is address(0)");
         require(block.timestamp <= _data.timeWhenWithdraw, "Heritage: Time is over yet");
         require(_data.done == false, "Heritage: Already withdrawn");
         _data.heir = _heir;
         inheritanceData[ID] = _data;
     }
 
-    function removeAnHeir(uint256 ID) public {
+    function removeWill(uint256 ID) public {
         InheritanceData memory _data = inheritanceData[ID];
         require(_data.owner == msg.sender, "Heritage: You not owner");
         require(block.timestamp <= _data.timeWhenWithdraw, "Heritage: Time is over yet");
