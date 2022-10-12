@@ -7,6 +7,8 @@ import { Component } from 'react';
 import TheWill from './Contract/TheWill.json'
 
 import { ethers } from "ethers";
+import Inheritances from './Getters/Inheritances';
+import Wills from './Getters/Wills';
 
 class App extends Component {
 
@@ -52,7 +54,7 @@ class App extends Component {
           <header className="header">
             <div className='header_boxes'>
               <div>
-                Heritage
+                TheWill
               </div>
               <AllHeritage/>
               <Connect/>
@@ -62,10 +64,13 @@ class App extends Component {
             Reset timers
           </div>
           <div>
-            Your will
+            <NewWill addNewWill={this.addNewWill} giveApprove={this.giveApprove}/>
           </div>
           <div>
-            <NewWill addNewWill={this.addNewWill} giveApprove={this.giveApprove}/>
+            <Inheritances/>
+          </div>
+          <div>
+            <Wills/>
           </div>
         </div>
     );

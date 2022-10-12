@@ -24,6 +24,7 @@ contract TheWill is IHeritage {
         IERC20 _token = IERC20(token);
         _token.transferFrom(msg.sender, address(this), amount);
         InheritanceData memory _data = InheritanceData(
+            inheritanceData.length, //ID
             msg.sender, //owner
             heir,
             token,
@@ -54,7 +55,9 @@ contract TheWill is IHeritage {
         require(_data.heir != address(0), "Heritage: Heir is address(0)");
         require(block.timestamp <= _data.timeWhenWithdraw, "Heritage: Time is over yet");
         require(_data.done == false, "Heritage: Already withdrawn");
+        inheritancesAmountHeir[_data.heir] -= 1;
         _data.heir = _heir;
+        inheritancesAmountHeir[_heir] += 1;
         inheritanceData[ID] = _data;
     }
 
@@ -65,6 +68,7 @@ contract TheWill is IHeritage {
         require(_data.done == false, "Heritage: Already withdrawn");
         IERC20 _token = IERC20(_data.token);
         _token.transfer(msg.sender, _data.amount);
+        inheritancesAmountOwner[_data.owner] -= 1;
         _data.owner = address(0);
         _data.amount = 0;
         _data.token = address(0);
@@ -80,10 +84,42 @@ contract TheWill is IHeritage {
         require(block.timestamp >= _data.timeWhenWithdraw, "Heritage: Time is not over yet");
         require(_data.done == false, "Heritage: Already withdrawn");
         _data.done = true;
+        inheritancesAmountOwner[_data.owner] -= 1;
+        inheritancesAmountHeir[_data.heir] -= 1;
         IERC20 _token = IERC20(_data.token);
         _token.transfer(msg.sender, _data.amount);
         inheritanceData[ID] = _data;
         emit Withdraw(ID, block.timestamp);
+    }
+
+    function getAllWills(address owner) public view returns(InheritanceData[] memory) {
+        InheritanceData[] memory _data = new InheritanceData[](inheritancesAmountOwner[owner]);
+        if (inheritancesAmountOwner[owner] == 0) {
+            return _data;
+        }
+        uint64 counter;
+        for (uint256 i; i < inheritanceData.length; i++) {
+            if (inheritanceData[i].owner == owner) {
+                _data[counter] = inheritanceData[i];
+                counter += 1;
+            }
+        }
+        return _data;
+    }
+
+    function getAllInheritances(address heir) public view returns(InheritanceData[] memory) {
+        InheritanceData[] memory _data = new InheritanceData[](inheritancesAmountHeir[heir]);
+        if (inheritancesAmountHeir[heir] == 0) {
+            return _data;
+        }
+        uint64 counter;
+        for (uint256 i; i < inheritanceData.length; i++) {
+            if (inheritanceData[i].heir == heir) {
+                _data[counter] = inheritanceData[i];
+                counter += 1;
+            }
+        }
+        return _data;
     }
 
 }

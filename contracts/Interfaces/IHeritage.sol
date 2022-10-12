@@ -4,6 +4,7 @@ pragma solidity 0.8.17;
 interface IHeritage {
 
     struct InheritanceData {
+        uint256 ID;
         address owner;
         address heir;
         address token; 
