@@ -35,7 +35,7 @@ contract TheWill is IHeritage {
         inheritanceData.push(_data);
         inheritancesAmountOwner[msg.sender] += 1;
         inheritancesAmountHeir[heir] += 1;
-        emit AddAnHeir(inheritanceData.length - 1, heir, token, timeWhenWithdraw, amount);
+        emit AddAnHeir(inheritanceData.length - 1, msg.sender, heir, token, timeWhenWithdraw, amount);
     }
 
     function updateWillTimeWhenWithdraw(uint256 ID, uint256 newTime) public {
@@ -46,6 +46,7 @@ contract TheWill is IHeritage {
         require(_data.done == false, "Heritage: Already withdrawn");
         _data.timeWhenWithdraw = newTime;
         inheritanceData[ID] = _data;
+        emit UpdateWillTimeWhenWithdraw(ID, msg.sender, _data.heir, newTime);
     }
 
     function updateAnHeir(uint256 ID, address _heir) public {
@@ -59,6 +60,7 @@ contract TheWill is IHeritage {
         _data.heir = _heir;
         inheritancesAmountHeir[_heir] += 1;
         inheritanceData[ID] = _data;
+        emit UpdateAnHeir(ID, msg.sender, _heir);
     }
 
     function removeWill(uint256 ID) public {
@@ -69,6 +71,8 @@ contract TheWill is IHeritage {
         IERC20 _token = IERC20(_data.token);
         _token.transfer(msg.sender, _data.amount);
         inheritancesAmountOwner[_data.owner] -= 1;
+        inheritancesAmountHeir[_data.heir] -= 1;
+        emit RemoveWill(ID, msg.sender, _data.heir);
         _data.owner = address(0);
         _data.amount = 0;
         _data.token = address(0);
@@ -88,8 +92,8 @@ contract TheWill is IHeritage {
         inheritancesAmountHeir[_data.heir] -= 1;
         IERC20 _token = IERC20(_data.token);
         _token.transfer(msg.sender, _data.amount);
+        emit Withdraw(ID, _data.owner, msg.sender, block.timestamp);
         inheritanceData[ID] = _data;
-        emit Withdraw(ID, block.timestamp);
     }
 
     function getAllWills(address owner) public view returns(InheritanceData[] memory) {

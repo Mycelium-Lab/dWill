@@ -15,12 +15,37 @@ interface IHeritage {
     
     event AddAnHeir(
         uint256 ID,
+        address owner,
         address heir,
         address token,
         uint256 timeWhenWithdraw, 
         uint256 amount
     );
 
-    event Withdraw(uint256 ID, uint256 timeWhenWithdrawn);
+    event UpdateWillTimeWhenWithdraw(
+        uint256 ID,
+        address owner,
+        address heir,
+        uint256 newTime
+    );
+
+    event UpdateAnHeir(
+        uint256 ID,
+        address owner,
+        address newHeir
+    );
+
+    event RemoveWill(
+        uint256 ID,
+        address owner,
+        address heir
+    );
+
+    event Withdraw(
+        uint256 ID, 
+        address owner, 
+        address heir, 
+        uint256 timeWhenWithdrawn
+    );
 
 }

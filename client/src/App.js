@@ -1,7 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
 import Connect from './Utils/Connect';
-import AllHeritage from './Utils/AllHeritage';
 import NewWill from './Will/NewWill';
 import { Component } from 'react';
 import TheWill from './Contract/TheWill.json'
@@ -14,7 +13,8 @@ class App extends Component {
 
   state = { 
     signer: null, 
-    contract: null
+    contract: null,
+    total: ''
   };
 
   componentDidMount = async () => {
@@ -24,8 +24,10 @@ class App extends Component {
       const signer = provider.getSigner()
       // token 
       const contract = new ethers.Contract('0x5FbDB2315678afecb367f032d93F642f64180aa3', TheWill.abi, signer)
+      let _total = 0;
+      (await contract.queryFilter('AddAnHeir')).forEach(v => _total += parseFloat(ethers.utils.formatEther(v.args.amount.toString())))
       this.setState({
-        signer, contract
+        signer, contract, total: _total
       })
     } catch (error) {
       // Catch any errors for any of the above operations.
@@ -56,7 +58,14 @@ class App extends Component {
               <div>
                 TheWill
               </div>
-              <AllHeritage/>
+              <div>
+                  <div>
+                      Всего завещано
+                  </div>
+                  <div>
+                      {this.state.total} USD
+                  </div>
+              </div>
               <Connect/>
             </div>
           </header>

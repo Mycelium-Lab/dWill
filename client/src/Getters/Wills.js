@@ -62,19 +62,72 @@ class Wills extends Component {
                 networkName = `Hardhat`
             }
             this.setState({ signer, signerAddress, network: networkName, contract, wills: _wills })
+            contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
+                let __wills = this.state.wills
+                if (owner == signerAddress) {
+                    const will = await contract.inheritanceData(ID.toString())
+                    const token = new ethers.Contract(will.token, ERC20.abi, signer)
+                    const symbol = await token.symbol()
+                    let exist = false
+                    for (let i = 0; i < __wills.length; i++) {
+                        if (__wills[i].ID === will.ID.toString()) {
+                            exist = true
+                        }
+                    }
+                    if (exist == false) {
+                        __wills.push({
+                            ID: will.ID.toString(),
+                            amount: will.amount.toString(),
+                            done: will.done,
+                            heir: will.heir,
+                            owner: will.owner,
+                            timeWhenWithdraw: will.timeWhenWithdraw.toString(),
+                            token: will.token,
+                            symbol
+                        })
+                    }
+                    this.setState({wills: __wills})
+                }
+            })
+            contract.on('Withdraw', async (ID,owner, heir,timeWhenWithdraw) => {
+                let __wills = this.state.wills
+                if (owner == signerAddress) {
+                    __wills = __wills.filter(v => v.ID !== ID.toString())
+                    this.setState({wills: __wills})
+                }
+            })
+            contract.on('RemoveWill', async (ID, owner, heir) => {
+                let __wills = this.state.wills
+                if (owner == signerAddress) {
+                    __wills = __wills.filter(v => v.ID !== ID.toString())
+                    this.setState({wills: __wills})
+                }
+            })
         } catch (error) {
             console.error(error)
         }
     }
 
+    async cancelWill(event) {
+        try {
+            const { contract } = this.state
+            await contract.removeWill(event.target.value)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    // willsListener = this.willsListener.bind(this)
+    cancelWill = this.cancelWill.bind(this)
+
     render() {
         return(
-            <div>
+            <div id='wills'>
             <h3>Wills</h3>
             {
                 this.state.wills.length > 0 
                 ?
-                <ul>
+                <ul id='wills-list'>
                     {
                         this.state.wills.map((v) => {
                             return (
@@ -82,8 +135,8 @@ class Wills extends Component {
                                     <div>You bequeathed {ethers.utils.formatEther(v.amount)} of your {v.symbol} from {this.state.network} chain to wallet</div>
                                     <div>{v.heir}</div>
                                     <div>Inheritance can be harvest if the period of inactivity is longer than {v.timeWhenWithdraw}</div>
-                                    <button>Edit</button>
-                                    <button>Cancel</button>
+                                    <button value={v.ID.toString()}>Edit</button>
+                                    <button value={v.ID.toString()} onClick={this.cancelWill}>Cancel</button>
                                 </li>
                             )
                         })
