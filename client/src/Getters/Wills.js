@@ -15,7 +15,12 @@ class Wills extends Component {
             signerAddress: '',
             tokenAddress: '',
             amount: '0',
-            show: false,
+            showEdit: false,
+            showEditTimeWhenWithdraw: false,
+            showEditHeir: false,
+            currentEditID: '',
+            currentEditHeirAddress: '',
+            currentEditTimeWhenWithdraw: '',
             network: '',
             approved: false,
             tokensValue: '',
@@ -25,7 +30,7 @@ class Wills extends Component {
             day: '',
             heirAddress: '',
             contract: null,
-            wills: []
+            wills: [],
         };
     }
 
@@ -117,8 +122,100 @@ class Wills extends Component {
         }
     }
 
-    // willsListener = this.willsListener.bind(this)
+    async editTimeWhenWithdraw() {
+        try {
+            const { currentEditID, contract, year, month, day } = this.state
+            const secondsInADay = 86400
+            let timeWhenWithdraw = (new Date()).getTime();
+            timeWhenWithdraw = Math.round(timeWhenWithdraw / 1000) + year * 365 * secondsInADay + month * 30 * secondsInADay + day * secondsInADay;
+            await contract.updateWillTimeWhenWithdraw(currentEditID, timeWhenWithdraw)
+                .then(async (tx) => {
+                    await tx.wait()
+                    this.handleCloseEditTimeWhenWithdraw()
+                    this.handleCloseEdit()
+                    this.setState({
+                        year: '',
+                        month: '',
+                        day: ''
+                    })
+                })
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    async editHeir() {
+        try {
+            const { currentEditID, contract, heirAddress } = this.state
+            await contract.updateAnHeir(currentEditID, heirAddress)
+                .then(async (tx) => {
+                    await tx.wait()
+                    this.handleCloseEditHeir()
+                    this.handleCloseEdit()
+                })
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    onChangeYear(event) {
+        this.setState({
+            year: event.target.value
+        })
+    }
+
+    onChangeMonth(event) {
+        this.setState({
+            month: event.target.value
+        })
+    }
+
+    onChangeDay(event) {
+        this.setState({
+            day: event.target.value
+        })
+    }
+
+    onChangeHeirAddress(event) {
+        this.setState({
+            heirAddress: event.target.value
+        })
+    }
+
     cancelWill = this.cancelWill.bind(this)
+    editTimeWhenWithdraw = this.editTimeWhenWithdraw.bind(this)
+    editHeir = this.editHeir.bind(this)
+
+    onChangeYear = this.onChangeYear.bind(this)
+    onChangeMonth = this.onChangeMonth.bind(this)
+    onChangeDay = this.onChangeDay.bind(this)
+    onChangeHeirAddress = this.onChangeHeirAddress.bind(this)
+
+    handleCloseEdit = () => this.setState({
+        showEdit: false, currentEditID: '',
+        currentEditHeirAddress: '', currentEditTimeWhenWithdraw: ''
+    });
+    handleShowEdit = (event) => {
+        const data = JSON.parse(event.target.value)
+        this.setState({
+            showEdit: true, 
+            currentEditID: data.ID,
+            currentEditHeirAddress: data.heir,
+            currentEditTimeWhenWithdraw: data.timeWhenWithdraw
+        })
+    };
+    handleCloseEdit = this.handleCloseEdit.bind(this)
+    handleShowEdit = this.handleShowEdit.bind(this)
+
+    handleCloseEditTimeWhenWithdraw = () => this.setState({showEditTimeWhenWithdraw: false, showEdit: true})
+    handleShowEditTimeWhenWithdraw = () => this.setState({showEditTimeWhenWithdraw: true, showEdit: false})
+    handleCloseEditTimeWhenWithdraw = this.handleCloseEditTimeWhenWithdraw.bind(this)
+    handleShowEditTimeWhenWithdraw = this.handleShowEditTimeWhenWithdraw.bind(this)
+
+    handleCloseEditHeir = () => this.setState({showEditHeir: false, showEdit: true})
+    handleShowEditHeir = () => this.setState({showEditHeir: true, showEdit: false})
+    handleCloseEditHeir = this.handleCloseEditHeir.bind(this)
+    handleShowEditHeir = this.handleShowEditHeir.bind(this)
 
     render() {
         return(
@@ -135,7 +232,7 @@ class Wills extends Component {
                                     <div>You bequeathed {ethers.utils.formatEther(v.amount)} of your {v.symbol} from {this.state.network} chain to wallet</div>
                                     <div>{v.heir}</div>
                                     <div>Inheritance can be harvest if the period of inactivity is longer than {v.timeWhenWithdraw}</div>
-                                    <button value={v.ID.toString()}>Edit</button>
+                                    <button value={JSON.stringify({ID: v.ID.toString(), timeWhenWithdraw: v.timeWhenWithdraw, heir: v.heir})} onClick={this.state.showEdit == false ? this.handleShowEdit : this.handleCloseEdit}>Edit</button>
                                     <button value={v.ID.toString()} onClick={this.cancelWill}>Cancel</button>
                                 </li>
                             )
@@ -145,6 +242,64 @@ class Wills extends Component {
                 :
                 <h4>Empty</h4>
             }
+            <Modal show={this.state.showEdit} onHide={this.handleCloseEdit}>
+                <Modal.Header>
+                    <Modal.Title>Edit Will</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                        <button onClick={this.handleShowEditTimeWhenWithdraw}>Time When Withdraw</button>
+                        <button onClick={this.handleShowEditHeir}>Heir</button>
+                    </div>
+                </Modal.Body>
+                <Button variant="secondary" onClick={this.handleCloseEdit}>
+                    Close
+                </Button>
+            </Modal>
+            <Modal show={this.state.showEditTimeWhenWithdraw} onHide={this.handleCloseEditTimeWhenWithdraw}>
+                <Modal.Header>
+                    <Modal.Title>Time When Withdraw</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                        <div>
+                            {this.state.currentEditTimeWhenWithdraw}
+                        </div>
+                        <div>
+                            <input type="number" onChange={this.onChangeYear}/>
+                            <label >Лет</label><br/>
+                            <input type="number" onChange={this.onChangeMonth}/>
+                            <label >Месяцев</label><br/>
+                            <input type="number" onChange={this.onChangeDay}/>
+                            <label >Дней</label><br/>
+                        </div>
+                        <button onClick={this.editTimeWhenWithdraw}>Edit</button>
+                    </div>
+                </Modal.Body>
+                <Button variant="secondary" onClick={this.handleCloseEditTimeWhenWithdraw}>
+                    Close
+                </Button>
+            </Modal>
+            <Modal show={this.state.showEditHeir} onHide={this.handleCloseEditHeir}>
+                <Modal.Header>
+                    <Modal.Title>Heir</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                        <div>
+                            {this.state.currentEditHeirAddress}
+                        </div>
+                        <div>
+                            Доверенному кошельку
+                            <input onChange={this.onChangeHeirAddress}/>
+                        </div>
+                        <button onClick={this.editHeir}>Edit</button>
+                    </div>
+                </Modal.Body>
+                <Button variant="secondary" onClick={this.handleCloseEditHeir}>
+                    Close
+                </Button>
+            </Modal>
         </div>
         )
     }
