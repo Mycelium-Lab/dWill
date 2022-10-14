@@ -85,7 +85,7 @@ contract TheWill is IHeritage {
     function withdraw(uint256 ID) public {
         InheritanceData memory _data = inheritanceData[ID];
         require(msg.sender == _data.heir, "Heritage: You not heir");
-        require(block.timestamp >= _data.timeWhenWithdraw, "Heritage: Time is not over yet");
+        // require(block.timestamp >= _data.timeWhenWithdraw, "Heritage: Time is not over yet");
         require(_data.done == false, "Heritage: Already withdrawn");
         _data.done = true;
         inheritancesAmountOwner[_data.owner] -= 1;

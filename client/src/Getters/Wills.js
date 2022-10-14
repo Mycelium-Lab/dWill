@@ -15,6 +15,8 @@ class Wills extends Component {
             signerAddress: '',
             tokenAddress: '',
             amount: '0',
+            showConfirm: false,
+            showAwait: false,
             showEdit: false,
             showEditTimeWhenWithdraw: false,
             showEditHeir: false,
@@ -24,7 +26,7 @@ class Wills extends Component {
             network: '',
             approved: false,
             tokensValue: '',
-            contractAddress: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
+            contractAddress: '0x034b566d5fF5df8B8cf1c55Cb19814171df8CaA5',
             year: '',
             month: '',
             day: '',
@@ -41,7 +43,7 @@ class Wills extends Component {
             await provider.send("eth_requestAccounts", []);
             const signer = provider.getSigner()
             const signerAddress = await signer.getAddress()
-            const contract = new ethers.Contract('0x5FbDB2315678afecb367f032d93F642f64180aa3', TheWill.abi, signer)
+            const contract = new ethers.Contract('0x034b566d5fF5df8B8cf1c55Cb19814171df8CaA5', TheWill.abi, signer)
             const wills = await contract.getAllWills(signerAddress)
             let _wills = [];
             for (let i = 0; i < wills.length; i++) {
@@ -113,12 +115,29 @@ class Wills extends Component {
         }
     }
 
+    timeConverter(UNIX_timestamp){
+        var a = new Date(UNIX_timestamp * 1000);
+        var year = a.getFullYear();
+        var month = a.getMonth();
+        var date = a.getDate();
+        var time = `${date < 10 ? '0'+ date : date}` + '.' + `${month < 10 ? '0' + month : month}` + '.' + year;
+        return time;
+    }
+
     async cancelWill(event) {
         try {
             const { contract } = this.state
+            this.handleShowConfirm()
             await contract.removeWill(event.target.value)
+                .then(async (tx) => {
+                    this.handleShowAwait()
+                    await tx.wait()
+                    this.handleCloseAwait()
+                })
         } catch (error) {
             console.error(error)
+            this.handleCloseConfirm()
+            this.handleCloseAwait()
         }
     }
 
@@ -128,9 +147,12 @@ class Wills extends Component {
             const secondsInADay = 86400
             let timeWhenWithdraw = (new Date()).getTime();
             timeWhenWithdraw = Math.round(timeWhenWithdraw / 1000) + year * 365 * secondsInADay + month * 30 * secondsInADay + day * secondsInADay;
+            this.handleShowConfirm()
             await contract.updateWillTimeWhenWithdraw(currentEditID, timeWhenWithdraw)
                 .then(async (tx) => {
+                    this.handleShowAwait()
                     await tx.wait()
+                    this.handleCloseAwait()
                     this.handleCloseEditTimeWhenWithdraw()
                     this.handleCloseEdit()
                     this.setState({
@@ -141,20 +163,27 @@ class Wills extends Component {
                 })
         } catch (error) {
             console.error(error)
+            this.handleCloseConfirm()
+            this.handleCloseAwait()
         }
     }
 
     async editHeir() {
         try {
             const { currentEditID, contract, heirAddress } = this.state
+            this.handleShowConfirm()
             await contract.updateAnHeir(currentEditID, heirAddress)
                 .then(async (tx) => {
+                    this.handleShowAwait()
                     await tx.wait()
+                    this.handleCloseAwait()
                     this.handleCloseEditHeir()
                     this.handleCloseEdit()
                 })
         } catch (error) {
             console.error(error)
+            this.handleCloseConfirm()
+            this.handleCloseAwait()
         }
     }
 
@@ -217,6 +246,17 @@ class Wills extends Component {
     handleCloseEditHeir = this.handleCloseEditHeir.bind(this)
     handleShowEditHeir = this.handleShowEditHeir.bind(this)
 
+    handleShowConfirm = () => this.setState({showConfirm: true})
+    handleShowAwait = () => this.setState({showConfirm: false, showAwait: true})
+    handleCloseConfirm = () => this.setState({showConfirm: false})
+    handleCloseAwait = () => this.setState({showAwait: false})
+    handleShowConfirm = this.handleShowConfirm.bind(this)
+    handleShowAwait = this.handleShowAwait.bind(this)
+    handleCloseConfirm = this.handleCloseConfirm.bind(this)
+    handleCloseAwait = this.handleCloseAwait.bind(this)
+
+    timeConverter = this.timeConverter.bind(this)
+
     render() {
         return(
             <div id='wills'>
@@ -231,9 +271,9 @@ class Wills extends Component {
                                 <li key={v.ID}>
                                     <div>You bequeathed {ethers.utils.formatEther(v.amount)} of your {v.symbol} from {this.state.network} chain to wallet</div>
                                     <div>{v.heir}</div>
-                                    <div>Inheritance can be harvest if the period of inactivity is longer than {v.timeWhenWithdraw}</div>
-                                    <button value={JSON.stringify({ID: v.ID.toString(), timeWhenWithdraw: v.timeWhenWithdraw, heir: v.heir})} onClick={this.state.showEdit == false ? this.handleShowEdit : this.handleCloseEdit}>Edit</button>
-                                    <button value={v.ID.toString()} onClick={this.cancelWill}>Cancel</button>
+                                    <div>Inheritance can be harvest if the period of inactivity is longer than {this.timeConverter(v.timeWhenWithdraw)}</div>
+                                    <button type="button" className="btn btn-success" value={JSON.stringify({ID: v.ID.toString(), timeWhenWithdraw: v.timeWhenWithdraw, heir: v.heir})} onClick={this.state.showEdit == false ? this.handleShowEdit : this.handleCloseEdit}>Edit</button>
+                                    <button type="button" className="btn btn-danger" value={v.ID.toString()} onClick={this.cancelWill}>Cancel</button>
                                 </li>
                             )
                         })
@@ -246,15 +286,17 @@ class Wills extends Component {
                 <Modal.Header>
                     <Modal.Title>Edit Will</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
-                    <div>
-                        <button onClick={this.handleShowEditTimeWhenWithdraw}>Time When Withdraw</button>
-                        <button onClick={this.handleShowEditHeir}>Heir</button>
-                    </div>
-                </Modal.Body>
-                <Button variant="secondary" onClick={this.handleCloseEdit}>
-                    Close
+                <Button onClick={this.handleShowEditTimeWhenWithdraw} variant="outline-success">
+                    Time When Withdraw
                 </Button>
+                <Button onClick={this.handleShowEditHeir} variant="outline-success">
+                    Heir
+                </Button>
+                <Modal.Footer>
+                    <Button variant="danger" onClick={this.handleCloseEdit} className="btn btn-danger">
+                        Close
+                    </Button>
+                </Modal.Footer>
             </Modal>
             <Modal show={this.state.showEditTimeWhenWithdraw} onHide={this.handleCloseEditTimeWhenWithdraw}>
                 <Modal.Header>
@@ -263,22 +305,35 @@ class Wills extends Component {
                 <Modal.Body>
                     <div>
                         <div>
-                            {this.state.currentEditTimeWhenWithdraw}
+                            Время передачи наследства сейчас: {
+                                this.timeConverter(parseInt(this.state.currentEditTimeWhenWithdraw))
+                            }
                         </div>
+                        Добавить к {
+                            this.timeConverter(
+                                Math.round(
+                                    (new Date()).getTime() / 1000
+                                )
+                            )
+                        }
                         <div>
-                            <input type="number" onChange={this.onChangeYear}/>
+                            <input type="number" onChange={this.onChangeYear} className="input-group mb-3"/>
                             <label >Лет</label><br/>
-                            <input type="number" onChange={this.onChangeMonth}/>
+                            <input type="number" onChange={this.onChangeMonth} className="input-group mb-3"/>
                             <label >Месяцев</label><br/>
-                            <input type="number" onChange={this.onChangeDay}/>
+                            <input type="number" onChange={this.onChangeDay} className="input-group mb-3"/>
                             <label >Дней</label><br/>
                         </div>
-                        <button onClick={this.editTimeWhenWithdraw}>Edit</button>
                     </div>
                 </Modal.Body>
-                <Button variant="secondary" onClick={this.handleCloseEditTimeWhenWithdraw}>
-                    Close
-                </Button>
+                <Modal.Footer>
+                    <Button variant="success" onClick={this.editTimeWhenWithdraw}>
+                        Edit
+                    </Button>
+                    <Button variant="danger" onClick={this.handleCloseEditTimeWhenWithdraw} className="btn btn-danger">
+                        Close
+                    </Button>
+                </Modal.Footer>
             </Modal>
             <Modal show={this.state.showEditHeir} onHide={this.handleCloseEditHeir}>
                 <Modal.Header>
@@ -287,18 +342,66 @@ class Wills extends Component {
                 <Modal.Body>
                     <div>
                         <div>
-                            {this.state.currentEditHeirAddress}
+                            Наследник сейчас: {this.state.currentEditHeirAddress}
                         </div>
                         <div>
-                            Доверенному кошельку
-                            <input onChange={this.onChangeHeirAddress}/>
+                            Поменять на:
+                            <input onChange={this.onChangeHeirAddress} className="input-group mb-3"/>
                         </div>
-                        <button onClick={this.editHeir}>Edit</button>
                     </div>
                 </Modal.Body>
-                <Button variant="secondary" onClick={this.handleCloseEditHeir}>
-                    Close
-                </Button>
+                <Modal.Footer>
+                    <Button variant="success" onClick={this.editHeir}>
+                        Edit
+                    </Button>
+                    <Button variant="danger" onClick={this.handleCloseEditHeir} className="btn btn-danger">
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={this.state.showConfirm}>
+                <Modal.Header>
+                    <div className="load-6">
+                        <div className="letter-holder">
+                        <div className="l-1 letter">C</div>
+                        <div className="l-2 letter">o</div>
+                        <div className="l-3 letter">n</div>
+                        <div className="l-4 letter">f</div>
+                        <div className="l-5 letter">i</div>
+                        <div className="l-6 letter">r</div>
+                        <div className="l-7 letter">m</div>
+                        <div className="l-8 letter">.</div>
+                        <div className="l-9 letter">.</div>
+                        <div className="l-10 letter">.</div>
+                        </div>
+                    </div>
+                </Modal.Header>
+                <Modal.Footer>
+                    <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={this.state.showAwait}>
+                <Modal.Header>
+                    <div className="load-6">
+                        <div className="letter-holder">
+                        <div className="l-1 letter">A</div>
+                        <div className="l-2 letter">w</div>
+                        <div className="l-3 letter">a</div>
+                        <div className="l-4 letter">i</div>
+                        <div className="l-5 letter">t</div>
+                        <div className="l-6 letter">.</div>
+                        <div className="l-7 letter">.</div>
+                        <div className="l-8 letter">.</div>
+                        </div>
+                    </div>
+                </Modal.Header>
+                <Modal.Footer>
+                    <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
+                        Close
+                    </Button>
+                </Modal.Footer>
             </Modal>
         </div>
         )

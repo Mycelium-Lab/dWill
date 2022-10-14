@@ -19,12 +19,14 @@ class NewWill extends Component {
             network: '',
             approved: false,
             tokensValue: '',
-            contractAddress: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
+            contractAddress: '0x034b566d5fF5df8B8cf1c55Cb19814171df8CaA5',
             year: '',
             month: '',
             day: '',
             heirAddress: '',
-            contract: null
+            contract: null,
+            showConfirm: false,
+            showAwait: false,
         };
     }
 
@@ -35,7 +37,7 @@ class NewWill extends Component {
             await provider.send("eth_requestAccounts", []);
             const signer = provider.getSigner()
             const signerAddress = await signer.getAddress()
-            const contract = new ethers.Contract('0x5FbDB2315678afecb367f032d93F642f64180aa3', TheWill.abi, signer)
+            const contract = new ethers.Contract('0x034b566d5fF5df8B8cf1c55Cb19814171df8CaA5', TheWill.abi, signer)
             let networkName
             if (network.chainId === 56) {
                 networkName = `BNB Chain`
@@ -53,16 +55,23 @@ class NewWill extends Component {
     async approve() {
         const { contractAddress, signer, amount, tokensValue } = this.state
         const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
+        this.handleShowConfirm()
         await _token.increaseAllowance(contractAddress, ethers.utils.parseEther(amount))
             .then(async (tx) => {
+                this.handleShowAwait()
                 await tx.wait()
                 .then(() => {
+                    this.handleCloseAwait()
                     this.setState({
                         approved: true
                     })
                 })
             })
-            .catch(err => console.error(err))
+            .catch(err => {
+                console.error(err)
+                this.handleCloseConfirm()
+                this.handleCloseAwait()
+            })
     }
 
     async newWill() {
@@ -71,9 +80,18 @@ class NewWill extends Component {
             const secondsInADay = 86400
             let timeWhenWithdraw = (new Date()).getTime();
             timeWhenWithdraw = Math.round(timeWhenWithdraw / 1000) + year * 365 * secondsInADay + month * 30 * secondsInADay + day * secondsInADay;
+            this.handleShowConfirm()
             await contract.addNewWill(heirAddress, tokensValue, timeWhenWithdraw, ethers.utils.parseEther(amount))
+                .then(async (tx) => {
+                    this.handleShowAwait()
+                    await tx.wait()
+                    this.handleCloseAwait()
+                    this.handleClose()
+                })
         } catch (error) {
             console.error(error)
+            this.handleCloseConfirm()
+            this.handleCloseAwait()
         }
     }
 
@@ -161,6 +179,15 @@ class NewWill extends Component {
     handleClose = this.handleClose.bind(this)
     handleShow = this.handleShow.bind(this)
 
+    handleShowConfirm = () => this.setState({showConfirm: true})
+    handleShowAwait = () => this.setState({showConfirm: false, showAwait: true})
+    handleCloseConfirm = () => this.setState({showConfirm: false})
+    handleCloseAwait = () => this.setState({showAwait: false})
+    handleShowConfirm = this.handleShowConfirm.bind(this)
+    handleShowAwait = this.handleShowAwait.bind(this)
+    handleCloseConfirm = this.handleCloseConfirm.bind(this)
+    handleCloseAwait = this.handleCloseAwait.bind(this)
+
     render() {
         return(
         <div>
@@ -176,48 +203,92 @@ class NewWill extends Component {
                     <div>
                         Я завещаю мои
                     </div>
-                    <select name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
+                    <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
                         <option value={"select"}>Select</option>
-                        <option value={"0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"}>TFT</option>
+                        <option value={"0xBAD91050B8dF0468b1E167C9f0d37765fA302E37"}>TFT</option>
                     </select>
                     <div>
                         На сумму
-                        <input onChange={this.onChangeAmount}/>
+                        <input onChange={this.onChangeAmount} className="input-group mb-3"/>
                     </div>
                     <div>С кошелька {
                         this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)
                         } на сети {this.state.network}</div>
                     <div>
                         Доверенному кошельку
-                        <input onChange={this.onChangeHeirAddress}/>
+                        <input onChange={this.onChangeHeirAddress} className="input-group mb-3"/>
                     </div>
                     <div>
                         {"При условии что я буду неактивен(неактивна) более чем"}
                         <div>
-                            <input type="number" onChange={this.onChangeYear}/>
+                            <input type="number" onChange={this.onChangeYear} className="input-group mb-3"/>
                             <label >Лет</label><br/>
-                            <input type="number" onChange={this.onChangeMonth}/>
+                            <input type="number" onChange={this.onChangeMonth} className="input-group mb-3"/>
                             <label >Месяцев</label><br/>
-                            <input type="number" onChange={this.onChangeDay}/>
+                            <input type="number" onChange={this.onChangeDay} className="input-group mb-3"/>
                             <label >Дней</label><br/>
                         </div>
                     </div>
                     <div>
-                        <input type="checkbox"/>
+                        <input type="checkbox" className="form-check-input mt-0"/>
                         <label >Add NFT Message</label><br/>
-                        <input type="checkbox" disabled={true}/>
+                        <input type="checkbox" disabled={true} className="form-check-input mt-0"/>
                         <label >Automatic token delivery (coming soon)</label><br/>
-                        <input type="checkbox" disabled={true}/>
+                        <input type="checkbox" disabled={true} className="form-check-input mt-0"/>
                         <label >Notifications (coming soon)</label><br/>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="secondary" onClick={this.handleClose}>
-                    Close
-                </Button>
                 <Button variant="primary" onClick={this.state.approved == false ? this.approve : this.newWill}>
                     {this.state.approved == false ? "Approve": "Make new Will"}
                 </Button>
+                <Button variant="danger" onClick={this.handleClose} className="btn btn-danger">
+                    Close
+                </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={this.state.showConfirm}>
+                <Modal.Header>
+                    <div className="load-6">
+                        <div className="letter-holder">
+                        <div className="l-1 letter">C</div>
+                        <div className="l-2 letter">o</div>
+                        <div className="l-3 letter">n</div>
+                        <div className="l-4 letter">f</div>
+                        <div className="l-5 letter">i</div>
+                        <div className="l-6 letter">r</div>
+                        <div className="l-7 letter">m</div>
+                        <div className="l-8 letter">.</div>
+                        <div className="l-9 letter">.</div>
+                        <div className="l-10 letter">.</div>
+                        </div>
+                    </div>
+                </Modal.Header>
+                <Modal.Footer>
+                    <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={this.state.showAwait}>
+                <Modal.Header>
+                    <div className="load-6">
+                        <div className="letter-holder">
+                        <div className="l-1 letter">A</div>
+                        <div className="l-2 letter">w</div>
+                        <div className="l-3 letter">a</div>
+                        <div className="l-4 letter">i</div>
+                        <div className="l-5 letter">t</div>
+                        <div className="l-6 letter">.</div>
+                        <div className="l-7 letter">.</div>
+                        <div className="l-8 letter">.</div>
+                        </div>
+                    </div>
+                </Modal.Header>
+                <Modal.Footer>
+                    <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
+                        Close
+                    </Button>
                 </Modal.Footer>
             </Modal>
         </div>

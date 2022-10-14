@@ -19,13 +19,15 @@ class Inheritances extends Component {
             network: '',
             approved: false,
             tokensValue: '',
-            contractAddress: '0x5FbDB2315678afecb367f032d93F642f64180aa3',
+            contractAddress: '0x034b566d5fF5df8B8cf1c55Cb19814171df8CaA5',
             year: '',
             month: '',
             day: '',
             heirAddress: '',
             contract: null,
-            inheritances: []
+            inheritances: [],
+            showConfirm: false,
+            showAwait: false,
         };
     }
 
@@ -36,7 +38,7 @@ class Inheritances extends Component {
             await provider.send("eth_requestAccounts", []);
             const signer = provider.getSigner()
             const signerAddress = await signer.getAddress()
-            const contract = new ethers.Contract('0x5FbDB2315678afecb367f032d93F642f64180aa3', TheWill.abi, signer)
+            const contract = new ethers.Contract('0x034b566d5fF5df8B8cf1c55Cb19814171df8CaA5', TheWill.abi, signer)
             const inheritances = await contract.getAllInheritances(signerAddress)
             let _inheritances = [];
             for (let i = 0; i < inheritances.length; i++) {
@@ -108,6 +110,44 @@ class Inheritances extends Component {
         }
     }
 
+    timeConverter(UNIX_timestamp){
+        var a = new Date(UNIX_timestamp * 1000);
+        var year = a.getFullYear();
+        var month = a.getMonth();
+        var date = a.getDate();
+        var time = `${date < 10 ? '0'+ date : date}` + '.' + `${month < 10 ? '0' + month : month}` + '.' + year;
+        return time;
+    }
+
+    async claim(event) {
+        const contract = this.state.contract
+        try {
+            this.handleShowConfirm()
+            await contract.withdraw(event.target.value)
+                .then(async (tx) => {
+                    this.handleShowAwait()
+                    await tx.wait()
+                    this.handleCloseAwait()
+                })
+        } catch (error) {
+            console.error(error)
+            this.handleCloseConfirm()
+            this.handleCloseAwait()
+        }
+    }
+
+    timeConverter = this.timeConverter.bind(this)
+    claim = this.claim.bind(this)
+
+    handleShowConfirm = () => this.setState({showConfirm: true})
+    handleShowAwait = () => this.setState({showConfirm: false, showAwait: true})
+    handleCloseConfirm = () => this.setState({showConfirm: false})
+    handleCloseAwait = () => this.setState({showAwait: false})
+    handleShowConfirm = this.handleShowConfirm.bind(this)
+    handleShowAwait = this.handleShowAwait.bind(this)
+    handleCloseConfirm = this.handleCloseConfirm.bind(this)
+    handleCloseAwait = this.handleCloseAwait.bind(this)
+
     render() {
         return(
         <div>
@@ -122,8 +162,8 @@ class Inheritances extends Component {
                                 <li key={v.ID}>
                                     <div>You can harvest {ethers.utils.formatEther(v.amount)} {v.symbol} from wallet</div>
                                     <div>{v.owner}</div>
-                                    <div>on {this.state.network} chain</div>
-                                    <button>Claim</button>
+                                    <div>{this.timeConverter(v.timeWhenWithdraw)} on {this.state.network} chain</div>
+                                    <button value={v.ID.toString()} onClick={this.claim} className="btn btn-success">Claim</button>
                                 </li>
                             )
                         })
@@ -132,6 +172,50 @@ class Inheritances extends Component {
                 :
                 <h4>Empty</h4>
             }
+            <Modal show={this.state.showConfirm}>
+                <Modal.Header>
+                    <div className="load-6">
+                        <div className="letter-holder">
+                        <div className="l-1 letter">C</div>
+                        <div className="l-2 letter">o</div>
+                        <div className="l-3 letter">n</div>
+                        <div className="l-4 letter">f</div>
+                        <div className="l-5 letter">i</div>
+                        <div className="l-6 letter">r</div>
+                        <div className="l-7 letter">m</div>
+                        <div className="l-8 letter">.</div>
+                        <div className="l-9 letter">.</div>
+                        <div className="l-10 letter">.</div>
+                        </div>
+                    </div>
+                </Modal.Header>
+                <Modal.Footer>
+                    <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={this.state.showAwait}>
+                <Modal.Header>
+                    <div className="load-6">
+                        <div className="letter-holder">
+                        <div className="l-1 letter">A</div>
+                        <div className="l-2 letter">w</div>
+                        <div className="l-3 letter">a</div>
+                        <div className="l-4 letter">i</div>
+                        <div className="l-5 letter">t</div>
+                        <div className="l-6 letter">.</div>
+                        <div className="l-7 letter">.</div>
+                        <div className="l-8 letter">.</div>
+                        </div>
+                    </div>
+                </Modal.Header>
+                <Modal.Footer>
+                    <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
         )
     }

@@ -1,5 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 import Connect from './Utils/Connect';
 import NewWill from './Will/NewWill';
 import { Component } from 'react';
@@ -14,16 +16,67 @@ class App extends Component {
   state = { 
     signer: null, 
     contract: null,
-    total: ''
+    total: '',
+    showConfirm: false,
+    showAwait: false,
   };
 
   componentDidMount = async () => {
     try {
       const provider = new ethers.providers.Web3Provider(window.ethereum)
+      const network = await provider.getNetwork()
       await provider.send("eth_requestAccounts", []);
+      // if (network.chainId !== 31337) {
+      //   try {
+      //         await window.ethereum.request({
+      //           method: 'wallet_switchEthereumChain',
+      //           params: [{ chainId: ethers.utils.hexlify(31337) }]
+      //         })
+      //         .then(() => window.location.reload())
+      //       } catch (err) {
+      //           // This error code indicates that the chain has not been added to MetaMask
+      //         if (err.code === 4902) {
+      //           await window.ethereum.request({
+      //             method: 'wallet_addEthereumChain',
+      //             params: [
+      //               {
+      //                 chainName: 'Hardhat Test',
+      //                 chainId: ethers.utils.hexlify(31337),
+      //                 nativeCurrency: { name: 'ETH', decimals: 18, symbol: 'ETH' },
+      //                 rpcUrls: ['http://localhost:8545']
+      //               }
+      //             ]
+      //           });
+      //         }
+      //       }
+      // }
+      if (network.chainId !== 5) {
+          try {
+            await window.ethereum.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: ethers.utils.hexValue(5) }]
+            })
+            .then(() => window.location.reload())
+          } catch (err) {
+              // This error code indicates that the chain has not been added to MetaMask
+            if (err.code === 4902) {
+              await window.ethereum.request({
+                method: 'wallet_addEthereumChain',
+                params: [
+                  {
+                    chainName: 'Goerli',
+                    chainId: ethers.utils.hexlify(5),
+                    nativeCurrency: { name: 'ETH', decimals: 18, symbol: 'ETH' },
+                    rpcUrls: ['https://goerli.infura.io/v3']
+                  }
+                ]
+              });
+            }
+        }
+      }
       const signer = provider.getSigner()
       // token 
-      const contract = new ethers.Contract('0x5FbDB2315678afecb367f032d93F642f64180aa3', TheWill.abi, signer)
+      const contract = new ethers.Contract('0x034b566d5fF5df8B8cf1c55Cb19814171df8CaA5', TheWill.abi, signer)
       let _total = 0;
       (await contract.queryFilter('AddAnHeir')).forEach(v => _total += parseFloat(ethers.utils.formatEther(v.args.amount.toString())))
       this.setState({
@@ -31,9 +84,6 @@ class App extends Component {
       })
     } catch (error) {
       // Catch any errors for any of the above operations.
-      alert(
-        `Failed to load web3, accounts, or contract. Check console for details.`,
-      );
       console.error(error);
     } 
   };
@@ -81,6 +131,7 @@ class App extends Component {
           <div>
             <Wills/>
           </div>
+          
         </div>
     );
   }
