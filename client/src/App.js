@@ -1,16 +1,14 @@
-import logo from './logo.svg';
-import './App.css';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import Connect from './Utils/Connect';
-import NewWill from './Will/NewWill';
-import { Component } from 'react';
-import TheWill from './Contract/TheWill.json'
 
 import { ethers } from "ethers";
-import Inheritances from './Getters/Inheritances';
-import Wills from './Getters/Wills';
+import { Component } from 'react';
 
+import './App.css';
+
+import Connect from './Utils/Connect';
+import TheWill from './Contract/TheWill.json'
+import { TheWillAddress } from './Utils/Constants';
+import Data from './Data/Data';
+import Main from './Main/Main';
 class App extends Component {
 
   state = { 
@@ -19,6 +17,7 @@ class App extends Component {
     total: '',
     showConfirm: false,
     showAwait: false,
+    willsLength: 0
   };
 
   componentDidMount = async () => {
@@ -50,11 +49,11 @@ class App extends Component {
       //         }
       //       }
       // }
-      if (network.chainId !== 5) {
+      if (network.chainId !== 80001) {
           try {
             await window.ethereum.request({
               method: 'wallet_switchEthereumChain',
-              params: [{ chainId: ethers.utils.hexValue(5) }]
+              params: [{ chainId: ethers.utils.hexValue(80001) }]
             })
             .then(() => window.location.reload())
           } catch (err) {
@@ -64,23 +63,27 @@ class App extends Component {
                 method: 'wallet_addEthereumChain',
                 params: [
                   {
-                    chainName: 'Goerli',
+                    chainName: 'Mumbai',
                     chainId: ethers.utils.hexlify(5),
-                    nativeCurrency: { name: 'ETH', decimals: 18, symbol: 'ETH' },
-                    rpcUrls: ['https://goerli.infura.io/v3']
+                    nativeCurrency: { name: 'MATIC', decimals: 18, symbol: 'MATIC' },
+                    rpcUrls: ['https://rpc-mumbai.maticvigil.com']
                   }
                 ]
               });
             }
         }
       }
-      const signer = provider.getSigner()
+      const signer = await provider.getSigner()
       // token 
-      const contract = new ethers.Contract('0x034b566d5fF5df8B8cf1c55Cb19814171df8CaA5', TheWill.abi, signer)
+      const contract = new ethers.Contract(TheWillAddress, TheWill.abi, signer)
+
+      const wills = await contract.getAllWills((await signer.getAddress()).toString())
       let _total = 0;
-      (await contract.queryFilter('AddAnHeir')).forEach(v => _total += parseFloat(ethers.utils.formatEther(v.args.amount.toString())))
+      // const hashMessage1 = ethers.utils.solidityKeccak256(["uint256"], [201])
+      // const sign1 = await signer.signMessage(ethers.utils.arrayify(hashMessage1));
+      // (await contract.queryFilter('AddAnHeir')).forEach(v => _total += parseFloat(ethers.utils.formatEther(v.args.amount.toString())))
       this.setState({
-        signer, contract, total: _total
+        signer, contract, total: _total, willsLength: wills.length
       })
     } catch (error) {
       // Catch any errors for any of the above operations.
@@ -106,7 +109,12 @@ class App extends Component {
           <header className="header">
             <div className='header_boxes'>
               <div>
-                TheWill
+                <div>
+                  <img src="URL" alt=""/>
+                </div>
+                <div>
+                  Will
+                </div>
               </div>
               <div>
                   <div>
@@ -119,19 +127,16 @@ class App extends Component {
               <Connect/>
             </div>
           </header>
-          <div>
-            Reset timers
-          </div>
-          <div>
-            <NewWill addNewWill={this.addNewWill} giveApprove={this.giveApprove}/>
-          </div>
-          <div>
-            <Inheritances/>
-          </div>
-          <div>
-            <Wills/>
-          </div>
-          
+
+            <main>
+              {
+                this.state.signer === null || this.state.willsLength === 0
+                ? 
+                <Main/>
+                :
+                <Data/>
+              }
+            </main>
         </div>
     );
   }

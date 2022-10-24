@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import TheWill from '../Contract/TheWill.json'
@@ -6,6 +6,7 @@ import TheWill from '../Contract/TheWill.json'
 import { ethers } from "ethers";
 
 import ERC20 from '../Contract/ERC20.json'
+import { TheWillAddress } from '../Utils/Constants';
 
 class Inheritances extends Component {
     constructor(props) {
@@ -19,7 +20,7 @@ class Inheritances extends Component {
             network: '',
             approved: false,
             tokensValue: '',
-            contractAddress: '0x034b566d5fF5df8B8cf1c55Cb19814171df8CaA5',
+            contractAddress: TheWillAddress,
             year: '',
             month: '',
             day: '',
@@ -38,7 +39,7 @@ class Inheritances extends Component {
             await provider.send("eth_requestAccounts", []);
             const signer = provider.getSigner()
             const signerAddress = await signer.getAddress()
-            const contract = new ethers.Contract('0x034b566d5fF5df8B8cf1c55Cb19814171df8CaA5', TheWill.abi, signer)
+            const contract = new ethers.Contract(TheWillAddress, TheWill.abi, signer)
             const inheritances = await contract.getAllInheritances(signerAddress)
             let _inheritances = [];
             for (let i = 0; i < inheritances.length; i++) {
@@ -62,6 +63,8 @@ class Inheritances extends Component {
                 networkName = `Polygon`
             } else if (network.chainId === 31337) {
                 networkName = `Hardhat`
+            } else if (network.chainId === 80001) {
+                networkName = `Mumbai`
             }
             contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
                 let __inheritances = this.state.inheritances
@@ -151,7 +154,7 @@ class Inheritances extends Component {
     render() {
         return(
         <div>
-            <h3>Inheritances</h3>
+            <h3>Your inheritances</h3>
             {
                 this.state.inheritances.length > 0 
                 ?

@@ -97,11 +97,11 @@ contract TheWill is IHeritage {
     }
 
     function getAllWills(address owner) public view returns(InheritanceData[] memory) {
-        InheritanceData[] memory _data = new InheritanceData[](inheritancesAmountOwner[owner]);
+        InheritanceData[] memory _data = new InheritanceData[](inheritancesAmountOwner[owner] );
         if (inheritancesAmountOwner[owner] == 0) {
             return _data;
         }
-        uint64 counter;
+        uint256 counter;
         for (uint256 i; i < inheritanceData.length; i++) {
             if (inheritanceData[i].owner == owner) {
                 _data[counter] = inheritanceData[i];
@@ -116,7 +116,7 @@ contract TheWill is IHeritage {
         if (inheritancesAmountHeir[heir] == 0) {
             return _data;
         }
-        uint64 counter;
+        uint256 counter;
         for (uint256 i; i < inheritanceData.length; i++) {
             if (inheritanceData[i].heir == heir) {
                 _data[counter] = inheritanceData[i];

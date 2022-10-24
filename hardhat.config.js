@@ -12,6 +12,11 @@ module.exports = {
       chainId: 5,
       accounts: [process.env.PRIVATE_KEY]
     },
+    mumbai: {
+      url: "https://rpc-mumbai.maticvigil.com",
+      chainId: 80001,
+      accounts: [process.env.PRIVATE_KEY]
+    }
   },
   solidity: "0.8.17"
 };

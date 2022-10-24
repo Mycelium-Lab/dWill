@@ -6,6 +6,7 @@ import TheWill from '../Contract/TheWill.json'
 import { ethers } from "ethers";
 
 import ERC20 from '../Contract/ERC20.json'
+import { TheWillAddress } from '../Utils/Constants';
 
 class Wills extends Component {
     constructor(props) {
@@ -26,7 +27,7 @@ class Wills extends Component {
             network: '',
             approved: false,
             tokensValue: '',
-            contractAddress: '0x034b566d5fF5df8B8cf1c55Cb19814171df8CaA5',
+            contractAddress: TheWillAddress,
             year: '',
             month: '',
             day: '',
@@ -43,7 +44,7 @@ class Wills extends Component {
             await provider.send("eth_requestAccounts", []);
             const signer = provider.getSigner()
             const signerAddress = await signer.getAddress()
-            const contract = new ethers.Contract('0x034b566d5fF5df8B8cf1c55Cb19814171df8CaA5', TheWill.abi, signer)
+            const contract = new ethers.Contract(TheWillAddress, TheWill.abi, signer)
             const wills = await contract.getAllWills(signerAddress)
             let _wills = [];
             for (let i = 0; i < wills.length; i++) {
@@ -67,6 +68,8 @@ class Wills extends Component {
                 networkName = `Polygon`
             } else if (network.chainId === 31337) {
                 networkName = `Hardhat`
+            } else if (network.chainId === 80001) {
+                networkName = `Mumbai`
             }
             this.setState({ signer, signerAddress, network: networkName, contract, wills: _wills })
             contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
@@ -260,7 +263,7 @@ class Wills extends Component {
     render() {
         return(
             <div id='wills'>
-            <h3>Wills</h3>
+            <h3>Your wills</h3>
             {
                 this.state.wills.length > 0 
                 ?

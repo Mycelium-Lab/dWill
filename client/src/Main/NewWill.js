@@ -4,6 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import TheWill from '../Contract/TheWill.json'
 
 import { ethers } from "ethers";
+import { TheWillAddress, TokenAddress } from '../Utils/Constants';
 
 import ERC20 from '../Contract/ERC20.json'
 
@@ -19,7 +20,7 @@ class NewWill extends Component {
             network: '',
             approved: false,
             tokensValue: '',
-            contractAddress: '0x034b566d5fF5df8B8cf1c55Cb19814171df8CaA5',
+            contractAddress: TheWillAddress,
             year: '',
             month: '',
             day: '',
@@ -37,7 +38,7 @@ class NewWill extends Component {
             await provider.send("eth_requestAccounts", []);
             const signer = provider.getSigner()
             const signerAddress = await signer.getAddress()
-            const contract = new ethers.Contract('0x034b566d5fF5df8B8cf1c55Cb19814171df8CaA5', TheWill.abi, signer)
+            const contract = new ethers.Contract(TheWillAddress, TheWill.abi, signer)
             let networkName
             if (network.chainId === 56) {
                 networkName = `BNB Chain`
@@ -45,6 +46,10 @@ class NewWill extends Component {
                 networkName = `Polygon`
             } else if (network.chainId === 31337) {
                 networkName = `Hardhat`
+            } else if (network.chainId === 5) {
+                networkName = `Goerli`
+            } else if (network.chainId === 80001) {
+                networkName = `Mumbai`
             }
             this.setState({ signer, signerAddress, network: networkName, contract })
         } catch (error) {
@@ -205,21 +210,23 @@ class NewWill extends Component {
                     </div>
                     <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
                         <option value={"select"}>Select</option>
-                        <option value={"0xBAD91050B8dF0468b1E167C9f0d37765fA302E37"}>TFT</option>
+                        <option value={TokenAddress}>TFT</option>
                     </select>
                     <div>
-                        На сумму
                         <input onChange={this.onChangeAmount} className="input-group mb-3"/>
+                        <Button variant="outline-success">
+                            max
+                        </Button>
                     </div>
-                    <div>С кошелька {
+                    <div>С кошелька <a href='#'>{
                         this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)
-                        } на сети {this.state.network}</div>
+                        }</a> на сети {this.state.network}</div>
                     <div>
                         Доверенному кошельку
                         <input onChange={this.onChangeHeirAddress} className="input-group mb-3"/>
                     </div>
                     <div>
-                        {"При условии что я буду неактивен(неактивна) более чем"}
+                        {"При условии что я буду неактивен(неактивна) более чем:"}
                         <div>
                             <input type="number" onChange={this.onChangeYear} className="input-group mb-3"/>
                             <label >Лет</label><br/>
@@ -240,10 +247,7 @@ class NewWill extends Component {
                 </Modal.Body>
                 <Modal.Footer>
                 <Button variant="primary" onClick={this.state.approved == false ? this.approve : this.newWill}>
-                    {this.state.approved == false ? "Approve": "Make new Will"}
-                </Button>
-                <Button variant="danger" onClick={this.handleClose} className="btn btn-danger">
-                    Close
+                    {this.state.approved == false ? "Approve": "Make new will"}
                 </Button>
                 </Modal.Footer>
             </Modal>

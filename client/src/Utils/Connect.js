@@ -7,7 +7,8 @@ class Connect extends Component {
         super(props);
 
         this.state = {
-            selectedAddress: localStorage.getItem('account')
+            selectedAddress: localStorage.getItem('account'),
+            networkName: 'Mumbai'
         };
     }
 
@@ -52,7 +53,24 @@ class Connect extends Component {
         )
         } else {
         return (
-            <p>{this.state.selectedAddress}</p>
+            <div>
+                <div>
+                {
+                    this.state.selectedAddress.slice(0, 6) 
+                    + 
+                    '...' 
+                    + 
+                    this.state.selectedAddress.slice(
+                        this.state.selectedAddress.length - 4, 
+                        this.state.selectedAddress.length
+                    )
+                }
+                </div>
+                <div>
+                    <span>{this.state.networkName} Chain </span>
+                    <span>(change)</span>
+                </div>
+            </div>
         );
         }
     }
