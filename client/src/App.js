@@ -4,6 +4,7 @@ import { Component } from 'react';
 
 import './App.css';
 
+
 import Connect from './Utils/Connect';
 import TheWill from './Contract/TheWill.json'
 import { TheWillAddress } from './Utils/Constants';
@@ -109,14 +110,14 @@ class App extends Component {
           <header className="header">
             <div className='header_boxes'>
               <div>
-                <div>
+                {/* <div>
                   <img src="URL" alt=""/>
-                </div>
+                </div> */}
                 <div>
-                  Will
+                <img src="scr/content/willlogo.svg"   alt=""/>
                 </div>
               </div>
-              <div>
+              <div className="number-of-wills">
                   <div>
                       Всего завещано
                   </div>
@@ -124,7 +125,7 @@ class App extends Component {
                       {this.state.total} USD
                   </div>
               </div>
-              <Connect/>
+              <Connect className="btn-connect"/>
             </div>
           </header>
 

@@ -196,7 +196,7 @@ class NewWill extends Component {
     render() {
         return(
         <div>
-            <Button variant="primary" onClick={this.handleShow}>
+            <Button variant="primary" className="btn-new-will" onClick={this.handleShow}>
                 New Will
             </Button>
 
