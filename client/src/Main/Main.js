@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import React, { Component, useState } from 'react';
 import Connect from '../Utils/Connect';
-import logo from './scr/
+
 
 import NewWill from './NewWill';
 

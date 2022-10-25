@@ -1,7 +1,7 @@
 .App {
   text-align: center;
   background-color: #282c34;
-  width: 100%;
+  min-height: 100vh;
 }
 
 .App-logo {
@@ -170,6 +170,9 @@ color: #4285F4;
   font-size: 18px;
   line-height: 21px;
   color: #5ED5A8;
+}
+.btn-connect {
+  
 }
 
 
