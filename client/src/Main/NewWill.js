@@ -205,6 +205,7 @@ class NewWill extends Component {
                 <Modal.Title>New Will</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    
                     <div>
                         Я завещаю мои
                     </div>

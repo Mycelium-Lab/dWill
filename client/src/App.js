@@ -10,6 +10,7 @@ import TheWill from './Contract/TheWill.json'
 import { TheWillAddress } from './Utils/Constants';
 import Data from './Data/Data';
 import Main from './Main/Main';
+import logo from '/Users/macbook/Desktop/Defi/heritage-defi/client/src/content/logo.svg';
 class App extends Component {
 
   state = { 
@@ -109,23 +110,20 @@ class App extends Component {
         <div className="App">
           <header className="header">
             <div className='header_boxes'>
-              <div>
-                {/* <div>
-                  <img src="URL" alt=""/>
-                </div> */}
-                <div>
-                <img src="scr/content/willlogo.svg"   alt=""/>
-                </div>
+              <div className="logo-will">
+                <img src={logo}/>
               </div>
               <div className="number-of-wills">
-                  <div>
-                      Всего завещано
+                <div className="amount-will">
+                <div>
+                      Всего завещано:
                   </div>
                   <div>
                       {this.state.total} USD
                   </div>
-              </div>
-              <Connect className="btn-connect"/>
+                </div>
+              <Connect/>
+            </div>
             </div>
           </header>
 
