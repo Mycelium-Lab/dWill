@@ -69,17 +69,6 @@ describe("TheWill", function () {
     assert(acc3.address == _heritageUpdated.heir, "Heir updated")
   })
 
-  it('Should update both time and heir', async () => {
-    const _heritage = await heritage.inheritanceData(0);
-    const newTime = parseInt(_heritage.timeWhenWithdraw) - 1000
-    await heritage.updateWillTimeWhenWithdraw(0, newTime)
-    await heritage.updateAnHeir(0, acc4.address)
-    const _heritageUpdated = await heritage.inheritanceData(0);
-    assert(newTime.toString() == _heritageUpdated.timeWhenWithdraw.toString(), "Time updated")
-    assert(heir.address != acc4.address, "Heir not same")
-    heir = acc4
-    assert(acc4.address == _heritageUpdated.heir, "Heir updated")
-  })
 
   it("Should add an heir and remove it", async () => {
     //create allowance to contract

@@ -41,6 +41,12 @@ interface IHeritage {
         address newHeir
     );
 
+    event UpdateAmount(
+        uint256 ID,
+        address owner,
+        uint256 newAmount
+    );
+
     event RemoveWill(
         uint256 ID,
         address owner,

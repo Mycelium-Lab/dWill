@@ -6,7 +6,7 @@ import TheWill from '../Contract/TheWill.json'
 import { ethers } from "ethers";
 
 import ERC20 from '../Contract/ERC20.json'
-import { TheWillAddress } from '../Utils/Constants';
+import { TheWillAddress, TokenAddress } from '../Utils/Constants';
 
 class Wills extends Component {
     constructor(props) {
@@ -190,6 +190,20 @@ class Wills extends Component {
         }
     }
 
+    async onChangeTokens(event) {
+        try {
+            const { contractAddress, signer, signerAddress, tokenAddress, amount } = this.state
+            const _token = new ethers.Contract(event.target.value, ERC20.abi, signer)
+            this.setState({
+                tokensValue: event.target.value
+            })
+            const allowance = (await _token.allowance(signerAddress, contractAddress)).toString()
+            this.changeApproved(allowance, amount)
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
     onChangeYear(event) {
         this.setState({
             year: event.target.value
@@ -214,6 +228,7 @@ class Wills extends Component {
         })
     }
 
+    onChangeTokens = this.onChangeTokens.bind(this)
     cancelWill = this.cancelWill.bind(this)
     editTimeWhenWithdraw = this.editTimeWhenWithdraw.bind(this)
     editHeir = this.editHeir.bind(this)
@@ -287,6 +302,60 @@ class Wills extends Component {
             }
             <Modal show={this.state.showEdit} onHide={this.handleCloseEdit}>
                 <Modal.Header>
+                <Modal.Title>New Will</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                        Я завещаю мои
+                    </div>
+                    <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
+                        <option value={"select"}>Select</option>
+                        <option value={TokenAddress}>TFT</option>
+                    </select>
+                    <div>
+                        <input onChange={this.onChangeAmount} className="input-group mb-3"/>
+                        <Button variant="outline-success">
+                            max
+                        </Button>
+                    </div>
+                    <div>С кошелька <a href='#'>{
+                        this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)
+                        }</a> на сети {this.state.network}</div>
+                    <div>
+                        Доверенному кошельку
+                        <input onChange={this.onChangeHeirAddress} value={this.state.heirAddress} className="input-group mb-3"/>
+                    </div>
+                    <div>
+                        {"При условии что я буду неактивен(неактивна) более чем:"}
+                        <div>
+                            <input type="number" onChange={this.onChangeYear} value={this.state.year} className="input-group mb-3"/>
+                            <label >Лет</label><br/>
+                            <input type="number" onChange={this.onChangeMonth} value={this.state.month} className="input-group mb-3"/>
+                            <label >Месяцев</label><br/>
+                            <input type="number" onChange={this.onChangeDay} value={this.state.day} className="input-group mb-3"/>
+                            <label >Дней</label><br/>
+                        </div>
+                    </div>
+                    <div>
+                        <input type="checkbox" className="form-check-input mt-0"/>
+                        <label >Add NFT Message</label><br/>
+                        <input type="checkbox" disabled={true} className="form-check-input mt-0"/>
+                        <label >Automatic token delivery (coming soon)</label><br/>
+                        <input type="checkbox" disabled={true} className="form-check-input mt-0"/>
+                        <label >Notifications (coming soon)</label><br/>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                <Button variant="primary" onClick={this.state.approved == false ? this.approve : this.newWill}>
+                    {this.state.approved == false ? "Approve": "Make new will"}
+                </Button>
+                <Button onClick={this.handleClose}>
+                    Close
+                </Button>
+                </Modal.Footer>
+            </Modal>
+            {/* <Modal show={this.state.showEdit} onHide={this.handleCloseEdit}>
+                <Modal.Header>
                     <Modal.Title>Edit Will</Modal.Title>
                 </Modal.Header>
                 <Button onClick={this.handleShowEditTimeWhenWithdraw} variant="outline-success">
@@ -300,8 +369,8 @@ class Wills extends Component {
                         Close
                     </Button>
                 </Modal.Footer>
-            </Modal>
-            <Modal show={this.state.showEditTimeWhenWithdraw} onHide={this.handleCloseEditTimeWhenWithdraw}>
+            </Modal> */}
+            {/* <Modal show={this.state.showEditTimeWhenWithdraw} onHide={this.handleCloseEditTimeWhenWithdraw}>
                 <Modal.Header>
                     <Modal.Title>Time When Withdraw</Modal.Title>
                 </Modal.Header>
@@ -337,8 +406,8 @@ class Wills extends Component {
                         Close
                     </Button>
                 </Modal.Footer>
-            </Modal>
-            <Modal show={this.state.showEditHeir} onHide={this.handleCloseEditHeir}>
+            </Modal> */}
+            {/* <Modal show={this.state.showEditHeir} onHide={this.handleCloseEditHeir}>
                 <Modal.Header>
                     <Modal.Title>Heir</Modal.Title>
                 </Modal.Header>
@@ -361,7 +430,7 @@ class Wills extends Component {
                         Close
                     </Button>
                 </Modal.Footer>
-            </Modal>
+            </Modal> */}
             <Modal show={this.state.showConfirm}>
                 <Modal.Header>
                     <div className="load-6">
