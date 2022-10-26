@@ -10,7 +10,7 @@ import TheWill from './Contract/TheWill.json'
 import { TheWillAddress } from './Utils/Constants';
 import Data from './Data/Data';
 import Main from './Main/Main';
-import logo from './content/logo.svg';
+import logo from '../content/logo.svg';
 class App extends Component {
 
   state = { 
