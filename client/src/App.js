@@ -10,6 +10,7 @@ import TheWill from './Contract/TheWill.json'
 import { TheWillAddress } from './Utils/Constants';
 import Data from './Data/Data';
 import Main from './Main/Main';
+import willlogo from './content/willlogo.svg'
 class App extends Component {
 
   state = { 
@@ -79,6 +80,7 @@ class App extends Component {
       const contract = new ethers.Contract(TheWillAddress, TheWill.abi, signer)
 
       const wills = await contract.getAllWills((await signer.getAddress()).toString())
+      console.log(wills)
       let _total = 0;
       // const hashMessage1 = ethers.utils.solidityKeccak256(["uint256"], [201])
       // const sign1 = await signer.signMessage(ethers.utils.arrayify(hashMessage1));
@@ -114,7 +116,7 @@ class App extends Component {
                   <img src="URL" alt=""/>
                 </div> */}
                 <div>
-                <img src="scr/content/willlogo.svg"   alt=""/>
+                <img src={willlogo}/>
                 </div>
               </div>
               <div className="number-of-wills">

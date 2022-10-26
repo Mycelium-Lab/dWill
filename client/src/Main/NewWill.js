@@ -249,6 +249,9 @@ class NewWill extends Component {
                 <Button variant="primary" onClick={this.state.approved == false ? this.approve : this.newWill}>
                     {this.state.approved == false ? "Approve": "Make new will"}
                 </Button>
+                <Button onClick={this.handleClose}>
+                    Close
+                </Button>
                 </Modal.Footer>
             </Modal>
             <Modal show={this.state.showConfirm}>
