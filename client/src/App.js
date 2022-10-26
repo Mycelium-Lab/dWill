@@ -4,11 +4,13 @@ import { Component } from 'react';
 
 import './App.css';
 
+
 import Connect from './Utils/Connect';
 import TheWill from './Contract/TheWill.json'
 import { TheWillAddress } from './Utils/Constants';
 import Data from './Data/Data';
 import Main from './Main/Main';
+import willlogo from './content/willlogo.svg'
 class App extends Component {
 
   state = { 
@@ -78,6 +80,7 @@ class App extends Component {
       const contract = new ethers.Contract(TheWillAddress, TheWill.abi, signer)
 
       const wills = await contract.getAllWills((await signer.getAddress()).toString())
+      console.log(wills)
       let _total = 0;
       // const hashMessage1 = ethers.utils.solidityKeccak256(["uint256"], [201])
       // const sign1 = await signer.signMessage(ethers.utils.arrayify(hashMessage1));
@@ -109,14 +112,14 @@ class App extends Component {
           <header className="header">
             <div className='header_boxes'>
               <div>
-                <div>
+                {/* <div>
                   <img src="URL" alt=""/>
-                </div>
+                </div> */}
                 <div>
-                  Will
+                <img src={willlogo}/>
                 </div>
               </div>
-              <div>
+              <div className="number-of-wills">
                   <div>
                       Всего завещано
                   </div>
@@ -124,7 +127,7 @@ class App extends Component {
                       {this.state.total} USD
                   </div>
               </div>
-              <Connect/>
+              <Connect className="btn-connect"/>
             </div>
           </header>
 

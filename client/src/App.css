@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  background-color: #282c34;
+  min-height: 100vh;
 }
 
 .App-logo {
@@ -51,10 +53,8 @@
   display:inline-block;
   /* border:1px solid black */
 }
-
-li {
-  list-style-type: none;
-}
+  /* .list-style-type: none;
+} */
 
 ul {
   margin-left: 0;
@@ -115,3 +115,66 @@ ul {
     opacity: 1;
   }
 }
+
+.btn-new-will {
+  background:#5ED5A8;
+  width: 350px;
+  height: 50px;
+  box-shadow: 3px -2px 10px rgba(94, 213, 168, 0.4);
+  border-radius: 15px;
+  border: none;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 21px;
+  text-align: center;
+  letter-spacing: 0.0264em;
+  color: #171D22;
+  } 
+  .block-two {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 24px;
+  text-align: center;
+  color: #C1C7CD;
+  }
+  .block-one {
+  font-weight: 700;
+  font-size: 25px;
+  line-height: 30px;
+  text-align: center;
+  color: #5ED5A8;
+  }
+
+  .block-one__title {
+font-family: 'SF UI Text';
+font-style: normal;
+font-weight: 800;
+font-size: 25px;
+line-height: 30px;
+color: #5ED5A8;
+}
+a { color :#5ED5A8}
+.block-three {
+font-size: 16px;
+line-height: 19px;
+text-align: center;
+color: #4285F4;
+}
+.btn-connect {
+  display: flex;
+  width: 190px;
+  border: 1px solid #5ED5A8;
+  border-radius: 16px; 
+}
+.number-of-wills {
+  font-size: 18px;
+  line-height: 21px;
+  color: #5ED5A8;
+}
+.btn-connect {
+  
+}
+
+
+
+
