@@ -77,7 +77,7 @@ class Connect extends Component {
 
     render() {
         return(
-        <div>
+        <div className='btn-header-connect'>
             {this.renderMetamask()}
         </div>
         )
