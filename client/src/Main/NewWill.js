@@ -84,9 +84,7 @@ class NewWill extends Component {
             const { contract, heirAddress, amount, tokensValue, year, month, day } = this.state
             const secondsInADay = 86400
             let timeWhenWithdraw = (new Date()).getTime();
-            console.log(year, month, day)
             timeWhenWithdraw = Math.round(timeWhenWithdraw / 1000) + parseInt(year) * 365 * secondsInADay + parseInt(month) * 30 * secondsInADay + parseInt(day) * secondsInADay;
-            console.log(timeWhenWithdraw)
             this.handleShowConfirm()
             await contract.addNewWill(heirAddress, tokensValue, timeWhenWithdraw, ethers.utils.parseEther(amount))
                 .then(async (tx) => {
