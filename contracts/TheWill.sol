@@ -64,7 +64,7 @@ contract TheWill is IHeritage {
     ///@custom:example but if in 25.02.2041 we will reset timers
     ///@custom:example withdrawal time will be 25.02.2051
     ///@custom:example still 10 years
-    ///@dev in the loop check if will's owner  is msg.sender then new time when withraw will be will.timeBetweenWithdrawAndStart + block.timestamp
+    ///@dev in the loop of senders will new time when withraw will be will.timeBetweenWithdrawAndStart + block.timestamp
     function resetTimers() public {
         for (uint256 i; i < inheritancesOwner[msg.sender].length; i++) {
             InheritanceData memory _data = inheritanceData[i];
@@ -126,35 +126,55 @@ contract TheWill is IHeritage {
         emit UpdateAnHeir(ID, msg.sender, _heir);
     }
 
-    ///@notice update both time when withdraw and heir
+    ///@notice set new amount to the will
     ///@param ID id of the will to update
-    ///@param newTime new time when withdraw
-    ///@param _heir new heir of the will
-    function updateBothTimeAndHeir(uint256 ID, uint256 newTime, address _heir) public {
+    ///@param amount new amount of the will
+    function updateAmount(uint256 ID, uint256 amount) public {
         InheritanceData memory _data = inheritanceData[ID];
         require(_data.owner == msg.sender, "Heritage: You not owner");
         require(block.timestamp <= _data.timeWhenWithdraw, "Heritage: Time is over yet");
-        require(newTime > block.timestamp, "Heritage: Time when withdraw is lower then now");
-        require(_data.heir != _heir, "Heritage: Same heir");
-        require(_data.heir != address(0), "Heritage: Heir is address(0)");
         require(_data.done == false, "Heritage: Already withdrawn");
-        //get time when created
-        uint256 _timeWhenCreated = _data.timeWhenWithdraw - _data.timeBetweenWithdrawAndStart;
-        uint256[] memory _inheritancesHeir = inheritancesHeir[_data.heir];
-        for (uint256 i; i < _inheritancesHeir.length; i++) {
-            if (_inheritancesHeir[i] == ID) {
-                inheritancesHeir[_data.heir][i] = _inheritancesHeir[_inheritancesHeir.length-1];
-                inheritancesHeir[_data.heir].pop();
-            }
+        require(amount != 0, "Heritage: Amount 0");
+        require(amount != _data.amount, "Heritage: Amount is the same");
+        IERC20 _token = IERC20(_data.token);
+        if (amount > _data.amount) {
+            uint256 difference = amount - _data.amount;
+            _token.transferFrom(msg.sender, address(this), difference);
+        } else {
+            uint256 difference = _data.amount - amount;
+            _token.transfer(msg.sender, difference);
         }
-        inheritancesHeir[_heir].push(ID);
-        _data.timeWhenWithdraw = newTime;
-        //set new time when created
-        _data.timeBetweenWithdrawAndStart = newTime - _timeWhenCreated;
-        _data.heir = _heir;
+        _data.amount = amount;
         inheritanceData[ID] = _data;
-        emit UpdateWillTimeWhenWithdraw(ID, msg.sender, _data.heir, newTime);
-        emit UpdateAnHeir(ID, msg.sender, _heir);
+        emit UpdateAmount(ID, _data.owner, amount);
+    }
+
+    ///@notice update time when withdraw, heir, amount - calls when boolean variables >= 2
+    ///@param ID id of the will to update
+    ///@param newTime new time when withdraw
+    ///@param _heir new heir of the will
+    ///@param amount new amount of the will
+    ///@param _updateTime to see if we need to update time
+    ///@param _updateHeir to see if we need to update heir
+    ///@param _updateAmount to see if we need to update amount
+    function update(
+        uint256 ID, 
+        uint256 newTime, 
+        address _heir, 
+        uint256 amount,
+        bool _updateTime,
+        bool _updateHeir,
+        bool _updateAmount
+    ) public {
+        if (_updateTime == true) {
+            updateWillTimeWhenWithdraw(ID, newTime);
+        }
+        if (_updateHeir == true) {
+            updateAnHeir(ID, _heir);
+        }
+        if (_updateAmount == true) {
+            updateAmount(ID, amount);
+        }
     }
 
     ///@notice remove will from storage

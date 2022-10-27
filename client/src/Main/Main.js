@@ -25,7 +25,7 @@ class Main extends Component {
 
     render() {
         return(
-            <div>
+            <div className='main-text'>
                 <h1 className="block-one__title">Привет!</h1>
                 <h3 className="block-one">Will - Первый полностью децентрализованный способ
 завещать свою криптовалюту.</h3>

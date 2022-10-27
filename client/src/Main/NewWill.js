@@ -84,7 +84,7 @@ class NewWill extends Component {
             const { contract, heirAddress, amount, tokensValue, year, month, day } = this.state
             const secondsInADay = 86400
             let timeWhenWithdraw = (new Date()).getTime();
-            timeWhenWithdraw = Math.round(timeWhenWithdraw / 1000) + year * 365 * secondsInADay + month * 30 * secondsInADay + day * secondsInADay;
+            timeWhenWithdraw = Math.round(timeWhenWithdraw / 1000) + parseInt(year) * 365 * secondsInADay + parseInt(month) * 30 * secondsInADay + parseInt(day) * secondsInADay;
             this.handleShowConfirm()
             await contract.addNewWill(heirAddress, tokensValue, timeWhenWithdraw, ethers.utils.parseEther(amount))
                 .then(async (tx) => {
@@ -205,6 +205,7 @@ class NewWill extends Component {
                 <Modal.Title>New Will</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    
                     <div>
                         Я завещаю мои
                     </div>
@@ -223,16 +224,16 @@ class NewWill extends Component {
                         }</a> на сети {this.state.network}</div>
                     <div>
                         Доверенному кошельку
-                        <input onChange={this.onChangeHeirAddress} className="input-group mb-3"/>
+                        <input onChange={this.onChangeHeirAddress} value={this.state.heirAddress} className="input-group mb-3"/>
                     </div>
                     <div>
                         {"При условии что я буду неактивен(неактивна) более чем:"}
                         <div>
-                            <input type="number" onChange={this.onChangeYear} className="input-group mb-3"/>
+                            <input type="number" onChange={this.onChangeYear} value={this.state.year} className="input-group mb-3"/>
                             <label >Лет</label><br/>
-                            <input type="number" onChange={this.onChangeMonth} className="input-group mb-3"/>
+                            <input type="number" onChange={this.onChangeMonth} value={this.state.month} className="input-group mb-3"/>
                             <label >Месяцев</label><br/>
-                            <input type="number" onChange={this.onChangeDay} className="input-group mb-3"/>
+                            <input type="number" onChange={this.onChangeDay} value={this.state.day} className="input-group mb-3"/>
                             <label >Дней</label><br/>
                         </div>
                     </div>

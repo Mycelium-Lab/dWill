@@ -6,7 +6,7 @@ import TheWill from '../Contract/TheWill.json'
 import { ethers } from "ethers";
 
 import ERC20 from '../Contract/ERC20.json'
-import { TheWillAddress } from '../Utils/Constants';
+import { TheWillAddress, TokenAddress } from '../Utils/Constants';
 
 class Wills extends Component {
     constructor(props) {
@@ -22,11 +22,19 @@ class Wills extends Component {
             showEditTimeWhenWithdraw: false,
             showEditHeir: false,
             currentEditID: '',
+            currentEditBaseHeirAddress: '',
             currentEditHeirAddress: '',
             currentEditTimeWhenWithdraw: '',
+            currentEditToken: '',
+            currentEditSymbol: '',
+            currentEditBaseAmount: '',
+            currentEditAmount: '',
+            updateHeir: false,
+            updateAmount: false,
+            time: '',
             network: '',
-            approved: false,
-            tokensValue: '',
+            approved: true,
+            tokensValueToApprove: '',
             contractAddress: TheWillAddress,
             year: '',
             month: '',
@@ -190,6 +198,139 @@ class Wills extends Component {
         }
     }
 
+    async edit() {
+        try {
+            const {
+                currentEditAmount,
+                currentEditHeirAddress,
+                currentEditTimeWhenWithdraw,
+                currentEditID,
+                year,
+                month,
+                day,
+                updateHeir,
+                updateAmount,
+                time,
+                contract
+            } = this.state
+            const secondsInADay = 86400
+            let _updatedTime;
+            let promise;
+            if (time === '-') {
+                _updatedTime = parseInt(currentEditTimeWhenWithdraw) - parseInt(year) * 365 * secondsInADay - parseInt(month) * 30 * secondsInADay - parseInt(day) * secondsInADay;
+            }
+            if (time === '+') {
+                _updatedTime = parseInt(currentEditTimeWhenWithdraw) + parseInt(year) * 365 * secondsInADay + parseInt(month) * 30 * secondsInADay + parseInt(day) * secondsInADay;
+            }
+            if (time === '=') {
+                _updatedTime = 0
+            }
+            if (time === '') throw Error('Time is undefined')
+            if (updateHeir === true && updateAmount === true && (time === '-' || time === '+')) {
+                promise = contract.update(
+                    currentEditID,
+                    _updatedTime,
+                    currentEditHeirAddress,
+                    ethers.utils.parseEther(currentEditAmount),
+                    true, //update time
+                    true, //update heir
+                    true  //update amount
+                )
+            }
+            if (updateHeir === true && updateAmount === true && time === '=') {
+                promise = contract.update(
+                    currentEditID,
+                    _updatedTime,
+                    currentEditHeirAddress,
+                    ethers.utils.parseEther(currentEditAmount),
+                    false,
+                    true,
+                    true
+                )
+            }
+            if (updateHeir === true && updateAmount === false && (time === '-' || time === '+')) {
+                promise = contract.update(
+                    currentEditID,
+                    _updatedTime,
+                    currentEditHeirAddress,
+                    ethers.utils.parseEther(currentEditAmount),
+                    true, //update time
+                    true, //update heir
+                    false  //update amount
+                )
+            }
+            if (updateHeir === true && updateAmount === false && time == '=') {
+                promise = contract.updateAnHeir(
+                    currentEditID,
+                    currentEditHeirAddress
+                )
+            }
+            if (updateHeir === false && updateAmount === true && (time === '-' || time === '+')) {
+                promise = contract.update(
+                    currentEditID,
+                    _updatedTime,
+                    currentEditHeirAddress,
+                    ethers.utils.parseEther(currentEditAmount),
+                    true, //update time
+                    false, //update heir
+                    true  //update amount
+                )
+            }
+            if (updateHeir === false && updateAmount === true && time === '=') {
+                promise = contract.updateAmount(
+                    currentEditID,
+                    ethers.utils.parseEther(currentEditAmount)
+                )
+            }
+            if (updateHeir === false && updateAmount === false && (time === '-' || time === '+')) {
+                promise = contract.updateWillTimeWhenWithdraw(
+                    currentEditID,
+                    _updatedTime
+                )
+            }
+            if (updateHeir === false && updateAmount === false && time === '=') throw Error('Nothing to update')
+            this.handleShowConfirm()
+            promise
+            .then(async (tx) => {
+                this.handleCloseConfirm()
+                this.handleShowAwait()
+                await tx.wait()
+                .then(() => {
+                    this.handleCloseAwait()
+                    this.handleCloseEdit()
+                })
+            })
+        } catch (error) {
+            console.error(error)
+            this.handleCloseConfirm()
+            this.handleCloseAwait()
+            this.handleCloseEdit()
+        }
+    }
+
+    async approve() {
+        const { contractAddress, signer, amount, currentEditToken, currentEditBaseAmount, currentEditAmount } = this.state
+        const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
+        const amountToApprove = ethers.utils.parseEther((parseFloat(currentEditAmount) - parseFloat(currentEditBaseAmount)).toString())
+        this.handleShowConfirm()
+        await _token.increaseAllowance(contractAddress, amountToApprove)
+            .then(async (tx) => {
+                this.handleShowAwait()
+                await tx.wait()
+                .then(() => {
+                    this.handleCloseAwait()
+                    this.setState({
+                        approved: true
+                    })
+                })
+            })
+            .catch(err => {
+                console.error(err)
+                this.handleCloseConfirm()
+                this.handleCloseAwait()
+            })
+    }
+
     onChangeYear(event) {
         this.setState({
             year: event.target.value
@@ -209,15 +350,85 @@ class Wills extends Component {
     }
 
     onChangeHeirAddress(event) {
+        let updateHeir = false;
+        if (this.state.currentEditBaseHeirAddress !== event.target.value) {
+            updateHeir = true
+        }
         this.setState({
-            heirAddress: event.target.value
+            currentEditHeirAddress: event.target.value,
+            updateHeir
         })
     }
 
+    async onChangeAmount(event) {
+        try {
+            const { 
+                contractAddress, 
+                signer, 
+                signerAddress, 
+                tokensValue, 
+                currentEditBaseAmount, 
+                currentEditAmount, 
+                currentEditToken 
+            } = this.state
+            if (parseFloat(currentEditBaseAmount) < parseFloat(event.target.value)) {
+                this.setState({
+                    currentEditAmount: event.target.value,
+                    updateAmount: true
+                })
+                const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
+                const allowance = (await _token.allowance(signerAddress, contractAddress)).toString()
+                this.changeApproved(allowance, (parseFloat(event.target.value) - parseFloat(currentEditBaseAmount)).toString())
+            } 
+            if (parseFloat(currentEditBaseAmount) > parseFloat(event.target.value)) {
+                this.setState({
+                    currentEditAmount: event.target.value,
+                    approved: true,
+                    updateAmount: true
+                })
+            }
+            if (parseFloat(currentEditBaseAmount) === parseFloat(event.target.value)) {
+                this.setState({
+                    currentEditAmount: event.target.value,
+                    approved: true,
+                    updateAmount: false
+                })
+            }
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    onChangeTime(event) {
+        this.setState({
+            time: event.target.value
+        })
+    }
+
+    changeApproved(allowance, amount) {
+        try {
+            if (parseInt(allowance) >= parseInt(ethers.utils.parseEther(amount)) && parseInt(allowance) !== 0) {
+                this.setState({
+                    approved: true
+                })
+            } else {
+                this.setState({
+                    approved: false
+                })
+            }
+        } catch (error) {
+            console.error(error.reason)
+        }
+    }
+
+    approve = this.approve.bind(this)
+    changeApproved = this.changeApproved.bind(this)
+    onChangeAmount = this.onChangeAmount.bind(this)
+    onChangeTime = this.onChangeTime.bind(this)
     cancelWill = this.cancelWill.bind(this)
     editTimeWhenWithdraw = this.editTimeWhenWithdraw.bind(this)
     editHeir = this.editHeir.bind(this)
-
+    edit = this.edit.bind(this)
     onChangeYear = this.onChangeYear.bind(this)
     onChangeMonth = this.onChangeMonth.bind(this)
     onChangeDay = this.onChangeDay.bind(this)
@@ -227,27 +438,26 @@ class Wills extends Component {
         showEdit: false, currentEditID: '',
         currentEditHeirAddress: '', currentEditTimeWhenWithdraw: ''
     });
-    handleShowEdit = (event) => {
+    handleShowEdit = async (event) => {
+        const { signer } = this.state
         const data = JSON.parse(event.target.value)
         this.setState({
             showEdit: true, 
             currentEditID: data.ID,
             currentEditHeirAddress: data.heir,
-            currentEditTimeWhenWithdraw: data.timeWhenWithdraw
+            currentEditBaseHeirAddress: data.heir,
+            currentEditTimeWhenWithdraw: data.timeWhenWithdraw,
+            currentEditToken: data.token,
+            currentEditSymbol: data.symbol,
+            currentEditAmount: ethers.utils.formatEther(data.amount),
+            currentEditBaseAmount: ethers.utils.formatEther(data.amount),
+            year: '',
+            month: '',
+            day: ''
         })
     };
     handleCloseEdit = this.handleCloseEdit.bind(this)
     handleShowEdit = this.handleShowEdit.bind(this)
-
-    handleCloseEditTimeWhenWithdraw = () => this.setState({showEditTimeWhenWithdraw: false, showEdit: true})
-    handleShowEditTimeWhenWithdraw = () => this.setState({showEditTimeWhenWithdraw: true, showEdit: false})
-    handleCloseEditTimeWhenWithdraw = this.handleCloseEditTimeWhenWithdraw.bind(this)
-    handleShowEditTimeWhenWithdraw = this.handleShowEditTimeWhenWithdraw.bind(this)
-
-    handleCloseEditHeir = () => this.setState({showEditHeir: false, showEdit: true})
-    handleShowEditHeir = () => this.setState({showEditHeir: true, showEdit: false})
-    handleCloseEditHeir = this.handleCloseEditHeir.bind(this)
-    handleShowEditHeir = this.handleShowEditHeir.bind(this)
 
     handleShowConfirm = () => this.setState({showConfirm: true})
     handleShowAwait = () => this.setState({showConfirm: false, showAwait: true})
@@ -275,7 +485,16 @@ class Wills extends Component {
                                     <div>You bequeathed {ethers.utils.formatEther(v.amount)} of your {v.symbol} from {this.state.network} chain to wallet</div>
                                     <div>{v.heir}</div>
                                     <div>Inheritance can be harvest if the period of inactivity is longer than {this.timeConverter(v.timeWhenWithdraw)}</div>
-                                    <button type="button" className="btn btn-success" value={JSON.stringify({ID: v.ID.toString(), timeWhenWithdraw: v.timeWhenWithdraw, heir: v.heir})} onClick={this.state.showEdit == false ? this.handleShowEdit : this.handleCloseEdit}>Edit</button>
+                                    <button type="button" className="btn btn-success" value={
+                                        JSON.stringify({
+                                            ID: v.ID.toString(), 
+                                            timeWhenWithdraw: v.timeWhenWithdraw, 
+                                            heir: v.heir, 
+                                            token: v.token,
+                                            symbol: v.symbol,
+                                            amount: v.amount.toString()
+                                        })
+                                    } onClick={this.state.showEdit == false ? this.handleShowEdit : this.handleCloseEdit}>Edit</button>
                                     <button type="button" className="btn btn-danger" value={v.ID.toString()} onClick={this.cancelWill}>Cancel</button>
                                 </li>
                             )
@@ -287,79 +506,81 @@ class Wills extends Component {
             }
             <Modal show={this.state.showEdit} onHide={this.handleCloseEdit}>
                 <Modal.Header>
-                    <Modal.Title>Edit Will</Modal.Title>
-                </Modal.Header>
-                <Button onClick={this.handleShowEditTimeWhenWithdraw} variant="outline-success">
-                    Time When Withdraw
-                </Button>
-                <Button onClick={this.handleShowEditHeir} variant="outline-success">
-                    Heir
-                </Button>
-                <Modal.Footer>
-                    <Button variant="danger" onClick={this.handleCloseEdit} className="btn btn-danger">
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal show={this.state.showEditTimeWhenWithdraw} onHide={this.handleCloseEditTimeWhenWithdraw}>
-                <Modal.Header>
-                    <Modal.Title>Time When Withdraw</Modal.Title>
+                <Modal.Title>Edit Will</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div>
+                        Я завещаю мои
+                    </div>
+                    <div>{this.state.currentEditSymbol}</div>
+                    <div>
+                        <input onChange={this.onChangeAmount} value={this.state.currentEditAmount} className="input-group mb-3"/>
+                        <Button variant="outline-success">
+                            max
+                        </Button>
+                    </div>
+                    <div>С кошелька <a href='#'>{
+                        this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)
+                        }</a> на сети {this.state.network}</div>
+                    <div>
+                        Доверенному кошельку
+                        <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3"/>
+                    </div>
+                    <div>
                         <div>
-                            Время передачи наследства сейчас: {
-                                this.timeConverter(parseInt(this.state.currentEditTimeWhenWithdraw))
-                            }
+                            Сейчас дата вывода средств для наследника {this.timeConverter(this.state.currentEditTimeWhenWithdraw)}
                         </div>
-                        Добавить к {
-                            this.timeConverter(
-                                Math.round(
-                                    (new Date()).getTime() / 1000
-                                )
-                            )
-                        }
                         <div>
-                            <input type="number" onChange={this.onChangeYear} className="input-group mb-3"/>
+                            <input 
+                                type="radio"
+                                name="decrease"
+                                value={'-'}
+                                checked={this.state.time === '-'}
+                                onChange={this.onChangeTime}
+                            />
+                            <label >Уменьшить на</label><br/>
+                            <input 
+                                type="radio"
+                                name="decrease"
+                                value={'+'}
+                                checked={this.state.time === '+'}
+                                onChange={this.onChangeTime}
+                            />
+                            <label >Увеличить на</label><br/>
+                            <input 
+                                type="radio"
+                                name="equal"
+                                value={'='}
+                                checked={this.state.time === '='}
+                                onChange={this.onChangeTime}
+                            />
+                            <label >Не менять</label><br/>
+                        </div>
+                        <div>
+                            <input type="number" onChange={this.onChangeYear} value={this.state.year} className="input-group mb-3"/>
                             <label >Лет</label><br/>
-                            <input type="number" onChange={this.onChangeMonth} className="input-group mb-3"/>
+                            <input type="number" onChange={this.onChangeMonth} value={this.state.month} className="input-group mb-3"/>
                             <label >Месяцев</label><br/>
-                            <input type="number" onChange={this.onChangeDay} className="input-group mb-3"/>
+                            <input type="number" onChange={this.onChangeDay} value={this.state.day} className="input-group mb-3"/>
                             <label >Дней</label><br/>
                         </div>
                     </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="success" onClick={this.editTimeWhenWithdraw}>
-                        Edit
-                    </Button>
-                    <Button variant="danger" onClick={this.handleCloseEditTimeWhenWithdraw} className="btn btn-danger">
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal show={this.state.showEditHeir} onHide={this.handleCloseEditHeir}>
-                <Modal.Header>
-                    <Modal.Title>Heir</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
                     <div>
-                        <div>
-                            Наследник сейчас: {this.state.currentEditHeirAddress}
-                        </div>
-                        <div>
-                            Поменять на:
-                            <input onChange={this.onChangeHeirAddress} className="input-group mb-3"/>
-                        </div>
+                        <input type="checkbox" className="form-check-input mt-0"/>
+                        <label >Add NFT Message</label><br/>
+                        <input type="checkbox" disabled={true} className="form-check-input mt-0"/>
+                        <label >Automatic token delivery (coming soon)</label><br/>
+                        <input type="checkbox" disabled={true} className="form-check-input mt-0"/>
+                        <label >Notifications (coming soon)</label><br/>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="success" onClick={this.editHeir}>
-                        Edit
-                    </Button>
-                    <Button variant="danger" onClick={this.handleCloseEditHeir} className="btn btn-danger">
-                        Close
-                    </Button>
+                <Button variant="primary" onClick={this.state.approved === true ? this.edit : this.approve}>
+                    {this.state.approved === true ? `Edit` : `Approve`}
+                </Button>
+                <Button onClick={this.handleCloseEdit}>
+                    Close
+                </Button>
                 </Modal.Footer>
             </Modal>
             <Modal show={this.state.showConfirm}>
