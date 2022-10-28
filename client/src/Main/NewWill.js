@@ -7,6 +7,18 @@ import { ethers } from "ethers";
 import { TheWillAddress, TokenAddress } from '../Utils/Constants';
 
 import ERC20 from '../Contract/ERC20.json'
+const styles = {
+    modal_new_will: {
+        position: 'absolute',
+        width: '700px',
+        left: '25%',
+        top: '15%',
+        background: '#1B232A',
+    }
+}
+    
+    
+
 
 class NewWill extends Component {
     constructor(props) {
@@ -199,13 +211,13 @@ class NewWill extends Component {
             <Button variant="primary" className="btn-new-will" onClick={this.handleShow}>
                 New Will
             </Button>
-
-            <Modal show={this.state.show} onHide={this.handleClose}>
+            
+            <Modal show={this.state.show} onHide={this.handleClose} className='modal_new_will' style={styles.modal_new_will}>
                 <Modal.Header>
-                <Modal.Title>New Will</Modal.Title>
+                <Modal.Title className='modal_title'>New Will</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    
+                    <div className='modal_will-tokens'>
                     <div>
                         Я завещаю мои
                     </div>
@@ -214,30 +226,35 @@ class NewWill extends Component {
                         <option value={TokenAddress}>TFT</option>
                     </select>
                     <div>
-                        <input onChange={this.onChangeAmount} className="input-group mb-3"/>
-                        <Button variant="outline-success">
+                    </div>
+                        <input onChange={this.onChangeAmount} className="input-group-mb-3"/>
+                        <Button variant="outline-success" className='input-group-mb-3-button'>
                             max
                         </Button>
                     </div>
-                    <div>С кошелька <a href='#'>{
+                    <div className='modal_wallet'>С кошелька <a href='#'className='modal_wallet_link'>{
                         this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)
                         }</a> на сети {this.state.network}</div>
+                        <span className='title_trusted-wallet'>Доверенному кошельку</span>
+                        <div><input onChange={this.onChangeHeirAddress} className="input_trusted-wallet"/></div>
                     <div>
-                        Доверенному кошельку
-                        <input onChange={this.onChangeHeirAddress} value={this.state.heirAddress} className="input-group mb-3"/>
-                    </div>
-                    <div>
-                        {"При условии что я буду неактивен(неактивна) более чем:"}
-                        <div>
-                            <input type="number" onChange={this.onChangeYear} value={this.state.year} className="input-group mb-3"/>
-                            <label >Лет</label><br/>
-                            <input type="number" onChange={this.onChangeMonth} value={this.state.month} className="input-group mb-3"/>
-                            <label >Месяцев</label><br/>
-                            <input type="number" onChange={this.onChangeDay} value={this.state.day} className="input-group mb-3"/>
-                            <label >Дней</label><br/>
+                        <div className='modal_title-time-will'>{"При условии что я буду неактивен(неактивна) более чем:"}</div>
+                        <div className='modal_time-will'>
+                            <div className='modal_time-years'>
+                            <input type="number" onChange={this.onChangeYear} className="input-group-time"/>
+                            <label className="input-group-time-name" >Лет</label><br/>
+                            </div>
+                            <div className='modal_time-months'>
+                            <input type="number" onChange={this.onChangeMonth} className="input-group-time"/>
+                            <label className="input-group-time-name" >Месяцев</label><br/>
+                            </div>
+                            <div className='modal_time-days'>
+                            <input type="number" onChange={this.onChangeDay} className="input-group-time"/>
+                            <label className="input-group-time-name" >Дней</label><br/> 
+                            </div>
                         </div>
                     </div>
-                    <div>
+                    <div className='modal_checkbox'>
                         <input type="checkbox" className="form-check-input mt-0"/>
                         <label >Add NFT Message</label><br/>
                         <input type="checkbox" disabled={true} className="form-check-input mt-0"/>
@@ -247,8 +264,8 @@ class NewWill extends Component {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="primary" onClick={this.state.approved == false ? this.approve : this.newWill}>
-                    {this.state.approved == false ? "Approve": "Make new will"}
+                <Button variant="primary" onClick={this.state.approved == false ? this.approve : this.newWill} className='button_make-new-will'>
+                    {this.state.approved == false ? "Make new will": "Make new will"}
                 </Button>
                 <Button onClick={this.handleClose}>
                     Close
@@ -299,9 +316,11 @@ class NewWill extends Component {
                     </Button>
                 </Modal.Footer>
             </Modal>
+            <div className='overlay'></div>
         </div>
+        
         )
     }
 }
 
-export default NewWill;
+export default NewWill 
