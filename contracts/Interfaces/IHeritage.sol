@@ -60,4 +60,10 @@ interface IHeritage {
         uint256 timeWhenWithdrawn
     );
 
+    event ResetTimers(
+        uint256[] IDs,
+        address owner,
+        uint256[] newTimes
+    );
+
 }

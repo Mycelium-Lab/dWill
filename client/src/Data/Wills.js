@@ -81,8 +81,8 @@ class Wills extends Component {
             }
             this.setState({ signer, signerAddress, network: networkName, contract, wills: _wills })
             contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
-                let __wills = this.state.wills
                 if (owner == signerAddress) {
+                    let __wills = this.state.wills
                     const will = await contract.inheritanceData(ID.toString())
                     const token = new ethers.Contract(will.token, ERC20.abi, signer)
                     const symbol = await token.symbol()
@@ -108,17 +108,71 @@ class Wills extends Component {
                 }
             })
             contract.on('Withdraw', async (ID,owner, heir,timeWhenWithdraw) => {
-                let __wills = this.state.wills
                 if (owner == signerAddress) {
+                    let __wills = this.state.wills
                     __wills = __wills.filter(v => v.ID !== ID.toString())
                     this.setState({wills: __wills})
                 }
             })
             contract.on('RemoveWill', async (ID, owner, heir) => {
-                let __wills = this.state.wills
                 if (owner == signerAddress) {
+                    let __wills = this.state.wills
                     __wills = __wills.filter(v => v.ID !== ID.toString())
                     this.setState({wills: __wills})
+                }
+            })
+            contract.on('UpdateWillTimeWhenWithdraw', (ID, owner, heir, newTime) => {
+                if (owner == signerAddress) {
+                    let __wills = this.state.wills
+                    for (let i = 0; i < __wills.length; i++) {
+                        if (_wills[i].ID === ID.toString()) {
+                            _wills[i].timeWhenWithdraw = newTime.toString()
+                        }
+                    }
+                    this.setState({
+                        wills: __wills
+                    })
+                }
+            })
+            contract.on('UpdateAnHeir', (ID, owner, heir) => {
+                if (owner == signerAddress) {
+                    let __wills = this.state.wills
+                    for (let i = 0; i < __wills.length; i++) {
+                        if (_wills[i].ID === ID.toString()) {
+                            _wills[i].heir = heir
+                        }
+                    }
+                    this.setState({
+                        wills: __wills
+                    })
+                }
+            })
+            contract.on('UpdateAmount', (ID, owner, amount) => {
+                if (owner == signerAddress) {
+                    let __wills = this.state.wills
+                    for (let i = 0; i < __wills.length; i++) {
+                        if (_wills[i].ID === ID.toString()) {
+                            _wills[i].amount = amount.toString()
+                        }
+                    }
+                    this.setState({
+                        wills: __wills
+                    })
+                }
+            })
+            contract.on('ResetTimers', (IDs, owner, newTimes) => {
+                if (owner == signerAddress) {
+                    let __wills = this.state.wills
+                    for (let i = 0; i < IDs.length; i++) {
+                        for (let j = 0; j < __wills.length; j++) {
+                            if (IDs[i].toString() === _wills[j].ID) {
+                                _wills[j].timeWhenWithdraw = newTimes[i];
+                            }
+                        }
+                    }
+                    this.setState({
+                        wills: __wills
+                    })
                 }
             })
         } catch (error) {
@@ -488,7 +542,7 @@ class Wills extends Component {
                                     <button type="button" className="btn btn-success" value={
                                         JSON.stringify({
                                             ID: v.ID.toString(), 
-                                            timeWhenWithdraw: v.timeWhenWithdraw, 
+                                            timeWhenWithdraw: v.timeWhenWithdraw.toString(), 
                                             heir: v.heir, 
                                             token: v.token,
                                             symbol: v.symbol,
