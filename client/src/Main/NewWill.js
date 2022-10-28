@@ -96,7 +96,7 @@ class NewWill extends Component {
             const { contract, heirAddress, amount, tokensValue, year, month, day } = this.state
             const secondsInADay = 86400
             let timeWhenWithdraw = (new Date()).getTime();
-            timeWhenWithdraw = Math.round(timeWhenWithdraw / 1000) + year * 365 * secondsInADay + month * 30 * secondsInADay + day * secondsInADay;
+            timeWhenWithdraw = Math.round(timeWhenWithdraw / 1000) + parseInt(year) * 365 * secondsInADay + parseInt(month) * 30 * secondsInADay + parseInt(day) * secondsInADay;
             this.handleShowConfirm()
             await contract.addNewWill(heirAddress, tokensValue, timeWhenWithdraw, ethers.utils.parseEther(amount))
                 .then(async (tx) => {
@@ -266,6 +266,9 @@ class NewWill extends Component {
                 <Modal.Footer>
                 <Button variant="primary" onClick={this.state.approved == false ? this.approve : this.newWill} className='button_make-new-will'>
                     {this.state.approved == false ? "Make new will": "Make new will"}
+                </Button>
+                <Button onClick={this.handleClose}>
+                    Close
                 </Button>
                 </Modal.Footer>
             </Modal>

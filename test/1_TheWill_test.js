@@ -34,7 +34,10 @@ describe("TheWill", function () {
     //create heritage
     await heritage.addNewWill(acc2.address, token.address, timeWhenWithdraw, amount);
     heir = acc2
-    const _heritage = await heritage.inheritanceData(0);
+    const ID = 0
+    const _heritage = await heritage.inheritanceData(ID);
+    const IDOfAddedGameOwner = await heritage.inheritancesOwner(signer.address, ID)
+    const IDOfAddedGameHeir = await heritage.inheritancesHeir(heir.address, ID)
     //check if created
     assert.equal(_heritage.owner, signer.address, "Added heritage owner right")
     assert.equal(_heritage.heir, acc2.address, "Added heritage acc right")
@@ -42,6 +45,12 @@ describe("TheWill", function () {
     assert.equal(_heritage.timeWhenWithdraw, timeWhenWithdraw, "Added heritage timeWhenWithdraw right")
     assert.equal(_heritage.amount.toString(), amount.toString(), "Added heritage amount right")
     assert.equal(_heritage.done, false, "Added heritage done right")
+    assert(
+      (IDOfAddedGameHeir.toNumber() === IDOfAddedGameOwner.toNumber())
+      &&
+      (IDOfAddedGameHeir.toNumber() === ID),
+      'ID is right'
+    )
   })
 
   it('Should update time', async () => {
@@ -60,12 +69,14 @@ describe("TheWill", function () {
     assert(acc3.address == _heritageUpdated.heir, "Heir updated")
   })
 
+
   it("Should add an heir and remove it", async () => {
     //create allowance to contract
     await token.increaseAllowance(heritage.address, amount)
     //create heritage
     await heritage.addNewWill(acc2.address, token.address, timeWhenWithdraw, amount);
-    const _heritageBefore = await heritage.inheritanceData(1);
+    const ID = 1
+    const _heritageBefore = await heritage.inheritanceData(ID);
     //check if created
     assert.equal(_heritageBefore.owner, signer.address, "Added heritage owner right")
     assert.equal(_heritageBefore.heir, acc2.address, "Added heritage acc right")
@@ -75,7 +86,10 @@ describe("TheWill", function () {
     assert.equal(_heritageBefore.done, false, "Added heritage done right")
     const tokenAmountBefore = await token.balanceOf(signer.address)
     //remove heir
-    await heritage.removeWill(1)
+    await heritage.removeWill(ID)
+    //reverted because we deleted this will from owner and heir
+    await expect(heritage.inheritancesOwner(signer.address, ID)).to.be.revertedWithoutReason()
+    await expect(heritage.inheritancesHeir(signer.address, ID)).to.be.revertedWithoutReason()
     const tokenAmountAfter = await token.balanceOf(signer.address)
     assert.equal(parseInt(tokenAmountBefore) + parseInt(amount), parseInt(tokenAmountAfter), "Get tokens back")
     const _heritageAfter = await heritage.inheritanceData(1);
