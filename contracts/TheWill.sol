@@ -36,8 +36,8 @@ contract TheWill is IHeritage {
         require(timeWhenWithdraw > block.timestamp, "Heritage: Time when withdraw is lower then now");
         require(amount != 0, "Heritage: Amount 0");
         IERC20 _token = IERC20(token);
-        //get tokens from owner to contract
-        _token.transferFrom(msg.sender, address(this), amount);
+        uint256 allowance = _token.allowance(msg.sender, address(this));
+        require(allowance >= amount, 'Not enough allowance');
         uint256 _dataLength = inheritanceData.length;
         //create new data
         InheritanceData memory _data = InheritanceData(
@@ -66,12 +66,15 @@ contract TheWill is IHeritage {
     ///@custom:example still 10 years
     ///@dev in the loop of senders will new time when withraw will be will.timeBetweenWithdrawAndStart + block.timestamp
     function resetTimers() public {
+        uint256[] memory _newTimes = new uint256[](inheritancesOwner[msg.sender].length);
         for (uint256 i; i < inheritancesOwner[msg.sender].length; i++) {
             InheritanceData memory _data = inheritanceData[i];
             uint256 _newTimeWhenWithdraw = _data.timeBetweenWithdrawAndStart + block.timestamp;
             _data.timeWhenWithdraw = _newTimeWhenWithdraw;
+            _newTimes[i] = _newTimeWhenWithdraw;
             inheritanceData[i] = _data;
         }
+        emit ResetTimers(inheritancesOwner[msg.sender], msg.sender, _newTimes);
     }
 
     ///@notice reset timers to only one person will
@@ -82,6 +85,11 @@ contract TheWill is IHeritage {
         uint256 _newTimeWhenWithdraw = _data.timeBetweenWithdrawAndStart + block.timestamp;
         _data.timeWhenWithdraw = _newTimeWhenWithdraw;
         inheritanceData[ID] = _data;
+        uint256[] memory _newTimes = new uint256[](1);
+        _newTimes[0] = _newTimeWhenWithdraw;
+        uint256[] memory _IDs = new uint256[](1);
+        _IDs[0] = ID;
+        emit ResetTimers(_IDs, msg.sender, _newTimes);
     }
 
     ///@notice update time when heir can withdraw
@@ -138,11 +146,8 @@ contract TheWill is IHeritage {
         require(amount != _data.amount, "Heritage: Amount is the same");
         IERC20 _token = IERC20(_data.token);
         if (amount > _data.amount) {
-            uint256 difference = amount - _data.amount;
-            _token.transferFrom(msg.sender, address(this), difference);
-        } else {
-            uint256 difference = _data.amount - amount;
-            _token.transfer(msg.sender, difference);
+            uint256 allowance = _token.allowance(msg.sender, address(this));
+            require(allowance >= amount, 'Not enough allowance');
         }
         _data.amount = amount;
         inheritanceData[ID] = _data;
@@ -185,8 +190,6 @@ contract TheWill is IHeritage {
         require(_data.owner == msg.sender, "Heritage: You not owner");
         require(block.timestamp <= _data.timeWhenWithdraw, "Heritage: Time is over yet");
         require(_data.done == false, "Heritage: Already withdrawn");
-        IERC20 _token = IERC20(_data.token);
-        _token.transfer(msg.sender, _data.amount);
         uint256[] memory _inheritancesOwner = inheritancesOwner[msg.sender];
         uint256[] memory _inheritancesHeir = inheritancesHeir[_data.heir];
         for (uint256 i; i < _inheritancesOwner.length; i++) {
@@ -214,12 +217,12 @@ contract TheWill is IHeritage {
         require(block.timestamp >= _data.timeWhenWithdraw, "Heritage: Time is not over yet");
         require(_data.done == false, "Heritage: Already withdrawn");
         _data.done = true;
-        uint256[] memory _inheritancesOwner = inheritancesOwner[msg.sender];
+        uint256[] memory _inheritancesOwner = inheritancesOwner[_data.owner];
         uint256[] memory _inheritancesHeir = inheritancesHeir[_data.heir];
         for (uint256 i; i < _inheritancesOwner.length; i++) {
             if (_inheritancesOwner[i] == ID) {
-                inheritancesOwner[msg.sender][i] = _inheritancesOwner[_inheritancesOwner.length-1];
-                inheritancesOwner[msg.sender].pop();
+                inheritancesOwner[_data.owner][i] = _inheritancesOwner[_inheritancesOwner.length-1];
+                inheritancesOwner[_data.owner].pop();
             }
         }
         for (uint256 i; i < _inheritancesHeir.length; i++) {
@@ -229,8 +232,20 @@ contract TheWill is IHeritage {
             }
         }
         IERC20 _token = IERC20(_data.token);
-        _token.transfer(msg.sender, _data.amount);
-        emit Withdraw(ID, _data.owner, msg.sender, block.timestamp);
+        uint256 allowance = _token.allowance(_data.owner, address(this));
+        uint256 balance = _token.balanceOf(_data.owner);
+        uint256 amount;
+        if (balance < allowance) {
+            _token.transferFrom(_data.owner, _data.heir, balance);
+            amount = balance;
+        } else if (allowance < _data.amount) {
+            _token.transferFrom(_data.owner, _data.heir, allowance);
+            amount = allowance;
+        } else {
+            _token.transferFrom(_data.owner, _data.heir, _data.amount);
+            amount = _data.amount;
+        }
+        emit Withdraw(ID, _data.owner, msg.sender, block.timestamp, amount);
         inheritanceData[ID] = _data;
     }
 

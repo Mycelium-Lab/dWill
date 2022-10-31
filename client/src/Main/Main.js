@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import React, { Component, useState } from 'react';
 import Connect from '../Utils/Connect';
 
-
+import Inheritances from '../Data/Inheritances';
 import NewWill from './NewWill';
 
 class Main extends Component {
@@ -37,7 +37,10 @@ class Main extends Component {
 не будет доступа к средствам, которые вы завещали. <a href='#'className=''>Подробнее о том, как это работает.</a></p>
                 <p className="block-three"> Чтобы создать свое первое завещание или управлять созданными подключите свой кошелек Ethereum</p>
                 {
-                    this.state.signer == null ? <Connect/> : <NewWill/>
+                    this.state.signer === null ? <Connect/> : <NewWill/>
+                }
+                {
+                    this.state.signer === null ? '' : <Inheritances/>
                 }
             </div>
         )

@@ -107,6 +107,54 @@ class Inheritances extends Component {
                     this.setState({inheritances: __inheritances})
                 }
             })
+            contract.on('UpdateWillTimeWhenWithdraw', (ID, owner, heir, newTime) => {
+                if (heir == signerAddress) {
+                    let __inheritances = this.state.inheritances
+                    for (let i = 0; i < __inheritances.length; i++) {
+                        if (__inheritances[i].ID === ID.toString()) {
+                            __inheritances[i].timeWhenWithdraw = newTime.toString()
+                        }
+                    }
+                    this.setState({
+                        inheritances: __inheritances
+                    })
+                }
+            })
+            contract.on('UpdateAnHeir', (ID, owner, heir) => {
+                let __inheritances = this.state.inheritances
+                __inheritances = __inheritances.filter(v => v.ID !== ID.toString())
+                this.setState({
+                    inheritances: __inheritances
+                })
+            })
+            contract.on('UpdateAmount', (ID, owner, amount) => {
+                if (owner == signerAddress) {
+                    let __inheritances = this.state.inheritances
+                    for (let i = 0; i < __inheritances.length; i++) {
+                        if (__inheritances[i].ID === ID.toString()) {
+                            __inheritances[i].amount = amount.toString()
+                        }
+                    }
+                    this.setState({
+                        inheritances: __inheritances
+                    })
+                }
+            })
+            contract.on('ResetTimers', (IDs, owner, newTimes) => {
+                let __inheritances = this.state.inheritances
+                if (__inheritances[0] !== undefined && __inheritances[0].owner === owner) {
+                    for (let i = 0; i < IDs.length; i++) {
+                        for (let j = 0; j < __inheritances.length; j++) {
+                            if (IDs[i].toString() === __inheritances[j].ID) {
+                                __inheritances[j].timeWhenWithdraw = newTimes[i];
+                            }
+                        }
+                    }
+                }
+                this.setState({
+                    inheritances: __inheritances
+                })
+            })
             this.setState({ signer, signerAddress, contract, inheritances: _inheritances, network:networkName })
         } catch (error) {
             console.error(error)

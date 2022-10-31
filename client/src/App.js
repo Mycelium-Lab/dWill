@@ -78,9 +78,16 @@ class App extends Component {
       const signer = await provider.getSigner()
       // token 
       const contract = new ethers.Contract(TheWillAddress, TheWill.abi, signer)
+      const signerAddress = await signer.getAddress()
 
       const wills = await contract.getAllWills((await signer.getAddress()).toString())
-      
+      contract.on('AddAnHeir', async (ID, owner, heir, token, timeWhenWithdraw, amount) => {
+        if (owner == signerAddress) {
+          this.setState({
+            willsLength: this.state.willsLength + 1
+          })
+        }
+    })
       let _total = 0;
       // const hashMessage1 = ethers.utils.solidityKeccak256(["uint256"], [201])
       // const sign1 = await signer.signMessage(ethers.utils.arrayify(hashMessage1));

@@ -91,7 +91,6 @@ const {
         heir = acc3
         //new amount
         tokenAmountPerOne = tokenAmountPerOne - 1
-        const tokenAmountBefore = await token.balanceOf(signer.address)
         const _heritageBefore = await heritage.inheritanceData(ID)
         const _amountBefore = _heritageBefore.amount
         const _timeBefore = _heritageBefore.timeWhenWithdraw
@@ -104,12 +103,10 @@ const {
             true,               //_updateHeir
             true                //_updateAmount
         )
-        const tokenAmountAfter = await token.balanceOf(signer.address)
         const _updatedHeritage = await heritage.inheritanceData(ID)
         assert(_updatedHeritage.heir == heir.address, 'Heir updated')
         assert(_updatedHeritage.timeWhenWithdraw.toString() == _timeBefore.toString(), 'Time not updated')
         assert(_updatedHeritage.amount < _amountBefore, 'Amount updated')
-        assert(tokenAmountBefore < tokenAmountAfter, 'Get tokens back')
     })
 
     it('should update all but without heir', async () => {

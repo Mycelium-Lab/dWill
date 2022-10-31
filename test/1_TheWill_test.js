@@ -84,14 +84,11 @@ describe("TheWill", function () {
     assert.equal(_heritageBefore.timeWhenWithdraw, timeWhenWithdraw, "Added heritage timeWhenWithdraw right")
     assert.equal(_heritageBefore.amount.toString(), amount.toString(), "Added heritage amount right")
     assert.equal(_heritageBefore.done, false, "Added heritage done right")
-    const tokenAmountBefore = await token.balanceOf(signer.address)
     //remove heir
     await heritage.removeWill(ID)
     //reverted because we deleted this will from owner and heir
     await expect(heritage.inheritancesOwner(signer.address, ID)).to.be.revertedWithoutReason()
     await expect(heritage.inheritancesHeir(signer.address, ID)).to.be.revertedWithoutReason()
-    const tokenAmountAfter = await token.balanceOf(signer.address)
-    assert.equal(parseInt(tokenAmountBefore) + parseInt(amount), parseInt(tokenAmountAfter), "Get tokens back")
     const _heritageAfter = await heritage.inheritanceData(1);
     const zeroAddress = "0x0000000000000000000000000000000000000000"
     //check if removed
