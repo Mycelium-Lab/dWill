@@ -56,7 +56,7 @@ class App extends Component {
           try {
             await window.ethereum.request({
               method: 'wallet_switchEthereumChain',
-              params: [{ chainId: ethers.utils.hexValue(80001) }]
+              params: [{ chainId: ethers.utils.hexlify(80001) }]
             })
             .then(() => window.location.reload())
           } catch (err) {
@@ -67,7 +67,7 @@ class App extends Component {
                 params: [
                   {
                     chainName: 'Mumbai',
-                    chainId: ethers.utils.hexlify(5),
+                    chainId: ethers.utils.hexlify(80001),
                     nativeCurrency: { name: 'MATIC', decimals: 18, symbol: 'MATIC' },
                     rpcUrls: ['https://rpc-mumbai.maticvigil.com']
                   }
