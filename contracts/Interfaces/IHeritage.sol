@@ -57,7 +57,8 @@ interface IHeritage {
         uint256 ID, 
         address owner, 
         address heir, 
-        uint256 timeWhenWithdrawn
+        uint256 timeWhenWithdrawn,
+        uint256 amount
     );
 
     event ResetTimers(
