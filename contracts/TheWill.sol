@@ -217,12 +217,12 @@ contract TheWill is IHeritage {
         require(block.timestamp >= _data.timeWhenWithdraw, "Heritage: Time is not over yet");
         require(_data.done == false, "Heritage: Already withdrawn");
         _data.done = true;
-        uint256[] memory _inheritancesOwner = inheritancesOwner[msg.sender];
+        uint256[] memory _inheritancesOwner = inheritancesOwner[_data.owner];
         uint256[] memory _inheritancesHeir = inheritancesHeir[_data.heir];
         for (uint256 i; i < _inheritancesOwner.length; i++) {
             if (_inheritancesOwner[i] == ID) {
-                inheritancesOwner[msg.sender][i] = _inheritancesOwner[_inheritancesOwner.length-1];
-                inheritancesOwner[msg.sender].pop();
+                inheritancesOwner[_data.owner][i] = _inheritancesOwner[_inheritancesOwner.length-1];
+                inheritancesOwner[_data.owner].pop();
             }
         }
         for (uint256 i; i < _inheritancesHeir.length; i++) {

@@ -10,7 +10,7 @@ const WillAbi = require('../artifacts/contracts/TheWill.sol/TheWill.json')
 
 const provider = new ethers.providers.JsonRpcProvider('https://rpc-mumbai.maticvigil.com')
 const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
-const contract = new ethers.Contract('0xd4094C1B574F7679190cf38fBeBE324A61be1831', WillAbi.abi, signer)
+const contract = new ethers.Contract('0x8107B2A46618d294abC6E3726B6d21c2A9b88F4A', WillAbi.abi, signer)
 
 const transporter = nodemailer.createTransport({
     service: 'hotmail',
