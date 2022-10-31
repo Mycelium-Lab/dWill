@@ -42,6 +42,8 @@ class Wills extends Component {
             heirAddress: '',
             contract: null,
             wills: [],
+            showError: false,
+            errortext: ''
         };
     }
 
@@ -356,6 +358,18 @@ class Wills extends Component {
             })
         } catch (error) {
             console.error(error)
+            if (error.message.includes('Time is undefined')) {
+                this.setState({
+                    errortext: 'Выберите что делать со временем'
+                })
+                this.handleShowError()
+            }
+            if (error.message.includes('Nothing to update')) {
+                this.setState({
+                    errortext: 'Нет обновленных данных'
+                })
+                this.handleShowError()
+            }
             this.handleCloseConfirm()
             this.handleCloseAwait()
             this.handleCloseEdit()
@@ -523,6 +537,12 @@ class Wills extends Component {
     handleCloseAwait = this.handleCloseAwait.bind(this)
 
     timeConverter = this.timeConverter.bind(this)
+    
+    handleShowError = () => this.setState({showError: true})
+    handleCloseError = () => this.setState({showError: false})
+
+    handleShowError = this.handleShowError.bind(this)
+    handleCloseError = this.handleCloseError.bind(this)
 
     render() {
         return(
@@ -677,6 +697,19 @@ class Wills extends Component {
                 </Modal.Header>
                 <Modal.Footer>
                     <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={this.state.showError}>
+                <Modal.Header>
+                    <div>
+                        <h1>Error</h1>
+                        <div>{this.state.errortext}</div>
+                    </div>
+                </Modal.Header>
+                <Modal.Footer>
+                    <Button variant="danger" onClick={this.handleCloseError} className="btn btn-danger">
                         Close
                     </Button>
                 </Modal.Footer>

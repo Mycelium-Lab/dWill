@@ -40,6 +40,8 @@ class NewWill extends Component {
             contract: null,
             showConfirm: false,
             showAwait: false,
+            showError: false,
+            errortext: ''
         };
     }
 
@@ -106,7 +108,19 @@ class NewWill extends Component {
                     this.handleClose()
                 })
         } catch (error) {
-            console.error(error)
+            if (error.message.includes('resolver or addr is not configured')) {
+                this.setState({
+                    errortext: 'Добавьте адрес'
+                })
+                this.handleShowError()
+            }
+            if (error.message.includes('invalid BigNumber string')) {
+                this.setState({
+                    errortext: 'Введите время правильно'
+                })
+                this.handleShowError()
+            }
+            this.handleShowError()
             this.handleCloseConfirm()
             this.handleCloseAwait()
         }
@@ -122,7 +136,12 @@ class NewWill extends Component {
             const allowance = (await _token.allowance(signerAddress, contractAddress)).toString()
             this.changeApproved(allowance, event.target.value)
         } catch (error) {
-            console.error(error)
+            if (error.message.includes('resolver or addr is not configured')) {
+                this.setState({
+                    errortext: 'Выберите токен'
+                })
+                this.handleShowError()
+            }
         }
     }
 
@@ -152,7 +171,7 @@ class NewWill extends Component {
             const allowance = (await _token.allowance(signerAddress, contractAddress)).toString()
             this.changeApproved(allowance, amount)
         } catch (error) {
-            console.error(error)
+            this.handleShowError()
         }
     }
 
@@ -204,6 +223,12 @@ class NewWill extends Component {
     handleShowAwait = this.handleShowAwait.bind(this)
     handleCloseConfirm = this.handleCloseConfirm.bind(this)
     handleCloseAwait = this.handleCloseAwait.bind(this)
+
+    handleShowError = () => this.setState({showError: true})
+    handleCloseError = () => this.setState({showError: false})
+
+    handleShowError = this.handleShowError.bind(this)
+    handleCloseError = this.handleCloseError.bind(this)
 
     render() {
         return(
@@ -312,6 +337,19 @@ class NewWill extends Component {
                 </Modal.Header>
                 <Modal.Footer>
                     <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={this.state.showError}>
+                <Modal.Header>
+                    <div>
+                        <h1>Error</h1>
+                        <div>{this.state.errortext}</div>
+                    </div>
+                </Modal.Header>
+                <Modal.Footer>
+                    <Button variant="danger" onClick={this.handleCloseError} className="btn btn-danger">
                         Close
                     </Button>
                 </Modal.Footer>

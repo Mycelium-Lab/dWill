@@ -1,13 +1,13 @@
 import { ethers } from 'ethers';
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import Connect from '../Utils/Connect';
 
 import Inheritances from '../Data/Inheritances';
 import NewWill from './NewWill';
 
 class Main extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.state = {
             signer: null
         }
@@ -34,13 +34,14 @@ class Main extends Component {
 (или например на свой резервный кошелек)</p>
                 <p className="block-two">Благодаря технологии смарт-контрактов Will работает полностью децентрализованно,
 надежно и автономно. Ни у кого (вообще ни у кого, даже у команды проекта)
-не будет доступа к средствам, которые вы завещали. <a href='#'className=''>Подробнее о том, как это работает.</a></p>
+не будет доступа к средствам, которые вы завещали. <a href='#'>Подробнее о том, как это работает.</a></p>
                 <p className="block-three"> Чтобы создать свое первое завещание или управлять созданными подключите свой кошелек Ethereum</p>
+                <h3 className="block-one"><a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Вы также можете добавить оповещения в нашем телеграмм боте</a></h3>
                 {
                     this.state.signer === null ? <Connect/> : <NewWill/>
                 }
                 {
-                    this.state.signer === null ? '' : <Inheritances/>
+                    this.props.inheritancesLength === 0 ? '' : <Inheritances/>
                 }
             </div>
         )

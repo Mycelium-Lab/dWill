@@ -19,7 +19,8 @@ class App extends Component {
     total: '',
     showConfirm: false,
     showAwait: false,
-    willsLength: 0
+    willsLength: 0,
+    inheritancesLength: 0
   };
 
   componentDidMount = async () => {
@@ -81,19 +82,20 @@ class App extends Component {
       const signerAddress = await signer.getAddress()
 
       const wills = await contract.getAllWills((await signer.getAddress()).toString())
+      const inheritances = await contract.getAllInheritances((await signer.getAddress()).toString())
       contract.on('AddAnHeir', async (ID, owner, heir, token, timeWhenWithdraw, amount) => {
-        if (owner == signerAddress) {
+        if (owner === signerAddress) {
           this.setState({
             willsLength: this.state.willsLength + 1
           })
         }
-    })
+      })
       let _total = 0;
       // const hashMessage1 = ethers.utils.solidityKeccak256(["uint256"], [201])
       // const sign1 = await signer.signMessage(ethers.utils.arrayify(hashMessage1));
       // (await contract.queryFilter('AddAnHeir')).forEach(v => _total += parseFloat(ethers.utils.formatEther(v.args.amount.toString())))
       this.setState({
-        signer, contract, total: _total, willsLength: wills.length
+        signer, contract, total: _total, willsLength: wills.length, inheritancesLength: inheritances.length
       })
     } catch (error) {
       // Catch any errors for any of the above operations.
@@ -139,7 +141,7 @@ class App extends Component {
               {
                 this.state.signer === null || this.state.willsLength === 0
                 ? 
-                <Main/>
+                <Main inheritancesLength={this.state.inheritancesLength}/>
                 :
                 <Data/>
               }
