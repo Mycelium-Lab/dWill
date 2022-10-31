@@ -52,11 +52,11 @@ class App extends Component {
       //         }
       //       }
       // }
-      if (network.chainId !== 80001) {
+      if (network.chainId !== 0x013881) {
           try {
             await window.ethereum.request({
               method: 'wallet_switchEthereumChain',
-              params: [{ chainId: ethers.utils.hexlify(80001) }]
+              params: [{ chainId: ethers.utils.hexValue(80001) }]
             })
             .then(() => window.location.reload())
           } catch (err) {
@@ -66,8 +66,8 @@ class App extends Component {
                 method: 'wallet_addEthereumChain',
                 params: [
                   {
+                    chainId: ethers.utils.hexValue(80001),
                     chainName: 'Mumbai',
-                    chainId: ethers.utils.hexlify(80001),
                     nativeCurrency: { name: 'MATIC', decimals: 18, symbol: 'MATIC' },
                     rpcUrls: ['https://rpc-mumbai.maticvigil.com']
                   }
