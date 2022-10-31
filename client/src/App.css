@@ -214,6 +214,9 @@ margin-bottom: 44px;
 }
 .modal_title {
   display: flex;
+  width: 600px;
+  padding-left: 50px;
+  padding-right: 50px;
   justify-content: center;
   align-items: center;
   border-bottom: 1px solid #3E474F;
@@ -348,7 +351,145 @@ margin-bottom: 44px;
 .title_trusted-wallet {
   gap: 25px;
 }
+.btn_reset-timers {
+  width: 1172px;
+  height: 80px;
+  padding-top: 16px;
+  background: #5ED5A8;
+  border: 1px solid #5ED5A8;
+  box-shadow: 0px 4px 4px rgba(94, 213, 168, 0.25);
+  border-radius: 15px;
+  color: #1B1711;
+  font-weight: 400;
+  font-size: 20px;
+  font-family: 'SF UI Text';
+  margin-top: 63px;
+}
+.btn_reset-timers-h3 {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  letter-spacing: 0.0264em;
+  color: #1B1711;
+  margin-top: 5px;
+  }
+.your_inheritances {
+  width:600px;
+  text-align: center;
+  margin-top: 33px;
+  padding-left: 50px;
+  padding-right: 50px;
+  background: #1B232A;
+  box-shadow: 2px 0px 19px 3px #161c22;
+}
+.wills-list{
+  margin-top: 62px;
+} 
+.your-wills{
+  width:600px;
+  text-align: center;
+  margin-top: 33px;
+  padding-left: 50px;
+  padding-right: 50px;
+  background: #1B232A;
+  box-shadow: 2px 0px 19px 3px #161c22;
+  color: #C1C7CD;
+}
+.your_inheritances_ul-btn {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+.your_inheritances_ul {
+  display: flex;
+  flex-direction: column;
 
+}
+.page-data {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.your_inheritances-h3 {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 21px;
+  text-align: center;
+  letter-spacing: 0.0264em;
+  color: #5ED5A8;
+  padding: 17px;
+}
+.btn_btn-success {
+  display: flex;
+  width: 130px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  border: 1px solid #5ED5A8;
+  height: 45px;
+  color: #5ED5A8;
+  background: #1B232A;
+  box-shadow: 2px 0px 19px 3px #161C22;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+}
+.btn_btn-danger {
+  display: flex;
+  width: 130px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  border: 1px solid #5ED5A8;
+  height: 45px;
+  color: #5ED5A8;
+  background: #1B232A;
+  box-shadow: 2px 0px 19px 3px #161C22;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+}
+.block_your_wills {
 
+}
+.block_your-wills-h3 {
+  font-size: 18px;
+  text-align: center;
+  letter-spacing: 0.0264em;
+  color: #5ED5A8;
 
+}
+.your_inheritances_ul-text {
+  color: #C1C7CD;
+  width: 322px;
+  height: 51px;
+  font-size: 14px;
+  /* border-top: 1px solid #3E474F; */
+}
+.your_inheritances_ul-btn {
+  border-top: 1px solid #3E474F
+}
+
+..input-group-year{
+  width: 105px;
+  height: 40px;
+  background: #161C22;
+  border-radius: 10px;
+  color: #4285F4;
+}
+.input-group-year:after {
+  position: absolute;
+  top: 14px;
+  right: 10px;
+  background: #1D252C;
+  border: 6px solid transparent;
+  border-color: #fff transparent transparent transparent;
+  color: #5ED5A8;
+}
 

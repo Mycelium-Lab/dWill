@@ -201,25 +201,27 @@ class Inheritances extends Component {
 
     render() {
         return(
-        <div>
-            <h3>Your inheritances</h3>
+        <div className='your_inheritances'>
+            <h3 className='your_inheritances-h3'>Your inheritances</h3>
             {
                 this.state.inheritances.length > 0 
                 ?
-                <ul>
+                <div className='your_inheritances_ul-btn'>
+                    <ul className='your_inheritances_ul'>
                     {
                         this.state.inheritances.map((v) => {
                             return (
                                 <li key={v.ID}>
-                                    <div>You can harvest {ethers.utils.formatEther(v.amount)} {v.symbol} from wallet</div>
-                                    <div>{v.owner}</div>
-                                    <div>{this.timeConverter(v.timeWhenWithdraw)} on {this.state.network} chain</div>
-                                    <button value={v.ID.toString()} onClick={this.claim} className="btn btn-success">Claim</button>
+                                    <div className='your_inheritances_ul-text'>You can harvest {ethers.utils.formatEther(v.amount)} {v.symbol} from wallet
+                                    {v.owner}
+                                    {this.timeConverter(v.timeWhenWithdraw)} on {this.state.network} chain</div>
+                                    <div><button value={v.ID.toString()} onClick={this.claim} className="btn_btn-success">Receive</button></div>
                                 </li>
                             )
                         })
                     }
                 </ul>
+                </div>
                 :
                 <h4>Empty</h4>
             }
