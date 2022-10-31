@@ -473,7 +473,7 @@ class Wills extends Component {
     render() {
         return(
             <div id='wills'>
-            <h3>Your wills</h3>
+            <h3 className='block_your-wills-h3'>Your wills</h3>
             {
                 this.state.wills.length > 0 
                 ?
@@ -481,11 +481,11 @@ class Wills extends Component {
                     {
                         this.state.wills.map((v) => {
                             return (
-                                <li key={v.ID}>
-                                    <div>You bequeathed {ethers.utils.formatEther(v.amount)} of your {v.symbol} from {this.state.network} chain to wallet</div>
-                                    <div>{v.heir}</div>
-                                    <div>Inheritance can be harvest if the period of inactivity is longer than {this.timeConverter(v.timeWhenWithdraw)}</div>
-                                    <button type="button" className="btn btn-success" value={
+                                <li key={v.ID} className="your-wills">
+                                    <span>You bequeathed {ethers.utils.formatEther(v.amount)} of your {v.symbol} from {this.state.network} chain to wallet
+                                    {v.heir}
+                                    Inheritance can be harvest if the period of inactivity is longer than {this.timeConverter(v.timeWhenWithdraw)}</span>
+                                    <button type="button" className="btn_btn-danger" value={
                                         JSON.stringify({
                                             ID: v.ID.toString(), 
                                             timeWhenWithdraw: v.timeWhenWithdraw, 
@@ -495,7 +495,7 @@ class Wills extends Component {
                                             amount: v.amount.toString()
                                         })
                                     } onClick={this.state.showEdit == false ? this.handleShowEdit : this.handleCloseEdit}>Edit</button>
-                                    <button type="button" className="btn btn-danger" value={v.ID.toString()} onClick={this.cancelWill}>Cancel</button>
+                                    <button type="button" className="btn_btn-danger" value={v.ID.toString()} onClick={this.cancelWill}>Revoke</button>
                                 </li>
                             )
                         })
@@ -557,11 +557,11 @@ class Wills extends Component {
                             <label >Не менять</label><br/>
                         </div>
                         <div>
-                            <input type="number" onChange={this.onChangeYear} value={this.state.year} className="input-group mb-3"/>
+                            <input type="number" onChange={this.onChangeYear} value={this.state.year} className="input-group-year"/>
                             <label >Лет</label><br/>
-                            <input type="number" onChange={this.onChangeMonth} value={this.state.month} className="input-group mb-3"/>
+                            <input type="number" onChange={this.onChangeMonth} value={this.state.month} className="input-group-month"/>
                             <label >Месяцев</label><br/>
-                            <input type="number" onChange={this.onChangeDay} value={this.state.day} className="input-group mb-3"/>
+                            <input type="number" onChange={this.onChangeDay} value={this.state.day} className="input-group-days"/>
                             <label >Дней</label><br/>
                         </div>
                     </div>
@@ -585,7 +585,7 @@ class Wills extends Component {
             </Modal>
             <Modal show={this.state.showConfirm}>
                 <Modal.Header>
-                    <div className="load-6">
+                    <div className="className='modal_confirm">
                         <div className="letter-holder">
                         <div className="l-1 letter">C</div>
                         <div className="l-2 letter">o</div>

@@ -94,8 +94,9 @@ class ResetTimers extends Component {
     render() {
         return(
         <div>
-            <Button variant="primary" className="btn-new-will" onClick={this.resetTimers}>
+            <Button variant="primary" className="btn_reset-timers" onClick={this.resetTimers}>
                 Reset Timers
+                <h3 className='btn_reset-timers-h3'>I`m active, and i still have access to my wallet</h3>
             </Button>
             <Modal show={this.state.showConfirm}>
                 <Modal.Header>
@@ -146,4 +147,4 @@ class ResetTimers extends Component {
     }
 }
 
-export default ResetTimers;
+export default ResetTimers ;

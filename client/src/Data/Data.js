@@ -4,14 +4,10 @@ import Wills from './Wills'
 import Inheritances from './Inheritances';
 import NewWill from '../Main/NewWill';
 import ResetTimers from './ResetTimers';
-
 class Data extends Component {
     render() {
         return(
-            <div>
-                <div>
-                    <NewWill/>
-                </div>
+            <div className='page-data'>
                 <div>
                     <ResetTimers/>
                 </div>
@@ -20,6 +16,9 @@ class Data extends Component {
                 </div>
                 <div>
                     <Wills/>
+                </div>
+                <div>
+                    <NewWill/>
                 </div>
             </div>
         )
