@@ -49,7 +49,8 @@ class Connect extends Component {
         window.ethereum.on("accountsChanged", this.disconnect)
         if (!this.state.selectedAddress) {
         return (
-            <button onClick={() => this.connectToMetamask()}>Connect</button>
+            <button className="btn_connect-off"onClick={() => this.connectToMetamask()}>Connect Wallet
+            </button>
         )
         } else {
         return (

@@ -10,7 +10,7 @@ import TheWill from './Contract/TheWill.json'
 import { TheWillAddress } from './Utils/Constants';
 import Data from './Data/Data';
 import Main from './Main/Main';
-import logo from './content/logo.svg';
+
 class App extends Component {
 
   state = { 
@@ -112,7 +112,7 @@ class App extends Component {
           <header className="header">
             <div className='header_boxes'>
               <div className="logo-will">
-                <img src={logo}/>
+                <img src="content/logo.svg"/>
               </div>
               <div className="number-of-wills">
                 <div className="amount-will">

@@ -212,8 +212,8 @@ class NewWill extends Component {
                 New Will
             </Button>
             
-            <Modal show={this.state.show} onHide={this.handleClose} className='modal_new_will' style={styles.modal_new_will}>
-                <Modal.Header>
+            <Modal show={this.state.show} onHide={this.handleClose} className='modal_content' style={styles.modal_new_will}>
+                <Modal.Header className='modal_new_will'>
                 <Modal.Title className='modal_title'>New Will</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -255,7 +255,7 @@ class NewWill extends Component {
                         </div>
                     </div>
                     <div className='modal_checkbox'>
-                        <input type="checkbox" className="form-check-input mt-0"/>
+                        <input type="checkbox" className="modal_checkbox-add-nft"/>
                         <label >Add NFT Message</label><br/>
                         <input type="checkbox" disabled={true} className="form-check-input mt-0"/>
                         <label >Automatic token delivery (coming soon)</label><br/>
@@ -268,9 +268,10 @@ class NewWill extends Component {
                     {this.state.approved == false ? "Approve": "Make new will"}
                 </Button>
                 <Button onClick={this.handleClose}>
-                    Close
+                    x
                 </Button>
                 </Modal.Footer>
+                <div className='overlay'></div>
             </Modal>
             <Modal show={this.state.showConfirm}>
                 <Modal.Header>

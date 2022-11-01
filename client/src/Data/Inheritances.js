@@ -167,7 +167,7 @@ class Inheritances extends Component {
                                     <div className='your_inheritances_ul-text'>You can harvest {ethers.utils.formatEther(v.amount)} {v.symbol} from wallet
                                     {v.owner}
                                     {this.timeConverter(v.timeWhenWithdraw)} on {this.state.network} chain</div>
-                                    <div><button value={v.ID.toString()} onClick={this.claim} className="btn_btn-success">Receive</button></div>
+                                    <div><button value={v.ID.toString()} onClick={this.claim} className="btn_green">Receive</button></div>
                                 </li>
                             )
                         })

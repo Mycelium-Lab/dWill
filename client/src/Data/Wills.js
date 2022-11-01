@@ -2,7 +2,7 @@ import React, { Component, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import TheWill from '../Contract/TheWill.json'
-
+// import revoke from '../content/revoke.svg';
 import { ethers } from "ethers";
 
 import ERC20 from '../Contract/ERC20.json'
@@ -473,19 +473,21 @@ class Wills extends Component {
     render() {
         return(
             <div id='wills'>
-            <h3 className='block_your-wills-h3'>Your wills</h3>
+            <div className='wills_list-my-wills'>
+            <h3 className='wills_list_h3'>Your wills</h3>
+            <hr/>
             {
                 this.state.wills.length > 0 
                 ?
-                <ul id='wills-list'>
+                <div id='wills-list_ul-btn'>
                     {
                         this.state.wills.map((v) => {
                             return (
-                                <li key={v.ID} className="your-wills">
+                                <div key={v.ID} className="your-wills">
                                     <span>You bequeathed {ethers.utils.formatEther(v.amount)} of your {v.symbol} from {this.state.network} chain to wallet
                                     {v.heir}
                                     Inheritance can be harvest if the period of inactivity is longer than {this.timeConverter(v.timeWhenWithdraw)}</span>
-                                    <button type="button" className="btn_btn-danger" value={
+                                    <div className='buttons'><button type="button" className="btn_green" value={
                                         JSON.stringify({
                                             ID: v.ID.toString(), 
                                             timeWhenWithdraw: v.timeWhenWithdraw, 
@@ -494,16 +496,20 @@ class Wills extends Component {
                                             symbol: v.symbol,
                                             amount: v.amount.toString()
                                         })
-                                    } onClick={this.state.showEdit == false ? this.handleShowEdit : this.handleCloseEdit}>Edit</button>
-                                    <button type="button" className="btn_btn-danger" value={v.ID.toString()} onClick={this.cancelWill}>Revoke</button>
-                                </li>
+                                    }
+                                    onClick={this.state.showEdit == false ? this.handleShowEdit : this.handleCloseEdit}>Edit</button>
+                                    <button type="button" className="btn_green" value={v.ID.toString()} onClick={this.cancelWill}>
+                                        <img src="content/revoke.svg"/>  
+                                        Revoke</button></div>
+                                </div>
                             )
                         })
                     }
-                </ul>
+                </div>
                 :
                 <h4>Empty</h4>
-            }
+            } 
+            </div>
             <Modal show={this.state.showEdit} onHide={this.handleCloseEdit}>
                 <Modal.Header>
                 <Modal.Title>Edit Will</Modal.Title>
@@ -579,7 +585,7 @@ class Wills extends Component {
                     {this.state.approved === true ? `Edit` : `Approve`}
                 </Button>
                 <Button onClick={this.handleCloseEdit}>
-                    Close
+                    x
                 </Button>
                 </Modal.Footer>
             </Modal>

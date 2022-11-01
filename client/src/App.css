@@ -1,14 +1,23 @@
 .App {
-  text-align: center;
+  /* text-align: center; */
   background-color: #282c34;
   min-height: 100vh;
+}
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
-
+hr {
+  border: 1px solid #3E474F;
+  margin-top: 17px;
+  margin-bottom: 23px;
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -115,7 +124,20 @@ ul {
     opacity: 1;
   }
 }
-
+/* .modal_new_will {
+  max-width: 700px;
+  height: 700px;
+  padding-left: 51px;
+  padding-right: 49px;
+}
+/* .overlay { */
+  /* position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(94, 213, 168, 0) 20.83%, rgba(94, 213, 168, 0.24) 100%);
+} */ */
 .btn-new-will {
   background:#5ED5A8;
   width: 350px;
@@ -131,31 +153,44 @@ ul {
   color: #171D22;
   } 
   .block-two {
-  font-weight: 600;
-  font-size: 20px;
-  line-height: 24px;
-  text-align: center;
-  color: #C1C7CD;
+  max-width: 823px;
+
+  }
+  .block-two {
+    text-align: center;
+    color: #C1C7CD;
+    font-family: 'SF UI Text';
+    font-style: normal;
+    font-size: 20px;
   }
   .block-one {
-  font-weight: 700;
-  font-size: 25px;
-  line-height: 30px;
-  text-align: center;
-  color: #5ED5A8;
+    width: 715px;
+    height: 60px;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 25px;
+    line-height: 30px;
+    text-align: center;
+    color: #5ED5A8;
+    
   }
 
   .block-one__title {
-  font-family: 'SF UI Text';
+  width: 109px;
   font-style: normal;
   font-weight: 800;
   font-size: 25px;
   line-height: 30px;
   color: #5ED5A8;
-  margin-bottom: 30px;
   }
-  .main-text {
-    height: 390px;
+  .btn_connect-off {
+    width: 200px;
+    border: 1px solid #4285F4;
+    border-radius: 15px;
+    background: none;
+    color: #4285F4;
+    font-size: 18px;
+    padding: 15px 32px;
   }
 a { color :#5ED5A8}
 .block-three {
@@ -189,6 +224,7 @@ margin-bottom: 44px;
 .header_boxes {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 .logo-will {
   display: flex;
@@ -376,17 +412,32 @@ margin-bottom: 44px;
   }
 .your_inheritances {
   width:600px;
-  text-align: center;
+  /* text-align: center; */
   margin-top: 33px;
   padding-left: 50px;
   padding-right: 50px;
   background: #1B232A;
   box-shadow: 2px 0px 19px 3px #161c22;
 }
-.wills-list{
+.wills_list-my-wills {
+  max-width: 600px;
+  margin-top: 33px;
+  padding-left: 50px;
+  padding-right: 50px;
+  background: #1B232A;
+  box-shadow: 2px 0px 19px 3px #161c22;
+  color: #C1C7CD;
   margin-top: 62px;
+  margin-bottom: 84 px;
 } 
-.your-wills{
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* .wills {
   width:600px;
   text-align: center;
   margin-top: 33px;
@@ -395,25 +446,38 @@ margin-bottom: 44px;
   background: #1B232A;
   box-shadow: 2px 0px 19px 3px #161c22;
   color: #C1C7CD;
-}
+  margin-top: 62px;
+} */
+.your-wills{
+  list-style-type:none;
+  display: flex;
+  justify-content: space-between; 
+  font-family: 'SF UI Text';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 17px;
+  letter-spacing: 0.0264em;
+
+color: #C1C7CD;
+} 
 .your_inheritances_ul-btn {
     display: flex;
-    justify-content: flex-start;
-    flex-direction: row;
-    padding-left: 50px;
-    padding-right: 50px;
+    justify-content: space-between;
+    /* padding-left: 50px;
+    padding-right: 50px; */
 }
 .your_inheritances_ul {
   display: flex;
   flex-direction: column;
 
 }
-.page-data {
+/* .page-data {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
+} */
 .your_inheritances-h3 {
   font-weight: 400;
   font-size: 18px;
@@ -422,6 +486,16 @@ margin-bottom: 44px;
   letter-spacing: 0.0264em;
   color: #5ED5A8;
   padding: 17px;
+  margin: 0 auto;
+}
+.wills_list_h3 {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 21px;
+  text-align: center;
+  letter-spacing: 0.0264em;
+  color: #5ED5A8;
+  padding-top: 17px;
 }
 .btn_btn-success {
   display: flex;
@@ -455,9 +529,6 @@ margin-bottom: 44px;
   justify-content: center;
   border-radius: 15px;
 }
-.block_your_wills {
-
-}
 .block_your-wills-h3 {
   font-size: 18px;
   text-align: center;
@@ -483,13 +554,38 @@ margin-bottom: 44px;
   border-radius: 10px;
   color: #4285F4;
 }
-.input-group-year:after {
-  position: absolute;
-  top: 14px;
-  right: 10px;
-  background: #1D252C;
-  border: 6px solid transparent;
-  border-color: #fff transparent transparent transparent;
+.your-wills_btns {
+  display: flex;
+  flex-direction: column;
+}
+.btn_green {
+  display: flex;
+  padding: 15px 40px;
+  font-weight: 400;
+  font-size: 14px;
+  gap: 8px;
+  margin: 23 px 48px 10px 138px;
+  border: 1px solid #5ED5A8;
   color: #5ED5A8;
+  background: #1B232A;
+  box-shadow: 2px 0px 19px 3px #161C22;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
 }
 
+.page-data {
+  max-width: 1172px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.btn_data-js {
+  margin-top: 25px;
+}
+.wills-list_ul-btn {
+  display: flex;
+  border-top: 1px solid #3E474F;
+}
