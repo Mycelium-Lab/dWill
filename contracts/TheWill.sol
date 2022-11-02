@@ -28,7 +28,8 @@ contract TheWill is IHeritage {
     function addNewWill(
         address heir, 
         address token,
-        uint256 timeWhenWithdraw, 
+        uint256 timeWhenWithdraw,
+        uint256 timeBetweenWithdrawAndStart,
         uint256 amount
     ) public {
         require(heir != address(0), "Heritage: Heir is address(0)");
@@ -46,7 +47,7 @@ contract TheWill is IHeritage {
             heir,
             token,
             timeWhenWithdraw,
-            timeWhenWithdraw - block.timestamp,//timeBetweenWithdrawAndStart
+            timeBetweenWithdrawAndStart,
             amount,
             false       //done
         );

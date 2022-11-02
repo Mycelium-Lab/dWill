@@ -4,12 +4,16 @@ import Connect from '../Utils/Connect';
 
 import Inheritances from '../Data/Inheritances';
 import NewWill from './NewWill';
+import { TheWillAddress } from '../Utils/Constants';
+import TheWill from '../Contract/TheWill.json'
 
 class Main extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            signer: null
+            signer: null,
+            willsLength: props.willsLength,
+            contractAddress: TheWillAddress
         }
     }
     componentDidMount = async () => {
@@ -17,11 +21,25 @@ class Main extends Component {
             const provider = new ethers.providers.Web3Provider(window.ethereum)
             await provider.send("eth_requestAccounts", []);
             const signer = provider.getSigner()
+
             this.setState({ signer })
         } catch (error) {
             console.error(error)
         }
     }
+
+    async disconnect(account) {
+        if (account !== null) {
+            const provider = new ethers.providers.Web3Provider(window.ethereum)
+            await provider.send("eth_requestAccounts", []);
+            const signer = provider.getSigner()
+            this.setState({ signer })
+        } else {
+            this.setState({ signer: null })
+        }
+    }
+
+    disconnect = this.disconnect.bind(this)
 
     render() {
         return(
@@ -35,10 +53,17 @@ class Main extends Component {
                 <p className="block-two">Благодаря технологии смарт-контрактов Will работает полностью децентрализованно,
 надежно и автономно. Ни у кого (вообще ни у кого, даже у команды проекта)
 не будет доступа к средствам, которые вы завещали. <a href='#'>Подробнее о том, как это работает.</a></p>
-                <p className="block-three"> Чтобы создать свое первое завещание или управлять созданными подключите свой кошелек Ethereum</p>
-                <h3 className="block-one"><a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Вы также можете добавить оповещения в нашем телеграмм боте</a></h3>
+                <p className="block-three">
                 {
-                    this.state.signer === null ? <Connect/> : <NewWill/>
+                    (this.state.willsLength === 0) && (this.state.signer !== null) 
+                    ? 
+                    'У вас еще нет активных завещаний.'
+                    : 
+                    'Чтобы создать свое первое завещание или управлять созданными подключите свой кошелек Ethereum'
+                }
+                </p>
+                {
+                    this.state.signer === null ? <Connect disconnect={this.disconnect}/> : <NewWill/>
                 }
                 {
                     this.props.inheritancesLength === 0 ? '' : <Inheritances/>

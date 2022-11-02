@@ -1,3 +1,5 @@
+/* global BigInt */
+
 import React, { Component, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -25,6 +27,7 @@ class Wills extends Component {
             currentEditBaseHeirAddress: '',
             currentEditHeirAddress: '',
             currentEditTimeWhenWithdraw: '',
+            currentEditTimeBetweenWithdrawAndStart: '',
             currentEditToken: '',
             currentEditSymbol: '',
             currentEditBaseAmount: '',
@@ -43,7 +46,8 @@ class Wills extends Component {
             contract: null,
             wills: [],
             showError: false,
-            errortext: ''
+            errortext: '',
+            notificationsOn: false
         };
     }
 
@@ -67,6 +71,7 @@ class Wills extends Component {
                     heir: wills[i].heir,
                     owner: wills[i].owner,
                     timeWhenWithdraw: wills[i].timeWhenWithdraw.toString(),
+                    timeBetweenWithdrawAndStart: wills[i].timeBetweenWithdrawAndStart.toString(),
                     token: wills[i].token,
                     symbol
                 }
@@ -102,6 +107,7 @@ class Wills extends Component {
                             heir: will.heir,
                             owner: will.owner,
                             timeWhenWithdraw: will.timeWhenWithdraw.toString(),
+                            timeBetweenWithdrawAndStart: will.timeBetweenWithdrawAndStart.toString(),
                             token: will.token,
                             symbol
                         })
@@ -183,12 +189,44 @@ class Wills extends Component {
     }
 
     timeConverter(UNIX_timestamp){
-        var a = new Date(UNIX_timestamp * 1000);
+        var a = new Date(parseInt(UNIX_timestamp) * 1000);
         var year = a.getFullYear();
         var month = a.getMonth();
         var date = a.getDate();
+        month+=1
         var time = `${date < 10 ? '0'+ date : date}` + '.' + `${month < 10 ? '0' + month : month}` + '.' + year;
         return time;
+    }
+
+    timeBetweenWithdrawAndStartConverter(time) {
+        let seconds = parseInt(time)
+        let y = Math.floor(seconds / 31536000);
+        let mo = Math.floor((seconds % 31536000) / 2628000);
+        let d = Math.floor(((seconds % 31536000) % 2628000) / 86400);
+        let yDisplay = y > 0 ? y + (y === 1 ? " year " : " years ") : "";
+        let moDisplay = mo > 0 ? mo + (mo === 1 ? " month " : " months ") : "";
+        let dDisplay = d > 0 ? d + (d === 1 ? " day " : " days ") : "";
+        return yDisplay + moDisplay + dDisplay
+    }
+
+    remainingTime(timeWhenWithdraw) {
+        const _timeNow = new Date()
+        const _timeWhenWithdraw = new Date(parseInt(timeWhenWithdraw) * 1000)
+        if (_timeWhenWithdraw < _timeNow) {
+            return 'Nothing.'
+        } else {
+            const seconds = Math.floor((new Date(_timeWhenWithdraw - _timeNow)).getTime() / 1000)
+            let y = Math.floor(seconds / 31536000);
+            let mo = Math.floor((seconds % 31536000) / 2628000);
+            let d = Math.floor(((seconds % 31536000) % 2628000) / 86400);
+            let h = Math.floor((seconds % (3600 * 24)) / 3600);
+          
+            let yDisplay = y > 0 ? y + (y === 1 ? " year, " : " years, ") : " 0 years,";
+            let moDisplay = mo > 0 ? mo + (mo === 1 ? " month, " : " months, ") : " 0 months,";
+            let dDisplay = d > 0 ? d + (d === 1 ? " day, " : " days, ") : " 0 days, ";
+            let hDisplay = h > 0 ? h + (h === 1 ? " hour " : " hours ") : " 0 hours";
+            return yDisplay + moDisplay + dDisplay + hDisplay;
+        }
     }
 
     async cancelWill(event) {
@@ -260,6 +298,7 @@ class Wills extends Component {
                 currentEditAmount,
                 currentEditHeirAddress,
                 currentEditTimeWhenWithdraw,
+                currentEditTimeBetweenWithdrawAndStart,
                 currentEditID,
                 year,
                 month,
@@ -269,20 +308,29 @@ class Wills extends Component {
                 time,
                 contract
             } = this.state
-            const secondsInADay = 86400
-            let _updatedTime;
+            let _updatedTime = 0;
             let promise;
-            if (time === '-') {
-                _updatedTime = parseInt(currentEditTimeWhenWithdraw) - parseInt(year) * 365 * secondsInADay - parseInt(month) * 30 * secondsInADay - parseInt(day) * secondsInADay;
+            if (year !== '' && month !== '' && day !== '') {
+                let whenCreated = new Date((parseInt(currentEditTimeWhenWithdraw) - parseInt(currentEditTimeBetweenWithdrawAndStart)) * 1000)
+                whenCreated = new Date(whenCreated.setFullYear(whenCreated.getFullYear()+parseInt(year)))
+                whenCreated = new Date(whenCreated.setMonth(whenCreated.getMonth()+parseInt(month)))
+                whenCreated = whenCreated.addDays(parseInt(day))
+                _updatedTime = Math.floor(whenCreated.getTime() / 1000)
             }
-            if (time === '+') {
-                _updatedTime = parseInt(currentEditTimeWhenWithdraw) + parseInt(year) * 365 * secondsInADay + parseInt(month) * 30 * secondsInADay + parseInt(day) * secondsInADay;
-            }
-            if (time === '=') {
-                _updatedTime = 0
-            }
-            if (time === '') throw Error('Time is undefined')
-            if (updateHeir === true && updateAmount === true && (time === '-' || time === '+')) {
+            if (
+                (year === '' && month !== '' && day !== '')
+                ||
+                (year !== '' && month === '' && day !== '')
+                ||
+                (year !== '' && month !== '' && day === '')
+                ||
+                (year === '' && month === '' && day !== '')
+                ||
+                (year !== '' && month === '' && day === '')
+                ||
+                (year === '' && month !== '' && day !== '')
+            ) throw Error('If you want to change the time, enter all the input data, otherwise do not enter the input data')
+            if (updateHeir === true && updateAmount === true && year !== '' && month !== '' && day !== '') {
                 promise = contract.update(
                     currentEditID,
                     _updatedTime,
@@ -293,7 +341,7 @@ class Wills extends Component {
                     true  //update amount
                 )
             }
-            if (updateHeir === true && updateAmount === true && time === '=') {
+            if (updateHeir === true && updateAmount === true && year === '' && month === '' && day === '') {
                 promise = contract.update(
                     currentEditID,
                     _updatedTime,
@@ -304,7 +352,7 @@ class Wills extends Component {
                     true
                 )
             }
-            if (updateHeir === true && updateAmount === false && (time === '-' || time === '+')) {
+            if (updateHeir === true && updateAmount === false && year !== '' && month !== '' && day !== '') {
                 promise = contract.update(
                     currentEditID,
                     _updatedTime,
@@ -315,13 +363,13 @@ class Wills extends Component {
                     false  //update amount
                 )
             }
-            if (updateHeir === true && updateAmount === false && time == '=') {
+            if (updateHeir === true && updateAmount === false && year === '' && month === '' && day === '') {
                 promise = contract.updateAnHeir(
                     currentEditID,
                     currentEditHeirAddress
                 )
             }
-            if (updateHeir === false && updateAmount === true && (time === '-' || time === '+')) {
+            if (updateHeir === false && updateAmount === true && year !== '' && month !== '' && day !== '') {
                 promise = contract.update(
                     currentEditID,
                     _updatedTime,
@@ -332,19 +380,19 @@ class Wills extends Component {
                     true  //update amount
                 )
             }
-            if (updateHeir === false && updateAmount === true && time === '=') {
+            if (updateHeir === false && updateAmount === true && year === '' && month === '' && day === '') {
                 promise = contract.updateAmount(
                     currentEditID,
                     ethers.utils.parseEther(currentEditAmount)
                 )
             }
-            if (updateHeir === false && updateAmount === false && (time === '-' || time === '+')) {
+            if (updateHeir === false && updateAmount === false && year !== '' && month !== '' && day !== '') {
                 promise = contract.updateWillTimeWhenWithdraw(
                     currentEditID,
                     _updatedTime
                 )
             }
-            if (updateHeir === false && updateAmount === false && time === '=') throw Error('Nothing to update')
+            if (updateHeir === false && updateAmount === false && year === '' && month === '' && day === '') throw Error('Nothing to update')
             this.handleShowConfirm()
             promise
             .then(async (tx) => {
@@ -367,6 +415,12 @@ class Wills extends Component {
             if (error.message.includes('Nothing to update')) {
                 this.setState({
                     errortext: 'Нет обновленных данных'
+                })
+                this.handleShowError()
+            }
+            if (error.message === `If you want to change the time, enter all the input data, otherwise do not enter the input data`) {
+                this.setState({
+                    errortext: 'Если вы хотите изменить время, введите все входные данные, в противном случае не вводите входные данные'
                 })
                 this.handleShowError()
             }
@@ -467,6 +521,7 @@ class Wills extends Component {
         }
     }
 
+
     onChangeTime(event) {
         this.setState({
             time: event.target.value
@@ -488,6 +543,32 @@ class Wills extends Component {
             console.error(error.reason)
         }
     }
+
+    async onSetHalfAmount() {
+        const { contractAddress, signer, currentEditToken,signerAddress, tokensValue, amount } = this.state
+        const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
+        await _token.balanceOf(signerAddress)
+            .then((halfBalance) => {
+                halfBalance = halfBalance / 2
+                this.setState({
+                    currentEditAmount: ethers.utils.formatEther(BigInt(halfBalance).toString())
+                })
+            })
+    }
+
+    async onSetMaxAmount() {
+        const { contractAddress, signer, signerAddress, currentEditToken, tokensValue, amount } = this.state
+        const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
+        await _token.balanceOf(signerAddress)
+            .then((balance) => {
+                this.setState({
+                    currentEditAmount: ethers.utils.formatEther(BigInt(balance).toString())
+                })
+            })
+    }
+
+    onSetHalfAmount = this.onSetHalfAmount.bind(this)
+    onSetMaxAmount = this.onSetMaxAmount.bind(this)
 
     approve = this.approve.bind(this)
     changeApproved = this.changeApproved.bind(this)
@@ -515,15 +596,26 @@ class Wills extends Component {
             currentEditHeirAddress: data.heir,
             currentEditBaseHeirAddress: data.heir,
             currentEditTimeWhenWithdraw: data.timeWhenWithdraw,
+            currentEditTimeBetweenWithdrawAndStart: data.timeBetweenWithdrawAndStart,
             currentEditToken: data.token,
             currentEditSymbol: data.symbol,
             currentEditAmount: ethers.utils.formatEther(data.amount),
             currentEditBaseAmount: ethers.utils.formatEther(data.amount),
             year: '',
             month: '',
-            day: ''
+            day: '',
+            
         })
     };
+
+    changeNotifications() {
+        this.setState({
+            notificationsOn: this.state.notificationsOn === true ? false : true
+        })
+    }
+
+    changeNotifications = this.changeNotifications.bind(this)
+
     handleCloseEdit = this.handleCloseEdit.bind(this)
     handleShowEdit = this.handleShowEdit.bind(this)
 
@@ -537,6 +629,7 @@ class Wills extends Component {
     handleCloseAwait = this.handleCloseAwait.bind(this)
 
     timeConverter = this.timeConverter.bind(this)
+    remainingTime = this.remainingTime.bind(this)
     
     handleShowError = () => this.setState({showError: true})
     handleCloseError = () => this.setState({showError: false})
@@ -556,13 +649,25 @@ class Wills extends Component {
                         this.state.wills.map((v) => {
                             return (
                                 <li key={v.ID} className="your-wills">
-                                    <span>You bequeathed {ethers.utils.formatEther(v.amount)} of your {v.symbol} from {this.state.network} chain to wallet
-                                    {v.heir}
-                                    Inheritance can be harvest if the period of inactivity is longer than {this.timeConverter(v.timeWhenWithdraw)}</span>
+                                    <div>
+                                        <span>
+                                            You bequeathed {ethers.utils.formatEther(v.amount)} of your {v.symbol} from {this.state.network} chain to wallet
+                                        </span>
+                                        <a href={`https://mumbai.polygonscan.com/address/${v.heir}`} target="_blank" rel="noreferrer">
+                                            {` ${v.heir}`}
+                                        </a>
+                                    </div>
+                                    <div>
+                                        Inheritance can be harvest if the period of inactivity is longer than {this.timeBetweenWithdrawAndStartConverter(v.timeBetweenWithdrawAndStart)}
+                                    </div>
+                                    <div>
+                                        ( Remain: {this.remainingTime(v.timeWhenWithdraw.toString())})
+                                    </div>
                                     <button type="button" className="btn_btn-danger" value={
                                         JSON.stringify({
                                             ID: v.ID.toString(), 
-                                            timeWhenWithdraw: v.timeWhenWithdraw.toString(), 
+                                            timeWhenWithdraw: v.timeWhenWithdraw.toString(),
+                                            timeBetweenWithdrawAndStart: v.timeBetweenWithdrawAndStart.toString(),
                                             heir: v.heir, 
                                             token: v.token,
                                             symbol: v.symbol,
@@ -576,7 +681,7 @@ class Wills extends Component {
                     }
                 </ul>
                 :
-                <h4>Empty</h4>
+                <h4>У вас еще нет активных завещаний.</h4>
             }
             <Modal show={this.state.showEdit} onHide={this.handleCloseEdit}>
                 <Modal.Header>
@@ -589,7 +694,10 @@ class Wills extends Component {
                     <div>{this.state.currentEditSymbol}</div>
                     <div>
                         <input onChange={this.onChangeAmount} value={this.state.currentEditAmount} className="input-group mb-3"/>
-                        <Button variant="outline-success">
+                        <Button variant="outline-success" onClick={this.onSetHalfAmount}>
+                            half
+                        </Button>
+                        <Button variant="outline-success" onClick={this.onSetMaxAmount}>
                             max
                         </Button>
                     </div>
@@ -602,33 +710,9 @@ class Wills extends Component {
                     </div>
                     <div>
                         <div>
-                            Сейчас дата вывода средств для наследника {this.timeConverter(this.state.currentEditTimeWhenWithdraw)}
-                        </div>
-                        <div>
-                            <input 
-                                type="radio"
-                                name="decrease"
-                                value={'-'}
-                                checked={this.state.time === '-'}
-                                onChange={this.onChangeTime}
-                            />
-                            <label >Уменьшить на</label><br/>
-                            <input 
-                                type="radio"
-                                name="decrease"
-                                value={'+'}
-                                checked={this.state.time === '+'}
-                                onChange={this.onChangeTime}
-                            />
-                            <label >Увеличить на</label><br/>
-                            <input 
-                                type="radio"
-                                name="equal"
-                                value={'='}
-                                checked={this.state.time === '='}
-                                onChange={this.onChangeTime}
-                            />
-                            <label >Не менять</label><br/>
+                        При условии что я буду неактивен(неактивна), начиная с момента создания наследства ({
+                            this.timeConverter((parseInt(this.state.currentEditTimeWhenWithdraw) - parseInt(this.state.currentEditTimeBetweenWithdrawAndStart)).toString())
+                            }) более чем:
                         </div>
                         <div>
                             <input type="number" onChange={this.onChangeYear} value={this.state.year} className="input-group-year"/>
@@ -640,12 +724,15 @@ class Wills extends Component {
                         </div>
                     </div>
                     <div>
-                        <input type="checkbox" className="form-check-input mt-0"/>
-                        <label >Add NFT Message</label><br/>
+                        <input type="checkbox" disabled={true} className="form-check-input mt-0"/>
+                        <label >Add NFT Message (coming soon)</label><br/>
                         <input type="checkbox" disabled={true} className="form-check-input mt-0"/>
                         <label >Automatic token delivery (coming soon)</label><br/>
-                        <input type="checkbox" disabled={true} className="form-check-input mt-0"/>
-                        <label >Notifications (coming soon)</label><br/>
+                        <input type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check-input mt-0"/>
+                        <label >Notifications</label><br/>
+                        <div style={this.state.notificationsOn === true ? {display: 'block'} : {display: 'none'}}>
+                            <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
+                        </div>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>

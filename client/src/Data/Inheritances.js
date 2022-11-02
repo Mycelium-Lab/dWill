@@ -161,15 +161,6 @@ class Inheritances extends Component {
         }
     }
 
-    timeConverter(UNIX_timestamp){
-        var a = new Date(UNIX_timestamp * 1000);
-        var year = a.getFullYear();
-        var month = a.getMonth();
-        var date = a.getDate();
-        var time = `${date < 10 ? '0'+ date : date}` + '.' + `${month < 10 ? '0' + month : month}` + '.' + year;
-        return time;
-    }
-
     async claim(event) {
         const contract = this.state.contract
         try {
@@ -187,7 +178,17 @@ class Inheritances extends Component {
         }
     }
 
-    timeConverter = this.timeConverter.bind(this)
+    checkIfTimeIsEnd(timeWhenWithdraw) {
+        const timeNow = (new Date().getTime())
+        const timeFrom = (new Date(parseInt(timeWhenWithdraw) * 1000)).getTime()
+        if (timeNow > timeFrom) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    checkIfTimeIsEnd = this.checkIfTimeIsEnd.bind(this)
     claim = this.claim.bind(this)
 
     handleShowConfirm = () => this.setState({showConfirm: true})
@@ -213,9 +214,11 @@ class Inheritances extends Component {
                             return (
                                 <li key={v.ID}>
                                     <div className='your_inheritances_ul-text'>You can harvest {ethers.utils.formatEther(v.amount)} {v.symbol} from wallet
-                                    {v.owner}
-                                    {this.timeConverter(v.timeWhenWithdraw)} on {this.state.network} chain</div>
-                                    <div><button value={v.ID.toString()} onClick={this.claim} className="btn_btn-success">Receive</button></div>
+                                    <a href={`https://mumbai.polygonscan.com/address/${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`} </a>
+                                    on {this.state.network} chain</div>
+                                    <div><button value={v.ID.toString()} onClick={this.claim} style={{
+                                        display: this.checkIfTimeIsEnd(v.timeWhenWithdraw) ? 'block' : 'none'
+                                    }} className="btn_btn-success">Receive</button></div>
                                 </li>
                             )
                         })
@@ -223,7 +226,7 @@ class Inheritances extends Component {
                 </ul>
                 </div>
                 :
-                <h4>Empty</h4>
+                <h4>У вас еще нет активных завещаний.</h4>
             }
             <Modal show={this.state.showConfirm}>
                 <Modal.Header>

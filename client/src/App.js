@@ -93,7 +93,7 @@ class App extends Component {
       let _total = 0;
       // const hashMessage1 = ethers.utils.solidityKeccak256(["uint256"], [201])
       // const sign1 = await signer.signMessage(ethers.utils.arrayify(hashMessage1));
-      // (await contract.queryFilter('AddAnHeir')).forEach(v => _total += parseFloat(ethers.utils.formatEther(v.args.amount.toString())))
+      // (await contract.queryFilter('AddAnHeir', -1000)).forEach(v => _total += parseFloat(ethers.utils.formatEther(v.args.amount.toString())))
       this.setState({
         signer, contract, total: _total, willsLength: wills.length, inheritancesLength: inheritances.length
       })
@@ -141,7 +141,7 @@ class App extends Component {
               {
                 this.state.signer === null || this.state.willsLength === 0
                 ? 
-                <Main inheritancesLength={this.state.inheritancesLength}/>
+                <Main inheritancesLength={this.state.inheritancesLength} willsLength={this.state.willsLength}/>
                 :
                 <Data/>
               }

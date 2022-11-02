@@ -17,9 +17,11 @@ class Connect extends Component {
             if (accounts.length == 0) {
                 localStorage.removeItem('account');
                 this.setState({ selectedAddress: null })
+                this.props.disconnect(null)
             } else {
                 localStorage.setItem('account', accounts[0]);
                 this.setState({ selectedAddress: accounts[0] })
+                this.props.disconnect(accounts[0])
             }
         } catch (error) {
             console.error(error)
@@ -68,7 +70,6 @@ class Connect extends Component {
                 </div>
                 <div>
                     <span>{this.state.networkName} Chain </span>
-                    <span>(change)</span>
                 </div>
             </div>
         );
