@@ -484,8 +484,8 @@ class Wills extends Component {
                         this.state.wills.map((v) => {
                             return (
                                 <div key={v.ID} className="your-wills">
-                                    <span>You bequeathed {ethers.utils.formatEther(v.amount)} of your {v.symbol} from {this.state.network} chain to wallet
-                                    {v.heir}
+                                    <span className='your-wills-text'>You bequeathed {ethers.utils.formatEther(v.amount)} of your {v.symbol} from {this.state.network} chain to wallet
+                                    <div className='your-inheritances_color-text'>{v.heir}</div>
                                     Inheritance can be harvest if the period of inactivity is longer than {this.timeConverter(v.timeWhenWithdraw)}</span>
                                     <div className='buttons'><button type="button" className="btn_green" value={
                                         JSON.stringify({
@@ -497,7 +497,9 @@ class Wills extends Component {
                                             amount: v.amount.toString()
                                         })
                                     }
-                                    onClick={this.state.showEdit == false ? this.handleShowEdit : this.handleCloseEdit}>Edit</button>
+                                    onClick={this.state.showEdit == false ? this.handleShowEdit : this.handleCloseEdit}>
+                                        <img src="content/edit.svg"/>
+                                        Edit</button>
                                     <button type="button" className="btn_green" value={v.ID.toString()} onClick={this.cancelWill}>
                                         <img src="content/revoke.svg"/>  
                                         Revoke</button></div>

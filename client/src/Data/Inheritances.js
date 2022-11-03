@@ -163,11 +163,13 @@ class Inheritances extends Component {
                     {
                         this.state.inheritances.map((v) => {
                             return (
-                                <li key={v.ID}>
+                                <li key={v.ID} className="your-inheritances_info">
                                     <div className='your_inheritances_ul-text'>You can harvest {ethers.utils.formatEther(v.amount)} {v.symbol} from wallet
-                                    {v.owner}
+                                    <div className='your-inheritances_color-text'>{v.owner}</div>
                                     {this.timeConverter(v.timeWhenWithdraw)} on {this.state.network} chain</div>
-                                    <div><button value={v.ID.toString()} onClick={this.claim} className="btn_green">Receive</button></div>
+                                    <div className='btn_receive'><button value={v.ID.toString()} onClick={this.claim} className="btn_green">
+                                    <img src="content/wallet.svg"/>
+                                        Receive</button></div>
                                 </li>
                             )
                         })

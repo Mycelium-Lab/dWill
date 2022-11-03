@@ -69,7 +69,7 @@ class Connect extends Component {
                 </div>
                 <div>
                     <span>{this.state.networkName} Chain </span>
-                    <span>(change)</span>
+                    <span className='text-btn-connect'>(change)</span>
                 </div>
             </div>
         );

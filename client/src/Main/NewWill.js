@@ -211,26 +211,34 @@ class NewWill extends Component {
             <Button variant="primary" className="btn-new-will" onClick={this.handleShow}>
                 New Will
             </Button>
-            
+            <div className='modal_fade'></div>
             <Modal show={this.state.show} onHide={this.handleClose} className='modal_content' style={styles.modal_new_will}>
-                <Modal.Header className='modal_new_will'>
+                <Modal.Header className='modal_new_will'> 
+                <Button className='bnt_close' onClick={this.handleClose}>
+                    x
+                </Button>
                 <Modal.Title className='modal_title'>New Will</Modal.Title>
+                <hr />  
                 </Modal.Header>
                 <Modal.Body>
                     <div className='modal_will-tokens'>
                     <div>
                         Я завещаю мои
                     </div>
+                    <hr/>
                     <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
                         <option value={"select"}>Select</option>
                         <option value={TokenAddress}>TFT</option>
                     </select>
                     <div>
                     </div>
-                        <input onChange={this.onChangeAmount} className="input-group-mb-3"/>
-                        <Button variant="outline-success" className='input-group-mb-3-button'>
-                            max
+                    <div className="input-max">
+                    <input onChange={this.onChangeAmount} className="input-amount-max"/>
+                        <Button variant="outline-success" className='input-amount-maxbutton'>
+                            Max
                         </Button>
+                    </div>
+                        
                     </div>
                     <div className='modal_wallet'>С кошелька <a href='#'className='modal_wallet_link'>{
                         this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)
@@ -256,19 +264,16 @@ class NewWill extends Component {
                     </div>
                     <div className='modal_checkbox'>
                         <input type="checkbox" className="modal_checkbox-add-nft"/>
-                        <label >Add NFT Message</label><br/>
-                        <input type="checkbox" disabled={true} className="form-check-input mt-0"/>
-                        <label >Automatic token delivery (coming soon)</label><br/>
-                        <input type="checkbox" disabled={true} className="form-check-input mt-0"/>
-                        <label >Notifications (coming soon)</label><br/>
+                        <label >Add NFT Message</label><img src="content/question.svg" className='img_question'/><br/>
+                        <input type="checkbox" disabled={true} className="modal_checkbox-automatic"/>
+                        <label >Automatic token delivery (coming soon)</label><img src="content/question.svg" className='img_question'/><br/>
+                        <input type="checkbox" disabled={true} className="modal_checkbox-notication"/>
+                        <label >Notifications (coming soon)</label><img src="content/question.svg" className='img_question'/><br/>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
                 <Button variant="primary" onClick={this.state.approved == false ? this.approve : this.newWill} className='button_make-new-will'>
                     {this.state.approved == false ? "Approve": "Make new will"}
-                </Button>
-                <Button onClick={this.handleClose}>
-                    x
                 </Button>
                 </Modal.Footer>
                 <div className='overlay'></div>
