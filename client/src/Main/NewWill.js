@@ -165,10 +165,10 @@ class NewWill extends Component {
         const { contractAddress, signer, signerAddress, tokensValue, amount } = this.state
         const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
         await _token.balanceOf(signerAddress)
-            .then((halfBalance) => {
+            .then(async (halfBalance) => {
                 halfBalance = halfBalance / 2
                 this.setState({
-                    amount: ethers.utils.formatEther(BigInt(halfBalance).toString())
+                    amount: (halfBalance / Math.pow(10, await _token.decimals())).toString()
                 })
             })
     }
@@ -177,16 +177,16 @@ class NewWill extends Component {
         const { contractAddress, signer, signerAddress, tokensValue, amount } = this.state
         const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
         await _token.balanceOf(signerAddress)
-            .then((balance) => {
+            .then(async (balance) => {
                 this.setState({
-                    amount: ethers.utils.formatEther(BigInt(balance).toString())
+                    amount: (balance / Math.pow(10, await _token.decimals())).toString()
                 })
             })
     }
 
-    changeApproved(allowance, amount) {
+    changeApproved(allowance, amount, decimals) {
         try {
-            if (parseInt(allowance) >= parseInt(ethers.utils.parseEther(amount)) && parseInt(allowance) !== 0) {
+            if (parseInt(allowance) >= parseInt((amount * Math.pow(10, decimals))) && parseInt(allowance) !== 0) {
                 this.setState({
                     approved: true
                 })
@@ -302,6 +302,8 @@ class NewWill extends Component {
                     <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
                         <option value={"select"}>Select</option>
                         <option value={TokenAddress}>TFT</option>
+                        {/* <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
+                        <option value={'0x326C977E6efc84E512bB9C30f76E30c160eD06FB'}>LINK</option> */}
                     </select>
                     <div>
                     </div>

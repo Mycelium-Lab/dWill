@@ -67,15 +67,16 @@ contract TheWill is IHeritage {
     ///@custom:example still 10 years
     ///@dev in the loop of senders will new time when withraw will be will.timeBetweenWithdrawAndStart + block.timestamp
     function resetTimers() public {
-        uint256[] memory _newTimes = new uint256[](inheritancesOwner[msg.sender].length);
-        for (uint256 i; i < inheritancesOwner[msg.sender].length; i++) {
-            InheritanceData memory _data = inheritanceData[i];
+        uint256[] memory _inheritancesOwner = inheritancesOwner[msg.sender];
+        uint256[] memory _newTimes = new uint256[](_inheritancesOwner.length);
+        for (uint256 i; i < _inheritancesOwner.length; i++) {
+            InheritanceData memory _data = inheritanceData[_inheritancesOwner[i]];
             uint256 _newTimeWhenWithdraw = _data.timeBetweenWithdrawAndStart + block.timestamp;
             _data.timeWhenWithdraw = _newTimeWhenWithdraw;
             _newTimes[i] = _newTimeWhenWithdraw;
-            inheritanceData[i] = _data;
+            inheritanceData[_inheritancesOwner[i]] = _data;
         }
-        emit ResetTimers(inheritancesOwner[msg.sender], msg.sender, _newTimes);
+        emit ResetTimers(_inheritancesOwner, msg.sender, _newTimes);
     }
 
     ///@notice reset timers to only one person will

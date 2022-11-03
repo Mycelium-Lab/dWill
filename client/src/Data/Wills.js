@@ -64,6 +64,8 @@ class Wills extends Component {
             for (let i = 0; i < wills.length; i++) {
                 const token = new ethers.Contract(wills[i].token, ERC20.abi, signer)
                 const symbol = await token.symbol()
+                console.log(wills[i].timeWhenWithdraw.toString())
+                console.log(wills[i].timeBetweenWithdrawAndStart.toString())
                 _wills[i] = {
                     ID: wills[i].ID.toString(),
                     amount: wills[i].amount.toString(),
@@ -169,6 +171,7 @@ class Wills extends Component {
                 }
             })
             contract.on('ResetTimers', (IDs, owner, newTimes) => {
+                console.log(newTimes)
                 if (owner == signerAddress) {
                     let __wills = this.state.wills
                     for (let i = 0; i < IDs.length; i++) {
