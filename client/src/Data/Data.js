@@ -17,7 +17,7 @@ class Data extends Component {
                 <div>
                     <Wills/>
                 </div>
-                <div>
+                <div className='btn_data-js'>
                     <NewWill/>
                 </div>
             </div>

@@ -1,14 +1,22 @@
 .App {
-  text-align: center;
-  background-color: #282c34;
+  /* text-align: center; */
+  background-image: url('/Users/macbook/Desktop/Defi/heritage-defi/client/src/background.jpg');
   min-height: 100vh;
 }
-
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
-
+hr {
+  border: 1px solid #3E474F;
+  margin-top: 17px;
+  margin-bottom: 23px;
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -38,24 +46,14 @@
     transform: rotate(360deg);
   }
 }
-
-.header {
-  /* overflow: hidden; */
-}
-
 .header_boxes {
-  white-space:nowrap
+  white-space:nowrap;
+  padding-top: 59px;
+  padding-right: 130px;
 }
-
 .header_boxes div {
-  /* width:90px; */
-  margin: 10px;
-  /* display:inline-block; */
-  /* border:1px solid black */
+  margin: 5px;
 }
-  /* .list-style-type: none;
-} */
-
 ul {
   margin-left: 0;
   padding-left: 0;
@@ -115,7 +113,6 @@ ul {
     opacity: 1;
   }
 }
-
 .btn-new-will {
   background:#5ED5A8;
   width: 350px;
@@ -130,35 +127,54 @@ ul {
   letter-spacing: 0.0264em;
   color: #171D22;
   } 
+  .block-three {
+    max-width: 924px;
+    font-size: 20px;
+    line-height: 24px;
+    text-align: center;
+    gap: 20px;
+    margin-bottom: 20px;
+    color:#C1C7CD;
+  }
   .block-two {
-  font-weight: 600;
-  font-size: 20px;
-  line-height: 24px;
-  text-align: center;
-  color: #C1C7CD;
+    max-width: 823px;
+    text-align: center;
+    color: #C1C7CD;
+    font-family: 'SF UI Text';
+    font-style: normal;
+    font-size: 20px;
+    margin-bottom: 20px;
   }
   .block-one {
-  font-weight: 700;
-  font-size: 25px;
-  line-height: 30px;
-  text-align: center;
-  color: #5ED5A8;
+    max-width: 715px;
+    margin-top: 30px;
+    margin-bottom: 25px;
+    font-style: normal;
+    font-weight: 700;
+    font-size: 25px;
+    line-height: 30px;
+    text-align: center;
+    color: #5ED5A8;
   }
-
   .block-one__title {
-  font-family: 'SF UI Text';
+  width: 109px;
   font-style: normal;
   font-weight: 800;
   font-size: 25px;
   line-height: 30px;
   color: #5ED5A8;
-  margin-bottom: 30px;
   }
-  .main-text {
-    height: 390px;
+  .btn_connect-off {
+    width: 200px;
+    border: 1px solid #4285F4;
+    border-radius: 15px;
+    background: none;
+    color: #4285F4;
+    font-size: 18px;
+    padding: 15px 32px;
   }
 a { color :#5ED5A8}
-.block-three {
+.block-four {
 font-size: 16px;
 line-height: 19px;
 text-align: center;
@@ -170,6 +186,11 @@ margin-bottom: 44px;
   width: 190px;
   border: 1px solid #5ED5A8;
   border-radius: 16px; 
+}
+.modal-content {
+  padding-left: 50px;
+  padding-right: 50px;
+  max-width: 700px;
 }
 .number-of-wills {
   display: flex;
@@ -189,9 +210,11 @@ margin-bottom: 44px;
 .header_boxes {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 .logo-will {
   display: flex;
+  margin-top: 59px;
   margin-left: 100px;
   width: 144px;
   height: 48px;
@@ -199,7 +222,7 @@ margin-bottom: 44px;
 }
 .btn-header-connect {
   display: flex;
-  margin-right: 100px;
+  margin-right: 130px;
   border: 1px solid #5ED5A8;
   border-radius: 16px;
   color: #5ED5A8;
@@ -212,31 +235,38 @@ margin-bottom: 44px;
   width: 159px;
   height: 21px;
 }
+/* .modal_fade {
+  display: none;
+}
+.modal_content {
+  z-index: 99999;
+	opacity: 1;	
+} */
+
+/* ..modal_fade::before {
+  content: '';
+	background: #000;
+	position: fixed; 
+	left: 0;
+	top: 0;
+	width: 100%; 
+	height: 100%;
+	opacity: 0.7;
+	z-index: 9999;
+} */
 .modal_title {
   display: flex;
-  width: 600px;
-  padding-left: 50px;
-  padding-right: 50px;
   justify-content: center;
   align-items: center;
-  border-bottom: 1px solid #3E474F;
   color: #5ED5A8;
-  height: 60px;
 }
-/* .overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(180deg, rgba(94, 213, 168, 0) 20.83%, rgba(94, 213, 168, 0.24) 100%);
-} */
 .modal_will-tokens {
   display: flex;
   color: #C1C7CD;
   margin-top: 28px;
-  margin-left: 51px;
+  /* margin-left: 51px; */
   margin-bottom: 36px;
+  align-items: center;
 }
 .form-select {
   margin-left: 14px;
@@ -244,7 +274,12 @@ margin-bottom: 44px;
   color: #4285F4;
   background: #161C22;
   width: 105px;
-  height: 40px; 
+  padding: 7.5px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 21px;
+  border: none;
   border-radius: 10px;
 }
 .input-group-mb-3 {
@@ -263,7 +298,7 @@ margin-bottom: 44px;
 .modal_wallet {
   margin-bottom: 36px;
   color: #C1C7CD;
-  margin-left: 51px;
+  /* margin-left: 51px; */
 }
 .modal_wallet_link {
   color: #4285F4;
@@ -272,25 +307,48 @@ margin-bottom: 44px;
   color: #C1C7CD;
   font-size: 18px;
   margin-bottom: 10px;
-  margin-left: 51px;
+  /* margin-left: 51px; */
 }
 .input_trusted-wallet {
   width: 600px;
-  height: 40px;
-  margin-left: 51px;
+  /* height: 40px; */
+  /* margin-left: 51px; */
   background: #161C22;
   border-radius: 10px;
+  padding: 15px;
   border: none;
   margin-bottom: 43px;
   margin-top: 10px;
+  color: #C1C7CD;
+}
+.input-amount-max {
+  width: 84px;
+  background: #161C22;
+  color: #4285F4;
+  border-radius: 10px;
+  border: none;
+}
+.input-max {
+  width: 150px;
+  border: none;
+  background-color: #161c22;
+  border-radius: 10px;
+  display: flex;
+  padding: 3px 10px 3px 13px;
+  box-shadow: none;
+  outline: 0;
+  outline-offset: 0;
+}
+.input-amount-max:focus {
+  outline: 0;
+  outline-offset: 0;
 }
 .modal_time-will {
   display: flex;
-  margin-left: 51px;
-
+  /* margin-left: 51px; */
 }
 .modal_title-time-will {
-  margin-left: 51px;
+  /* margin-left: 51px; */
   color: #C1C7CD;
   font-size: 18px;
   margin-bottom: 20px;
@@ -310,23 +368,40 @@ margin-bottom: 44px;
   flex-direction: column;
   margin-right: 23px;
 }
+.img_question{
+  margin-left: 7px;
+}
 .input-group-time {
   width: 100px;
   background: #161C22;
   border-radius: 10px;
   color:#4285F4;
   border: none;
+  padding: 9px;
+  box-shadow: -4px -6px 17px 1px rgba(22, 28, 34, 0.5);
 }
 .input-group-time-name {
   width: 18px;
   font-size: 10px;
   color: #C1C7CD;
-  height: 40px;
+  padding: 10px;
+}
+.input-amount-maxbutton {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 12px;
+  background: #1D252C;
+  color: #5ED5A8;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 10px;
 }
 .modal_checkbox {
-  margin-left: 51px;
   color: #C1C7CD;
-  margin-bottom: 43px;
+}
+.text-btn-connect{
+  color: #4285F4;
 }
 #checkbox {
   background: #161C22;
@@ -334,7 +409,7 @@ margin-bottom: 44px;
 }
 .button_make-new-will {
   display: flex;
-  margin-left: 51px;
+  /* margin-left: 51px; */
   text-align: center;
   margin-bottom: 44px;
   width: 600px;
@@ -348,6 +423,14 @@ margin-bottom: 44px;
   justify-content: center;
   color: #171D22;
 }
+.bnt_close {
+  background-color: #1B232A;
+  color :#3E474F;
+  border: none;
+  margin-top: 10px;
+  font-size: 25px;
+  margin-left: 595px;
+}
 .title_trusted-wallet {
   gap: 25px;
 }
@@ -355,6 +438,7 @@ margin-bottom: 44px;
   width: 1172px;
   height: 80px;
   padding-top: 16px;
+  padding-bottom: 16px;
   background: #5ED5A8;
   border: 1px solid #5ED5A8;
   box-shadow: 0px 4px 4px rgba(94, 213, 168, 0.25);
@@ -376,43 +460,55 @@ margin-bottom: 44px;
   }
 .your_inheritances {
   width:600px;
-  text-align: center;
+  /* text-align: center; */
   margin-top: 33px;
   padding-left: 50px;
   padding-right: 50px;
   background: #1B232A;
   box-shadow: 2px 0px 19px 3px #161c22;
 }
-.wills-list{
-  margin-top: 62px;
-} 
-.your-wills{
-  width:600px;
-  text-align: center;
+.your-inheritances_color-text {
+  color :#4285F4;
+}
+.wills_list-my-wills {
+  max-width: 600px;
   margin-top: 33px;
   padding-left: 50px;
   padding-right: 50px;
   background: #1B232A;
   box-shadow: 2px 0px 19px 3px #161c22;
   color: #C1C7CD;
+  margin-top: 62px;
+  margin-bottom: 84 px;
+} 
+.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-left: 138px;
 }
+.your-wills{
+  list-style-type:none;
+  display: flex;
+  justify-content: space-between; 
+  font-family: 'SF UI Text';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 17px;
+  letter-spacing: 0.0264em;
+  color: #C1C7CD;
+} 
 .your_inheritances_ul-btn {
     display: flex;
-    justify-content: flex-start;
-    flex-direction: row;
-    padding-left: 50px;
-    padding-right: 50px;
+}
+.your-inheritances_info {
+  display: flex;
+  margin-top: 14px;
 }
 .your_inheritances_ul {
   display: flex;
   flex-direction: column;
-
-}
-.page-data {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
 .your_inheritances-h3 {
   font-weight: 400;
@@ -422,6 +518,16 @@ margin-bottom: 44px;
   letter-spacing: 0.0264em;
   color: #5ED5A8;
   padding: 17px;
+  margin: 0 auto;
+}
+.wills_list_h3 {
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 21px;
+  text-align: center;
+  letter-spacing: 0.0264em;
+  color: #5ED5A8;
+  padding-top: 17px;
 }
 .btn_btn-success {
   display: flex;
@@ -455,27 +561,34 @@ margin-bottom: 44px;
   justify-content: center;
   border-radius: 15px;
 }
-.block_your_wills {
-
+.btn_receive {
+  margin-left: 100px;
 }
 .block_your-wills-h3 {
   font-size: 18px;
   text-align: center;
   letter-spacing: 0.0264em;
   color: #5ED5A8;
-
+}
+.your-wills-text {
+word-break: break-word;
+padding-bottom: 20px;
 }
 .your_inheritances_ul-text {
   color: #C1C7CD;
-  /* width: 322px; */
-  /* height: 51px; */
+  max-width: 322px;
+  word-break: break-word;
+  font-style: normal;
+  font-weight: 600;
   font-size: 14px;
+  line-height: 17px;
+  letter-spacing: 0.0264em;
+  padding-bottom: 27px;
   /* border-top: 1px solid #3E474F; */
 }
 .your_inheritances_ul-btn {
   border-top: 1px solid #3E474F
 }
-
 ..input-group-year{
   width: 105px;
   height: 40px;
@@ -483,13 +596,50 @@ margin-bottom: 44px;
   border-radius: 10px;
   color: #4285F4;
 }
-.input-group-year:after {
-  position: absolute;
-  top: 14px;
-  right: 10px;
-  background: #1D252C;
-  border: 6px solid transparent;
-  border-color: #fff transparent transparent transparent;
-  color: #5ED5A8;
+.your-wills_btns {
+  display: flex;
+  flex-direction: column;
 }
-
+.btn_green {
+  display: flex;
+  padding: 15px 40px;
+  font-weight: 400;
+  font-size: 14px;
+  gap: 8px;
+  margin: 23 px 48px 10px 138px;
+  border: 1px solid #5ED5A8;
+  color: #5ED5A8;
+  background: #1B232A;
+  box-shadow: 2px 0px 19px 3px #161C22;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+}
+.page-data {
+  max-width: 1172px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.btn_data-js {
+  margin-top: 25px;
+}
+.modal_checkbox-add-nft {
+  margin-top: 40px;
+  margin-right: 5px;
+}
+.modal_checkbox-automatic {
+  margin-top: 13px;
+  margin-bottom: 14px;
+  margin-right: 5px;
+}
+.modal_checkbox-notication {
+  margin-bottom: 48px;
+  margin-right: 5px;
+}
+.wills-list_ul-btn {
+  display: flex;
+  border-top: 1px solid #3E474F;
+}
