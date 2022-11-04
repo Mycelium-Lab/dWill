@@ -25,6 +25,7 @@ class App extends Component {
 
   componentDidMount = async () => {
     try {
+      if (!window.ethereum) throw Error('Not connected metamask')
       const provider = new ethers.providers.Web3Provider(window.ethereum)
       const network = await provider.getNetwork()
       await provider.send("eth_requestAccounts", []);
