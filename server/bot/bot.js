@@ -9,22 +9,54 @@ const bot = new TelegramBot(process.env.TGBOT, {polling:true})
 const keyboardOptions = {
     reply_markup: JSON.stringify({
         keyboard: [
-          [{ text: 'Добавить адрес', callback_data: 'address' }],
-          [{ text: 'Добавить email', callback_data: 'email' }]
+          [{ text: 'Add wallet address for tracking', callback_data: 'address' }],
+          [{ text: 'Add email for notifications', callback_data: 'email' }]
         ],
         resize_keyboard: true
       })
 }
+
+const keyboardOptionsWithoutEmail = {
+    reply_markup: JSON.stringify({
+        keyboard: [
+          [{ text: 'Add wallet address for tracking', callback_data: 'address' }]
+        ],
+        resize_keyboard: true
+      })
+}
+
 try {
     
     bot.onText(/\/start/, async function(msg){
         let userID = msg.from.id
-        await bot.sendMessage(userID, 'Добро пожаловать в TheWill', keyboardOptions)
+        const user = await User.findOne({tgID: userID})
+        let keyboard;
+        if (user !== null) {
+            if (user.address !== null || user.address === '' || user.address !== undefined) {
+                keyboard = keyboardOptions
+            } else {
+                keyboard = keyboardOptionsWithoutEmail
+            }
+        } else {
+            keyboard = keyboardOptionsWithoutEmail
+        }
+        await bot.sendMessage(userID, `Hello!
+
+This is the official bot-notifier of the dWill project.
+
+Official website: <a href='https://dwill.app/'>dwill.app</a>
+
+Add your wallet address and the bot will automatically start tracking information about your wills.
+
+Bot features:
+▪️ Tracking your dWills
+▪️ Tracking dWills intended for you
+▪️ Reminding you about major timer events`, {parse_mode:'HTML', reply_markup: keyboard.reply_markup})
     })
 
-    bot.onText(/Добавить адрес/, async (msg) => {
+    bot.onText(/Add wallet address for tracking/, async (msg) => {
         let userID = msg.from.id
-        const addressPrompt = await bot.sendMessage(userID, 'Напишите адрес', {
+        const addressPrompt = await bot.sendMessage(userID, 'Write the address', {
             reply_markup: {
                 force_reply: true,
             },
@@ -33,13 +65,13 @@ try {
             if (
                 _msg.text.length < 42 
                 && 
-                !_msg.text.includes('Добавить')
+                !_msg.text.includes('Add')
                 &&
                 !_msg.text.includes('start')
             ) {
-                await bot.sendMessage(userID, 'Неверный формат', keyboardOptions)
+                await bot.sendMessage(userID, 'Invalid format', keyboardOptions)
             } else if (
-                !_msg.text.includes('Добавить')
+                !_msg.text.includes('Add')
                 &&
                 !_msg.text.includes('start')
             ) {
@@ -52,16 +84,31 @@ try {
                                 result = new User({address: _msg.text, tgID: _msg.from.id}) 
                                 result.save(async (err) => {
                                     if (!err) {
-                                        await bot.sendMessage(userID, 'Добавлен адрес\nТеперь вам будут приходить оповещения с TheWill', keyboardOptions)
+                                        await bot.sendMessage(userID, 'Your wallet address has been updated. You will now receive alerts related to dWills of that wallet address', keyboardOptions)
                                     } else {
-                                        await bot.sendMessage(userID, 'Произошла ошибка', keyboardOptions)
+                                        await bot.sendMessage(userID, 'An error has occurred', keyboardOptionsWithoutEmail)
                                     }
                                 })
                             } else {
-                                await bot.sendMessage(userID, 'Обновлен адрес\nТеперь вам будут приходить оповещения с TheWill', keyboardOptions)
+                                await bot.sendMessage(userID, 'Your wallet address has been updated. You will now receive alerts related to dWills of that wallet address', keyboardOptions)
                             }
                         } else {
-                            await bot.sendMessage(userID, 'Произошла ошибка', keyboardOptions)
+                            try {
+                                const user = await User.findOne({tgID: userID})
+                                let keyboard;
+                                if (user !== null) {
+                                    if (user.address !== null || user.address === '' || user.address !== undefined) {
+                                        keyboard = keyboardOptions
+                                    } else {
+                                        keyboard = keyboardOptionsWithoutEmail
+                                    }
+                                } else {
+                                    keyboard = keyboardOptionsWithoutEmail
+                                }
+                                await bot.sendMessage(userID, 'An error has occurred', keyboard)
+                            } catch (error) {
+                                console.error(error)
+                            }
                         }
                     }
                 )
@@ -69,9 +116,9 @@ try {
         })
     });
 
-    bot.onText(/Добавить email/, async (msg) => {
+    bot.onText(/Add email for notifications/, async (msg) => {
         let userID = msg.from.id
-        const emailPrompt = await bot.sendMessage(userID, 'Напишите email', {
+        const emailPrompt = await bot.sendMessage(userID, 'Write the email', {
             reply_markup: {
                 force_reply: true,
             },
@@ -82,7 +129,7 @@ try {
                 &&
                 !_msg.text.includes('.')
             ) {
-                await bot.sendMessage(userID, 'Неверный формат', keyboardOptions)
+                await bot.sendMessage(userID, 'Invalid format', keyboardOptions)
             } else if (
                 _msg.text.includes('@')
                 &&
@@ -97,16 +144,16 @@ try {
                                 result = new User({email: _msg.text, tgID: _msg.from.id}) 
                                 result.save(async (err) => {
                                     if (!err) {
-                                        await bot.sendMessage(userID, 'Добавлен email\nТеперь вам будут приходить оповещения с TheWill', keyboardOptions)
+                                        await bot.sendMessage(userID, 'Your email has been updated. You will now receive alerts related to your dWill at this address.', keyboardOptions)
                                     } else {
-                                        await bot.sendMessage(userID, 'Произошла ошибка', keyboardOptions)
+                                        await bot.sendMessage(userID, 'An error has occurred', keyboardOptions)
                                     }
                                 })
                             } else {
-                                await bot.sendMessage(userID, 'Обновлен email\nТеперь вам будут приходить оповещения с TheWill', keyboardOptions)
+                                await bot.sendMessage(userID, 'Your email has been updated. You will now receive alerts related to your dWill at this address.', keyboardOptions)
                             }
                         } else {
-                            await bot.sendMessage(userID, 'Произошла ошибка', keyboardOptions)
+                            await bot.sendMessage(userID, 'An error has occurred', keyboardOptions)
                         }
                     }
                 )

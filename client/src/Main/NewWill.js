@@ -46,6 +46,7 @@ class NewWill extends Component {
             showConfirm: false,
             showAwait: false,
             showError: false,
+            isUnlimitedAmount: false,
             errortext: '',
             notificationsOn: false
         };
@@ -78,10 +79,11 @@ class NewWill extends Component {
     }
 
     async approve() {
-        const { contractAddress, signer, amount, tokensValue } = this.state
+        const { contractAddress, signer, amount, tokensValue, isUnlimitedAmount } = this.state
         const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
         this.handleShowConfirm()
-        await _token.increaseAllowance(contractAddress, ethers.utils.parseEther(amount))
+        let toSend = isUnlimitedAmount === true ? amount : BigInt(amount * Math.pow(10, await _token.decimals())).toString()
+        await _token.increaseAllowance(contractAddress, toSend)
             .then(async (tx) => {
                 this.handleShowAwait()
                 await tx.wait()
@@ -93,6 +95,7 @@ class NewWill extends Component {
                 })
             })
             .catch(err => {
+                console.log(err)
                 if (err.message.includes('resolver or addr is not ')) {
                     this.setState({
                         errortext: 'Choose token'
@@ -106,7 +109,8 @@ class NewWill extends Component {
 
     async newWill() {
         try {
-            const { contract, heirAddress, amount, tokensValue, year, month, day } = this.state
+            const { contract, heirAddress, amount, year, month, day, isUnlimitedAmount, tokensValue, signer } = this.state
+            const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
             let date = new Date()
             let timeUnixNow = Math.floor(new Date().getTime() / 1000)
             let timeUnixWhenWithdraw = 0;
@@ -115,7 +119,8 @@ class NewWill extends Component {
             date = date.addDays(parseInt(day))
             timeUnixWhenWithdraw = Math.floor(date.getTime() / 1000)
             const timeBetweenWithdrawAndStart = timeUnixWhenWithdraw - timeUnixNow
-            await contract.addNewWill(heirAddress, tokensValue, timeUnixWhenWithdraw.toString(), timeBetweenWithdrawAndStart.toString(), ethers.utils.parseEther(amount))
+            let sendTo = isUnlimitedAmount === true ? amount : BigInt(amount * Math.pow(10, await _token.decimals())).toString()
+            await contract.addNewWill(heirAddress, tokensValue, timeUnixWhenWithdraw.toString(), timeBetweenWithdrawAndStart.toString(), sendTo)
                 .then(async (tx) => {
                     this.handleShowAwait()
                     await tx.wait()
@@ -150,7 +155,7 @@ class NewWill extends Component {
             })
             const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
             const allowance = (await _token.allowance(signerAddress, contractAddress)).toString()
-            this.changeApproved(allowance, event.target.value)
+            this.changeApproved(allowance, event.target.value, await _token.decimals())
         } catch (error) {
             if (error.message.includes('resolver or addr is not configured')) {
                 this.setState({
@@ -161,16 +166,27 @@ class NewWill extends Component {
         }
     }
 
-    async onSetHalfAmount() {
-        const { contractAddress, signer, signerAddress, tokensValue, amount } = this.state
-        const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
-        await _token.balanceOf(signerAddress)
-            .then(async (halfBalance) => {
-                halfBalance = halfBalance / 2
-                this.setState({
-                    amount: (halfBalance / Math.pow(10, await _token.decimals())).toString()
-                })
+    async onChangeUnlimitedAmount() {
+        try {
+            const { contractAddress, signer, signerAddress, tokensValue, amount, isUnlimitedAmount } = this.state
+            //max amount uint256
+            this.setState({
+                amount: isUnlimitedAmount === false ? '11579208923731619542357098500868790785326998466564056403945758400791312963993' : '0',
+                isUnlimitedAmount: isUnlimitedAmount === true ? false : true,
             })
+            const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
+            const allowance = (await _token.allowance(signerAddress, contractAddress)).toString()
+            this.changeApproved(allowance, this.state.amount, await _token.decimals())
+        } catch (error) {
+            if (error.message.includes('resolver or addr is not configured')) {
+                this.setState({
+                    errortext: 'Выберите токен',
+                    amount: '0',
+                    isUnlimitedAmount: false
+                })
+                this.handleShowError()
+            }
+        }
     }
 
     async onSetMaxAmount() {
@@ -215,6 +231,7 @@ class NewWill extends Component {
             const allowance = (await _token.allowance(signerAddress, contractAddress)).toString()
             this.changeApproved(allowance, amount)
         } catch (error) {
+            console.log(error)
             this.handleShowError()
         }
     }
@@ -249,7 +266,7 @@ class NewWill extends Component {
         })
     }
 
-    onSetHalfAmount = this.onSetHalfAmount.bind(this)
+    onChangeUnlimitedAmount = this.onChangeUnlimitedAmount.bind(this)
     onSetMaxAmount = this.onSetMaxAmount.bind(this)
     approve = this.approve.bind(this)
     newWill = this.newWill.bind(this)
@@ -262,7 +279,16 @@ class NewWill extends Component {
     onChangeHeirAddress = this.onChangeHeirAddress.bind(this)
     changeNotifications = this.changeNotifications.bind(this)
 
-    handleClose = () => this.setState({show: false});
+    handleClose = () => this.setState({
+        show: false,
+        amount: '0',
+        approved: false,
+        year: 2,
+        month: 0,
+        day: 0,
+        heirAddress: '',
+        isUnlimitedAmount: false,
+    });
     handleShow = () => this.setState({show: true});
 
     handleClose = this.handleClose.bind(this)
@@ -302,16 +328,18 @@ class NewWill extends Component {
                     <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
                         <option value={"select"}>Select</option>
                         <option value={TokenAddress}>TFT</option>
-                        {/* <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
-                        <option value={'0x326C977E6efc84E512bB9C30f76E30c160eD06FB'}>LINK</option> */}
+                        <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
                     </select>
                     <div>
                     </div>
-                        <input onChange={this.onChangeAmount} value={this.state.amount} type='number' className="input-group-mb-3"/>
-                        <Button variant="outline-success" className='input-group-mb-3-button' onClick={this.onSetHalfAmount}>
-                            half
-                        </Button>
-                        <Button variant="outline-success" className='input-group-mb-3-button' onClick={this.onSetMaxAmount}>
+                        <input type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0"/>
+                        <label>Unlimited</label><br/>
+                        <input onChange={this.onChangeAmount} value={this.state.amount} type='number' className="input-group-mb-3" style={
+                            {display: this.state.isUnlimitedAmount === false ? 'block' : 'none'}
+                        }/>
+                        <Button variant="outline-success" className='input-group-mb-3-button' onClick={this.onSetMaxAmount} style={
+                            {display: this.state.isUnlimitedAmount === false ? 'block' : 'none'}
+                        }>
                             max
                         </Button>
                     </div>

@@ -13,6 +13,7 @@ const ERC20 = require('../artifacts/@openzeppelin/contracts/token/ERC20/ERC20.so
 const provider = new ethers.providers.WebSocketProvider(process.env.RPC)
 const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 const contract = new ethers.Contract(process.env.CONTRACT, WillAbi.abi, signer)
+const UnlimitedAmount = '11579208923731619542357098500868790785326998466564056403945758400791312963993'
 
 // const transporter = nodemailer.createTransport({
 //     service: 'hotmail',
@@ -72,7 +73,7 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
             const _token = new ethers.Contract(token, ERC20.abi, signer)
             _tokenSymbol = await _token.symbol()
             _tokenDecimals = await _token.decimals()
-            heritageAmountInNormalView = amount / Math.pow(10, _tokenDecimals)
+            heritageAmountInNormalView = amount.toString() === UnlimitedAmount ? 'Unlimited' : amount / Math.pow(10, _tokenDecimals)
             _remainingTime = remainingTime(timeWhenWithdraw)
             cutOwnerAddress = owner.slice(0, 6) + '...' + owner.slice(owner.length - 4, owner.length);
             cutHeirAddress = heir.slice(0, 6) + '...' + heir.slice(heir.length - 4, heir.length);
@@ -80,7 +81,14 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
         if (user !== null) {
             if (user.tgID.length > 0) {
                 await bot.sendMessage(_owner.tgID, `
-                    <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> добавил вас в своё завещание.\nПараметры завещания:\nНаследник - <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a>;\nТокен - ${_tokenSymbol};\nСумма - ${heritageAmountInNormalView};\nВремя до исполнения завещания - ${_remainingTime}.
+🟢 <b>Wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> bequeathed you TFT tokens</b>
+                
+▪️Parameters of the dWill:
+<b>id</b>: ${ID.toString()}
+<b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a>
+<b>Token</b> - ${_tokenSymbol};
+<b>Limit on the amount</b> - ${heritageAmountInNormalView}
+<b>Time to unlock the dWill</b> - ${_remainingTime}
                 `, {parse_mode: 'HTML'})
             }
             // if (user.email.length > 0) {
@@ -101,8 +109,15 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
         if (_owner !== null) {
             if (_owner.tgID.length > 0) {
                 await bot.sendMessage(_owner.tgID, `
-                    Вы с адреса <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> создали завещание.\nПараметры завещания:\nНаследник - <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a>;\nТокен - ${_tokenSymbol};\nСумма - ${heritageAmountInNormalView};\nВремя до исполнения завещания - ${_remainingTime}.
-                `, {parse_mode: 'HTML'})
+🔵 <b>You have created new dWill from wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a></b>
+
+▪️Parameters of the dWill:
+<b>id</b>: ${ID.toString()}
+<b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a>
+<b>Token</b> - ${_tokenSymbol};
+<b>Limit on the amount</b> - ${heritageAmountInNormalView}
+<b>Time to unlock the dWill</b> - ${_remainingTime}
+`, {parse_mode: 'HTML'})
             }
         }
     } catch (error) {
@@ -123,7 +138,7 @@ contract.on('RemoveWill', async (ID, owner, heir) => {
         if (user !== null) {
             if (user.tgID.length > 0) {
                 await bot.sendMessage(_owner.tgID, `
-                    <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> удалил вас из своего завещания.
+                🔴 <b>Wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> removed you from his dWill (id: ${ID.toString()})</b>
                 `, {parse_mode: 'HTML'})
             }
             // if (user.email.length > 0) {
@@ -144,7 +159,7 @@ contract.on('RemoveWill', async (ID, owner, heir) => {
         if (_owner !== null) {
             if (_owner.tgID.length > 0) {
                 await bot.sendMessage(_owner.tgID, `
-                    Вы удалили <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a> из своего завещания.
+                🔴 <b>You <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> removed <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a> from yours dWill (id: ${ID.toString()})</b>
                 `, {parse_mode: 'HTML'})
             }
         }
@@ -163,7 +178,7 @@ contract.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
         if (_owner !== null) {
             if (_owner.tgID.length > 0) {
                 await bot.sendMessage(_owner.tgID, `
-                Ваше завещание исполнено. \nНаследник - <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a>.
+                Your dWill (id: ${ID.toString()}) has been executed.
                 `, {parse_mode: 'HTML'})
             }
         }
@@ -197,28 +212,37 @@ setInterval(async () => {
                     const _token = new ethers.Contract(wills[j].token, ERC20.abi, signer)
                     const _tokenSymbol = await _token.symbol()
                     const _tokenDecimals = await _token.decimals()
-                    const heritageAmountInNormalView = wills[j].amount / Math.pow(10, _tokenDecimals)
+                    heritageAmountInNormalView = wills[j].amount.toString() === UnlimitedAmount ? 'Unlimited' : wills[j].amount / Math.pow(10, _tokenDecimals)
                     const cutHeirAddress = wills[j].heir.slice(0, 6) + '...' + wills[j].heir.slice(wills[j].heir.length - 4, wills[j].heir.length);
                     if (users[i].tgID.length > 0) {
                         if (remaining.includes('Nothing')) {
-                            const alreadyExistInDB = await Will.find({ID: wills[j].ID})
+                            const alreadyExistInDB = await Will.findOne({ID: wills[j].ID})
                             if (alreadyExistInDB === null) {
                                 const __heir = await User.findOne({address: wills[j].heir})
                                 if (__heir !== null) {
                                     await bot.sendMessage(__heir.tgID, `
-                                    Вы можете забрать токены. Параметры завещания:\nНаследник - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a>;\nТокен - ${_tokenSymbol};\nСумма - ${heritageAmountInNormalView};<a href='https://dwill.app/'>dWill</a>.
+The time to unlock the dVill (id: ${wills[j].ID.toString()}) has expired
+You can withdraw your tokens on our site <a href='https://dwill.app/'>dWill.app</a>.
+▪️Parameters of the dWill:
+<b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a>
+<b>Token</b> - ${_tokenSymbol};
+<b>Limit on the amount</b> - ${heritageAmountInNormalView}
                                     `, {parse_mode: 'HTML'})
                                 }
-                                await bot.sendMessage(users[i].tgID, `
-                                Ваше завещание будет исполнено. Параметры завещания:\nНаследник - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a>;\nТокен - ${_tokenSymbol};\nСумма - ${heritageAmountInNormalView};.
-                                `, {parse_mode: 'HTML'})
+                                await bot.sendMessage(users[i].tgID, `The time to unlock the dVill (id: ${wills[j].ID.toString()}) has expired.`, {parse_mode: 'HTML'})
                                 const addToDB = new Will({ID: wills[j].ID, isLastMessageSended: true})
                                 await addToDB.save()
                             }
                         } else {
                             await bot.sendMessage(users[i].tgID, `
-                            Время до исполнения вашего завещания - ${remaining}\nПараметры завещания:\nНаследник - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a>;\nТокен - ${_tokenSymbol};\nСумма - ${heritageAmountInNormalView};.
-                            `, {parse_mode: 'HTML'})
+Time to unlock the dWill - ${remaining}
+▪️Parameters of the dWill:
+<b>id</b>: ${wills[j].ID.toString()}
+<b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a>
+<b>Token</b> - ${_tokenSymbol};
+<b>Limit on the amount</b> - ${heritageAmountInNormalView}
+<b>Time to unlock the dWill</b> - ${remaining}
+`, {parse_mode: 'HTML'})
                         }
                     }
                 }

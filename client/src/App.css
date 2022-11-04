@@ -467,8 +467,8 @@ margin-bottom: 44px;
 }
 .your_inheritances_ul-text {
   color: #C1C7CD;
-  width: 322px;
-  height: 51px;
+  /* width: 322px; */
+  /* height: 51px; */
   font-size: 14px;
   /* border-top: 1px solid #3E474F; */
 }

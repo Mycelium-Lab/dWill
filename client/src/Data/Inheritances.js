@@ -45,6 +45,7 @@ class Inheritances extends Component {
             for (let i = 0; i < inheritances.length; i++) {
                 const token = new ethers.Contract(inheritances[i].token, ERC20.abi, signer)
                 const symbol = await token.symbol()
+                const decimals = await token.decimals()
                 _inheritances[i] = {
                     ID: inheritances[i].ID.toString(),
                     amount: inheritances[i].amount.toString(),
@@ -53,7 +54,8 @@ class Inheritances extends Component {
                     owner: inheritances[i].owner,
                     timeWhenWithdraw: inheritances[i].timeWhenWithdraw.toString(),
                     token: inheritances[i].token,
-                    symbol
+                    symbol,
+                    decimals
                 }
             }
             let networkName
@@ -72,6 +74,7 @@ class Inheritances extends Component {
                     const inheritance = await contract.inheritanceData(ID.toString())
                     const token = new ethers.Contract(inheritance.token, ERC20.abi, signer)
                     const symbol = await token.symbol()
+                    const decimals = await token.decimals()
                     let exist = false
                     for (let i = 0; i < __inheritances.length; i++) {
                         if (__inheritances[i].ID === inheritance.ID.toString()) {
@@ -87,7 +90,8 @@ class Inheritances extends Component {
                             owner: inheritance.owner,
                             timeWhenWithdraw: inheritance.timeWhenWithdraw.toString(),
                             token: inheritance.token,
-                            symbol
+                            symbol,
+                            decimals
                         })
                     }
                     this.setState({inheritances: __inheritances})
@@ -178,6 +182,26 @@ class Inheritances extends Component {
         }
     }
 
+    remainingTime(timeWhenWithdraw) {
+        const _timeNow = new Date()
+        const _timeWhenWithdraw = new Date(parseInt(timeWhenWithdraw) * 1000)
+        if (_timeWhenWithdraw < _timeNow) {
+            return 'Nothing.'
+        } else {
+            const seconds = Math.floor((new Date(_timeWhenWithdraw - _timeNow)).getTime() / 1000)
+            let y = Math.floor(seconds / 31536000);
+            let mo = Math.floor((seconds % 31536000) / 2628000);
+            let d = Math.floor(((seconds % 31536000) % 2628000) / 86400);
+            let h = Math.floor((seconds % (3600 * 24)) / 3600);
+          
+            let yDisplay = y > 0 ? y + (y === 1 ? " year, " : " years, ") : " 0 years,";
+            let moDisplay = mo > 0 ? mo + (mo === 1 ? " month, " : " months, ") : " 0 months,";
+            let dDisplay = d > 0 ? d + (d === 1 ? " day, " : " days, ") : " 0 days, ";
+            let hDisplay = h > 0 ? h + (h === 1 ? " hour " : " hours ") : " 0 hours";
+            return yDisplay + moDisplay + dDisplay + hDisplay;
+        }
+    }
+
     checkIfTimeIsEnd(timeWhenWithdraw) {
         const timeNow = (new Date().getTime())
         const timeFrom = (new Date(parseInt(timeWhenWithdraw) * 1000)).getTime()
@@ -188,6 +212,7 @@ class Inheritances extends Component {
         }
     }
 
+    remainingTime = this.remainingTime.bind(this)
     checkIfTimeIsEnd = this.checkIfTimeIsEnd.bind(this)
     claim = this.claim.bind(this)
 
@@ -213,9 +238,11 @@ class Inheritances extends Component {
                         this.state.inheritances.map((v) => {
                             return (
                                 <li key={v.ID}>
-                                    <div className='your_inheritances_ul-text'>You can harvest {ethers.utils.formatEther(v.amount)} {v.symbol} from wallet
+                                    <div className='your_inheritances_ul-text'>
+                                    <span>{v.ID.toString()} </span>
+                                    <span>After {this.remainingTime(v.timeWhenWithdraw)} you can harvest up to {(v.amount / Math.pow(10, v.decimals)).toString()} {v.symbol} from wallet</span>
                                     <a href={`https://mumbai.polygonscan.com/address/${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`} </a>
-                                    on {this.state.network} chain</div>
+                                    on {this.state.network} chain <span>(if the testator updates the timer, the time may increase)</span></div>
                                     <div><button value={v.ID.toString()} onClick={this.claim} 
                                     style={{
                                         display: this.checkIfTimeIsEnd(v.timeWhenWithdraw) ? 'block' : 'none'

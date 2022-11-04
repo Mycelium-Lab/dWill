@@ -32,6 +32,7 @@ class Wills extends Component {
             currentEditSymbol: '',
             currentEditBaseAmount: '',
             currentEditAmount: '',
+            currentEditDecimals: 0,
             updateHeir: false,
             updateAmount: false,
             time: '',
@@ -39,9 +40,9 @@ class Wills extends Component {
             approved: true,
             tokensValueToApprove: '',
             contractAddress: TheWillAddress,
-            year: '',
-            month: '',
-            day: '',
+            year: 0,
+            month: 0,
+            day: 0,
             heirAddress: '',
             contract: null,
             wills: [],
@@ -64,8 +65,7 @@ class Wills extends Component {
             for (let i = 0; i < wills.length; i++) {
                 const token = new ethers.Contract(wills[i].token, ERC20.abi, signer)
                 const symbol = await token.symbol()
-                console.log(wills[i].timeWhenWithdraw.toString())
-                console.log(wills[i].timeBetweenWithdrawAndStart.toString())
+                const decimals = await token.decimals()
                 _wills[i] = {
                     ID: wills[i].ID.toString(),
                     amount: wills[i].amount.toString(),
@@ -75,7 +75,8 @@ class Wills extends Component {
                     timeWhenWithdraw: wills[i].timeWhenWithdraw.toString(),
                     timeBetweenWithdrawAndStart: wills[i].timeBetweenWithdrawAndStart.toString(),
                     token: wills[i].token,
-                    symbol
+                    symbol,
+                    decimals
                 }
             }
             let networkName
@@ -95,6 +96,7 @@ class Wills extends Component {
                     const will = await contract.inheritanceData(ID.toString())
                     const token = new ethers.Contract(will.token, ERC20.abi, signer)
                     const symbol = await token.symbol()
+                    const decimals = await token.decimals()
                     let exist = false
                     for (let i = 0; i < __wills.length; i++) {
                         if (__wills[i].ID === will.ID.toString()) {
@@ -111,7 +113,8 @@ class Wills extends Component {
                             timeWhenWithdraw: will.timeWhenWithdraw.toString(),
                             timeBetweenWithdrawAndStart: will.timeBetweenWithdrawAndStart.toString(),
                             token: will.token,
-                            symbol
+                            symbol,
+                            decimals
                         })
                     }
                     this.setState({wills: __wills})
@@ -302,6 +305,7 @@ class Wills extends Component {
                 currentEditHeirAddress,
                 currentEditTimeWhenWithdraw,
                 currentEditTimeBetweenWithdrawAndStart,
+                currentEditDecimals,
                 currentEditID,
                 year,
                 month,
@@ -313,7 +317,7 @@ class Wills extends Component {
             } = this.state
             let _updatedTime = 0;
             let promise;
-            if (year !== '' && month !== '' && day !== '') {
+            if (year !== 0 && month !== 0 && day !== 0) {
                 let whenCreated = new Date((parseInt(currentEditTimeWhenWithdraw) - parseInt(currentEditTimeBetweenWithdrawAndStart)) * 1000)
                 whenCreated = new Date(whenCreated.setFullYear(whenCreated.getFullYear()+parseInt(year)))
                 whenCreated = new Date(whenCreated.setMonth(whenCreated.getMonth()+parseInt(month)))
@@ -321,81 +325,81 @@ class Wills extends Component {
                 _updatedTime = Math.floor(whenCreated.getTime() / 1000)
             }
             if (
-                (year === '' && month !== '' && day !== '')
+                (year === 0 && month !== 0 && day !== 0)
                 ||
-                (year !== '' && month === '' && day !== '')
+                (year !== 0 && month === 0 && day !== 0)
                 ||
-                (year !== '' && month !== '' && day === '')
+                (year !== 0 && month !== 0 && day === 0)
                 ||
-                (year === '' && month === '' && day !== '')
+                (year === 0 && month === 0 && day !== 0)
                 ||
-                (year !== '' && month === '' && day === '')
+                (year !== 0 && month === 0 && day === 0)
                 ||
-                (year === '' && month !== '' && day !== '')
+                (year === 0 && month !== 0 && day !== 0)
             ) throw Error('If you want to change the time, enter all the input data, otherwise do not enter the input data')
-            if (updateHeir === true && updateAmount === true && year !== '' && month !== '' && day !== '') {
+            if (updateHeir === true && updateAmount === true && year !== 0 && month !== 0 && day !== 0) {
                 promise = contract.update(
                     currentEditID,
                     _updatedTime,
                     currentEditHeirAddress,
-                    ethers.utils.parseEther(currentEditAmount),
+                    (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString(),
                     true, //update time
                     true, //update heir
                     true  //update amount
                 )
             }
-            if (updateHeir === true && updateAmount === true && year === '' && month === '' && day === '') {
+            if (updateHeir === true && updateAmount === true && year === 0 && month === 0 && day === 0) {
                 promise = contract.update(
                     currentEditID,
                     _updatedTime,
                     currentEditHeirAddress,
-                    ethers.utils.parseEther(currentEditAmount),
+                    (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString(),
                     false,
                     true,
                     true
                 )
             }
-            if (updateHeir === true && updateAmount === false && year !== '' && month !== '' && day !== '') {
+            if (updateHeir === true && updateAmount === false && year !== 0 && month !== 0 && day !== 0) {
                 promise = contract.update(
                     currentEditID,
                     _updatedTime,
                     currentEditHeirAddress,
-                    ethers.utils.parseEther(currentEditAmount),
+                    (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString(),
                     true, //update time
                     true, //update heir
                     false  //update amount
                 )
             }
-            if (updateHeir === true && updateAmount === false && year === '' && month === '' && day === '') {
+            if (updateHeir === true && updateAmount === false && year === 0 && month === 0 && day === 0) {
                 promise = contract.updateAnHeir(
                     currentEditID,
                     currentEditHeirAddress
                 )
             }
-            if (updateHeir === false && updateAmount === true && year !== '' && month !== '' && day !== '') {
+            if (updateHeir === false && updateAmount === true && year !== 0 && month !== 0 && day !== 0) {
                 promise = contract.update(
                     currentEditID,
                     _updatedTime,
                     currentEditHeirAddress,
-                    ethers.utils.parseEther(currentEditAmount),
+                    (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString(),
                     true, //update time
                     false, //update heir
                     true  //update amount
                 )
             }
-            if (updateHeir === false && updateAmount === true && year === '' && month === '' && day === '') {
+            if (updateHeir === false && updateAmount === true && year === 0 && month === 0 && day === 0) {
                 promise = contract.updateAmount(
                     currentEditID,
-                    ethers.utils.parseEther(currentEditAmount)
+                    (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString()
                 )
             }
-            if (updateHeir === false && updateAmount === false && year !== '' && month !== '' && day !== '') {
+            if (updateHeir === false && updateAmount === false && year !== 0 && month !== 0 && day !== 0) {
                 promise = contract.updateWillTimeWhenWithdraw(
                     currentEditID,
                     _updatedTime
                 )
             }
-            if (updateHeir === false && updateAmount === false && year === '' && month === '' && day === '') throw Error('Nothing to update')
+            if (updateHeir === false && updateAmount === false && year === 0 && month === 0 && day === 0) throw Error('Nothing to update')
             this.handleShowConfirm()
             promise
             .then(async (tx) => {
@@ -436,7 +440,15 @@ class Wills extends Component {
     async approve() {
         const { contractAddress, signer, amount, currentEditToken, currentEditBaseAmount, currentEditAmount } = this.state
         const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
-        const amountToApprove = ethers.utils.parseEther((parseFloat(currentEditAmount) - parseFloat(currentEditBaseAmount)).toString())
+        const amountToApprove = (
+            BigInt(
+                (
+                    parseFloat(currentEditAmount) - parseFloat(currentEditBaseAmount)
+                ) 
+                * 
+                Math.pow(10, await _token.decimals())
+            )
+        ).toString() 
         this.handleShowConfirm()
         await _token.increaseAllowance(contractAddress, amountToApprove)
             .then(async (tx) => {
@@ -494,7 +506,8 @@ class Wills extends Component {
                 tokensValue, 
                 currentEditBaseAmount, 
                 currentEditAmount, 
-                currentEditToken 
+                currentEditToken,
+                currentEditDecimals
             } = this.state
             if (parseFloat(currentEditBaseAmount) < parseFloat(event.target.value)) {
                 this.setState({
@@ -503,7 +516,7 @@ class Wills extends Component {
                 })
                 const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
                 const allowance = (await _token.allowance(signerAddress, contractAddress)).toString()
-                this.changeApproved(allowance, (parseFloat(event.target.value) - parseFloat(currentEditBaseAmount)).toString())
+                this.changeApproved(allowance, (parseFloat(event.target.value) - parseFloat(currentEditBaseAmount)).toString(), currentEditDecimals)
             } 
             if (parseFloat(currentEditBaseAmount) > parseFloat(event.target.value)) {
                 this.setState({
@@ -531,9 +544,9 @@ class Wills extends Component {
         })
     }
 
-    changeApproved(allowance, amount) {
+    changeApproved(allowance, amount, decimals) {
         try {
-            if (parseInt(allowance) >= parseInt(ethers.utils.parseEther(amount)) && parseInt(allowance) !== 0) {
+            if (parseInt(allowance) >= parseInt((amount * Math.pow(10, decimals))) && parseInt(allowance) !== 0) {
                 this.setState({
                     approved: true
                 })
@@ -547,30 +560,17 @@ class Wills extends Component {
         }
     }
 
-    async onSetHalfAmount() {
-        const { contractAddress, signer, currentEditToken,signerAddress, tokensValue, amount } = this.state
-        const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
-        await _token.balanceOf(signerAddress)
-            .then((halfBalance) => {
-                halfBalance = halfBalance / 2
-                this.setState({
-                    currentEditAmount: ethers.utils.formatEther(BigInt(halfBalance).toString())
-                })
-            })
-    }
-
     async onSetMaxAmount() {
         const { contractAddress, signer, signerAddress, currentEditToken, tokensValue, amount } = this.state
         const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
         await _token.balanceOf(signerAddress)
-            .then((balance) => {
+            .then(async (balance) => {
                 this.setState({
-                    currentEditAmount: ethers.utils.formatEther(BigInt(balance).toString())
+                    currentEditAmount: (balance / Math.pow(10, await _token.decimals())).toString()
                 })
             })
     }
 
-    onSetHalfAmount = this.onSetHalfAmount.bind(this)
     onSetMaxAmount = this.onSetMaxAmount.bind(this)
 
     approve = this.approve.bind(this)
@@ -591,7 +591,6 @@ class Wills extends Component {
         currentEditHeirAddress: '', currentEditTimeWhenWithdraw: ''
     });
     handleShowEdit = async (event) => {
-        const { signer } = this.state
         const data = JSON.parse(event.target.value)
         this.setState({
             showEdit: true, 
@@ -602,12 +601,12 @@ class Wills extends Component {
             currentEditTimeBetweenWithdrawAndStart: data.timeBetweenWithdrawAndStart,
             currentEditToken: data.token,
             currentEditSymbol: data.symbol,
-            currentEditAmount: ethers.utils.formatEther(data.amount),
-            currentEditBaseAmount: ethers.utils.formatEther(data.amount),
-            year: '',
-            month: '',
-            day: '',
-            
+            currentEditAmount: data.amount / Math.pow(10, data.decimals),
+            currentEditBaseAmount: data.amount / Math.pow(10, data.decimals),
+            currentEditDecimals: data.decimals,
+            year: 0,
+            month: 0,
+            day: 0,
         })
     };
 
@@ -653,8 +652,9 @@ class Wills extends Component {
                             return (
                                 <li key={v.ID} className="your-wills">
                                     <div>
+                                        <span>{v.ID.toString()} </span>
                                         <span>
-                                            You bequeathed {ethers.utils.formatEther(v.amount)} of your {v.symbol} from {this.state.network} chain to wallet
+                                            You bequeathed up to {(v.amount / Math.pow(10, v.decimals)).toString()} of your {v.symbol} from {this.state.network} chain to wallet
                                         </span>
                                         <a href={`https://mumbai.polygonscan.com/address/${v.heir}`} target="_blank" rel="noreferrer">
                                             {` ${v.heir}`}
@@ -674,7 +674,8 @@ class Wills extends Component {
                                             heir: v.heir, 
                                             token: v.token,
                                             symbol: v.symbol,
-                                            amount: v.amount.toString()
+                                            amount: v.amount.toString(),
+                                            decimals: v.decimals
                                         })
                                     } onClick={this.state.showEdit == false ? this.handleShowEdit : this.handleCloseEdit}>Edit</button>
                                     <button type="button" className="btn_btn-danger" value={v.ID.toString()} onClick={this.cancelWill}>Revoke</button>
@@ -696,10 +697,7 @@ class Wills extends Component {
                     </div>
                     <div>{this.state.currentEditSymbol}</div>
                     <div>
-                        <input onChange={this.onChangeAmount} value={this.state.currentEditAmount} className="input-group mb-3"/>
-                        <Button variant="outline-success" onClick={this.onSetHalfAmount}>
-                            half
-                        </Button>
+                        <input onChange={this.onChangeAmount} value={this.state.currentEditAmount} type="number" className="input-group mb-3"/>
                         <Button variant="outline-success" onClick={this.onSetMaxAmount}>
                             max
                         </Button>
@@ -739,8 +737,15 @@ class Wills extends Component {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="primary" onClick={this.state.approved === true ? this.edit : this.approve}>
-                    {this.state.approved === true ? `Edit` : `Approve`}
+                <Button variant="primary" onClick={this.state.approved === false ? this.approve: null} style={
+                    {"background": this.state.approved === true ? '#3E474F' : '#5ED5A8'}
+                } >
+                    Approve
+                </Button>
+                <Button variant="primary" onClick={this.state.approved === true ? this.edit: null} style={
+                    {"background": this.state.approved === false ? '#3E474F' : '#5ED5A8'}
+                } >
+                    Edit
                 </Button>
                 <Button onClick={this.handleCloseEdit}>
                     Close
