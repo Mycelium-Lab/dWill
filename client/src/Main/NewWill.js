@@ -315,16 +315,21 @@ class NewWill extends Component {
             <Button variant="primary" className="btn-new-will" onClick={this.handleShow}>
                 New Will
             </Button>
-            
-            <Modal show={this.state.show} onHide={this.handleClose} className='modal_new_will' style={styles.modal_new_will}>
-                <Modal.Header>
+            <div className='modal_fade'></div>
+            <Modal show={this.state.show} onHide={this.handleClose} className='modal_content' style={styles.modal_new_will}>
+                <Modal.Header className='modal_new_will'> 
+                <Button className='bnt_close' onClick={this.handleClose}>
+                    x
+                </Button>
                 <Modal.Title className='modal_title'>New Will</Modal.Title>
+                <hr />  
                 </Modal.Header>
                 <Modal.Body>
                     <div className='modal_will-tokens'>
                     <div>
                         Я завещаю мои
                     </div>
+                    <hr/>
                     <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
                         <option value={"select"}>Select</option>
                         <option value={TokenAddress}>TFT</option>
@@ -388,10 +393,8 @@ class NewWill extends Component {
                 } className='button_make-new-will'>
                     Make new will
                 </Button>
-                <Button onClick={this.handleClose}>
-                    Close
-                </Button>
                 </Modal.Footer>
+                <div className='overlay'></div>
             </Modal>
             <Modal show={this.state.showConfirm}>
                 <Modal.Header>

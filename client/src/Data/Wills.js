@@ -4,7 +4,7 @@ import React, { Component, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import TheWill from '../Contract/TheWill.json'
-
+// import revoke from '../content/revoke.svg';
 import { ethers } from "ethers";
 
 import ERC20 from '../Contract/ERC20.json'
@@ -641,16 +641,18 @@ class Wills extends Component {
 
     render() {
         return(
-            <div id='wills'>
-            <h3 className='block_your-wills-h3'>Your wills</h3>
+            // <div id='wills'>
+            <div className='wills_list-my-wills'>
+            <h3 className='wills_list_h3'>Your wills</h3>
+            <hr/>
             {
                 this.state.wills.length > 0 
                 ?
-                <ul id='wills-list'>
+                <div id='wills-list_ul-btn'>
                     {
                         this.state.wills.map((v) => {
                             return (
-                                <li key={v.ID} className="your-wills">
+                                <div key={v.ID} className="your-wills">
                                     <div>
                                         <span>id: {v.ID.toString()} </span>
                                         <span>
@@ -677,13 +679,18 @@ class Wills extends Component {
                                             amount: v.amount.toString(),
                                             decimals: v.decimals
                                         })
-                                    } onClick={this.state.showEdit == false ? this.handleShowEdit : this.handleCloseEdit}>Edit</button>
-                                    <button type="button" className="btn_btn-danger" value={v.ID.toString()} onClick={this.cancelWill}>Revoke</button>
-                                </li>
+                                    }
+                                    onClick={this.state.showEdit == false ? this.handleShowEdit : this.handleCloseEdit}>
+                                        <img src="content/edit.svg"/>
+                                        Edit</button>
+                                    <button type="button" className="btn_green" value={v.ID.toString()} onClick={this.cancelWill}>
+                                        <img src="content/revoke.svg"/>  
+                                        Revoke</button>
+                                </div>
                             )
                         })
                     }
-                </ul>
+                </div>
                 :
                 <h4>У вас еще нет активных завещаний.</h4>
             }
@@ -748,7 +755,7 @@ class Wills extends Component {
                     Edit
                 </Button>
                 <Button onClick={this.handleCloseEdit}>
-                    Close
+                    x
                 </Button>
                 </Modal.Footer>
             </Modal>
