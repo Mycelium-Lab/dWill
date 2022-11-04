@@ -641,7 +641,7 @@ class Wills extends Component {
 
     render() {
         return(
-            <div id='wills'>
+            // <div id='wills'>
             <div className='wills_list-my-wills'>
             <h3 className='wills_list_h3'>Your wills</h3>
             <hr/>
@@ -652,7 +652,7 @@ class Wills extends Component {
                     {
                         this.state.wills.map((v) => {
                             return (
-                                <li key={v.ID} className="your-wills">
+                                <div key={v.ID} className="your-wills">
                                     <div>
                                         <span>id: {v.ID.toString()} </span>
                                         <span>
@@ -685,8 +685,8 @@ class Wills extends Component {
                                         Edit</button>
                                     <button type="button" className="btn_green" value={v.ID.toString()} onClick={this.cancelWill}>
                                         <img src="content/revoke.svg"/>  
-                                        Revoke</button></div>
-                                </li>
+                                        Revoke</button>
+                                </div>
                             )
                         })
                     }

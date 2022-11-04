@@ -1,6 +1,6 @@
 .App {
   /* text-align: center; */
-  background-image: url('/Users/macbook/Desktop/Defi/heritage-defi/client/src/background.jpg');
+  background-image: url('./background.jpg');
   min-height: 100vh;
 }
 * {
@@ -589,7 +589,7 @@ padding-bottom: 20px;
 .your_inheritances_ul-btn {
   border-top: 1px solid #3E474F
 }
-..input-group-year{
+.input-group-year{
   width: 105px;
   height: 40px;
   background: #161C22;
