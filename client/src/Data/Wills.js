@@ -1,3 +1,5 @@
+/* global BigInt */
+
 import React, { Component, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -6,7 +8,7 @@ import TheWill from '../Contract/TheWill.json'
 import { ethers } from "ethers";
 
 import ERC20 from '../Contract/ERC20.json'
-import { TheWillAddress, TokenAddress } from '../Utils/Constants';
+import { TheWillAddress, TokenAddress, UnlimitedAmount } from '../Utils/Constants';
 
 class Wills extends Component {
     constructor(props) {
@@ -25,10 +27,12 @@ class Wills extends Component {
             currentEditBaseHeirAddress: '',
             currentEditHeirAddress: '',
             currentEditTimeWhenWithdraw: '',
+            currentEditTimeBetweenWithdrawAndStart: '',
             currentEditToken: '',
             currentEditSymbol: '',
             currentEditBaseAmount: '',
             currentEditAmount: '',
+            currentEditDecimals: 0,
             updateHeir: false,
             updateAmount: false,
             time: '',
@@ -36,12 +40,15 @@ class Wills extends Component {
             approved: true,
             tokensValueToApprove: '',
             contractAddress: TheWillAddress,
-            year: '',
-            month: '',
-            day: '',
+            year: 0,
+            month: 0,
+            day: 0,
             heirAddress: '',
             contract: null,
             wills: [],
+            showError: false,
+            errortext: '',
+            notificationsOn: false
         };
     }
 
@@ -58,6 +65,7 @@ class Wills extends Component {
             for (let i = 0; i < wills.length; i++) {
                 const token = new ethers.Contract(wills[i].token, ERC20.abi, signer)
                 const symbol = await token.symbol()
+                const decimals = await token.decimals()
                 _wills[i] = {
                     ID: wills[i].ID.toString(),
                     amount: wills[i].amount.toString(),
@@ -65,8 +73,10 @@ class Wills extends Component {
                     heir: wills[i].heir,
                     owner: wills[i].owner,
                     timeWhenWithdraw: wills[i].timeWhenWithdraw.toString(),
+                    timeBetweenWithdrawAndStart: wills[i].timeBetweenWithdrawAndStart.toString(),
                     token: wills[i].token,
-                    symbol
+                    symbol,
+                    decimals
                 }
             }
             let networkName
@@ -81,11 +91,12 @@ class Wills extends Component {
             }
             this.setState({ signer, signerAddress, network: networkName, contract, wills: _wills })
             contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
-                let __wills = this.state.wills
                 if (owner == signerAddress) {
+                    let __wills = this.state.wills
                     const will = await contract.inheritanceData(ID.toString())
                     const token = new ethers.Contract(will.token, ERC20.abi, signer)
                     const symbol = await token.symbol()
+                    const decimals = await token.decimals()
                     let exist = false
                     for (let i = 0; i < __wills.length; i++) {
                         if (__wills[i].ID === will.ID.toString()) {
@@ -100,25 +111,82 @@ class Wills extends Component {
                             heir: will.heir,
                             owner: will.owner,
                             timeWhenWithdraw: will.timeWhenWithdraw.toString(),
+                            timeBetweenWithdrawAndStart: will.timeBetweenWithdrawAndStart.toString(),
                             token: will.token,
-                            symbol
+                            symbol,
+                            decimals
                         })
                     }
                     this.setState({wills: __wills})
                 }
             })
             contract.on('Withdraw', async (ID,owner, heir,timeWhenWithdraw) => {
-                let __wills = this.state.wills
                 if (owner == signerAddress) {
+                    let __wills = this.state.wills
                     __wills = __wills.filter(v => v.ID !== ID.toString())
                     this.setState({wills: __wills})
                 }
             })
             contract.on('RemoveWill', async (ID, owner, heir) => {
-                let __wills = this.state.wills
                 if (owner == signerAddress) {
+                    let __wills = this.state.wills
                     __wills = __wills.filter(v => v.ID !== ID.toString())
                     this.setState({wills: __wills})
+                }
+            })
+            contract.on('UpdateWillTimeWhenWithdraw', (ID, owner, heir, newTime) => {
+                if (owner == signerAddress) {
+                    let __wills = this.state.wills
+                    for (let i = 0; i < __wills.length; i++) {
+                        if (_wills[i].ID === ID.toString()) {
+                            _wills[i].timeWhenWithdraw = newTime.toString()
+                        }
+                    }
+                    this.setState({
+                        wills: __wills
+                    })
+                }
+            })
+            contract.on('UpdateAnHeir', (ID, owner, heir) => {
+                if (owner == signerAddress) {
+                    let __wills = this.state.wills
+                    for (let i = 0; i < __wills.length; i++) {
+                        if (_wills[i].ID === ID.toString()) {
+                            _wills[i].heir = heir
+                        }
+                    }
+                    this.setState({
+                        wills: __wills
+                    })
+                }
+            })
+            contract.on('UpdateAmount', (ID, owner, amount) => {
+                if (owner == signerAddress) {
+                    let __wills = this.state.wills
+                    for (let i = 0; i < __wills.length; i++) {
+                        if (_wills[i].ID === ID.toString()) {
+                            _wills[i].amount = amount.toString()
+                        }
+                    }
+                    this.setState({
+                        wills: __wills
+                    })
+                }
+            })
+            contract.on('ResetTimers', (IDs, owner, newTimes) => {
+                console.log(newTimes)
+                if (owner == signerAddress) {
+                    let __wills = this.state.wills
+                    for (let i = 0; i < IDs.length; i++) {
+                        for (let j = 0; j < __wills.length; j++) {
+                            if (IDs[i].toString() === _wills[j].ID) {
+                                _wills[j].timeWhenWithdraw = newTimes[i];
+                            }
+                        }
+                    }
+                    this.setState({
+                        wills: __wills
+                    })
                 }
             })
         } catch (error) {
@@ -127,12 +195,44 @@ class Wills extends Component {
     }
 
     timeConverter(UNIX_timestamp){
-        var a = new Date(UNIX_timestamp * 1000);
+        var a = new Date(parseInt(UNIX_timestamp) * 1000);
         var year = a.getFullYear();
         var month = a.getMonth();
         var date = a.getDate();
+        month+=1
         var time = `${date < 10 ? '0'+ date : date}` + '.' + `${month < 10 ? '0' + month : month}` + '.' + year;
         return time;
+    }
+
+    timeBetweenWithdrawAndStartConverter(time) {
+        let seconds = parseInt(time)
+        let y = Math.floor(seconds / 31536000);
+        let mo = Math.floor((seconds % 31536000) / 2628000);
+        let d = Math.floor(((seconds % 31536000) % 2628000) / 86400);
+        let yDisplay = y > 0 ? y + (y === 1 ? " year " : " years ") : "";
+        let moDisplay = mo > 0 ? mo + (mo === 1 ? " month " : " months ") : "";
+        let dDisplay = d > 0 ? d + (d === 1 ? " day " : " days ") : "";
+        return yDisplay + moDisplay + dDisplay
+    }
+
+    remainingTime(timeWhenWithdraw) {
+        const _timeNow = new Date()
+        const _timeWhenWithdraw = new Date(parseInt(timeWhenWithdraw) * 1000)
+        if (_timeWhenWithdraw < _timeNow) {
+            return 'Nothing.'
+        } else {
+            const seconds = Math.floor((new Date(_timeWhenWithdraw - _timeNow)).getTime() / 1000)
+            let y = Math.floor(seconds / 31536000);
+            let mo = Math.floor((seconds % 31536000) / 2628000);
+            let d = Math.floor(((seconds % 31536000) % 2628000) / 86400);
+            let h = Math.floor((seconds % (3600 * 24)) / 3600);
+          
+            let yDisplay = y > 0 ? y + (y === 1 ? " year, " : " years, ") : " 0 years,";
+            let moDisplay = mo > 0 ? mo + (mo === 1 ? " month, " : " months, ") : " 0 months,";
+            let dDisplay = d > 0 ? d + (d === 1 ? " day, " : " days, ") : " 0 days, ";
+            let hDisplay = h > 0 ? h + (h === 1 ? " hour " : " hours ") : " 0 hours";
+            return yDisplay + moDisplay + dDisplay + hDisplay;
+        }
     }
 
     async cancelWill(event) {
@@ -204,6 +304,8 @@ class Wills extends Component {
                 currentEditAmount,
                 currentEditHeirAddress,
                 currentEditTimeWhenWithdraw,
+                currentEditTimeBetweenWithdrawAndStart,
+                currentEditDecimals,
                 currentEditID,
                 year,
                 month,
@@ -213,82 +315,91 @@ class Wills extends Component {
                 time,
                 contract
             } = this.state
-            const secondsInADay = 86400
-            let _updatedTime;
+            let _updatedTime = 0;
             let promise;
-            if (time === '-') {
-                _updatedTime = parseInt(currentEditTimeWhenWithdraw) - parseInt(year) * 365 * secondsInADay - parseInt(month) * 30 * secondsInADay - parseInt(day) * secondsInADay;
+            if (year !== 0 && month !== 0 && day !== 0) {
+                let whenCreated = new Date((parseInt(currentEditTimeWhenWithdraw) - parseInt(currentEditTimeBetweenWithdrawAndStart)) * 1000)
+                whenCreated = new Date(whenCreated.setFullYear(whenCreated.getFullYear()+parseInt(year)))
+                whenCreated = new Date(whenCreated.setMonth(whenCreated.getMonth()+parseInt(month)))
+                whenCreated = whenCreated.addDays(parseInt(day))
+                _updatedTime = Math.floor(whenCreated.getTime() / 1000)
             }
-            if (time === '+') {
-                _updatedTime = parseInt(currentEditTimeWhenWithdraw) + parseInt(year) * 365 * secondsInADay + parseInt(month) * 30 * secondsInADay + parseInt(day) * secondsInADay;
-            }
-            if (time === '=') {
-                _updatedTime = 0
-            }
-            if (time === '') throw Error('Time is undefined')
-            if (updateHeir === true && updateAmount === true && (time === '-' || time === '+')) {
+            if (
+                (year === 0 && month !== 0 && day !== 0)
+                ||
+                (year !== 0 && month === 0 && day !== 0)
+                ||
+                (year !== 0 && month !== 0 && day === 0)
+                ||
+                (year === 0 && month === 0 && day !== 0)
+                ||
+                (year !== 0 && month === 0 && day === 0)
+                ||
+                (year === 0 && month !== 0 && day !== 0)
+            ) throw Error('If you want to change the time, enter all the input data, otherwise do not enter the input data')
+            if (updateHeir === true && updateAmount === true && year !== 0 && month !== 0 && day !== 0) {
                 promise = contract.update(
                     currentEditID,
                     _updatedTime,
                     currentEditHeirAddress,
-                    ethers.utils.parseEther(currentEditAmount),
+                    (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString(),
                     true, //update time
                     true, //update heir
                     true  //update amount
                 )
             }
-            if (updateHeir === true && updateAmount === true && time === '=') {
+            if (updateHeir === true && updateAmount === true && year === 0 && month === 0 && day === 0) {
                 promise = contract.update(
                     currentEditID,
                     _updatedTime,
                     currentEditHeirAddress,
-                    ethers.utils.parseEther(currentEditAmount),
+                    (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString(),
                     false,
                     true,
                     true
                 )
             }
-            if (updateHeir === true && updateAmount === false && (time === '-' || time === '+')) {
+            if (updateHeir === true && updateAmount === false && year !== 0 && month !== 0 && day !== 0) {
                 promise = contract.update(
                     currentEditID,
                     _updatedTime,
                     currentEditHeirAddress,
-                    ethers.utils.parseEther(currentEditAmount),
+                    (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString(),
                     true, //update time
                     true, //update heir
                     false  //update amount
                 )
             }
-            if (updateHeir === true && updateAmount === false && time == '=') {
+            if (updateHeir === true && updateAmount === false && year === 0 && month === 0 && day === 0) {
                 promise = contract.updateAnHeir(
                     currentEditID,
                     currentEditHeirAddress
                 )
             }
-            if (updateHeir === false && updateAmount === true && (time === '-' || time === '+')) {
+            if (updateHeir === false && updateAmount === true && year !== 0 && month !== 0 && day !== 0) {
                 promise = contract.update(
                     currentEditID,
                     _updatedTime,
                     currentEditHeirAddress,
-                    ethers.utils.parseEther(currentEditAmount),
+                    (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString(),
                     true, //update time
                     false, //update heir
                     true  //update amount
                 )
             }
-            if (updateHeir === false && updateAmount === true && time === '=') {
+            if (updateHeir === false && updateAmount === true && year === 0 && month === 0 && day === 0) {
                 promise = contract.updateAmount(
                     currentEditID,
-                    ethers.utils.parseEther(currentEditAmount)
+                    (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString()
                 )
             }
-            if (updateHeir === false && updateAmount === false && (time === '-' || time === '+')) {
+            if (updateHeir === false && updateAmount === false && year !== 0 && month !== 0 && day !== 0) {
                 promise = contract.updateWillTimeWhenWithdraw(
                     currentEditID,
                     _updatedTime
                 )
             }
-            if (updateHeir === false && updateAmount === false && time === '=') throw Error('Nothing to update')
+            if (updateHeir === false && updateAmount === false && year === 0 && month === 0 && day === 0) throw Error('Nothing to update')
             this.handleShowConfirm()
             promise
             .then(async (tx) => {
@@ -302,6 +413,24 @@ class Wills extends Component {
             })
         } catch (error) {
             console.error(error)
+            if (error.message.includes('Time is undefined')) {
+                this.setState({
+                    errortext: 'Выберите что делать со временем'
+                })
+                this.handleShowError()
+            }
+            if (error.message.includes('Nothing to update')) {
+                this.setState({
+                    errortext: 'Нет обновленных данных'
+                })
+                this.handleShowError()
+            }
+            if (error.message === `If you want to change the time, enter all the input data, otherwise do not enter the input data`) {
+                this.setState({
+                    errortext: 'Если вы хотите изменить время, введите все входные данные, в противном случае не вводите входные данные'
+                })
+                this.handleShowError()
+            }
             this.handleCloseConfirm()
             this.handleCloseAwait()
             this.handleCloseEdit()
@@ -311,7 +440,15 @@ class Wills extends Component {
     async approve() {
         const { contractAddress, signer, amount, currentEditToken, currentEditBaseAmount, currentEditAmount } = this.state
         const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
-        const amountToApprove = ethers.utils.parseEther((parseFloat(currentEditAmount) - parseFloat(currentEditBaseAmount)).toString())
+        const amountToApprove = (
+            BigInt(
+                (
+                    parseFloat(currentEditAmount) - parseFloat(currentEditBaseAmount)
+                ) 
+                * 
+                Math.pow(10, await _token.decimals())
+            )
+        ).toString() 
         this.handleShowConfirm()
         await _token.increaseAllowance(contractAddress, amountToApprove)
             .then(async (tx) => {
@@ -369,7 +506,8 @@ class Wills extends Component {
                 tokensValue, 
                 currentEditBaseAmount, 
                 currentEditAmount, 
-                currentEditToken 
+                currentEditToken,
+                currentEditDecimals
             } = this.state
             if (parseFloat(currentEditBaseAmount) < parseFloat(event.target.value)) {
                 this.setState({
@@ -378,7 +516,7 @@ class Wills extends Component {
                 })
                 const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
                 const allowance = (await _token.allowance(signerAddress, contractAddress)).toString()
-                this.changeApproved(allowance, (parseFloat(event.target.value) - parseFloat(currentEditBaseAmount)).toString())
+                this.changeApproved(allowance, (parseFloat(event.target.value) - parseFloat(currentEditBaseAmount)).toString(), currentEditDecimals)
             } 
             if (parseFloat(currentEditBaseAmount) > parseFloat(event.target.value)) {
                 this.setState({
@@ -399,15 +537,16 @@ class Wills extends Component {
         }
     }
 
+
     onChangeTime(event) {
         this.setState({
             time: event.target.value
         })
     }
 
-    changeApproved(allowance, amount) {
+    changeApproved(allowance, amount, decimals) {
         try {
-            if (parseInt(allowance) >= parseInt(ethers.utils.parseEther(amount)) && parseInt(allowance) !== 0) {
+            if (parseInt(allowance) >= parseInt((amount * Math.pow(10, decimals))) && parseInt(allowance) !== 0) {
                 this.setState({
                     approved: true
                 })
@@ -420,6 +559,19 @@ class Wills extends Component {
             console.error(error.reason)
         }
     }
+
+    async onSetMaxAmount() {
+        const { contractAddress, signer, signerAddress, currentEditToken, tokensValue, amount } = this.state
+        const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
+        await _token.balanceOf(signerAddress)
+            .then(async (balance) => {
+                this.setState({
+                    currentEditAmount: (balance / Math.pow(10, await _token.decimals())).toString()
+                })
+            })
+    }
+
+    onSetMaxAmount = this.onSetMaxAmount.bind(this)
 
     approve = this.approve.bind(this)
     changeApproved = this.changeApproved.bind(this)
@@ -439,7 +591,6 @@ class Wills extends Component {
         currentEditHeirAddress: '', currentEditTimeWhenWithdraw: ''
     });
     handleShowEdit = async (event) => {
-        const { signer } = this.state
         const data = JSON.parse(event.target.value)
         this.setState({
             showEdit: true, 
@@ -447,15 +598,26 @@ class Wills extends Component {
             currentEditHeirAddress: data.heir,
             currentEditBaseHeirAddress: data.heir,
             currentEditTimeWhenWithdraw: data.timeWhenWithdraw,
+            currentEditTimeBetweenWithdrawAndStart: data.timeBetweenWithdrawAndStart,
             currentEditToken: data.token,
             currentEditSymbol: data.symbol,
-            currentEditAmount: ethers.utils.formatEther(data.amount),
-            currentEditBaseAmount: ethers.utils.formatEther(data.amount),
-            year: '',
-            month: '',
-            day: ''
+            currentEditAmount: data.amount / Math.pow(10, data.decimals),
+            currentEditBaseAmount: data.amount / Math.pow(10, data.decimals),
+            currentEditDecimals: data.decimals,
+            year: 0,
+            month: 0,
+            day: 0,
         })
     };
+
+    changeNotifications() {
+        this.setState({
+            notificationsOn: this.state.notificationsOn === true ? false : true
+        })
+    }
+
+    changeNotifications = this.changeNotifications.bind(this)
+
     handleCloseEdit = this.handleCloseEdit.bind(this)
     handleShowEdit = this.handleShowEdit.bind(this)
 
@@ -469,6 +631,13 @@ class Wills extends Component {
     handleCloseAwait = this.handleCloseAwait.bind(this)
 
     timeConverter = this.timeConverter.bind(this)
+    remainingTime = this.remainingTime.bind(this)
+    
+    handleShowError = () => this.setState({showError: true})
+    handleCloseError = () => this.setState({showError: false})
+
+    handleShowError = this.handleShowError.bind(this)
+    handleCloseError = this.handleCloseError.bind(this)
 
     render() {
         return(
@@ -483,18 +652,32 @@ class Wills extends Component {
                     {
                         this.state.wills.map((v) => {
                             return (
-                                <div key={v.ID} className="your-wills">
-                                    <span className='your-wills-text'>You bequeathed {ethers.utils.formatEther(v.amount)} of your {v.symbol} from {this.state.network} chain to wallet
-                                    <div className='your-inheritances_color-text'>{v.heir}</div>
-                                    Inheritance can be harvest if the period of inactivity is longer than {this.timeConverter(v.timeWhenWithdraw)}</span>
-                                    <div className='buttons'><button type="button" className="btn_green" value={
+                                <li key={v.ID} className="your-wills">
+                                    <div>
+                                        <span>id: {v.ID.toString()} </span>
+                                        <span>
+                                            You bequeathed up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited': (v.amount / Math.pow(10, v.decimals)).toString()} of your {v.symbol} from {this.state.network} chain to wallet
+                                        </span>
+                                        <a href={`https://mumbai.polygonscan.com/address/${v.heir}`} target="_blank" rel="noreferrer">
+                                            {` ${v.heir}`}
+                                        </a>
+                                    </div>
+                                    <div>
+                                        Inheritance can be harvest if the period of inactivity is longer than {this.timeBetweenWithdrawAndStartConverter(v.timeBetweenWithdrawAndStart)}
+                                    </div>
+                                    <div>
+                                        ( Remain: {this.remainingTime(v.timeWhenWithdraw.toString())})
+                                    </div>
+                                    <button type="button" className="btn_btn-danger" value={
                                         JSON.stringify({
                                             ID: v.ID.toString(), 
-                                            timeWhenWithdraw: v.timeWhenWithdraw, 
+                                            timeWhenWithdraw: v.timeWhenWithdraw.toString(),
+                                            timeBetweenWithdrawAndStart: v.timeBetweenWithdrawAndStart.toString(),
                                             heir: v.heir, 
                                             token: v.token,
                                             symbol: v.symbol,
-                                            amount: v.amount.toString()
+                                            amount: v.amount.toString(),
+                                            decimals: v.decimals
                                         })
                                     }
                                     onClick={this.state.showEdit == false ? this.handleShowEdit : this.handleCloseEdit}>
@@ -503,15 +686,14 @@ class Wills extends Component {
                                     <button type="button" className="btn_green" value={v.ID.toString()} onClick={this.cancelWill}>
                                         <img src="content/revoke.svg"/>  
                                         Revoke</button></div>
-                                </div>
+                                </li>
                             )
                         })
                     }
                 </div>
                 :
-                <h4>Empty</h4>
-            } 
-            </div>
+                <h4>У вас еще нет активных завещаний.</h4>
+            }
             <Modal show={this.state.showEdit} onHide={this.handleCloseEdit}>
                 <Modal.Header>
                 <Modal.Title>Edit Will</Modal.Title>
@@ -522,8 +704,8 @@ class Wills extends Component {
                     </div>
                     <div>{this.state.currentEditSymbol}</div>
                     <div>
-                        <input onChange={this.onChangeAmount} value={this.state.currentEditAmount} className="input-group mb-3"/>
-                        <Button variant="outline-success">
+                        <input onChange={this.onChangeAmount} value={this.state.currentEditAmount} type="number" className="input-group mb-3"/>
+                        <Button variant="outline-success" onClick={this.onSetMaxAmount}>
                             max
                         </Button>
                     </div>
@@ -536,33 +718,9 @@ class Wills extends Component {
                     </div>
                     <div>
                         <div>
-                            Сейчас дата вывода средств для наследника {this.timeConverter(this.state.currentEditTimeWhenWithdraw)}
-                        </div>
-                        <div>
-                            <input 
-                                type="radio"
-                                name="decrease"
-                                value={'-'}
-                                checked={this.state.time === '-'}
-                                onChange={this.onChangeTime}
-                            />
-                            <label >Уменьшить на</label><br/>
-                            <input 
-                                type="radio"
-                                name="decrease"
-                                value={'+'}
-                                checked={this.state.time === '+'}
-                                onChange={this.onChangeTime}
-                            />
-                            <label >Увеличить на</label><br/>
-                            <input 
-                                type="radio"
-                                name="equal"
-                                value={'='}
-                                checked={this.state.time === '='}
-                                onChange={this.onChangeTime}
-                            />
-                            <label >Не менять</label><br/>
+                        При условии что я буду неактивен(неактивна), начиная с момента создания наследства ({
+                            this.timeConverter((parseInt(this.state.currentEditTimeWhenWithdraw) - parseInt(this.state.currentEditTimeBetweenWithdrawAndStart)).toString())
+                            }) более чем:
                         </div>
                         <div>
                             <input type="number" onChange={this.onChangeYear} value={this.state.year} className="input-group-year"/>
@@ -574,17 +732,27 @@ class Wills extends Component {
                         </div>
                     </div>
                     <div>
-                        <input type="checkbox" className="form-check-input mt-0"/>
-                        <label >Add NFT Message</label><br/>
+                        <input type="checkbox" disabled={true} className="form-check-input mt-0"/>
+                        <label >Add NFT Message (coming soon)</label><br/>
                         <input type="checkbox" disabled={true} className="form-check-input mt-0"/>
                         <label >Automatic token delivery (coming soon)</label><br/>
-                        <input type="checkbox" disabled={true} className="form-check-input mt-0"/>
-                        <label >Notifications (coming soon)</label><br/>
+                        <input type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check-input mt-0"/>
+                        <label >Notifications</label><br/>
+                        <div style={this.state.notificationsOn === true ? {display: 'block'} : {display: 'none'}}>
+                            <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
+                        </div>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="primary" onClick={this.state.approved === true ? this.edit : this.approve}>
-                    {this.state.approved === true ? `Edit` : `Approve`}
+                <Button variant="primary" onClick={this.state.approved === false ? this.approve: null} style={
+                    {"background": this.state.approved === true ? '#3E474F' : '#5ED5A8'}
+                } >
+                    Approve
+                </Button>
+                <Button variant="primary" onClick={this.state.approved === true ? this.edit: null} style={
+                    {"background": this.state.approved === false ? '#3E474F' : '#5ED5A8'}
+                } >
+                    Edit
                 </Button>
                 <Button onClick={this.handleCloseEdit}>
                     x
@@ -631,6 +799,19 @@ class Wills extends Component {
                 </Modal.Header>
                 <Modal.Footer>
                     <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <Modal show={this.state.showError}>
+                <Modal.Header>
+                    <div>
+                        <h1>Error</h1>
+                        <div>{this.state.errortext}</div>
+                    </div>
+                </Modal.Header>
+                <Modal.Footer>
+                    <Button variant="danger" onClick={this.handleCloseError} className="btn btn-danger">
                         Close
                     </Button>
                 </Modal.Footer>

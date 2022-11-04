@@ -19,11 +19,13 @@ class App extends Component {
     total: '',
     showConfirm: false,
     showAwait: false,
-    willsLength: 0
+    willsLength: 0,
+    inheritancesLength: 0
   };
 
   componentDidMount = async () => {
     try {
+      if (!window.ethereum) throw Error('Not connected metamask')
       const provider = new ethers.providers.Web3Provider(window.ethereum)
       const network = await provider.getNetwork()
       await provider.send("eth_requestAccounts", []);
@@ -51,7 +53,7 @@ class App extends Component {
       //         }
       //       }
       // }
-      if (network.chainId !== 80001) {
+      if (network.chainId !== 0x013881) {
           try {
             await window.ethereum.request({
               method: 'wallet_switchEthereumChain',
@@ -65,8 +67,8 @@ class App extends Component {
                 method: 'wallet_addEthereumChain',
                 params: [
                   {
+                    chainId: ethers.utils.hexValue(80001),
                     chainName: 'Mumbai',
-                    chainId: ethers.utils.hexlify(5),
                     nativeCurrency: { name: 'MATIC', decimals: 18, symbol: 'MATIC' },
                     rpcUrls: ['https://rpc-mumbai.maticvigil.com']
                   }
@@ -78,15 +80,23 @@ class App extends Component {
       const signer = await provider.getSigner()
       // token 
       const contract = new ethers.Contract(TheWillAddress, TheWill.abi, signer)
+      const signerAddress = await signer.getAddress()
 
       const wills = await contract.getAllWills((await signer.getAddress()).toString())
-      
+      const inheritances = await contract.getAllInheritances((await signer.getAddress()).toString())
+      contract.on('AddAnHeir', async (ID, owner, heir, token, timeWhenWithdraw, amount) => {
+        if (owner === signerAddress) {
+          this.setState({
+            willsLength: this.state.willsLength + 1
+          })
+        }
+      })
       let _total = 0;
       // const hashMessage1 = ethers.utils.solidityKeccak256(["uint256"], [201])
       // const sign1 = await signer.signMessage(ethers.utils.arrayify(hashMessage1));
-      // (await contract.queryFilter('AddAnHeir')).forEach(v => _total += parseFloat(ethers.utils.formatEther(v.args.amount.toString())))
+      // (await contract.queryFilter('AddAnHeir', -1000)).forEach(v => _total += parseFloat(ethers.utils.formatEther(v.args.amount.toString())))
       this.setState({
-        signer, contract, total: _total, willsLength: wills.length
+        signer, contract, total: _total, willsLength: wills.length, inheritancesLength: inheritances.length
       })
     } catch (error) {
       // Catch any errors for any of the above operations.
@@ -132,7 +142,7 @@ class App extends Component {
               {
                 this.state.signer === null || this.state.willsLength === 0
                 ? 
-                <Main/>
+                <Main inheritancesLength={this.state.inheritancesLength} willsLength={this.state.willsLength}/>
                 :
                 <Data/>
               }

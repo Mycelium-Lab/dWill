@@ -96,7 +96,7 @@ class ResetTimers extends Component {
         <div>
             <Button variant="primary" className="btn_reset-timers" onClick={this.resetTimers}>
                 Reset Timers
-                <h3 className='btn_reset-timers-h3'>I`m active, and i still have access to my wallet</h3>
+                <h3 className='btn_reset-timers-h3'>I'm active, and I still have access to my wallet</h3>
             </Button>
             <Modal show={this.state.showConfirm}>
                 <Modal.Header>

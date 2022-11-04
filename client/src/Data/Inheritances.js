@@ -6,7 +6,7 @@ import TheWill from '../Contract/TheWill.json'
 import { ethers } from "ethers";
 
 import ERC20 from '../Contract/ERC20.json'
-import { TheWillAddress } from '../Utils/Constants';
+import { TheWillAddress, UnlimitedAmount } from '../Utils/Constants';
 
 class Inheritances extends Component {
     constructor(props) {
@@ -45,6 +45,7 @@ class Inheritances extends Component {
             for (let i = 0; i < inheritances.length; i++) {
                 const token = new ethers.Contract(inheritances[i].token, ERC20.abi, signer)
                 const symbol = await token.symbol()
+                const decimals = await token.decimals()
                 _inheritances[i] = {
                     ID: inheritances[i].ID.toString(),
                     amount: inheritances[i].amount.toString(),
@@ -53,7 +54,8 @@ class Inheritances extends Component {
                     owner: inheritances[i].owner,
                     timeWhenWithdraw: inheritances[i].timeWhenWithdraw.toString(),
                     token: inheritances[i].token,
-                    symbol
+                    symbol,
+                    decimals
                 }
             }
             let networkName
@@ -72,6 +74,7 @@ class Inheritances extends Component {
                     const inheritance = await contract.inheritanceData(ID.toString())
                     const token = new ethers.Contract(inheritance.token, ERC20.abi, signer)
                     const symbol = await token.symbol()
+                    const decimals = await token.decimals()
                     let exist = false
                     for (let i = 0; i < __inheritances.length; i++) {
                         if (__inheritances[i].ID === inheritance.ID.toString()) {
@@ -87,7 +90,8 @@ class Inheritances extends Component {
                             owner: inheritance.owner,
                             timeWhenWithdraw: inheritance.timeWhenWithdraw.toString(),
                             token: inheritance.token,
-                            symbol
+                            symbol,
+                            decimals
                         })
                     }
                     this.setState({inheritances: __inheritances})
@@ -107,19 +111,58 @@ class Inheritances extends Component {
                     this.setState({inheritances: __inheritances})
                 }
             })
+            contract.on('UpdateWillTimeWhenWithdraw', (ID, owner, heir, newTime) => {
+                if (heir == signerAddress) {
+                    let __inheritances = this.state.inheritances
+                    for (let i = 0; i < __inheritances.length; i++) {
+                        if (__inheritances[i].ID === ID.toString()) {
+                            __inheritances[i].timeWhenWithdraw = newTime.toString()
+                        }
+                    }
+                    this.setState({
+                        inheritances: __inheritances
+                    })
+                }
+            })
+            contract.on('UpdateAnHeir', (ID, owner, heir) => {
+                let __inheritances = this.state.inheritances
+                __inheritances = __inheritances.filter(v => v.ID !== ID.toString())
+                this.setState({
+                    inheritances: __inheritances
+                })
+            })
+            contract.on('UpdateAmount', (ID, owner, amount) => {
+                if (owner == signerAddress) {
+                    let __inheritances = this.state.inheritances
+                    for (let i = 0; i < __inheritances.length; i++) {
+                        if (__inheritances[i].ID === ID.toString()) {
+                            __inheritances[i].amount = amount.toString()
+                        }
+                    }
+                    this.setState({
+                        inheritances: __inheritances
+                    })
+                }
+            })
+            contract.on('ResetTimers', (IDs, owner, newTimes) => {
+                let __inheritances = this.state.inheritances
+                if (__inheritances[0] !== undefined && __inheritances[0].owner === owner) {
+                    for (let i = 0; i < IDs.length; i++) {
+                        for (let j = 0; j < __inheritances.length; j++) {
+                            if (IDs[i].toString() === __inheritances[j].ID) {
+                                __inheritances[j].timeWhenWithdraw = newTimes[i];
+                            }
+                        }
+                    }
+                }
+                this.setState({
+                    inheritances: __inheritances
+                })
+            })
             this.setState({ signer, signerAddress, contract, inheritances: _inheritances, network:networkName })
         } catch (error) {
             console.error(error)
         }
-    }
-
-    timeConverter(UNIX_timestamp){
-        var a = new Date(UNIX_timestamp * 1000);
-        var year = a.getFullYear();
-        var month = a.getMonth();
-        var date = a.getDate();
-        var time = `${date < 10 ? '0'+ date : date}` + '.' + `${month < 10 ? '0' + month : month}` + '.' + year;
-        return time;
     }
 
     async claim(event) {
@@ -139,7 +182,38 @@ class Inheritances extends Component {
         }
     }
 
-    timeConverter = this.timeConverter.bind(this)
+    remainingTime(timeWhenWithdraw) {
+        const _timeNow = new Date()
+        const _timeWhenWithdraw = new Date(parseInt(timeWhenWithdraw) * 1000)
+        if (_timeWhenWithdraw < _timeNow) {
+            return 'Nothing.'
+        } else {
+            const seconds = Math.floor((new Date(_timeWhenWithdraw - _timeNow)).getTime() / 1000)
+            let y = Math.floor(seconds / 31536000);
+            let mo = Math.floor((seconds % 31536000) / 2628000);
+            let d = Math.floor(((seconds % 31536000) % 2628000) / 86400);
+            let h = Math.floor((seconds % (3600 * 24)) / 3600);
+          
+            let yDisplay = y > 0 ? y + (y === 1 ? " year, " : " years, ") : " 0 years,";
+            let moDisplay = mo > 0 ? mo + (mo === 1 ? " month, " : " months, ") : " 0 months,";
+            let dDisplay = d > 0 ? d + (d === 1 ? " day, " : " days, ") : " 0 days, ";
+            let hDisplay = h > 0 ? h + (h === 1 ? " hour " : " hours ") : " 0 hours";
+            return yDisplay + moDisplay + dDisplay + hDisplay;
+        }
+    }
+
+    checkIfTimeIsEnd(timeWhenWithdraw) {
+        const timeNow = (new Date().getTime())
+        const timeFrom = (new Date(parseInt(timeWhenWithdraw) * 1000)).getTime()
+        if (timeNow > timeFrom) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+    remainingTime = this.remainingTime.bind(this)
+    checkIfTimeIsEnd = this.checkIfTimeIsEnd.bind(this)
     claim = this.claim.bind(this)
 
     handleShowConfirm = () => this.setState({showConfirm: true})
@@ -163,13 +237,17 @@ class Inheritances extends Component {
                     {
                         this.state.inheritances.map((v) => {
                             return (
-                                <li key={v.ID} className="your-inheritances_info">
-                                    <div className='your_inheritances_ul-text'>You can harvest {ethers.utils.formatEther(v.amount)} {v.symbol} from wallet
-                                    <div className='your-inheritances_color-text'>{v.owner}</div>
-                                    {this.timeConverter(v.timeWhenWithdraw)} on {this.state.network} chain</div>
-                                    <div className='btn_receive'><button value={v.ID.toString()} onClick={this.claim} className="btn_green">
-                                    <img src="content/wallet.svg"/>
-                                        Receive</button></div>
+                                <li key={v.ID}>
+                                    <div className='your_inheritances_ul-text'>
+                                    <span>id: {v.ID.toString()} </span>
+                                    <span>After {this.remainingTime(v.timeWhenWithdraw)} you can harvest up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited': (v.amount / Math.pow(10, v.decimals)).toString()} {v.symbol} from wallet</span>
+                                    <a href={`https://mumbai.polygonscan.com/address/${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`} </a>
+                                    on {this.state.network} chain <span>(if the testator updates the timer, the time may increase)</span></div>
+                                    <div><button value={v.ID.toString()} onClick={this.claim} 
+                                    style={{
+                                        display: this.checkIfTimeIsEnd(v.timeWhenWithdraw) ? 'block' : 'none'
+                                    }} className="btn_btn-success">
+                                    Receive</button></div>
                                 </li>
                             )
                         })
@@ -177,7 +255,7 @@ class Inheritances extends Component {
                 </ul>
                 </div>
                 :
-                <h4>Empty</h4>
+                <h4>У вас еще нет активных завещаний.</h4>
             }
             <Modal show={this.state.showConfirm}>
                 <Modal.Header>
