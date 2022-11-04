@@ -6,7 +6,7 @@ import TheWill from '../Contract/TheWill.json'
 import { ethers } from "ethers";
 
 import ERC20 from '../Contract/ERC20.json'
-import { TheWillAddress } from '../Utils/Constants';
+import { TheWillAddress, UnlimitedAmount } from '../Utils/Constants';
 
 class Inheritances extends Component {
     constructor(props) {
@@ -239,8 +239,8 @@ class Inheritances extends Component {
                             return (
                                 <li key={v.ID}>
                                     <div className='your_inheritances_ul-text'>
-                                    <span>{v.ID.toString()} </span>
-                                    <span>After {this.remainingTime(v.timeWhenWithdraw)} you can harvest up to {(v.amount / Math.pow(10, v.decimals)).toString()} {v.symbol} from wallet</span>
+                                    <span>id: {v.ID.toString()} </span>
+                                    <span>After {this.remainingTime(v.timeWhenWithdraw)} you can harvest up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited': (v.amount / Math.pow(10, v.decimals)).toString()} {v.symbol} from wallet</span>
                                     <a href={`https://mumbai.polygonscan.com/address/${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`} </a>
                                     on {this.state.network} chain <span>(if the testator updates the timer, the time may increase)</span></div>
                                     <div><button value={v.ID.toString()} onClick={this.claim} 

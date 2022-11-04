@@ -8,7 +8,7 @@ import TheWill from '../Contract/TheWill.json'
 import { ethers } from "ethers";
 
 import ERC20 from '../Contract/ERC20.json'
-import { TheWillAddress, TokenAddress } from '../Utils/Constants';
+import { TheWillAddress, TokenAddress, UnlimitedAmount } from '../Utils/Constants';
 
 class Wills extends Component {
     constructor(props) {
@@ -652,9 +652,9 @@ class Wills extends Component {
                             return (
                                 <li key={v.ID} className="your-wills">
                                     <div>
-                                        <span>{v.ID.toString()} </span>
+                                        <span>id: {v.ID.toString()} </span>
                                         <span>
-                                            You bequeathed up to {(v.amount / Math.pow(10, v.decimals)).toString()} of your {v.symbol} from {this.state.network} chain to wallet
+                                            You bequeathed up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited': (v.amount / Math.pow(10, v.decimals)).toString()} of your {v.symbol} from {this.state.network} chain to wallet
                                         </span>
                                         <a href={`https://mumbai.polygonscan.com/address/${v.heir}`} target="_blank" rel="noreferrer">
                                             {` ${v.heir}`}
