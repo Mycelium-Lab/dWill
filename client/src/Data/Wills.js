@@ -317,7 +317,7 @@ class Wills extends Component {
             } = this.state
             let _updatedTime = 0;
             let promise;
-            if (year !== 0 && month !== 0 && day !== 0) {
+            if (year !== 0 || month !== 0 || day !== 0) {
                 let whenCreated = new Date((parseInt(currentEditTimeWhenWithdraw) - parseInt(currentEditTimeBetweenWithdrawAndStart)) * 1000)
                 whenCreated = new Date(whenCreated.setFullYear(whenCreated.getFullYear()+parseInt(year)))
                 whenCreated = new Date(whenCreated.setMonth(whenCreated.getMonth()+parseInt(month)))
@@ -325,19 +325,9 @@ class Wills extends Component {
                 _updatedTime = Math.floor(whenCreated.getTime() / 1000)
             }
             if (
-                (year === 0 && month !== 0 && day !== 0)
-                ||
-                (year !== 0 && month === 0 && day !== 0)
-                ||
-                (year !== 0 && month !== 0 && day === 0)
-                ||
-                (year === 0 && month === 0 && day !== 0)
-                ||
-                (year !== 0 && month === 0 && day === 0)
-                ||
-                (year === 0 && month !== 0 && day !== 0)
+                (year === 0 && month === 0 && day === 0)
             ) throw Error('If you want to change the time, enter all the input data, otherwise do not enter the input data')
-            if (updateHeir === true && updateAmount === true && year !== 0 && month !== 0 && day !== 0) {
+            if (updateHeir === true && updateAmount === true && (year !== 0 || month !== 0 || day !== 0)) {
                 promise = contract.update(
                     currentEditID,
                     _updatedTime,
@@ -359,7 +349,7 @@ class Wills extends Component {
                     true
                 )
             }
-            if (updateHeir === true && updateAmount === false && year !== 0 && month !== 0 && day !== 0) {
+            if (updateHeir === true && updateAmount === false && (year !== 0 || month !== 0 || day !== 0)) {
                 promise = contract.update(
                     currentEditID,
                     _updatedTime,
@@ -376,7 +366,7 @@ class Wills extends Component {
                     currentEditHeirAddress
                 )
             }
-            if (updateHeir === false && updateAmount === true && year !== 0 && month !== 0 && day !== 0) {
+            if (updateHeir === false && updateAmount === true && (year !== 0 || month !== 0 || day !== 0)) {
                 promise = contract.update(
                     currentEditID,
                     _updatedTime,
@@ -393,7 +383,7 @@ class Wills extends Component {
                     (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString()
                 )
             }
-            if (updateHeir === false && updateAmount === false && year !== 0 && month !== 0 && day !== 0) {
+            if (updateHeir === false && updateAmount === false && (year !== 0 || month !== 0 || day !== 0)) {
                 promise = contract.updateWillTimeWhenWithdraw(
                     currentEditID,
                     _updatedTime
