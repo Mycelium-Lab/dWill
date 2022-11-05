@@ -221,21 +221,29 @@ setInterval(async () => {
                                 const __heir = await User.findOne({address: wills[j].heir})
                                 if (__heir !== null) {
                                     await bot.sendMessage(__heir.tgID, `
-The time to unlock the dVill (id: ${wills[j].ID.toString()}) has expired
+ℹ️ dWill notification:
+
+The time to unlock the dWill (id: ${wills[j].ID.toString()}) has expired
 You can withdraw your tokens on our site <a href='https://dwill.app/'>dWill.app</a>.
+
 ▪️Parameters of the dWill:
 <b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a>
 <b>Token</b> - ${_tokenSymbol};
 <b>Limit on the amount</b> - ${heritageAmountInNormalView}
                                     `, {parse_mode: 'HTML'})
                                 }
-                                await bot.sendMessage(users[i].tgID, `The time to unlock the dVill (id: ${wills[j].ID.toString()}) has expired.`, {parse_mode: 'HTML'})
+                                await bot.sendMessage(users[i].tgID, `
+ℹ️ dWill notification:
+The time to unlock the dWill (id: ${wills[j].ID.toString()}) has expired.`, {parse_mode: 'HTML'})
                                 const addToDB = new Will({ID: wills[j].ID, isLastMessageSended: true})
                                 await addToDB.save()
                             }
                         } else {
                             await bot.sendMessage(users[i].tgID, `
+ℹ️ dWill notification:
+
 Time to unlock the dWill - ${remaining}
+
 ▪️Parameters of the dWill:
 <b>id</b>: ${wills[j].ID.toString()}
 <b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a>

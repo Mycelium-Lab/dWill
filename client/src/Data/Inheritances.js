@@ -240,7 +240,15 @@ class Inheritances extends Component {
                                 <li key={v.ID}>
                                     <div className='your_inheritances_ul-text'>
                                     <span>id: {v.ID.toString()} </span>
-                                    <span>After {this.remainingTime(v.timeWhenWithdraw)} you can harvest up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited': (v.amount / Math.pow(10, v.decimals)).toString()} {v.symbol} from wallet</span>
+                                    <span>
+                                    {
+                                        this.remainingTime(v.timeWhenWithdraw) === 'Nothing.'
+                                        ?
+                                        'You '
+                                        :
+                                        `After ${this.remainingTime(v.timeWhenWithdraw)} you `
+                                    }
+                                    can harvest up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited': (v.amount / Math.pow(10, v.decimals)).toString()} {v.symbol} from wallet</span>
                                     <a href={`https://mumbai.polygonscan.com/address/${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`} </a>
                                     on {this.state.network} chain <span>(if the testator updates the timer, the time may increase)</span></div>
                                     <div><button value={v.ID.toString()} onClick={this.claim} 
