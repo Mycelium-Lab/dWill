@@ -14,13 +14,14 @@ describe("TheWill", function () {
   const secondsInADay = 86400
   const amount = ethers.utils.parseEther('1000');
   //after one year
-  let timeWhenWithdraw = (new Date()).getTime() ;
-  timeWhenWithdraw = Math.round(timeWhenWithdraw / 1000) + (secondsInADay * 365);
+  let timeNow = Math.round((new Date()).getTime() / 1000) ;
+  let timeWhenWithdraw = timeNow + (secondsInADay * 365);
+  let timeBetweenWithdrawAndStart = timeWhenWithdraw - timeNow
   let heir;
 
   this.beforeAll(async() => {
     [signer, acc2, acc3, acc4] = await ethers.getSigners()
-		const Heritage = await ethers.getContractFactory("TheWill");
+		const Heritage = await ethers.getContractFactory("dWill");
     const TokenForTests = await ethers.getContractFactory("TokenForTests")
     heritage = await Heritage.deploy()
     token = await TokenForTests.deploy('TokenForTests', 'TFT')
@@ -73,6 +74,7 @@ describe("TheWill", function () {
   it("Should add an heir and remove it", async () => {
     //create allowance to contract
     await token.increaseAllowance(heritage.address, amount)
+    const allowanceBefore = await token.allowance(signer.address, heritage.address)
     //create heritage
     await heritage.addNewWill(acc2.address, token.address, timeWhenWithdraw, amount);
     const ID = 1
@@ -86,6 +88,8 @@ describe("TheWill", function () {
     assert.equal(_heritageBefore.done, false, "Added heritage done right")
     //remove heir
     await heritage.removeWill(ID)
+    const allowanceAfter = await token.allowance(signer.address, heritage.address)
+    assert(allowanceBefore, allowanceAfter, 'Removed allowance')
     //reverted because we deleted this will from owner and heir
     await expect(heritage.inheritancesOwner(signer.address, ID)).to.be.revertedWithoutReason()
     await expect(heritage.inheritancesHeir(signer.address, ID)).to.be.revertedWithoutReason()

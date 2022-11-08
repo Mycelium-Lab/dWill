@@ -81,12 +81,12 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
         if (user !== null) {
             if (user.tgID.length > 0) {
                 await bot.sendMessage(_owner.tgID, `
-🟢 <b>Wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> bequeathed you TFT tokens</b>
+🟢 <b>Wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> bequeathed you ${_tokenSymbol} tokens</b>
                 
-▪️Parameters of the dWill:
+<b>▪️Parameters of the dWill:</b>
 <b>id</b>: ${ID.toString()}
 <b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a>
-<b>Token</b> - ${_tokenSymbol};
+<b>Token</b> - ${_tokenSymbol}
 <b>Limit on the amount</b> - ${heritageAmountInNormalView}
 <b>Time to unlock the dWill</b> - ${_remainingTime}
                 `, {parse_mode: 'HTML'})
@@ -111,10 +111,10 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
                 await bot.sendMessage(_owner.tgID, `
 🔵 <b>You have created new dWill from wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a></b>
 
-▪️Parameters of the dWill:
+<b>▪️Parameters of the dWill:</b>
 <b>id</b>: ${ID.toString()}
 <b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a>
-<b>Token</b> - ${_tokenSymbol};
+<b>Token</b> - ${_tokenSymbol}
 <b>Limit on the amount</b> - ${heritageAmountInNormalView}
 <b>Time to unlock the dWill</b> - ${_remainingTime}
 `, {parse_mode: 'HTML'})
@@ -226,9 +226,9 @@ setInterval(async () => {
 The time to unlock the dWill (id: ${wills[j].ID.toString()}) has expired
 You can withdraw your tokens on our site <a href='https://dwill.app/'>dWill.app</a>.
 
-▪️Parameters of the dWill:
+<b>▪️Parameters of the dWill:</b>
 <b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a>
-<b>Token</b> - ${_tokenSymbol};
+<b>Token</b> - ${_tokenSymbol}
 <b>Limit on the amount</b> - ${heritageAmountInNormalView}
                                     `, {parse_mode: 'HTML'})
                                 }
@@ -244,10 +244,10 @@ The time to unlock the dWill (id: ${wills[j].ID.toString()}) has expired.`, {par
 
 Time to unlock the dWill - ${remaining}
 
-▪️Parameters of the dWill:
+<b>▪️Parameters of the dWill:</b>
 <b>id</b>: ${wills[j].ID.toString()}
 <b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a>
-<b>Token</b> - ${_tokenSymbol};
+<b>Token</b> - ${_tokenSymbol}
 <b>Limit on the amount</b> - ${heritageAmountInNormalView}
 <b>Time to unlock the dWill</b> - ${remaining}
 `, {parse_mode: 'HTML'})

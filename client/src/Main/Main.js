@@ -63,7 +63,10 @@ class Main extends Component {
                 }
                 </p>
                 {
-                    this.state.signer === null ? <Connect disconnect={this.disconnect}/> : <NewWill/>
+                    !window.ethereum ? <NewWill isEthereumNull={true}/> : null
+                }
+                {
+                    this.state.signer === null ? <Connect disconnect={this.disconnect}/> : <NewWill isEthereumNull={false}/>
                 }
                 {
                     this.props.inheritancesLength === 0 ? '' : <Inheritances/>

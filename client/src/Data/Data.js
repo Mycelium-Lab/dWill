@@ -18,7 +18,7 @@ class Data extends Component {
                     <Wills/>
                 </div>
                 <div className='btn_data-js'>
-                    <NewWill/>
+                    <NewWill isEthereumNull={false}/>
                 </div>
             </div>
         )

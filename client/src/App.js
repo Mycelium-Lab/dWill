@@ -133,7 +133,13 @@ class App extends Component {
                       {this.state.total} USD
                   </div>
                 </div>
-              <Connect/>
+                {
+                  !window.ethereum
+                  ?
+                  null
+                  :
+                  <Connect/>
+                }
             </div>
             </div>
           </header>
