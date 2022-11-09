@@ -228,7 +228,6 @@ class Inheritances extends Component {
     render() {
         return(
         <div className='your_inheritances'>
-            <h3 className='your_inheritances-h3'>Your inheritances</h3>
             {
                 this.state.inheritances.length > 0 
                 ?
@@ -237,8 +236,11 @@ class Inheritances extends Component {
                     {
                         this.state.inheritances.map((v) => {
                             return (
-                                <li key={v.ID}>
+                                <div>
+                                <li key={v.ID} className="your_inheritances_li">
                                     <div className='your_inheritances_ul-text'>
+                                    <h3 className='your_inheritances-h3'>Your inheritances</h3>
+                                    <hr/>
                                     <span>id: {v.ID.toString()} </span>
                                     <span>
                                     {
@@ -250,13 +252,14 @@ class Inheritances extends Component {
                                     }
                                     can harvest up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited': (v.amount / Math.pow(10, v.decimals)).toString()} {v.symbol} from wallet</span>
                                     <a href={`https://mumbai.polygonscan.com/address/${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`} </a>
-                                    on {this.state.network} chain <span>(if the testator updates the timer, the time may increase)</span></div>
+                                    on {this.state.network} chain</div>
                                     <div><button value={v.ID.toString()} onClick={this.claim} 
                                     style={{
                                         display: this.checkIfTimeIsEnd(v.timeWhenWithdraw) ? 'block' : 'none'
                                     }} className="btn_btn-success">
                                     Receive</button></div>
                                 </li>
+                                </div>
                             )
                         })
                     }
