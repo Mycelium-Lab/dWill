@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "prod": "pm2 start app.js --exp-backoff-restart-delay=100"
   },
   "author": "Egor G.",
   "license": "ISC",
@@ -14,7 +15,9 @@
     "dotenv": "^16.0.3",
     "ethers": "^5.7.2",
     "express": "^4.18.2",
+    "googleapis": "^109.0.1",
     "mongoose": "^6.7.0",
+    "node-cron": "^3.0.2",
     "node-telegram-bot-api": "^0.59.0",
     "nodemailer": "^6.8.0"
   },

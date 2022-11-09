@@ -1,6 +1,6 @@
 // export const TokenAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
 // export const TheWillAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3'
 
-export const TokenAddress = '0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'
+export const TokenAddress = '0x7ad56BdD1d9c70C0C94cA2BF4b1397756dfbbfc8'
 export const TheWillAddress = '0xc9100D772b0Ddb8D435b54cee1Fe050cf7e5789B'
 export const UnlimitedAmount = '11579208923731619542357098500868790785326998466564056403945758400791312963993'

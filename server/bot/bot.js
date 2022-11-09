@@ -25,22 +25,20 @@ const keyboardOptionsWithoutEmail = {
       })
 }
 
-try {
-    
-    bot.onText(/\/start/, async function(msg){
-        let userID = msg.from.id
-        const user = await User.findOne({tgID: userID})
-        let keyboard;
-        if (user !== null) {
-            if (user.address !== null || user.address === '' || user.address !== undefined) {
-                keyboard = keyboardOptions
-            } else {
-                keyboard = keyboardOptionsWithoutEmail
-            }
+bot.onText(/\/start/, async function(msg){
+    let userID = msg.from.id
+    const user = await User.findOne({tgID: userID})
+    let keyboard;
+    if (user !== null) {
+        if (user.address !== null || user.address === '' || user.address !== undefined) {
+            keyboard = keyboardOptions
         } else {
             keyboard = keyboardOptionsWithoutEmail
         }
-        await bot.sendMessage(userID, `Hello!
+    } else {
+        keyboard = keyboardOptionsWithoutEmail
+    }
+    await bot.sendMessage(userID, `Hello!
 
 This is the official bot-notifier of the dWill project.
 
@@ -52,119 +50,116 @@ Bot features:
 ▪️ Tracking your dWills
 ▪️ Tracking dWills intended for you
 ▪️ Reminding you about major timer events`, {parse_mode:'HTML', reply_markup: keyboard.reply_markup})
-    })
+})
 
-    bot.onText(/Add wallet address for tracking/, async (msg) => {
-        let userID = msg.from.id
-        const addressPrompt = await bot.sendMessage(userID, 'Write the address', {
-            reply_markup: {
-                force_reply: true,
-            },
-        })
-        bot.onReplyToMessage(msg.chat.id, addressPrompt.message_id, async (_msg) => {
-            if (
-                _msg.text.length < 42 
-                && 
-                !_msg.text.includes('Add')
-                &&
-                !_msg.text.includes('start')
-            ) {
-                await bot.sendMessage(userID, 'Invalid format', keyboardOptions)
-            } else if (
-                !_msg.text.includes('Add')
-                &&
-                !_msg.text.includes('start')
-            ) {
-                User.findOneAndUpdate(
-                    {tgID: _msg.from.id}, 
-                    {address: _msg.text}, 
-                    async (err, result) => {
-                        if (!err) {
-                            if (!result) {
-                                result = new User({address: _msg.text, tgID: _msg.from.id}) 
-                                result.save(async (err) => {
-                                    if (!err) {
-                                        await bot.sendMessage(userID, 'Your wallet address has been updated. You will now receive alerts related to dWills of that wallet address', keyboardOptions)
-                                    } else {
-                                        await bot.sendMessage(userID, 'An error has occurred', keyboardOptionsWithoutEmail)
-                                    }
-                                })
-                            } else {
-                                await bot.sendMessage(userID, 'Your wallet address has been updated. You will now receive alerts related to dWills of that wallet address', keyboardOptions)
-                            }
+bot.onText(/Add wallet address for tracking/, async (msg) => {
+    let userID = msg.from.id
+    const addressPrompt = await bot.sendMessage(userID, 'Write the address', {
+        reply_markup: {
+            force_reply: true,
+        },
+    })
+    bot.onReplyToMessage(msg.chat.id, addressPrompt.message_id, async (_msg) => {
+        if (
+            _msg.text.length < 42 
+            && 
+            !_msg.text.includes('Add')
+            &&
+            !_msg.text.includes('start')
+        ) {
+            await bot.sendMessage(userID, 'Invalid format', keyboardOptions)
+        } else if (
+            !_msg.text.includes('Add')
+            &&
+            !_msg.text.includes('start')
+        ) {
+            User.findOneAndUpdate(
+                {tgID: _msg.from.id}, 
+                {address: _msg.text}, 
+                async (err, result) => {
+                    if (!err) {
+                        if (!result) {
+                            result = new User({address: _msg.text, tgID: _msg.from.id}) 
+                            result.save(async (err) => {
+                                if (!err) {
+                                    await bot.sendMessage(userID, 'Your wallet address has been updated. You will now receive alerts related to dWills of that wallet address', keyboardOptions)
+                                } else {
+                                    await bot.sendMessage(userID, 'An error has occurred', keyboardOptionsWithoutEmail)
+                                }
+                            })
                         } else {
-                            try {
-                                const user = await User.findOne({tgID: userID})
-                                let keyboard;
-                                if (user !== null) {
-                                    if (user.address !== null || user.address === '' || user.address !== undefined) {
-                                        keyboard = keyboardOptions
-                                    } else {
-                                        keyboard = keyboardOptionsWithoutEmail
-                                    }
+                            await bot.sendMessage(userID, 'Your wallet address has been updated. You will now receive alerts related to dWills of that wallet address', keyboardOptions)
+                        }
+                    } else {
+                        try {
+                            const user = await User.findOne({tgID: userID})
+                            let keyboard;
+                            if (user !== null) {
+                                if (user.address !== null || user.address === '' || user.address !== undefined) {
+                                    keyboard = keyboardOptions
                                 } else {
                                     keyboard = keyboardOptionsWithoutEmail
                                 }
-                                await bot.sendMessage(userID, 'An error has occurred', keyboard)
-                            } catch (error) {
-                                console.error(error)
-                            }
-                        }
-                    }
-                )
-            }
-        })
-    });
-
-    bot.onText(/Add email for notifications/, async (msg) => {
-        let userID = msg.from.id
-        const emailPrompt = await bot.sendMessage(userID, 'Write the email', {
-            reply_markup: {
-                force_reply: true,
-            },
-        })
-        bot.onReplyToMessage(msg.chat.id, emailPrompt.message_id, async (_msg) => {
-            if (
-                !_msg.text.includes('@')
-                &&
-                !_msg.text.includes('.')
-            ) {
-                await bot.sendMessage(userID, 'Invalid format', keyboardOptions)
-            } else if (
-                _msg.text.includes('@')
-                &&
-                _msg.text.includes('.')
-            ) {
-                User.findOneAndUpdate(
-                    {tgID: _msg.from.id}, 
-                    {email: _msg.text}, 
-                    async (err, result) => {
-                        if (!err) {
-                            if (!result) {
-                                result = new User({email: _msg.text, tgID: _msg.from.id}) 
-                                result.save(async (err) => {
-                                    if (!err) {
-                                        await bot.sendMessage(userID, 'Your email has been updated. You will now receive alerts related to your dWill at this address.', keyboardOptions)
-                                    } else {
-                                        await bot.sendMessage(userID, 'An error has occurred', keyboardOptions)
-                                    }
-                                })
                             } else {
-                                await bot.sendMessage(userID, 'Your email has been updated. You will now receive alerts related to your dWill at this address.', keyboardOptions)
+                                keyboard = keyboardOptionsWithoutEmail
                             }
-                        } else {
-                            await bot.sendMessage(userID, 'An error has occurred', keyboardOptions)
+                            await bot.sendMessage(userID, 'An error has occurred', keyboard)
+                        } catch (error) {
+                            console.error(error)
                         }
                     }
-                )
-            }
-        })
-    });
+                }
+            )
+        }
+    })
+});
 
-    bot.on("polling_error", console.log);
-} catch (error) {
-    console.error(error)
-}
+bot.onText(/Add email for notifications/, async (msg) => {
+    let userID = msg.from.id
+    const emailPrompt = await bot.sendMessage(userID, 'Write the email', {
+        reply_markup: {
+            force_reply: true,
+        },
+    })
+    bot.onReplyToMessage(msg.chat.id, emailPrompt.message_id, async (_msg) => {
+        if (
+            !_msg.text.includes('@')
+            &&
+            !_msg.text.includes('.')
+        ) {
+            await bot.sendMessage(userID, 'Invalid format', keyboardOptions)
+        } else if (
+            _msg.text.includes('@')
+            &&
+            _msg.text.includes('.')
+        ) {
+            User.findOneAndUpdate(
+                {tgID: _msg.from.id}, 
+                {email: _msg.text}, 
+                async (err, result) => {
+                    if (!err) {
+                        if (!result) {
+                            result = new User({email: _msg.text, tgID: _msg.from.id}) 
+                            result.save(async (err) => {
+                                if (!err) {
+                                    await bot.sendMessage(userID, 'Your email has been updated. You will now receive alerts related to your dWill at this address.', keyboardOptions)
+                                } else {
+                                    await bot.sendMessage(userID, 'An error has occurred', keyboardOptions)
+                                }
+                            })
+                        } else {
+                            await bot.sendMessage(userID, 'Your email has been updated. You will now receive alerts related to your dWill at this address.', keyboardOptions)
+                        }
+                    } else {
+                        await bot.sendMessage(userID, 'An error has occurred', keyboardOptions)
+                    }
+                }
+            )
+        }
+    })
+});
+
+bot.on("polling_error", console.log);
 
 async function sendMessage(userID, msg) {
     try {

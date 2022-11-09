@@ -1,6 +1,7 @@
 
 import { ethers } from "ethers";
 import { Component } from 'react';
+import axios from 'axios';
 
 import './App.css';
 
@@ -29,6 +30,12 @@ class App extends Component {
       const provider = new ethers.providers.Web3Provider(window.ethereum)
       const network = await provider.getNetwork()
       await provider.send("eth_requestAccounts", []);
+      axios.get('https://docs.google.com/spreadsheets/d/1Aiw5wJGoqmTFcMB595Sv4TX6pDjd0lytaProjyQO7ac/gviz/tq?tqx=out:csv&tq=SELECT *')
+      .then(response => {
+        this.setState({
+          total: response.data
+        })
+      })
       // if (network.chainId !== 31337) {
       //   try {
       //         await window.ethereum.request({
@@ -90,6 +97,14 @@ class App extends Component {
             willsLength: this.state.willsLength + 1
           })
         }
+        setTimeout(async () => {
+          axios.get('https://docs.google.com/spreadsheets/d/1Aiw5wJGoqmTFcMB595Sv4TX6pDjd0lytaProjyQO7ac/gviz/tq?tqx=out:csv&tq=SELECT *')
+          .then(response => {
+            this.setState({
+              total: response.data
+            })
+          })
+        }, 5000)
       })
       let _total = 0;
       // const hashMessage1 = ethers.utils.solidityKeccak256(["uint256"], [201])
