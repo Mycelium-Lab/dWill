@@ -110,7 +110,7 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
 <b>Time to unlock the dWill</b> - ${_remainingTime}
                 `, {parse_mode: 'HTML'})
             }
-            if (user.email.length > 0) {
+            if (user.email !== null) {
                 transporter.sendMail({
                     from: process.env.EMAILUSER,
                     to: user.email,
@@ -148,7 +148,7 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
 <b>Time to unlock the dWill</b> - ${_remainingTime}
 `, {parse_mode: 'HTML'})
             }
-            if (_owner.email.length > 0) {
+            if (_owner.email !== null) {
                 setTimeout(() => {
                     transporter.sendMail({
                         from: process.env.EMAILUSER,
@@ -195,7 +195,7 @@ contract.on('RemoveWill', async (ID, owner, heir) => {
                 🔴 <b>Wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> removed you from his dWill (id: ${ID.toString()})</b>
                 `, {parse_mode: 'HTML'})
             }
-            if (user.email.length > 0) {
+            if (user.email !== null) {
                 transporter.sendMail({
                     from: process.env.EMAILUSER,
                     to: user.email,
@@ -219,7 +219,7 @@ contract.on('RemoveWill', async (ID, owner, heir) => {
                 🔴 <b>You <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> removed <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a> from yours dWill (id: ${ID.toString()})</b>
                 `, {parse_mode: 'HTML'})
             }
-            if (_owner.email.length > 0) {
+            if (_owner.email !== null) {
                 setTimeout(() => {
                     transporter.sendMail({
                         from: process.env.EMAILUSER,
@@ -257,7 +257,7 @@ contract.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
                 Your dWill (id: ${ID.toString()}) has been executed.
                 `, {parse_mode: 'HTML'})
             }
-            if (_owner.email.length > 0) {
+            if (_owner.email !== null) {
                 transporter.sendMail({
                     from: process.env.EMAILUSER,
                     to: _owner.email,
@@ -289,7 +289,7 @@ cron.schedule("30 1 18 * * *", async () => {
             for (let j = 0; j < wills.length; j++) {
                 const remaining = remainingTime(wills[j].timeWhenWithdraw)
                 if (
-                    (remaining.includes('0 years') && remaining.includes('11 months') && remaining.includes('30 days'))
+                    (remaining.includes('0 years') && remaining.includes('11 months') && remaining.includes('28 days'))
                     ||
                     (remaining.includes('0 years') && remaining.includes('5 months') && remaining.includes('28 days'))
                     ||
@@ -325,7 +325,7 @@ You can withdraw your tokens on our site <a href='https://dwill.app/'>dWill.app<
 <b>Token</b> - ${_tokenSymbol}
 <b>Limit on the amount</b> - ${heritageAmountInNormalView}
                                     `, {parse_mode: 'HTML'})
-                                    if (__heir.email.length > 0) {
+                                    if (__heir.email !== null) {
                                         transporter.sendMail({
                                             from: process.env.EMAILUSER,
                                             to: __heir.email,
@@ -353,7 +353,7 @@ You can withdraw your tokens on our site <a href='https://dwill.app/'>dWill.app<
                                 await bot.sendMessage(users[i].tgID, `
 ℹ️ dWill notification:
 The time to unlock the dWill (id: ${wills[j].ID.toString()}) has expired.`, {parse_mode: 'HTML'})
-                                if (users[i].email.length > 0) {
+                                if (users[i].email !== null) {
                                     transporter.sendMail({
                                         from: process.env.EMAILUSER,
                                         to: users[i].email,
@@ -386,7 +386,7 @@ Time to unlock the dWill - ${remaining}
 <b>Limit on the amount</b> - ${heritageAmountInNormalView}
 <b>Time to unlock the dWill</b> - ${remaining}
 `, {parse_mode: 'HTML'})
-                            if (users[i].email.length > 0) {
+                            if (users[i].email !== null) {
                                 transporter.sendMail({
                                     from: process.env.EMAILUSER,
                                     to: users[i].email,
