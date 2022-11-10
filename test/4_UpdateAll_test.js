@@ -18,12 +18,13 @@ const {
     const ID = 0
     const amount = ethers.utils.parseEther(`${tokenAmountPerOne * toTest}`);
     //after one year
-    let timeWhenWithdraw = (new Date()).getTime();
-    timeWhenWithdraw = Math.round(timeWhenWithdraw / 1000) + secondsInADay * 365 * 5 + secondsInADay * 2;
+    let timeNow = Math.round((new Date()).getTime() / 1000) ;
+    let timeWhenWithdraw = timeNow + secondsInADay * 365 * 5 + secondsInADay * 2;
+    let timeBetweenWithdrawAndStart = timeWhenWithdraw - timeNow
 
     this.beforeEach(async () => {
         [signer, acc2, acc3, acc4, acc5, acc6] = await ethers.getSigners()
-        const Heritage = await ethers.getContractFactory("TheWill");
+        const Heritage = await ethers.getContractFactory("dWill");
         const TokenForTests = await ethers.getContractFactory("TokenForTests")
         heritage = await Heritage.deploy()
         token = await TokenForTests.deploy('TokenForTests', 'TFT')

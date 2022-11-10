@@ -17,12 +17,13 @@ const {
     const tokenAmountPerOne = 1;
     const amount = ethers.utils.parseEther(`${tokenAmountPerOne * toTest}`);
     //after one year
-    let timeWhenWithdraw = (new Date()).getTime();
-    timeWhenWithdraw = Math.round(timeWhenWithdraw / 1000) + secondsInADay * 365 * 3 + secondsInADay * 2;
+    let timeNow = Math.round((new Date()).getTime() / 1000) ;
+    let timeWhenWithdraw = timeNow + secondsInADay * 365 * 3 + secondsInADay * 2;
+    let timeBetweenWithdrawAndStart = timeWhenWithdraw - timeNow
 
     this.beforeAll(async () => {
         [signer, acc2, acc3, acc4] = await ethers.getSigners()
-        const Heritage = await ethers.getContractFactory("TheWill");
+        const Heritage = await ethers.getContractFactory("dWill");
         const TokenForTests = await ethers.getContractFactory("TokenForTests")
         heritage = await Heritage.deploy()
         token = await TokenForTests.deploy('TokenForTests', 'TFT')
@@ -62,10 +63,10 @@ const {
         for (let i = 0; i < toTest; i++) {
             timesWhenWithdrawAfter[i] =_heritageAfter[i].timeWhenWithdraw
         }
-        //new time time when withdraw will be more than a year but less than a year and one day
+        //new time time when withdraw will be more than a year minus one day but less than a year and one day
         //it depends on the time of processing the test by the computer
-        assert((timesWhenWithdrawAfter[0] - timesWhenWithdrawBefore[0]) >= (secondsInADay * 365))
-        assert((timesWhenWithdrawAfter[0] - timesWhenWithdrawBefore[0]) < (secondsInADay * 365 + secondsInADay))
+        assert((timesWhenWithdrawAfter[0] - timesWhenWithdrawBefore[0]) >= secondsInADay * 365 - secondsInADay)
+        assert((timesWhenWithdrawAfter[0] - timesWhenWithdrawBefore[0]) < secondsInADay * 365 + secondsInADay)
     })
 
 })

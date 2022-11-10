@@ -7,7 +7,7 @@ import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 ///@title Inheritance
 ///@author Egor A. Goncharov
 ///@notice Allows you to transfer ERC-20 tokens to inheritance
-contract TheWill is IHeritage {
+contract dWill is IHeritage {
 
     ///@notice stores all (wills) inheritances data
     InheritanceData[] public inheritanceData;
@@ -29,16 +29,17 @@ contract TheWill is IHeritage {
         address heir, 
         address token,
         uint256 timeWhenWithdraw,
-        uint256 timeBetweenWithdrawAndStart,
         uint256 amount
     ) public {
-        require(heir != address(0), "Heritage: Heir is address(0)");
-        require(token != address(0), "Heritage: Token is address(0)");
-        require(timeWhenWithdraw > block.timestamp, "Heritage: Time when withdraw is lower then now");
-        require(amount != 0, "Heritage: Amount 0");
+        require(heir != address(0), "dWill: Heir is address(0)");
+        require(token != address(0), "dWill: Token is address(0)");
+        require(timeWhenWithdraw > block.timestamp, "dWill: Time when withdraw is lower then now");
+        require(amount != 0, "dWill: Amount 0");
         IERC20 _token = IERC20(token);
+        uint256 allWillsOwnerAmountThisToken = getAllWillsAmountThisToken(msg.sender, token);
         uint256 allowance = _token.allowance(msg.sender, address(this));
-        require(allowance >= amount, 'Not enough allowance');
+        //check if allowance enough for all wills
+        require(allowance >= amount + allWillsOwnerAmountThisToken, 'dWill: Not enough allowance');
         uint256 _dataLength = inheritanceData.length;
         //create new data
         InheritanceData memory _data = InheritanceData(
@@ -47,7 +48,7 @@ contract TheWill is IHeritage {
             heir,
             token,
             timeWhenWithdraw,
-            timeBetweenWithdrawAndStart,
+            timeWhenWithdraw - block.timestamp,
             amount,
             false       //done
         );
@@ -83,7 +84,7 @@ contract TheWill is IHeritage {
     ///@param ID of the will that needs to reset timers
     function resetTimersAtOne(uint256 ID) public {
         InheritanceData memory _data = inheritanceData[ID];
-        require(_data.owner == msg.sender, "Heritage: You not owner");
+        require(_data.owner == msg.sender, "dWill: You not owner");
         uint256 _newTimeWhenWithdraw = _data.timeBetweenWithdrawAndStart + block.timestamp;
         _data.timeWhenWithdraw = _newTimeWhenWithdraw;
         inheritanceData[ID] = _data;
@@ -100,10 +101,10 @@ contract TheWill is IHeritage {
     ///@dev we are also updating the time between the withdrawal of funds and the start, because the new withdrawal time will be increased
     function updateWillTimeWhenWithdraw(uint256 ID, uint256 newTime) public {
         InheritanceData memory _data = inheritanceData[ID];
-        require(_data.owner == msg.sender, "Heritage: You not owner");
-        require(block.timestamp <= _data.timeWhenWithdraw, "Heritage: Time is over yet");
-        require(newTime > block.timestamp, "Heritage: Time when withdraw is lower then now");
-        require(_data.done == false, "Heritage: Already withdrawn");
+        require(_data.owner == msg.sender, "dWill: You not owner");
+        require(block.timestamp <= _data.timeWhenWithdraw, "dWill: Time is over yet");
+        require(newTime > block.timestamp, "dWill: Time when withdraw is lower then now");
+        require(_data.done == false, "dWill: Already withdrawn");
         //get time when created
         uint256 _timeWhenCreated = _data.timeWhenWithdraw - _data.timeBetweenWithdrawAndStart;
         _data.timeWhenWithdraw = newTime;
@@ -118,11 +119,11 @@ contract TheWill is IHeritage {
     ///@param _heir new heir of the will
     function updateAnHeir(uint256 ID, address _heir) public {
         InheritanceData memory _data = inheritanceData[ID];
-        require(_data.owner == msg.sender, "Heritage: You not owner");
-        require(_data.heir != _heir, "Heritage: Same heir");
-        require(_data.heir != address(0), "Heritage: Heir is address(0)");
-        require(block.timestamp <= _data.timeWhenWithdraw, "Heritage: Time is over yet");
-        require(_data.done == false, "Heritage: Already withdrawn");
+        require(_data.owner == msg.sender, "dWill: You not owner");
+        require(_data.heir != _heir, "dWill: Same heir");
+        require(_data.heir != address(0), "dWill: Heir is address(0)");
+        require(block.timestamp <= _data.timeWhenWithdraw, "dWill: Time is over yet");
+        require(_data.done == false, "dWill: Already withdrawn");
         uint256[] memory _inheritancesHeir = inheritancesHeir[_data.heir];
         for (uint256 i; i < _inheritancesHeir.length; i++) {
             if (_inheritancesHeir[i] == ID) {
@@ -141,15 +142,15 @@ contract TheWill is IHeritage {
     ///@param amount new amount of the will
     function updateAmount(uint256 ID, uint256 amount) public {
         InheritanceData memory _data = inheritanceData[ID];
-        require(_data.owner == msg.sender, "Heritage: You not owner");
-        require(block.timestamp <= _data.timeWhenWithdraw, "Heritage: Time is over yet");
-        require(_data.done == false, "Heritage: Already withdrawn");
-        require(amount != 0, "Heritage: Amount 0");
-        require(amount != _data.amount, "Heritage: Amount is the same");
+        require(_data.owner == msg.sender, "dWill: You not owner");
+        require(block.timestamp <= _data.timeWhenWithdraw, "dWill: Time is over yet");
+        require(_data.done == false, "dWill: Already withdrawn");
+        require(amount != 0, "dWill: Amount 0");
+        require(amount != _data.amount, "dWill: Amount is the same");
         IERC20 _token = IERC20(_data.token);
         if (amount > _data.amount) {
             uint256 allowance = _token.allowance(msg.sender, address(this));
-            require(allowance >= amount, 'Not enough allowance');
+            require(allowance >= amount, 'dWill: Not enough allowance');
         }
         _data.amount = amount;
         inheritanceData[ID] = _data;
@@ -189,9 +190,8 @@ contract TheWill is IHeritage {
     ///@dev we're also updating inheritancesOwner and inheritancesHeir and transfering token to owner
     function removeWill(uint256 ID) public {
         InheritanceData memory _data = inheritanceData[ID];
-        require(_data.owner == msg.sender, "Heritage: You not owner");
-        require(block.timestamp <= _data.timeWhenWithdraw, "Heritage: Time is over yet");
-        require(_data.done == false, "Heritage: Already withdrawn");
+        require(_data.owner == msg.sender, "dWill: You not owner");
+        require(_data.done == false, "dWill: Already withdrawn");
         uint256[] memory _inheritancesOwner = inheritancesOwner[msg.sender];
         uint256[] memory _inheritancesHeir = inheritancesHeir[_data.heir];
         for (uint256 i; i < _inheritancesOwner.length; i++) {
@@ -215,9 +215,9 @@ contract TheWill is IHeritage {
     ///@dev we're also updating inheritancesOwner and inheritancesHeir
     function withdraw(uint256 ID) public {
         InheritanceData memory _data = inheritanceData[ID];
-        require(msg.sender == _data.heir, "Heritage: You not heir");
-        require(block.timestamp >= _data.timeWhenWithdraw, "Heritage: Time is not over yet");
-        require(_data.done == false, "Heritage: Already withdrawn");
+        require(msg.sender == _data.heir, "dWill: You not heir");
+        require(block.timestamp >= _data.timeWhenWithdraw, "dWill: Time is not over yet");
+        require(_data.done == false, "dWill: Already withdrawn");
         _data.done = true;
         uint256[] memory _inheritancesOwner = inheritancesOwner[_data.owner];
         uint256[] memory _inheritancesHeir = inheritancesHeir[_data.heir];
@@ -249,6 +249,21 @@ contract TheWill is IHeritage {
         }
         emit Withdraw(ID, _data.owner, msg.sender, block.timestamp, amount);
         inheritanceData[ID] = _data;
+    }
+
+    ///@notice returns all user's wills amount
+    ///@param owner owner of the wills
+    ///@return uint256 amount
+    function getAllWillsAmountThisToken(address owner, address token) public view returns(uint256) {
+        uint256[] memory _inheritancesOwner = inheritancesOwner[owner];
+        uint256 _amount;
+        for (uint256 i; i < _inheritancesOwner.length; i++) {
+            InheritanceData memory _data = inheritanceData[_inheritancesOwner[i]];
+            if (token == _data.token) {
+                _amount += inheritanceData[_inheritancesOwner[i]].amount;
+            } 
+        }
+        return _amount;
     }
 
     ///@notice returns all user's wills

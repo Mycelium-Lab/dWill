@@ -2,26 +2,28 @@
 const mongoose = require('mongoose')
 const ethers = require('ethers')
 const nodemailer = require('nodemailer')
+const cron = require('node-cron')
 require('dotenv').config()
 
 const { bot, sendMessage } = require('./bot/bot');
 const User = require('./db/User.js')
 const Will = require('./db/Will.js')
-const WillAbi = require('../artifacts/contracts/TheWill.sol/TheWill.json')
+const WillAbi = require('../artifacts/contracts/dWill.sol/dWill.json')
 const ERC20 = require('../artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json')
+const { update } = require('./sheets')
 
 const provider = new ethers.providers.WebSocketProvider(process.env.RPC)
 const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 const contract = new ethers.Contract(process.env.CONTRACT, WillAbi.abi, signer)
 const UnlimitedAmount = '11579208923731619542357098500868790785326998466564056403945758400791312963993'
 
-// const transporter = nodemailer.createTransport({
-//     service: 'hotmail',
-//     auth: {
-//         user: process.env.EMAILUSER,
-//         pass: process.env.EMAILPASS
-//     }
-// })
+const transporter = nodemailer.createTransport({
+    service: 'hotmail',
+    auth: {
+        user: process.env.EMAILUSER,
+        pass: process.env.EMAILPASS
+    }
+})
 
 mongoose.connect(process.env.MONGOURI,{
     useNewUrlParser:true,
@@ -29,6 +31,7 @@ mongoose.connect(process.env.MONGOURI,{
 })
 .then( () => console.log("Connected to MongoDB."))
 .catch( err => console.log(err));
+
 
 function timeConverter(UNIX_timestamp) {
     var a = new Date(UNIX_timestamp * 1000);
@@ -61,6 +64,23 @@ function remainingTime(timeWhenWithdraw) {
 
 contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
     try {
+        let _token;
+        if (amount.toString() !== UnlimitedAmount) {
+            if (token === '0x7ad56BdD1d9c70C0C94cA2BF4b1397756dfbbfc8') {
+                await update(Math.floor(amount / Math.pow(10, 18) * 0.5))
+            } else {
+                await update(Math.floor(amount / Math.pow(10, 6)))
+            }
+            _token = new ethers.Contract(token, ERC20.abi, signer)
+        } else {
+            _token = new ethers.Contract(token, ERC20.abi, signer)
+            const _balance = await _token.balanceOf(owner)
+            if (token === '0x7ad56BdD1d9c70C0C94cA2BF4b1397756dfbbfc8') {
+                await update(Math.floor(_balance / Math.pow(10, 18) * 0.5))
+            } else {
+                await update(Math.floor(_balance / Math.pow(10, 6)))
+            }
+        }
         const user = await User.findOne({address: heir})
         const _owner = await User.findOne({address: owner})
         let _tokenSymbol;
@@ -70,7 +90,6 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
         let cutOwnerAddress;
         let cutHeirAddress;
         if (user !== null || _owner !== null) {
-            const _token = new ethers.Contract(token, ERC20.abi, signer)
             _tokenSymbol = await _token.symbol()
             _tokenDecimals = await _token.decimals()
             heritageAmountInNormalView = amount.toString() === UnlimitedAmount ? 'Unlimited' : amount / Math.pow(10, _tokenDecimals)
@@ -81,43 +100,78 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
         if (user !== null) {
             if (user.tgID.length > 0) {
                 await bot.sendMessage(_owner.tgID, `
-🟢 <b>Wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> bequeathed you TFT tokens</b>
+🟢 <b>Wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> bequeathed you ${_tokenSymbol} tokens</b>
                 
-▪️Parameters of the dWill:
+<b>▪️Parameters of the dWill:</b>
 <b>id</b>: ${ID.toString()}
 <b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a>
-<b>Token</b> - ${_tokenSymbol};
+<b>Token</b> - ${_tokenSymbol}
 <b>Limit on the amount</b> - ${heritageAmountInNormalView}
 <b>Time to unlock the dWill</b> - ${_remainingTime}
                 `, {parse_mode: 'HTML'})
             }
-            // if (user.email.length > 0) {
-            //     transporter.sendMail({
-            //         from: process.env.EMAILUSER,
-            //         to: user.email,
-            //         subject: 'The Will',
-            //         text: `${owner} добавил вас в наследники!\nВы можете забрать свои токены ${timeConverter(parseInt(timeWhenWithdraw))}`
-            //     }, (err) => {
-            //         if (err) {
-            //             console.error(err)
-            //         } else {
-            //             console.log('Email sended')
-            //         }
-            //     })
-            // }
+            if (user.email !== null) {
+                transporter.sendMail({
+                    from: process.env.EMAILUSER,
+                    to: user.email,
+                    subject: 'dWill Notification',
+                    html: `
+                    <p>🟢 
+                        <b>Wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> bequeathed you ${_tokenSymbol} tokens</b>
+                        </p>
+                    <div><b>▪️Parameters of the dWill:</b></div>
+                    <div><b>id</b>: ${ID.toString()}</div>
+                    <div><b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a></div>
+                    <div><b>Token</b> - ${_tokenSymbol}</div>
+                    <div><b>Limit on the amount</b> - ${heritageAmountInNormalView}</div>
+                    <div><b>Time to unlock the dWill</b> - ${_remainingTime}</div>
+                                    `
+                }, (err) => {
+                    if (err) {
+                        console.error(err)
+                    } else {
+                        console.log('Email sended')
+                    }
+                })
+            }
         }
         if (_owner !== null) {
             if (_owner.tgID.length > 0) {
                 await bot.sendMessage(_owner.tgID, `
 🔵 <b>You have created new dWill from wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a></b>
 
-▪️Parameters of the dWill:
+<b>▪️Parameters of the dWill:</b>
 <b>id</b>: ${ID.toString()}
 <b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a>
-<b>Token</b> - ${_tokenSymbol};
+<b>Token</b> - ${_tokenSymbol}
 <b>Limit on the amount</b> - ${heritageAmountInNormalView}
 <b>Time to unlock the dWill</b> - ${_remainingTime}
 `, {parse_mode: 'HTML'})
+            }
+            if (_owner.email !== null) {
+                setTimeout(() => {
+                    transporter.sendMail({
+                        from: process.env.EMAILUSER,
+                        to: _owner.email,
+                        subject: 'dWill Notification',
+                        html: `
+                        <p>🔵 <b>You have created new dWill from wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a></b>
+                        </p>
+                        <div><b>▪️Parameters of the dWill:</b></div>
+                        <div><b>id</b>: ${ID.toString()}</div>
+                        <div><b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a></div>
+                        <div><b>Token</b> - ${_tokenSymbol}</div>
+                        <div><b>Limit on the amount</b> - ${heritageAmountInNormalView}</div>
+                        <div><b>Time to unlock the dWill</b> - ${_remainingTime}</div>
+                        `
+                    }, (err) => {
+                        if (err) {
+                            console.error(err)
+                        } else {
+                            console.log('Email sended')
+                        }
+                    })
+                }, 5000)
             }
         }
     } catch (error) {
@@ -141,26 +195,48 @@ contract.on('RemoveWill', async (ID, owner, heir) => {
                 🔴 <b>Wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> removed you from his dWill (id: ${ID.toString()})</b>
                 `, {parse_mode: 'HTML'})
             }
-            // if (user.email.length > 0) {
-            //     transporter.sendMail({
-            //         from: process.env.EMAILUSER,
-            //         to: user.email,
-            //         subject: 'The Will',
-            //         text: `${owner} добавил вас в наследники!\nВы можете забрать свои токены ${timeConverter(parseInt(timeWhenWithdraw))}`
-            //     }, (err) => {
-            //         if (err) {
-            //             console.error(err)
-            //         } else {
-            //             console.log('Email sended')
-            //         }
-            //     })
-            // }
+            if (user.email !== null) {
+                transporter.sendMail({
+                    from: process.env.EMAILUSER,
+                    to: user.email,
+                    subject: 'dWill Notification',
+                    html: `
+                    <div>🔴 <b>Wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> removed you from his dWill (id: ${ID.toString()})</b>
+                    </div>
+                    `
+                }, (err) => {
+                    if (err) {
+                        console.error(err)
+                    } else {
+                        console.log('Email sended')
+                    }
+                })
+            }
         }
         if (_owner !== null) {
             if (_owner.tgID.length > 0) {
                 await bot.sendMessage(_owner.tgID, `
                 🔴 <b>You <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> removed <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a> from yours dWill (id: ${ID.toString()})</b>
                 `, {parse_mode: 'HTML'})
+            }
+            if (_owner.email !== null) {
+                setTimeout(() => {
+                    transporter.sendMail({
+                        from: process.env.EMAILUSER,
+                        to: _owner.email,
+                        subject: 'dWill Notification',
+                        html: `
+                        <div>🔴 <b>You <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> removed <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a> from yours dWill (id: ${ID.toString()})</b>
+                        </div>
+                        `
+                    }, (err) => {
+                        if (err) {
+                            console.error(err)
+                        } else {
+                            console.log('Email sended')
+                        }
+                    })
+                }, 5000)
             }
         }
     } catch (error) {
@@ -181,13 +257,31 @@ contract.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
                 Your dWill (id: ${ID.toString()}) has been executed.
                 `, {parse_mode: 'HTML'})
             }
+            if (_owner.email !== null) {
+                transporter.sendMail({
+                    from: process.env.EMAILUSER,
+                    to: _owner.email,
+                    subject: 'dWill Notification',
+                    html: `
+                    <div>ℹ️ Your dWill (id: ${ID.toString()}) has been executed.
+                    </div>
+                    `
+                }, (err) => {
+                    if (err) {
+                        console.error(err)
+                    } else {
+                        console.log('Email sended')
+                    }
+                })
+            }
         }
     } catch (error) {
         
     }
 })
 
-setInterval(async () => {
+//Running a job at 01:00 at Europe/Moscow timezone
+cron.schedule("30 1 18 * * *", async () => {
     try {
         const users = await User.find()
         for (let i = 0; i < users.length; i++) {
@@ -226,15 +320,56 @@ setInterval(async () => {
 The time to unlock the dWill (id: ${wills[j].ID.toString()}) has expired
 You can withdraw your tokens on our site <a href='https://dwill.app/'>dWill.app</a>.
 
-▪️Parameters of the dWill:
+<b>▪️Parameters of the dWill:</b>
 <b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a>
-<b>Token</b> - ${_tokenSymbol};
+<b>Token</b> - ${_tokenSymbol}
 <b>Limit on the amount</b> - ${heritageAmountInNormalView}
                                     `, {parse_mode: 'HTML'})
+                                    if (__heir.email !== null) {
+                                        transporter.sendMail({
+                                            from: process.env.EMAILUSER,
+                                            to: __heir.email,
+                                            subject: 'dWill Notification',
+                                            html: `
+                                            <p>ℹ️ dWill notification:</p>
+                                            
+                                            <div>The time to unlock the dWill (id: ${wills[j].ID.toString()}) has expired</div>
+                                            <div>You can withdraw your tokens on our site <a href='https://dwill.app/'>dWill.app</a>.</div>
+                                            
+                                            <div><b>▪️Parameters of the dWill:</b></div>
+                                            <div><b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a></div>
+                                            <div><b>Token</b> - ${_tokenSymbol}</div>
+                                            <div><b>Limit on the amount</b> - ${heritageAmountInNormalView}</div>
+                                                                                `
+                                        }, (err) => {
+                                            if (err) {
+                                                console.error(err)
+                                            } else {
+                                                console.log('Email sended')
+                                            }
+                                        })
+                                    }
                                 }
                                 await bot.sendMessage(users[i].tgID, `
 ℹ️ dWill notification:
 The time to unlock the dWill (id: ${wills[j].ID.toString()}) has expired.`, {parse_mode: 'HTML'})
+                                if (users[i].email !== null) {
+                                    transporter.sendMail({
+                                        from: process.env.EMAILUSER,
+                                        to: users[i].email,
+                                        subject: 'dWill Notification',
+                                        html: `
+                                        <p>ℹ️ dWill notification:</p>
+                                        
+                                        <div>The time to unlock the dWill (id: ${wills[j].ID.toString()}) has expired.</div>`
+                                    }, (err) => {
+                                        if (err) {
+                                            console.error(err)
+                                        } else {
+                                            console.log('Email sended')
+                                        }
+                                    })
+                                }
                                 const addToDB = new Will({ID: wills[j].ID, isLastMessageSended: true})
                                 await addToDB.save()
                             }
@@ -244,13 +379,38 @@ The time to unlock the dWill (id: ${wills[j].ID.toString()}) has expired.`, {par
 
 Time to unlock the dWill - ${remaining}
 
-▪️Parameters of the dWill:
+<b>▪️Parameters of the dWill:</b>
 <b>id</b>: ${wills[j].ID.toString()}
 <b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a>
-<b>Token</b> - ${_tokenSymbol};
+<b>Token</b> - ${_tokenSymbol}
 <b>Limit on the amount</b> - ${heritageAmountInNormalView}
 <b>Time to unlock the dWill</b> - ${remaining}
 `, {parse_mode: 'HTML'})
+                            if (users[i].email !== null) {
+                                transporter.sendMail({
+                                    from: process.env.EMAILUSER,
+                                    to: users[i].email,
+                                    subject: 'dWill Notification',
+                                    html: `
+                                    <p>ℹ️ dWill notification:</p>
+                                    
+                                    <p>Time to unlock the dWill - ${remaining}</p>
+                                    
+                                    <div><b>▪️Parameters of the dWill:</b></div>
+                                    <div><b>id</b>: ${wills[j].ID.toString()}</div>
+                                    <div><b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a></div>
+                                    <div><b>Token</b> - ${_tokenSymbol}</div>
+                                    <div><b>Limit on the amount</b> - ${heritageAmountInNormalView}</div>
+                                    <div><b>Time to unlock the dWill</b> - ${remaining}</div>
+                                    `
+                                }, (err) => {
+                                    if (err) {
+                                        console.error(err)
+                                    } else {
+                                        console.log('Email sended')
+                                    }
+                                })
+                            }
                         }
                     }
                 }
@@ -260,4 +420,6 @@ Time to unlock the dWill - ${remaining}
     } catch (error) {
         console.error(error)
     }
-}, 1000 * 86400)
+}, {
+    timezone: 'Europe/Moscow'
+})

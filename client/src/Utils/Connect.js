@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import { ethers } from "ethers";
+import Button from 'react-bootstrap/esm/Button';
 
 class Connect extends Component {
     constructor(props) {
@@ -44,13 +45,7 @@ class Connect extends Component {
 
     renderMetamask() {
         try {
-            if (!window.ethereum) {
-                return (
-                    <div>
-                        <a href='https://metamask.io/' target="_blank" rel="noreferrer">Установите кошелек</a>
-                    </div>
-                )
-            }
+            if (!window.ethereum) return;
             const provider = new ethers.providers.Web3Provider(window.ethereum)
             provider.send("eth_requestAccounts", [])
                 .then((accounts) => {

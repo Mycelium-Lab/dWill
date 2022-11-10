@@ -236,11 +236,9 @@ class Inheritances extends Component {
                     {
                         this.state.inheritances.map((v) => {
                             return (
-                                <div>
-                                <li key={v.ID} className="your_inheritances_li">
+                                <li key={v.ID}>
                                     <div className='your_inheritances_ul-text'>
                                     <h3 className='your_inheritances-h3'>Your inheritances</h3>
-                                    <hr/>
                                     <span>id: {v.ID.toString()} </span>
                                     <span>
                                     {
@@ -259,7 +257,6 @@ class Inheritances extends Component {
                                     }} className="btn_btn-success">
                                     Receive</button></div>
                                 </li>
-                                </div>
                             )
                         })
                     }

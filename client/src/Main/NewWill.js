@@ -6,7 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 import TheWill from '../Contract/TheWill.json'
 
 import { ethers } from "ethers";
-import { TheWillAddress, TokenAddress } from '../Utils/Constants';
+import { TheWillAddress, TokenAddress, UnlimitedAmount } from '../Utils/Constants';
 
 import ERC20 from '../Contract/ERC20.json'
 const styles = {
@@ -32,8 +32,9 @@ class NewWill extends Component {
             signer: null,
             signerAddress: '',
             tokenAddress: '',
-            amount: '0',
+            amount: UnlimitedAmount,
             show: false,
+            showWalletNotExist: false,
             network: '',
             approved: false,
             tokensValue: '',
@@ -46,7 +47,7 @@ class NewWill extends Component {
             showConfirm: false,
             showAwait: false,
             showError: false,
-            isUnlimitedAmount: false,
+            isUnlimitedAmount: true,
             errortext: '',
             notificationsOn: false
         };
@@ -112,15 +113,13 @@ class NewWill extends Component {
             const { contract, heirAddress, amount, year, month, day, isUnlimitedAmount, tokensValue, signer } = this.state
             const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
             let date = new Date()
-            let timeUnixNow = Math.floor(new Date().getTime() / 1000)
             let timeUnixWhenWithdraw = 0;
             date = new Date(date.setFullYear(date.getFullYear()+parseInt(year)))
             date = new Date(date.setMonth(date.getMonth()+parseInt(month)))
             date = date.addDays(parseInt(day))
             timeUnixWhenWithdraw = Math.floor(date.getTime() / 1000)
-            const timeBetweenWithdrawAndStart = timeUnixWhenWithdraw - timeUnixNow
             let sendTo = isUnlimitedAmount === true ? amount : BigInt(amount * Math.pow(10, await _token.decimals())).toString()
-            await contract.addNewWill(heirAddress, tokensValue, timeUnixWhenWithdraw.toString(), timeBetweenWithdrawAndStart.toString(), sendTo)
+            await contract.addNewWill(heirAddress, tokensValue, timeUnixWhenWithdraw.toString(), sendTo)
                 .then(async (tx) => {
                     this.handleShowAwait()
                     await tx.wait()
@@ -149,13 +148,19 @@ class NewWill extends Component {
 
     async onChangeAmount(event) {
         try {
-            const { contractAddress, signer, signerAddress, tokensValue, amount } = this.state
+            const { contractAddress, signer, signerAddress, tokensValue, amount, contract } = this.state
             this.setState({
                 amount: event.target.value
             })
             const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
-            const allowance = (await _token.allowance(signerAddress, contractAddress)).toString()
-            this.changeApproved(allowance, event.target.value, await _token.decimals())
+            const allowance = await _token.allowance(signerAddress, contractAddress)
+            const decimals = await _token.decimals()
+            const allWillsAmountThisToken = await contract.getAllWillsAmountThisToken(signerAddress, _token.address)
+            this.changeApproved(
+                BigInt(allowance), 
+                BigInt(allWillsAmountThisToken) + BigInt(event.target.value * Math.pow(10, decimals)), 
+                decimals
+            )
         } catch (error) {
             if (error.message.includes('resolver or addr is not configured')) {
                 this.setState({
@@ -168,15 +173,16 @@ class NewWill extends Component {
 
     async onChangeUnlimitedAmount() {
         try {
-            const { contractAddress, signer, signerAddress, tokensValue, amount, isUnlimitedAmount } = this.state
+            const { contractAddress, signer, signerAddress, tokensValue, amount, isUnlimitedAmount, contract } = this.state
             //max amount uint256
             this.setState({
-                amount: isUnlimitedAmount === false ? '11579208923731619542357098500868790785326998466564056403945758400791312963993' : '0',
+                amount: isUnlimitedAmount === false ? UnlimitedAmount : '0',
                 isUnlimitedAmount: isUnlimitedAmount === true ? false : true,
             })
             const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
-            const allowance = (await _token.allowance(signerAddress, contractAddress)).toString()
-            this.changeApproved(allowance, this.state.amount, await _token.decimals())
+            const allowance = await _token.allowance(signerAddress, contractAddress)
+            const allWillsAmountThisToken = await contract.getAllWillsAmountThisToken(signerAddress, _token.address)
+            this.changeApproved(BigInt(allowance), BigInt(allWillsAmountThisToken) + BigInt(this.state.amount))
         } catch (error) {
             if (error.message.includes('resolver or addr is not configured')) {
                 this.setState({
@@ -190,19 +196,28 @@ class NewWill extends Component {
     }
 
     async onSetMaxAmount() {
-        const { contractAddress, signer, signerAddress, tokensValue, amount } = this.state
+        const { contractAddress, signer, signerAddress, tokensValue, amount, contract } = this.state
         const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
+        const allowance = await _token.allowance(signerAddress, contractAddress)
+        const decimals = await _token.decimals()
+        const allWillsAmountThisToken = await contract.getAllWillsAmountThisToken(signerAddress, _token.address)
         await _token.balanceOf(signerAddress)
             .then(async (balance) => {
+                console.log(BigInt(balance) - BigInt(allWillsAmountThisToken))
                 this.setState({
-                    amount: (balance / Math.pow(10, await _token.decimals())).toString()
+                    amount: (Math.floor((balance - allWillsAmountThisToken) / Math.pow(10, await _token.decimals()))).toString()
                 })
+                this.changeApproved(
+                    BigInt(allowance), 
+                    BigInt(balance) - BigInt(allWillsAmountThisToken), 
+                    decimals
+                )
             })
     }
 
     changeApproved(allowance, amount, decimals) {
         try {
-            if (parseInt(allowance) >= parseInt((amount * Math.pow(10, decimals))) && parseInt(allowance) !== 0) {
+            if (allowance >= amount) {
                 this.setState({
                     approved: true
                 })
@@ -223,12 +238,19 @@ class NewWill extends Component {
 
     async onChangeTokens(event) {
         try {
-            const { contractAddress, signer, signerAddress, tokenAddress, amount } = this.state
+            const { contractAddress, signer, signerAddress, tokenAddress, amount, contract } = this.state
             const _token = new ethers.Contract(event.target.value, ERC20.abi, signer)
             this.setState({
                 tokensValue: event.target.value
             })
-            const allowance = (await _token.allowance(signerAddress, contractAddress)).toString()
+            const allowance = await _token.allowance(signerAddress, contractAddress)
+            const decimals = await _token.decimals()
+            const allWillsAmountThisToken = await contract.getAllWillsAmountThisToken(signerAddress, _token.address)
+            this.changeApproved(
+                BigInt(allowance), 
+                BigInt(allWillsAmountThisToken) + BigInt(amount === UnlimitedAmount ? UnlimitedAmount : amount * Math.pow(10, decimals)), 
+                decimals
+            )
             this.changeApproved(allowance, amount)
         } catch (error) {
             console.log(error)
@@ -309,13 +331,45 @@ class NewWill extends Component {
     handleShowError = this.handleShowError.bind(this)
     handleCloseError = this.handleCloseError.bind(this)
 
+    handleShowWalletNotExist = () => this.setState({showWalletNotExist: true})
+    handleCloseWalletNotExist = () => this.setState({showWalletNotExist: false})
+
+    handleShowWalletNotExist = this.handleShowWalletNotExist.bind(this)
+    handleCloseWalletNotExist = this.handleCloseWalletNotExist.bind(this)
+
     render() {
         return(
         <div>
-            <Button variant="primary" className="btn-new-will" onClick={this.handleShow}>
+            <Button variant="primary" className="btn-new-will" onClick={this.props.isEthereumNull === false ? this.handleShow : this.handleShowWalletNotExist}>
                 New Will
             </Button>
             <div className='modal_fade'></div>
+            <Modal show={this.state.showWalletNotExist} onHide={this.handleCloseWalletNotExist} className='modal_content' style={{
+                    position: 'absolute',
+                    width: '700px',
+                    left: '25%',
+                    top: '40%',
+                    background: '#1B232A',
+                }}>
+                <Modal.Header className='modal_new_will'> 
+                <Button className='bnt_close' onClick={this.handleCloseWalletNotExist}>
+                    x
+                </Button>
+                <Modal.Title className='modal_title'>Wallet Not Exist</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className='modal_new_will'>
+                    <div className='title_trusted-wallet'>To create a dWill connect a Web3 wallet</div>
+                    <button className='btn-new-will'>
+                        <img src="" alt=""/>
+                        Connect MetaMask
+                    </button>
+                    <p className='title_trusted-wallet'>What is a wallet?</p>
+                    <p className='title_trusted-wallet'>Wallets are used to send, receive, and store digital
+                        assets. Connecting a wallet lets you interact with apps.
+                        <a href="https://metamask.io/" target="_blank">Install the wallet.</a>
+                    </p>
+                </Modal.Body>
+            </Modal>
             <Modal show={this.state.show} onHide={this.handleClose} className='modal_content' style={styles.modal_new_will}>
                 <Modal.Header className='modal_new_will'> 
                 <Button className='bnt_close' onClick={this.handleClose}>
@@ -325,7 +379,7 @@ class NewWill extends Component {
                 <hr />  
                 </Modal.Header>
                 <Modal.Body>
-                    <div className='modal_will-tokens'>
+                <div className='modal_will-tokens'>
                     <div>
                         Я завещаю мои
                     </div>
@@ -431,7 +485,6 @@ class NewWill extends Component {
             </Modal>
             <div className='overlay'></div>
         </div>
-        
         )
     }
 }

@@ -7,14 +7,14 @@
 const hre = require("hardhat");
 
 async function main() {
-  const dWill = await hre.ethers.getContractFactory("dWill");
+    const signer = await hre.ethers.getSigner()
   const Token = await hre.ethers.getContractFactory("TokenForTests");
-  const _dWill = await dWill.deploy()
-  const tokenForTests = await Token.deploy("TokenForTests", "TFT")
-  await _dWill.deployed()
-  await tokenForTests.deployed()
-  console.log(`dWill: ${_dWill.address}`)
-  console.log(`Token: ${tokenForTests.address}`)
+  const tokenForTests = Token.attach("0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512")
+  const allowanceBefore = await tokenForTests.allowance(signer.address, '0x5FbDB2315678afecb367f032d93F642f64180aa3')
+  await tokenForTests.decreaseAllowance('0x5FbDB2315678afecb367f032d93F642f64180aa3', allowanceBefore.toString())
+  const allowanceAfter = await tokenForTests.allowance(signer.address, '0x5FbDB2315678afecb367f032d93F642f64180aa3')
+  console.log(`Allowance Before: ${allowanceBefore.toString()}`)
+  console.log(`Allowance After: ${allowanceAfter.toString()}`)
 }
 
 // We recommend this pattern to be able to use async/await everywhere
