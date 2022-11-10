@@ -683,8 +683,6 @@ class Wills extends Component {
         return(
             // <div id='wills'>
             <div className='wills_list-my-wills'>
-            <h3 className='wills_list_h3'>Your wills</h3>
-            <hr/>
             {
                 this.state.wills.length > 0 
                 ?
@@ -693,21 +691,26 @@ class Wills extends Component {
                         this.state.wills.map((v) => {
                             return (
                                 <div key={v.ID} className="your-wills">
-                                    <div>
-                                        <span>id: {v.ID.toString()} </span>
+                                    <div className='your-wills_text'>
+                                    <h3 className='wills_list_h3'>Your wills</h3>
+                                    <hr/>
+                                        {/* <span>id: {v.ID.toString()} </span> */}
                                         <span>
                                             You bequeathed up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited': (v.amount / Math.pow(10, v.decimals)).toString()} of your {v.symbol} from {this.state.network} chain to wallet
                                         </span>
                                         <a href={`https://mumbai.polygonscan.com/address/${v.heir}`} target="_blank" rel="noreferrer">
                                             {` ${v.heir}`}
                                         </a>
-                                    </div>
-                                    <div>
-                                        Inheritance can be harvest if the period of inactivity is longer than {this.timeBetweenWithdrawAndStartConverter(v.timeBetweenWithdrawAndStart)}
-                                    </div>
-                                    <div>
+                                    <span>
+                                    <p>
+                                    Inheritance can be harvest if the period of inactivity is longer than <p className='your-wills_date'>{this.timeBetweenWithdrawAndStartConverter(v.timeBetweenWithdrawAndStart)}</p>
+                                    </p>
+                                    <p className='your-wills_remain'>
                                         ( Remain: {this.remainingTime(v.timeWhenWithdraw.toString())})
+                                    </p>
+                                    </span>
                                     </div>
+                                    
                                     <button type="button" className="btn_btn-danger" value={
                                         JSON.stringify({
                                             ID: v.ID.toString(), 
@@ -723,7 +726,7 @@ class Wills extends Component {
                                     onClick={this.state.showEdit == false ? this.handleShowEdit : this.handleCloseEdit}>
                                         <img src="content/edit.svg"/>
                                         Edit</button>
-                                    <button type="button" className="btn_green" value={v.ID.toString()} onClick={this.cancelWill}>
+                                    <button type="button" className="btn_green" id='' value={v.ID.toString()} onClick={this.cancelWill}>
                                         <img src="content/revoke.svg"/>  
                                         Revoke</button>
                                 </div>
@@ -807,7 +810,7 @@ class Wills extends Component {
                     Edit
                 </Button>
                 <Button onClick={this.handleCloseEdit}>
-                    x
+                <img src="content/img/close.svg"/>  
                 </Button>
                 </Modal.Footer>
             </Modal>

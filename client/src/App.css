@@ -345,10 +345,8 @@ margin-bottom: 44px;
 }
 .modal_time-will {
   display: flex;
-  /* margin-left: 51px; */
 }
 .modal_title-time-will {
-  /* margin-left: 51px; */
   color: #C1C7CD;
   font-size: 18px;
   margin-bottom: 20px;
@@ -372,12 +370,11 @@ margin-bottom: 44px;
   margin-left: 7px;
 }
 .input-group-time {
-  width: 100px;
+  /* padding: 8px 40px 11px 10px; */
   background: #161C22;
   border-radius: 10px;
   color:#4285F4;
   border: none;
-  padding: 9px;
   box-shadow: -4px -6px 17px 1px rgba(22, 28, 34, 0.5);
 }
 .input-group-time-name {
@@ -435,10 +432,13 @@ margin-bottom: 44px;
   gap: 25px;
 }
 .btn_reset-timers {
-  width: 1172px;
-  height: 80px;
-  padding-top: 16px;
-  padding-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 400px;
+  font-family: 'SF UI Text';
+  padding: 15px 34px 19px 34px;
   background: #5ED5A8;
   border: 1px solid #5ED5A8;
   box-shadow: 0px 4px 4px rgba(94, 213, 168, 0.25);
@@ -449,15 +449,6 @@ margin-bottom: 44px;
   font-family: 'SF UI Text';
   margin-top: 63px;
 }
-.btn_reset-timers-h3 {
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 17px;
-  text-align: center;
-  letter-spacing: 0.0264em;
-  color: #1B1711;
-  margin-top: 5px;
-  }
 .your_inheritances {
   width:600px;
   /* text-align: center; */
@@ -584,10 +575,6 @@ padding-bottom: 20px;
   line-height: 17px;
   letter-spacing: 0.0264em;
   padding-bottom: 27px;
-  /* border-top: 1px solid #3E474F; */
-}
-.your_inheritances_ul-btn {
-  border-top: 1px solid #3E474F
 }
 .input-group-year{
   width: 105px;
@@ -641,5 +628,80 @@ padding-bottom: 20px;
 }
 .wills-list_ul-btn {
   display: flex;
-  border-top: 1px solid #3E474F;
+  /* border-top: 1px solid #3E474F; */
+}
+.modal-confirm {
+  position: absolute;
+  display: flex;
+  align-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 139px;
+  left: 20%;
+  top: 50%;
+  background-color: #1B232A;
+  color: #4285F4;
+  padding: 50px 70px 48px 77px;
+  max-width: 400px;
+  box-shadow: 0px 6px 28px -1px rgba(66, 133, 244, 0.3);
+border-radius: 10px;
+}
+.modal-confirm_h2 {
+  width: 173px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 21px;
+  text-align: center;
+}
+.modal-confirm_text {
+  width: 247px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 21px;
+  text-align: center;
+}
+.modal-await {
+background: #1B232A;
+box-shadow: 0px 6px 28px -1px rgba(94, 213, 168, 0.25);
+border-radius: 10px;
+}
+.modal-await_text {
+  width: 265px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 21px;
+  color: #5ED5A8;
+}
+.btn_reset-timers-h2 {
+width: 142px;
+display: flex;
+font-style: normal;
+font-weight: 400;
+font-size: 20px;
+line-height: 24px;
+}
+.btn_reset-timers-h3 {
+margin-top: 5px;
+max-width: 332px;
+font-style: normal;
+font-weight: 600;
+font-size: 14px;
+line-height: 17px;
+}
+.your-wills_remain {
+  color: #4285F4;
+}
+.your-wills_date {
+  color: #4285F4;
+}
+.your-wills_text {
+  display: flex;
+  flex-direction: column;
+}
+.your_inheritances_li {
+  margin-bottom: 20px;
+  margin-top: 20px;
 }

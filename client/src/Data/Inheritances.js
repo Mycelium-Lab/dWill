@@ -256,6 +256,7 @@ class Inheritances extends Component {
                                 <li key={v.ID} style={{"marginBottom": '10px'}}>
                                     <h3 className='your_inheritances-h3'>Your inheritances</h3>
                                     <div className='your_inheritances_ul-text'>
+                                    <h3 className='your_inheritances-h3'>Your inheritances</h3>
                                     <span>id: {v.ID.toString()} </span>
                                     <span>
                                     {
