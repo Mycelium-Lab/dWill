@@ -523,7 +523,15 @@ class Wills extends Component {
                 })
                 const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
                 const allowance = (await _token.allowance(signerAddress, contractAddress)).toString()
-                this.changeApproved(allowance, (parseFloat(event.target.value) - parseFloat(currentEditBaseAmount)).toString(), currentEditDecimals)
+                this.changeApproved(
+                    BigInt(allowance), 
+                    BigInt(
+                        (parseFloat(event.target.value) - parseFloat(currentEditBaseAmount)) 
+                        * 
+                        Math.pow(10, await _token.decimals())
+                    ),
+                    currentEditDecimals
+                )
             } 
             if (parseFloat(currentEditBaseAmount) > parseFloat(event.target.value)) {
                 this.setState({
@@ -553,7 +561,7 @@ class Wills extends Component {
 
     changeApproved(allowance, amount, decimals) {
         try {
-            if (parseInt(allowance) >= parseInt((amount * Math.pow(10, decimals))) && parseInt(allowance) !== 0) {
+            if (allowance >= amount) {
                 this.setState({
                     approved: true
                 })
@@ -597,9 +605,9 @@ class Wills extends Component {
         showEdit: false, currentEditID: '',
         currentEditHeirAddress: '', currentEditTimeWhenWithdraw: ''
     });
-    handleShowEdit = async (event) => {
+    handleShowEdit = async (params) => {
         try {
-            const data = JSON.parse(event.target.value)
+            const data = JSON.parse(params)
             this.setState({
                 showEdit: true, 
                 currentEditID: data.ID,
@@ -702,17 +710,20 @@ class Wills extends Component {
                                             {` ${v.heir}`}
                                         </a>
                                     <span>
-                                    <p>
+                                    <div>
                                     Inheritance can be harvest if the period of inactivity is longer than <p className='your-wills_date'>{this.timeBetweenWithdrawAndStartConverter(v.timeBetweenWithdrawAndStart)}</p>
-                                    </p>
-                                    <p className='your-wills_remain'>
+                                    </div>
+                                    <div className='your-wills_remain'>
                                         ( Remain: {this.remainingTime(v.timeWhenWithdraw.toString())})
-                                    </p>
+                                    </div>
                                     </span>
                                     </div>
-                                    
-                                    <button type="button" className="btn_btn-danger" value={
-                                        JSON.stringify({
+                                    <div className="btn_btn-danger" 
+                                        onClick={
+                                        this.state.showEdit == false 
+                                        ? 
+                                        () => this.handleShowEdit(
+                                            JSON.stringify({
                                             ID: v.ID.toString(), 
                                             timeWhenWithdraw: v.timeWhenWithdraw.toString(),
                                             timeBetweenWithdrawAndStart: v.timeBetweenWithdrawAndStart.toString(),
@@ -721,11 +732,12 @@ class Wills extends Component {
                                             symbol: v.symbol,
                                             amount: v.amount.toString(),
                                             decimals: v.decimals
-                                        })
-                                    }
-                                    onClick={this.state.showEdit == false ? this.handleShowEdit : this.handleCloseEdit}>
+                                            })
+                                        ) 
+                                        : this.handleCloseEdit}>
                                         <img src="content/edit.svg"/>
-                                        Edit</button>
+                                        Edit
+                                    </div>
                                     <button type="button" className="btn_green" id='' value={v.ID.toString()} onClick={this.cancelWill}>
                                         <img src="content/revoke.svg"/>  
                                         Revoke</button>
@@ -749,14 +761,6 @@ class Wills extends Component {
                     <div>
                         <input type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0"/>
                         <label>Unlimited</label><br/>
-                        {/* <input onChange={this.onChangeAmount} value={this.state.amount} type='number' className="input-group-mb-3" style={
-                            {display: this.state.isUnlimitedAmount === false ? 'block' : 'none'}
-                        }/>
-                        <Button variant="outline-success" className='input-group-mb-3-button' onClick={this.onSetMaxAmount} style={
-                            {display: this.state.isUnlimitedAmount === false ? 'block' : 'none'}
-                        }>
-                            max
-                        </Button> */}
                     </div>
                     <div style={{display: this.state.isUnlimitedAmount === false ? 'block' : 'none'}} className="form-check-input mt-0">
                         <input onChange={this.onChangeAmount} value={this.state.currentEditAmount} type="number" className="input-group mb-3"/>

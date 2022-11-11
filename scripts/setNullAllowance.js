@@ -9,10 +9,10 @@ const hre = require("hardhat");
 async function main() {
     const signer = await hre.ethers.getSigner()
   const Token = await hre.ethers.getContractFactory("TokenForTests");
-  const tokenForTests = Token.attach("0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512")
-  const allowanceBefore = await tokenForTests.allowance(signer.address, '0x5FbDB2315678afecb367f032d93F642f64180aa3')
-  await tokenForTests.decreaseAllowance('0x5FbDB2315678afecb367f032d93F642f64180aa3', allowanceBefore.toString())
-  const allowanceAfter = await tokenForTests.allowance(signer.address, '0x5FbDB2315678afecb367f032d93F642f64180aa3')
+  const tokenForTests = Token.attach("0x7ad56BdD1d9c70C0C94cA2BF4b1397756dfbbfc8")
+  const allowanceBefore = await tokenForTests.allowance(signer.address, '0xc9100D772b0Ddb8D435b54cee1Fe050cf7e5789B')
+  await tokenForTests.decreaseAllowance('0xc9100D772b0Ddb8D435b54cee1Fe050cf7e5789B', allowanceBefore.toString())
+  const allowanceAfter = await tokenForTests.allowance(signer.address, '0xc9100D772b0Ddb8D435b54cee1Fe050cf7e5789B')
   console.log(`Allowance Before: ${allowanceBefore.toString()}`)
   console.log(`Allowance After: ${allowanceAfter.toString()}`)
 }
