@@ -99,7 +99,7 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
         }
         if (user !== null) {
             if (user.tgID.length > 0) {
-                await bot.sendMessage(_owner.tgID, `
+                await bot.sendMessage(user.tgID, `
 🟢 <b>Wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> bequeathed you ${_tokenSymbol} tokens</b>
                 
 <b>▪️Parameters of the dWill:</b>
