@@ -60,7 +60,7 @@ class Connect extends Component {
             } else {
             return (
                 <div>
-                    <div>
+                    {/* <div>
                     {
                         this.state.selectedAddress.slice(0, 6) 
                         + 
@@ -71,9 +71,12 @@ class Connect extends Component {
                             this.state.selectedAddress.length
                         )
                     }
+                    </div> */}
+                    <div>
+                    <img src="./content/buttom-metamask.svg"/> 
                     </div>
                     <div>
-                        <span>{this.state.networkName} Chain </span>
+                    <img scr="./content/button-m.svg"/> 
                     </div>
                 </div>
             );

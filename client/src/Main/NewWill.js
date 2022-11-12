@@ -346,14 +346,14 @@ class NewWill extends Component {
                 <div className='modal_fade'></div>
                 <Modal show={this.state.showWalletNotExist} onHide={this.handleCloseWalletNotExist} className='modal_content' style={{
                     position: 'absolute',
-                    width: '700px',
+                    // width: '700px',
                     left: '25%',
-                    top: '40%',
+                    top: '150px',
                     background: '#1B232A',
                 }}>
                     <Modal.Header className='modal_new_will'>
                         <Button className='bnt_close' onClick={this.handleCloseWalletNotExist}>
-                            x
+                            <img src="./content/close_modal.svg"/>  
                         </Button>
                         <Modal.Title className='modal_title'>Wallet Not Exist</Modal.Title>
                     </Modal.Header>
@@ -370,7 +370,6 @@ class NewWill extends Component {
                         </p>
                     </Modal.Body>
                 </Modal>
-                <div className="modal-wrapper" style={this.state.show === true ? { display: 'none' } : { display: 'block' }}>
                 <Modal show={this.state.show} onHide={this.handleClose} className='modal_content' style={styles.modal_new_will}>
                     <Modal.Header className='modal_new_will'>
                         <Button className='bnt_close' onClick={this.handleClose}>
@@ -392,16 +391,16 @@ class NewWill extends Component {
                             </select>
                             <div>
                             </div>
-                            <input type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
+                            <input type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="checkbox_unlited" />
                             <label>Unlimited</label><br />
-                            <input onChange={this.onChangeAmount} value={this.state.amount} type='number' className="input-group-mb-3" style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} />
-                            <Button variant="outline-success" className='input-group-mb-3-button' onClick={this.onSetMaxAmount} style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }}>
+                            <input onChange={this.onChangeAmount} value={this.state.amount}  type='number' className="input-max" placeholder="Введите сумму" style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} />
+                            <Button variant="outline-success" className='input-max-button' onClick={this.onSetMaxAmount} style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }}>
                                 max
                             </Button>
                         </div>
-                        <div className='modal_wallet'>С кошелька <a href='#' className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a> на сети {this.state.network}</div>
+                        <div className='modal_wallet'>С кошелька <a href='#' className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a> на сети {this.state.network} <img scr="./content/poligun.svg"/></div>
                         <span className='title_trusted-wallet'>Доверенному кошельку</span>
-                        <div><input onChange={this.onChangeHeirAddress} className="input_trusted-wallet" /></div>
+                        <div><input onChange={this.onChangeHeirAddress} required className="input_trusted-wallet " /></div>
                         <div>
                             <div className='modal_title-time-will'>{"При условии что я буду неактивен(неактивна) более чем:"}</div>
                             <div className='modal_time-will'>
@@ -432,15 +431,18 @@ class NewWill extends Component {
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="primary" onClick={this.state.approved === false ? this.approve : null} style={{ "background": this.state.approved === false ? '#5ED5A8' : '#3E474F' }} className='button_make-new-will'>
+                        <div className="button_number_one">
+                        <p>  1. </p><Button variant="primary" onClick={this.state.approved === false ? this.approve : null} style={{ "background": this.state.approved === false ? '#5ED5A8' : '#3E474F' }} className='button_approve'>
                             Approve
                         </Button>
+                        </div>
+                        <div className="button_number_two"> <p className="button_text_number"> 2. </p>
                         <Button variant="primary" onClick={this.state.approved === false ? null : this.newWill} style={{ "background": (this.state.approved === false) || (this.state.amount === '0') || (this.state.amount === '') ? '#3E474F' : '#5ED5A8' }} className='button_make-new-will'>
-                            Make new will
+                            <span className="button_number-span">Make new will </span>
                         </Button>
+                        </div>
                     </Modal.Footer>
                 </Modal>
-                </div>
             </div><Modal show={this.state.showConfirm} className="modal-confirm">
                     <Modal.Header>
                         <h2 className='modal-confirm_h2'>Pending  transaction</h2>

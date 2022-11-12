@@ -1,7 +1,7 @@
 .App {
   /* text-align: center; */
   background-image: url('./background.jpg');
-  min-height: 100vh;
+  min-height: 150vh;
 }
 * {
   box-sizing: border-box;
@@ -191,6 +191,7 @@ margin-bottom: 44px;
   padding-left: 50px;
   padding-right: 50px;
   max-width: 700px;
+  padding-bottom: 62px;
 }
 .number-of-wills {
   display: flex;
@@ -223,7 +224,7 @@ margin-bottom: 44px;
 .btn-header-connect {
   display: flex;
   margin-right: 130px;
-  border: 1px solid #5ED5A8;
+  /* border: 1px solid #5ED5A8; */
   border-radius: 16px;
   color: #5ED5A8;
 }
@@ -237,20 +238,9 @@ margin-bottom: 44px;
 }
 
 .modal_content {
-  z-index: 99999;
+  z-index: 9998;
 } 
 
-/* ..modal_fade::before {
-  content: '';
-	background: #000;
-	position: fixed; 
-	left: 0;
-	top: 0;
-	width: 100%; 
-	height: 100%;
-	opacity: 0.7;
-	z-index: 9999;
-} */
 .modal_title {
   display: flex;
   justify-content: center;
@@ -261,7 +251,6 @@ margin-bottom: 44px;
   display: flex;
   color: #C1C7CD;
   margin-top: 28px;
-  /* margin-left: 51px; */
   margin-bottom: 36px;
   align-items: center;
 }
@@ -279,23 +268,60 @@ margin-bottom: 44px;
   border: none;
   border-radius: 10px;
 }
-.input-group-mb-3 {
+.form-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+.form-select:after {
+  content: "▼";
+  padding: 0 8px;
+  font-size: 12px;
+  position: absolute;
+  z-index: 9999;
+  text-align: center;
+  width: 10%;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+.input-max {
+  margin-left: 20px;
+  padding-top: 12px ;
+  padding-bottom: 18px;
   background: #161C22;
   border-radius: 10px;
   color: #4285F4;
   border: none;
 }
-.input-group-mb-3-button {
+.input-max-button {
   background: #1D252C;
   box-shadow: 8px 14px 8px -10px rgba(22, 28, 34, 0.55);
   border-radius: 10px;
   color: #5ED5A8;
   border: none;
 }
+.input-max:after {
+  content: " ";
+  padding: 0 8px;
+  font-size: 12px;
+  position: absolute;
+  /* right: 8px;
+  top: 4px; */
+  z-index: 1;
+  text-align: center;
+  width: 10%;
+  height: 100%;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+select {
+  padding-right: 25px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
 .modal_wallet {
   margin-bottom: 36px;
   color: #C1C7CD;
-  /* margin-left: 51px; */
 }
 .modal_wallet_link {
   color: #4285F4;
@@ -304,12 +330,9 @@ margin-bottom: 44px;
   color: #C1C7CD;
   font-size: 18px;
   margin-bottom: 10px;
-  /* margin-left: 51px; */
 }
 .input_trusted-wallet {
   width: 600px;
-  /* height: 40px; */
-  /* margin-left: 51px; */
   background: #161C22;
   border-radius: 10px;
   padding: 15px;
@@ -367,12 +390,13 @@ margin-bottom: 44px;
   margin-left: 7px;
 }
 .input-group-time {
-  /* padding: 8px 40px 11px 10px; */
+  padding: 8px 40px 11px 10px;
   background: #161C22;
   border-radius: 10px;
   color:#4285F4;
   border: none;
   box-shadow: -4px -6px 17px 1px rgba(22, 28, 34, 0.5);
+  max-width: 80px;
 }
 .input-group-time-name {
   width: 18px;
@@ -380,6 +404,11 @@ margin-bottom: 44px;
   color: #C1C7CD;
   padding: 10px;
 }
+
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
 .input-amount-maxbutton {
   font-style: normal;
   font-weight: 400;
@@ -403,15 +432,50 @@ margin-bottom: 44px;
 }
 .button_make-new-will {
   display: flex;
-  /* margin-left: 51px; */
   text-align: center;
-  margin-bottom: 44px;
-  width: 600px;
+  max-width: 550px;
   background: #3E474F;
   border-radius: 15px;
-  height: 50px;
+  padding: 15px 210px;
   border: none;
   font-size: 18px;
+  margin-left: 49px;
+  line-height: 21px;
+  align-items: center;
+  justify-content: center;
+  color: #171D22;
+}
+.button_approve {
+  display: flex;
+  text-align: center;
+  margin-bottom: 15px;
+  max-width: 550px;
+  background: #3E474F;
+  border-radius: 15px;
+  padding: 15px 238px;
+  border: none;
+  font-size: 18px;
+  margin-left: 49px;
+  line-height: 21px;
+  align-items: center;
+  justify-content: center;
+  color: #171D22;
+}
+.button_number-span {
+  display: flex;
+  width: 124px;
+}
+..button_ {
+  display: flex;
+  text-align: center;
+  margin-bottom: 15px;
+  max-width: 550px;
+  background: #3E474F;
+  border-radius: 15px;
+  padding: 15px 238px;
+  border: none;
+  font-size: 18px;
+  margin-left: 49px;
   line-height: 21px;
   align-items: center;
   justify-content: center;
@@ -613,15 +677,16 @@ padding-bottom: 20px;
 .modal_checkbox-add-nft {
   margin-top: 40px;
   margin-right: 5px;
+  margin-bottom: 15px;
 }
-.modal_checkbox-automatic {
-  margin-top: 13px;
+.modal_checkbox-automatic-token-delivery {
   margin-bottom: 14px;
   margin-right: 5px;
 }
 .modal_checkbox-notication {
   margin-bottom: 48px;
   margin-right: 5px;
+  margin-bottom: 14px;
 }
 .wills-list_ul-btn {
   display: flex;
@@ -633,15 +698,15 @@ padding-bottom: 20px;
   align-content: center;
   align-items: center;
   flex-direction: column;
-  gap: 139px;
-  left: 20%;
   top: 50%;
+  left: 36%;
   background-color: #1B232A;
   color: #4285F4;
   padding: 50px 70px 48px 77px;
   max-width: 400px;
   box-shadow: 0px 6px 28px -1px rgba(66, 133, 244, 0.3);
 border-radius: 10px;
+ z-index: 9999;
 }
 .modal-confirm_h2 {
   width: 173px;
@@ -705,6 +770,33 @@ line-height: 17px;
 .modal-wrapper {
   width: 100%;
   height: 100%;
+  background-color: #fff;
   z-index: 9;
   background-image: url('./background.jpg');
 }
+.button_number_one {
+display: flex;
+width: 14px;
+font-weight: 400;
+font-size: 18px;
+line-height: 21px;
+color: #FFFFFF;
+margin-top: 40px;
+align-items: baseline
+}
+.button_number_two {
+  display: flex;
+  width: 14px;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 21px;
+  color: #FFFFFF;
+  margin-top: 15px;
+  align-items: baseline
+  }
+/* .input_trusted-wallet:required {
+  content: "Поле обязательно для заполнения* ";
+  color: #DD4B4B;
+  width: 183px;
+  font-size: 10px;
+} */
