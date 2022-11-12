@@ -339,152 +339,139 @@ class NewWill extends Component {
 
     render() {
         return(
-        <div>
-            <Button variant="primary" className="btn-new-will" onClick={this.props.isEthereumNull === false ? this.handleShow : this.handleShowWalletNotExist}>
-                New Will
-            </Button>
-            <div className='modal_fade'></div>
-            <Modal show={this.state.showWalletNotExist} onHide={this.handleCloseWalletNotExist} className='modal_content' style={{
+        <><div>
+                <Button variant="primary" className="btn-new-will" onClick={this.props.isEthereumNull === false ? this.handleShow : this.handleShowWalletNotExist}>
+                    New Will
+                </Button>
+                <div className='modal_fade'></div>
+                <Modal show={this.state.showWalletNotExist} onHide={this.handleCloseWalletNotExist} className='modal_content' style={{
                     position: 'absolute',
                     width: '700px',
                     left: '25%',
                     top: '40%',
                     background: '#1B232A',
                 }}>
-                <Modal.Header className='modal_new_will'> 
-                <Button className='bnt_close' onClick={this.handleCloseWalletNotExist}>
-                    x
-                </Button>
-                <Modal.Title className='modal_title'>Wallet Not Exist</Modal.Title>
-                </Modal.Header>
-                <Modal.Body className='modal_new_will'>
-                    <div className='title_trusted-wallet'>To create a dWill connect a Web3 wallet</div>
-                    <button className='btn-new-will'>
-                        <img src="" alt=""/>
-                        Connect MetaMask
-                    </button>
-                    <p className='title_trusted-wallet'>What is a wallet?</p>
-                    <p className='title_trusted-wallet'>Wallets are used to send, receive, and store digital
-                        assets. Connecting a wallet lets you interact with apps.
-                        <a href="https://metamask.io/" target="_blank">Install the wallet.</a>
-                    </p>
-                </Modal.Body>
-            </Modal>
-            <Modal show={this.state.show} onHide={this.handleClose} className='modal_content' style={styles.modal_new_will}>
-                <Modal.Header className='modal_new_will'> 
-                <Button className='bnt_close' onClick={this.handleClose}>
-                <img src="content/button_close.svg"/>
-                </Button>
-                <Modal.Title className='modal_title'>New Will</Modal.Title>
-                <hr />  
-                </Modal.Header>
-                <Modal.Body>
-                <div className='modal_will-tokens'>
-                    <div>
-                        Я завещаю мои
-                    </div>
-                    <hr/>
-                    <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
-                        <option value={"select"}>Select</option>
-                        <option value={TokenAddress}>TFT</option>
-                        <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
-                    </select>
-                    <div>
-                    </div>
-                        <input type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0"/>
-                        <label>Unlimited</label><br/>
-                        <input onChange={this.onChangeAmount} value={this.state.amount} type='number' className="input-group-mb-3" style={
-                            {display: this.state.isUnlimitedAmount === false ? 'block' : 'none'}
-                        }/>
-                        <Button variant="outline-success" className='input-group-mb-3-button' onClick={this.onSetMaxAmount} style={
-                            {display: this.state.isUnlimitedAmount === false ? 'block' : 'none'}
-                        }>
-                            max
+                    <Modal.Header className='modal_new_will'>
+                        <Button className='bnt_close' onClick={this.handleCloseWalletNotExist}>
+                            x
                         </Button>
-                    </div>
-                    <div className='modal_wallet'>С кошелька <a href='#' className='modal_wallet_link'>{
-                        this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)
-                        }</a> на сети {this.state.network}</div>
+                        <Modal.Title className='modal_title'>Wallet Not Exist</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body className='modal_new_will'>
+                        <div className='title_trusted-wallet'>To create a dWill connect a Web3 wallet</div>
+                        <button className='btn-new-will'>
+                            <img src="" alt="" />
+                            Connect MetaMask
+                        </button>
+                        <p className='title_trusted-wallet'>What is a wallet?</p>
+                        <p className='title_trusted-wallet'>Wallets are used to send, receive, and store digital
+                            assets. Connecting a wallet lets you interact with apps.
+                            <a href="https://metamask.io/" target="_blank">Install the wallet.</a>
+                        </p>
+                    </Modal.Body>
+                </Modal>
+                <div className="modal-wrapper" style={this.state.show === true ? { display: 'none' } : { display: 'block' }}>
+                <Modal show={this.state.show} onHide={this.handleClose} className='modal_content' style={styles.modal_new_will}>
+                    <Modal.Header className='modal_new_will'>
+                        <Button className='bnt_close' onClick={this.handleClose}>
+                            <img src="content/button_close.svg" />
+                        </Button>
+                        <Modal.Title className='modal_title'>New Will</Modal.Title>
+                        <hr />
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className='modal_will-tokens'>
+                            <div>
+                                Я завещаю мои
+                            </div>
+                            <hr />
+                            <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
+                                <option value={"select"}>Select</option>
+                                <option value={TokenAddress}>TFT</option>
+                                <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
+                            </select>
+                            <div>
+                            </div>
+                            <input type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
+                            <label>Unlimited</label><br />
+                            <input onChange={this.onChangeAmount} value={this.state.amount} type='number' className="input-group-mb-3" style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} />
+                            <Button variant="outline-success" className='input-group-mb-3-button' onClick={this.onSetMaxAmount} style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }}>
+                                max
+                            </Button>
+                        </div>
+                        <div className='modal_wallet'>С кошелька <a href='#' className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a> на сети {this.state.network}</div>
                         <span className='title_trusted-wallet'>Доверенному кошельку</span>
-                        <div><input onChange={this.onChangeHeirAddress} className="input_trusted-wallet"/></div>
-                    <div>
-                        <div className='modal_title-time-will'>{"При условии что я буду неактивен(неактивна) более чем:"}</div>
-                        <div className='modal_time-will'>
-                            <div className='modal_time-years'>
-                            <input type="number" onChange={this.onChangeYear} value={this.state.year} className="input-group-time"/>
-                            <label className="input-group-time-name" >Лет</label><br/>
-                            </div>
-                            <div className='modal_time-months'>
-                            <input type="number" onChange={this.onChangeMonth} value={this.state.month} className="input-group-time"/>
-                            <label className="input-group-time-name" >Месяцев</label><br/>
-                            </div>
-                            <div className='modal_time-days'>
-                            <input type="number" onChange={this.onChangeDay} value={this.state.day} className="input-group-time"/>
-                            <label className="input-group-time-name" >Дней</label><br/> 
+                        <div><input onChange={this.onChangeHeirAddress} className="input_trusted-wallet" /></div>
+                        <div>
+                            <div className='modal_title-time-will'>{"При условии что я буду неактивен(неактивна) более чем:"}</div>
+                            <div className='modal_time-will'>
+                                <div className='modal_time-years'>
+                                    <input type="number" onChange={this.onChangeYear} value={this.state.year} className="input-group-time" />
+                                    <label className="input-group-time-name">Лет</label><br />
+                                </div>
+                                <div className='modal_time-months'>
+                                    <input type="number" onChange={this.onChangeMonth} value={this.state.month} className="input-group-time" />
+                                    <label className="input-group-time-name">Месяцев</label><br />
+                                </div>
+                                <div className='modal_time-days'>
+                                    <input type="number" onChange={this.onChangeDay} value={this.state.day} className="input-group-time" />
+                                    <label className="input-group-time-name">Дней</label><br />
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className='modal_checkbox'>
-                        <input type="checkbox" disabled={true} className="form-check-input mt-0"/>
-                        <label >Add NFT Message (coming soon)</label><br/>
-                        <input type="checkbox" disabled={true} className="form-check-input mt-0"/>
-                        <label >Automatic token delivery (coming soon)</label><br/>
-                        <input type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check-input mt-0"/>
-                        <label >Notifications</label><br/>
-                        <div style={this.state.notificationsOn === true ? {display: 'block'} : {display: 'none'}}>
-                            <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
+                        <div className='modal_checkbox'>
+                            <input type="checkbox" disabled={true} className="modal_checkbox-add-nft" />
+                            <label>Add NFT Message (coming soon)</label><br />
+                            <input type="checkbox" disabled={true} className="modal_checkbox-automatic-token-delivery" />
+                            <label>Automatic token delivery (coming soon)</label><br />
+                            <input type="checkbox" onChange={this.changeNotifications} disabled={false} className="modal_checkbox-notifications" />
+                            <label>Notifications</label><br />
+                            <div style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
+                                <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
+                            </div>
                         </div>
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                <Button variant="primary" onClick={this.state.approved === false ? this.approve : null} style={
-                    {"background": this.state.approved === false ? '#5ED5A8' : '#3E474F'}
-                } className='button_make-new-will'>
-                    Approve
-                </Button>
-                <Button variant="primary" onClick={this.state.approved === false ? null : this.newWill} style={
-                    {"background": (this.state.approved === false) || (this.state.amount === '0') || (this.state.amount === '') ? '#3E474F' : '#5ED5A8'}
-                } className='button_make-new-will'>
-                    Make new will
-                </Button>
-                </Modal.Footer>
-                <div className='overlay'></div>
-            </Modal>
-            <Modal show={this.state.showConfirm} className="modal-confirm">
-                <Modal.Header>
-                <h2 className='modal-confirm_h2'>Pending  transaction</h2>
-                </Modal.Header>
-                <img scr='content/confi.svg'/>  
-                <Modal.Footer>
-                    <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
-                </Modal.Footer>
-            </Modal>
-            <Modal show={this.state.showAwait} className="modal-await">
-                <Modal.Header>
-                {/* <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
-                <img src="content/button_close.svg"/>  
-                </Button>   */}
-                </Modal.Header>
-                <img src="content/loading.svg"/>
-                <Modal.Footer>
-                <p className="modal-await_text">Завещание успешно создано!</p>
-                </Modal.Footer>
-            </Modal>
-            <Modal show={this.state.showError}>
-                <Modal.Header>
-                    <div>
-                        <h1>Error</h1>
-                        <div>{this.state.errortext}</div>
-                    </div>
-                </Modal.Header>
-                <Modal.Footer>
-                    <Button variant="danger" onClick={this.handleCloseError} className="btn btn-danger">
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <div className='overlay'></div>
-        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="primary" onClick={this.state.approved === false ? this.approve : null} style={{ "background": this.state.approved === false ? '#5ED5A8' : '#3E474F' }} className='button_make-new-will'>
+                            Approve
+                        </Button>
+                        <Button variant="primary" onClick={this.state.approved === false ? null : this.newWill} style={{ "background": (this.state.approved === false) || (this.state.amount === '0') || (this.state.amount === '') ? '#3E474F' : '#5ED5A8' }} className='button_make-new-will'>
+                            Make new will
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                </div>
+            </div><Modal show={this.state.showConfirm} className="modal-confirm">
+                    <Modal.Header>
+                        <h2 className='modal-confirm_h2'>Pending  transaction</h2>
+                    </Modal.Header>
+                    <img scr='content/confi.svg' />
+                    <Modal.Footer>
+                        <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
+                    </Modal.Footer>
+                </Modal><Modal show={this.state.showAwait} className="modal-await">
+                    <Modal.Header>
+                        {/* <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
+    <img src="content/button_close.svg"/>
+    </Button>   */}
+                    </Modal.Header>
+                    <img src="content/loading.svg" />
+                    <Modal.Footer>
+                        <p className="modal-await_text">Завещание успешно создано!</p>
+                    </Modal.Footer>
+                </Modal><Modal show={this.state.showError}>
+                    <Modal.Header>
+                        <div>
+                            <h1>Error</h1>
+                            <div>{this.state.errortext}</div>
+                        </div>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={this.handleCloseError} className="btn btn-danger">
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal><div className='overlay'></div></>
         )
     }
 }
