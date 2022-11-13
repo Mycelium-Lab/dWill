@@ -1,7 +1,7 @@
 .App {
   /* text-align: center; */
   background-image: url('./background.jpg');
-  min-height: 150vh;
+  min-height: 100vh;
 }
 * {
   box-sizing: border-box;
@@ -116,7 +116,8 @@ ul {
 .btn-new-will {
   background:#5ED5A8;
   width: 350px;
-  height: 50px;
+  margin-top: 50px;
+  padding: 15px 136px;
   box-shadow: 3px -2px 10px rgba(94, 213, 168, 0.4);
   border-radius: 15px;
   border: none;
@@ -485,9 +486,9 @@ input::-webkit-inner-spin-button {
   background-color: #1B232A;
   color :#3E474F;
   border: none;
-  margin-top: 10px;
-  font-size: 25px;
-  margin-left: 595px;
+  margin-top: 27px;
+  margin-left: 600px;
+
 }
 .title_trusted-wallet {
   gap: 25px;
@@ -511,7 +512,7 @@ input::-webkit-inner-spin-button {
   margin-top: 63px;
 }
 .your_inheritances {
-  width:600px;
+  width: 700px;
   /* text-align: center; */
   margin-top: 33px;
   padding-left: 50px;
@@ -523,7 +524,7 @@ input::-webkit-inner-spin-button {
   color :#4285F4;
 }
 .wills_list-my-wills {
-  max-width: 600px;
+  max-width: 700px;
   margin-top: 33px;
   padding-left: 50px;
   padding-right: 50px;
@@ -547,6 +548,7 @@ input::-webkit-inner-spin-button {
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
+  padding-bottom: 30px;
   line-height: 17px;
   letter-spacing: 0.0264em;
   color: #C1C7CD;
@@ -615,6 +617,7 @@ input::-webkit-inner-spin-button {
 }
 .btn_receive {
   margin-left: 100px;
+
 }
 .block_your-wills-h3 {
   font-size: 18px;
@@ -650,7 +653,6 @@ padding-bottom: 20px;
 }
 .btn_green {
   display: flex;
-  padding: 15px 40px;
   font-weight: 400;
   font-size: 14px;
   gap: 8px;
@@ -662,6 +664,25 @@ padding-bottom: 20px;
   align-items: center;
   justify-content: center;
   border-radius: 15px;
+}
+.btn_green_revoke {
+  display: flex;
+  font-weight: 400;
+  font-size: 14px;
+  padding: 13px 29px;
+  gap: 8px;
+  padding: 13px 29px;
+  max-height: 40px;
+  border: 1px solid #5ED5A8;
+  background-color: #161c22;
+  color: #5ED5A8;
+  background: #1B232A;
+  box-shadow: 2px 0px 19px 3px #161C22;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+      padding: 13px 29px;
+    max-height: 40px;
 }
 .page-data {
   max-width: 1172px;
@@ -762,6 +783,9 @@ line-height: 17px;
 .your-wills_text {
   display: flex;
   flex-direction: column;
+  align-content: flex-end;
+  justify-content: space-evenly;
+  align-items: stretch;
 }
 .your_inheritances_li {
   margin-bottom: 20px;
@@ -800,3 +824,8 @@ align-items: baseline
   width: 183px;
   font-size: 10px;
 } */
+.modal_input-max {
+  width: 150px;
+  background: #161C22;
+  border-radius: 10px;
+}

@@ -393,10 +393,12 @@ class NewWill extends Component {
                             </div>
                             <input type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="checkbox_unlited" />
                             <label>Unlimited</label><br />
+                            <div className="modal_input-max">
                             <input onChange={this.onChangeAmount} value={this.state.amount}  type='number' className="input-max" placeholder="Введите сумму" style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} />
                             <Button variant="outline-success" className='input-max-button' onClick={this.onSetMaxAmount} style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }}>
                                 max
                             </Button>
+                            </div>
                         </div>
                         <div className='modal_wallet'>С кошелька <a href='#' className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a> на сети {this.state.network} <img scr="./content/poligun.svg"/></div>
                         <span className='title_trusted-wallet'>Доверенному кошельку</span>

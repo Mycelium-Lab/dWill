@@ -60,7 +60,7 @@ class Connect extends Component {
             } else {
             return (
                 <div>
-                    {/* <div>
+                    <div>
                     {
                         this.state.selectedAddress.slice(0, 6) 
                         + 
@@ -71,13 +71,14 @@ class Connect extends Component {
                             this.state.selectedAddress.length
                         )
                     }
-                    </div> */}
+                    {/* </div> 
                     <div>
                     <img src="./content/buttom-metamask.svg"/> 
                     </div>
                     <div>
                     <img scr="./content/button-m.svg"/> 
-                    </div>
+                    </div> */}
+                </div>
                 </div>
             );
             }
@@ -87,7 +88,7 @@ class Connect extends Component {
     }
 
     render() {
-        return(
+            return(
         <div className='btn-header-connect'>
             {this.renderMetamask()}
         </div>

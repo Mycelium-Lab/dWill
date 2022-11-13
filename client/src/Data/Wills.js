@@ -693,7 +693,7 @@ class Wills extends Component {
                                 <div key={v.ID} className="your-wills">
                                     <div className='your-wills_text'>
                                     <h3 className='wills_list_h3'>Your wills</h3>
-                                    <hr/>
+                                    <hr/> 
                                         {/* <span>id: {v.ID.toString()} </span> */}
                                         <span>
                                             You bequeathed up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited': (v.amount / Math.pow(10, v.decimals)).toString()} of your {v.symbol} from {this.state.network} chain to wallet
@@ -703,8 +703,8 @@ class Wills extends Component {
                                         </a>
                                     <span>
                                     <p>
-                                    Inheritance can be harvest if the period of inactivity is longer than <p className='your-wills_date'>{this.timeBetweenWithdrawAndStartConverter(v.timeBetweenWithdrawAndStart)}</p>
-                                    </p>
+                                    Inheritance can be harvest if the period of inactivity is longer than</p> 
+                                    <p className='your-wills_date'>{this.timeBetweenWithdrawAndStartConverter(v.timeBetweenWithdrawAndStart)}</p>
                                     <p className='your-wills_remain'>
                                         ( Remain: {this.remainingTime(v.timeWhenWithdraw.toString())})
                                     </p>
@@ -726,7 +726,7 @@ class Wills extends Component {
                                     onClick={this.state.showEdit == false ? this.handleShowEdit : this.handleCloseEdit}>
                                         <img src="content/edit.svg"/>
                                         Edit</button>
-                                    <button type="button" className="btn_green" id='' value={v.ID.toString()} onClick={this.cancelWill}>
+                                    <button type="button" className="btn_green_revoke" id='' value={v.ID.toString()} onClick={this.cancelWill}>
                                         <img src="content/revoke.svg"/>  
                                         Revoke</button>
                                 </div>
