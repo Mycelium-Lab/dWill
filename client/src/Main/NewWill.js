@@ -392,7 +392,7 @@ class NewWill extends Component {
                             <div>
                             </div>
                             <input type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="checkbox_unlited" />
-                            <label>Unlimited</label><br />
+                            <label className='checkbox_unlimited'>Unlimited</label><br />
                             <div className="modal_input-max">
                             <input onChange={this.onChangeAmount} value={this.state.amount}  type='number' className="input-max" placeholder="Введите сумму" style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} />
                             <Button variant="outline-success" className='input-max-button' onClick={this.onSetMaxAmount} style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }}>
@@ -422,7 +422,9 @@ class NewWill extends Component {
                         </div>
                         <div className='modal_checkbox'>
                             <input type="checkbox" disabled={true} className="modal_checkbox-add-nft" />
-                            <label>Add NFT Message (coming soon)</label><br />
+                            <label>Add NFT Message (coming soon)</label>
+
+                            <br />
                             <input type="checkbox" disabled={true} className="modal_checkbox-automatic-token-delivery" />
                             <label>Automatic token delivery (coming soon)</label><br />
                             <input type="checkbox" onChange={this.changeNotifications} disabled={false} className="modal_checkbox-notifications" />

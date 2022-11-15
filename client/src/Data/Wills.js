@@ -695,6 +695,7 @@ class Wills extends Component {
                                     <h3 className='wills_list_h3'>Your wills</h3>
                                     <hr/> 
                                         {/* <span>id: {v.ID.toString()} </span> */}
+                                        <div className='your-wills_text-info'>
                                         <span>
                                             You bequeathed up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited': (v.amount / Math.pow(10, v.decimals)).toString()} of your {v.symbol} from {this.state.network} chain to wallet
                                         </span>
@@ -709,9 +710,10 @@ class Wills extends Component {
                                         ( Remain: {this.remainingTime(v.timeWhenWithdraw.toString())})
                                     </p>
                                     </span>
-                                    </div>
-                                    
-                                    <button type="button" className="btn_btn-danger" value={
+                                    </div> 
+                                        </div>
+                                        
+                                    <div className='btn_btns'><button type="button" className="btn_btn-danger" value={
                                         JSON.stringify({
                                             ID: v.ID.toString(), 
                                             timeWhenWithdraw: v.timeWhenWithdraw.toString(),
@@ -729,6 +731,7 @@ class Wills extends Component {
                                     <button type="button" className="btn_green_revoke" id='' value={v.ID.toString()} onClick={this.cancelWill}>
                                         <img src="content/revoke.svg"/>  
                                         Revoke</button>
+                                    </div>
                                 </div>
                             )
                         })
@@ -799,7 +802,8 @@ class Wills extends Component {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="primary" onClick={this.state.approved === false ? this.approve: null} style={
+                    <div>
+                    <Button variant="primary" onClick={this.state.approved === false ? this.approve: null} style={
                     {"background": this.state.approved === true ? '#3E474F' : '#5ED5A8'}
                 } >
                     Approve
@@ -812,6 +816,7 @@ class Wills extends Component {
                 <Button onClick={this.handleCloseEdit}>
                 <img src="content/img/close.svg"/>  
                 </Button>
+                    </div>
                 </Modal.Footer>
             </Modal>
             <Modal show={this.state.showConfirm}>
