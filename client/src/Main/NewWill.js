@@ -181,8 +181,7 @@ class NewWill extends Component {
             })
             const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
             const allowance = await _token.allowance(signerAddress, contractAddress)
-            const allWillsAmountThisToken = await contract.getAllWillsAmountThisToken(signerAddress, _token.address)
-            this.changeApproved(BigInt(allowance), BigInt(allWillsAmountThisToken) + BigInt(this.state.amount))
+            this.changeApproved(BigInt(allowance), BigInt(this.state.amount))
         } catch (error) {
             if (error.message.includes('resolver or addr is not configured')) {
                 this.setState({
@@ -203,13 +202,13 @@ class NewWill extends Component {
         const allWillsAmountThisToken = await contract.getAllWillsAmountThisToken(signerAddress, _token.address)
         await _token.balanceOf(signerAddress)
             .then(async (balance) => {
-                console.log(BigInt(balance) - BigInt(allWillsAmountThisToken))
+                //set max amount allowed to send
                 this.setState({
-                    amount: (Math.floor((balance - allWillsAmountThisToken) / Math.pow(10, await _token.decimals()))).toString()
+                    amount: (Math.floor((balance) / Math.pow(10, await _token.decimals()))).toString()
                 })
                 this.changeApproved(
                     BigInt(allowance), 
-                    BigInt(balance) - BigInt(allWillsAmountThisToken), 
+                    BigInt(balance) + BigInt(allWillsAmountThisToken), 
                     decimals
                 )
             })

@@ -99,7 +99,7 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
         }
         if (user !== null) {
             if (user.tgID.length > 0) {
-                await bot.sendMessage(_owner.tgID, `
+                await bot.sendMessage(user.tgID, `
 🟢 <b>Wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> bequeathed you ${_tokenSymbol} tokens</b>
                 
 <b>▪️Parameters of the dWill:</b>
@@ -114,8 +114,14 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
                 transporter.sendMail({
                     from: process.env.EMAILUSER,
                     to: user.email,
-                    subject: 'dWill Notification',
+                    subject: 'dWill notification. New dWill.',
                     html: `
+                    <p>Hello!</p>
+                    <p>You got this message because you signed up for updates in the
+                        <a href="https://t.me/thewill_bot">telegram bot</a> of the
+                        <a href="http://dwill.app">dwill.app</a> project
+                    </p>
+                    <br/>
                     <p>🟢 
                         <b>Wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> bequeathed you ${_tokenSymbol} tokens</b>
                         </p>
@@ -125,6 +131,12 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
                     <div><b>Token</b> - ${_tokenSymbol}</div>
                     <div><b>Limit on the amount</b> - ${heritageAmountInNormalView}</div>
                     <div><b>Time to unlock the dWill</b> - ${_remainingTime}</div>
+                    <br/>
+                    <br/>
+                    <p>Note: This is an automatic message. Please do not reply.</p>
+                    <p>If you have any questions, please contact project support on
+                        <a href="https://t.me/PerminovMA">Telegram</a>
+                    </p>
                                     `
                 }, (err) => {
                     if (err) {
@@ -153,8 +165,14 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
                     transporter.sendMail({
                         from: process.env.EMAILUSER,
                         to: _owner.email,
-                        subject: 'dWill Notification',
+                        subject: 'dWill notification. New dWill.',
                         html: `
+                        <p>Hello!</p>
+                        <p>You got this message because you signed up for updates in the
+                            <a href="https://t.me/thewill_bot">telegram bot</a> of the
+                            <a href="http://dwill.app">dwill.app</a> project
+                        </p>
+                        <br/>
                         <p>🔵 <b>You have created new dWill from wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a></b>
                         </p>
                         <div><b>▪️Parameters of the dWill:</b></div>
@@ -163,6 +181,12 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
                         <div><b>Token</b> - ${_tokenSymbol}</div>
                         <div><b>Limit on the amount</b> - ${heritageAmountInNormalView}</div>
                         <div><b>Time to unlock the dWill</b> - ${_remainingTime}</div>
+                        <br/>
+                        <br/>
+                        <p>Note: This is an automatic message. Please do not reply.</p>
+                        <p>If you have any questions, please contact project support on
+                            <a href="https://t.me/PerminovMA">Telegram</a>
+                        </p>
                         `
                     }, (err) => {
                         if (err) {
@@ -199,10 +223,22 @@ contract.on('RemoveWill', async (ID, owner, heir) => {
                 transporter.sendMail({
                     from: process.env.EMAILUSER,
                     to: user.email,
-                    subject: 'dWill Notification',
+                    subject: 'dWill notification. dWill removed.',
                     html: `
+                    <p>Hello!</p>
+                    <p>You got this message because you signed up for updates in the
+                        <a href="https://t.me/thewill_bot">telegram bot</a> of the
+                        <a href="http://dwill.app">dwill.app</a> project
+                    </p>
+                    <br/>
                     <div>🔴 <b>Wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> removed you from his dWill (id: ${ID.toString()})</b>
                     </div>
+                    <br/>
+                    <br/>
+                    <p>Note: This is an automatic message. Please do not reply.</p>
+                    <p>If you have any questions, please contact project support on
+                        <a href="https://t.me/PerminovMA">Telegram</a>
+                    </p>
                     `
                 }, (err) => {
                     if (err) {
@@ -224,10 +260,22 @@ contract.on('RemoveWill', async (ID, owner, heir) => {
                     transporter.sendMail({
                         from: process.env.EMAILUSER,
                         to: _owner.email,
-                        subject: 'dWill Notification',
+                        subject: 'dWill notification. dWill removed.',
                         html: `
+                        <p>Hello!</p>
+                        <p>You got this message because you signed up for updates in the
+                            <a href="https://t.me/thewill_bot">telegram bot</a> of the
+                            <a href="http://dwill.app">dwill.app</a> project
+                        </p>
+                        <br/>
                         <div>🔴 <b>You <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> removed <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a> from yours dWill (id: ${ID.toString()})</b>
                         </div>
+                        <br/>
+                        <br/>
+                        <p>Note: This is an automatic message. Please do not reply.</p>
+                        <p>If you have any questions, please contact project support on
+                            <a href="https://t.me/PerminovMA">Telegram</a>
+                        </p>
                         `
                     }, (err) => {
                         if (err) {
@@ -261,10 +309,22 @@ contract.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
                 transporter.sendMail({
                     from: process.env.EMAILUSER,
                     to: _owner.email,
-                    subject: 'dWill Notification',
+                    subject: 'dWill notification. dWill withdraw.',
                     html: `
+                    <p>Hello!</p>
+                    <p>You got this message because you signed up for updates in the
+                        <a href="https://t.me/thewill_bot">telegram bot</a> of the
+                        <a href="http://dwill.app">dwill.app</a> project
+                    </p>
+                    <br/>
                     <div>ℹ️ Your dWill (id: ${ID.toString()}) has been executed.
                     </div>
+                    <br/>
+                    <br/>
+                    <p>Note: This is an automatic message. Please do not reply.</p>
+                    <p>If you have any questions, please contact project support on
+                        <a href="https://t.me/PerminovMA">Telegram</a>
+                    </p>
                     `
                 }, (err) => {
                     if (err) {
@@ -281,7 +341,7 @@ contract.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
 })
 
 //Running a job at 01:00 at Europe/Moscow timezone
-cron.schedule("30 1 18 * * *", async () => {
+cron.schedule("18 18 18 * * *", async () => {
     try {
         const users = await User.find()
         for (let i = 0; i < users.length; i++) {
@@ -329,8 +389,14 @@ You can withdraw your tokens on our site <a href='https://dwill.app/'>dWill.app<
                                         transporter.sendMail({
                                             from: process.env.EMAILUSER,
                                             to: __heir.email,
-                                            subject: 'dWill Notification',
+                                            subject: 'dWill notification. dWill time expired.',
                                             html: `
+                                            <p>Hello!</p>
+                                            <p>You got this message because you signed up for updates in the
+                                                <a href="https://t.me/thewill_bot">telegram bot</a> of the
+                                                <a href="http://dwill.app">dwill.app</a> project
+                                            </p>
+                                            <br/>
                                             <p>ℹ️ dWill notification:</p>
                                             
                                             <div>The time to unlock the dWill (id: ${wills[j].ID.toString()}) has expired</div>
@@ -340,6 +406,12 @@ You can withdraw your tokens on our site <a href='https://dwill.app/'>dWill.app<
                                             <div><b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a></div>
                                             <div><b>Token</b> - ${_tokenSymbol}</div>
                                             <div><b>Limit on the amount</b> - ${heritageAmountInNormalView}</div>
+                                            <br/>
+                                            <br/>
+                                            <p>Note: This is an automatic message. Please do not reply.</p>
+                                            <p>If you have any questions, please contact project support on
+                                                <a href="https://t.me/PerminovMA">Telegram</a>
+                                            </p>
                                                                                 `
                                         }, (err) => {
                                             if (err) {
@@ -357,11 +429,23 @@ The time to unlock the dWill (id: ${wills[j].ID.toString()}) has expired.`, {par
                                     transporter.sendMail({
                                         from: process.env.EMAILUSER,
                                         to: users[i].email,
-                                        subject: 'dWill Notification',
+                                        subject: 'dWill notification. dWill time expired.',
                                         html: `
+                                        <p>Hello!</p>
+                                        <p>You got this message because you signed up for updates in the
+                                            <a href="https://t.me/thewill_bot">telegram bot</a> of the
+                                            <a href="http://dwill.app">dwill.app</a> project
+                                        </p>
+                                        <br/>
                                         <p>ℹ️ dWill notification:</p>
                                         
-                                        <div>The time to unlock the dWill (id: ${wills[j].ID.toString()}) has expired.</div>`
+                                        <div>The time to unlock the dWill (id: ${wills[j].ID.toString()}) has expired.</div>
+                                        <br/>
+                                        <br/>
+                                        <p>Note: This is an automatic message. Please do not reply.</p>
+                                        <p>If you have any questions, please contact project support on
+                                            <a href="https://t.me/PerminovMA">Telegram</a>
+                                        </p>`
                                     }, (err) => {
                                         if (err) {
                                             console.error(err)
@@ -390,8 +474,14 @@ Time to unlock the dWill - ${remaining}
                                 transporter.sendMail({
                                     from: process.env.EMAILUSER,
                                     to: users[i].email,
-                                    subject: 'dWill Notification',
+                                    subject: 'dWill notification. dWill time reminder.',
                                     html: `
+                                    <p>Hello!</p>
+                                    <p>You got this message because you signed up for updates in the
+                                        <a href="https://t.me/thewill_bot">telegram bot</a> of the
+                                        <a href="http://dwill.app">dwill.app</a> project
+                                    </p>
+                                    <br/>
                                     <p>ℹ️ dWill notification:</p>
                                     
                                     <p>Time to unlock the dWill - ${remaining}</p>
@@ -402,6 +492,12 @@ Time to unlock the dWill - ${remaining}
                                     <div><b>Token</b> - ${_tokenSymbol}</div>
                                     <div><b>Limit on the amount</b> - ${heritageAmountInNormalView}</div>
                                     <div><b>Time to unlock the dWill</b> - ${remaining}</div>
+                                    <br/>
+                                    <br/>
+                                    <p>Note: This is an automatic message. Please do not reply.</p>
+                                    <p>If you have any questions, please contact project support on
+                                        <a href="https://t.me/PerminovMA">Telegram</a>
+                                    </p>
                                     `
                                 }, (err) => {
                                     if (err) {

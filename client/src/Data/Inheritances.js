@@ -124,9 +124,26 @@ class Inheritances extends Component {
                     })
                 }
             })
-            contract.on('UpdateAnHeir', (ID, owner, heir) => {
+            contract.on('UpdateAnHeir', async (ID, owner, heir) => {
                 let __inheritances = this.state.inheritances
                 __inheritances = __inheritances.filter(v => v.ID !== ID.toString())
+                if (heir === signerAddress) {
+                    const inheritance = await contract.inheritanceData(ID.toString())
+                    const token = new ethers.Contract(inheritance.token, ERC20.abi, signer)
+                    const symbol = await token.symbol()
+                    const decimals = await token.decimals()
+                    __inheritances.push({
+                        ID: inheritance.ID.toString(),
+                        amount: inheritance.amount.toString(),
+                        done: inheritance.done,
+                        heir: inheritance.heir,
+                        owner: inheritance.owner,
+                        timeWhenWithdraw: inheritance.timeWhenWithdraw.toString(),
+                        token: inheritance.token,
+                        symbol,
+                        decimals
+                    })
+                }
                 this.setState({
                     inheritances: __inheritances
                 })
@@ -236,7 +253,8 @@ class Inheritances extends Component {
                     {
                         this.state.inheritances.map((v) => {
                             return (
-                                <li key={v.ID}>
+                                <li key={v.ID} style={{"marginBottom": '10px'}}>
+                                
                                     <div className='your_inheritances_ul-text'>
                                     <h3 className='your_inheritances-h3'>Your inheritances</h3>
                                     <hr />
