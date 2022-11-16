@@ -701,8 +701,9 @@ class Wills extends Component {
                                 <div key={v.ID} className="your-wills">
                                     <div className='your-wills_text'>
                                     <h3 className='wills_list_h3'>Your wills</h3>
-                                    <hr/>
+                                    <hr/> 
                                         {/* <span>id: {v.ID.toString()} </span> */}
+                                        <div className='your-wills_text-info'>
                                         <span>
                                             You bequeathed up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited': (v.amount / Math.pow(10, v.decimals)).toString()} of your {v.symbol} from {this.state.network} chain to wallet
                                         </span>
@@ -710,15 +711,19 @@ class Wills extends Component {
                                             {` ${v.heir}`}
                                         </a>
                                     <span>
-                                    <div>
-                                    Inheritance can be harvest if the period of inactivity is longer than <p className='your-wills_date'>{this.timeBetweenWithdrawAndStartConverter(v.timeBetweenWithdrawAndStart)}</p>
-                                    </div>
-                                    <div className='your-wills_remain'>
+                                    <p>
+                                    Inheritance can be harvest if the period of inactivity is longer than
+                                    </p> 
+                                    <p className='your-wills_date'>{this.timeBetweenWithdrawAndStartConverter(v.timeBetweenWithdrawAndStart)}</p>
+                                    
+                                    <p className='your-wills_remain'>
                                         ( Remain: {this.remainingTime(v.timeWhenWithdraw.toString())})
-                                    </div>
+                                    </p>
                                     </span>
-                                    </div>
-                                    <div className="btn_btn-danger" 
+                                    </div> 
+                                       </div>
+                                        
+                                    <div className="btn_btns" 
                                         onClick={
                                         this.state.showEdit == false 
                                         ? 
@@ -738,7 +743,7 @@ class Wills extends Component {
                                         <img src="content/edit.svg"/>
                                         Edit
                                     </div>
-                                    <button type="button" className="btn_green" id='' value={v.ID.toString()} onClick={this.cancelWill}>
+                                    <button type="button" className="btn_green_revoke" id='' value={v.ID.toString()} onClick={this.cancelWill}>
                                         <img src="content/revoke.svg"/>  
                                         Revoke</button>
                                 </div>
@@ -803,7 +808,8 @@ class Wills extends Component {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                <Button variant="primary" onClick={this.state.approved === false ? this.approve: null} style={
+                    <div>
+                    <Button variant="primary" onClick={this.state.approved === false ? this.approve: null} style={
                     {"background": this.state.approved === true ? '#3E474F' : '#5ED5A8'}
                 } >
                     Approve
@@ -816,6 +822,7 @@ class Wills extends Component {
                 <Button onClick={this.handleCloseEdit}>
                 <img src="content/img/close.svg"/>  
                 </Button>
+                    </div>
                 </Modal.Footer>
             </Modal>
             <Modal show={this.state.showConfirm}>

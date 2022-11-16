@@ -71,10 +71,14 @@ class Connect extends Component {
                             this.state.selectedAddress.length
                         )
                     }
+                    {/* </div> 
+                    <div>
+                    <img src="./content/buttom-metamask.svg"/> 
                     </div>
                     <div>
-                        <span>{this.state.networkName} Chain </span>
-                    </div>
+                    <img scr="./content/button-m.svg"/> 
+                    </div> */}
+                </div>
                 </div>
             );
             }
@@ -84,7 +88,7 @@ class Connect extends Component {
     }
 
     render() {
-        return(
+            return(
         <div className='btn-header-connect'>
             {this.renderMetamask()}
         </div>

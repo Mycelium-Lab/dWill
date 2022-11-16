@@ -14,7 +14,7 @@
 }
 hr {
   border: 1px solid #3E474F;
-  margin-top: 17px;
+  width: 600px;
   margin-bottom: 23px;
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -116,7 +116,8 @@ ul {
 .btn-new-will {
   background:#5ED5A8;
   width: 350px;
-  height: 50px;
+  margin-top: 50px;
+  padding: 15px 136px;
   box-shadow: 3px -2px 10px rgba(94, 213, 168, 0.4);
   border-radius: 15px;
   border: none;
@@ -188,9 +189,13 @@ margin-bottom: 44px;
   border-radius: 16px; 
 }
 .modal-content {
+  position: relative;
+  margin: auto;
+  margin-top: 10vh;
   padding-left: 50px;
   padding-right: 50px;
   max-width: 700px;
+  padding-bottom: 62px;
 }
 .number-of-wills {
   display: flex;
@@ -223,7 +228,7 @@ margin-bottom: 44px;
 .btn-header-connect {
   display: flex;
   margin-right: 130px;
-  border: 1px solid #5ED5A8;
+  border: 1px solid #5ED5A8; 
   border-radius: 16px;
   color: #5ED5A8;
 }
@@ -235,36 +240,24 @@ margin-bottom: 44px;
   width: 159px;
   height: 21px;
 }
-/* .modal_fade {
-  display: none;
-}
-.modal_content {
-  z-index: 99999;
-	opacity: 1;	
-} */
 
-/* ..modal_fade::before {
-  content: '';
-	background: #000;
-	position: fixed; 
-	left: 0;
-	top: 0;
-	width: 100%; 
-	height: 100%;
-	opacity: 0.7;
-	z-index: 9999;
-} */
+.modal_content {
+  z-index: 9998;
+} 
+
 .modal_title {
   display: flex;
   justify-content: center;
   align-items: center;
   color: #5ED5A8;
+  margin-top: 22px;
+  margin-bottom: 26px;
+  font-size: 18px;
 }
 .modal_will-tokens {
   display: flex;
   color: #C1C7CD;
   margin-top: 28px;
-  /* margin-left: 51px; */
   margin-bottom: 36px;
   align-items: center;
 }
@@ -282,23 +275,60 @@ margin-bottom: 44px;
   border: none;
   border-radius: 10px;
 }
-.input-group-mb-3 {
+.form-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+.form-select:after {
+  content: "▼";
+  padding: 0 8px;
+  font-size: 12px;
+  position: absolute;
+  z-index: 9999;
+  text-align: center;
+  width: 10%;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+.input-max {
+  width: 80px;
+  margin-left: 20px;
+  padding-top: 12px ;
+  padding-bottom: 18px;
   background: #161C22;
   border-radius: 10px;
   color: #4285F4;
   border: none;
 }
-.input-group-mb-3-button {
+.input-max-button {
   background: #1D252C;
-  box-shadow: 8px 14px 8px -10px rgba(22, 28, 34, 0.55);
-  border-radius: 10px;
-  color: #5ED5A8;
-  border: none;
+    box-shadow: 8px 14px 8px -10px rgb(22 28 34 / 55%);
+    padding: 8px 6px 9px 7px;
+    border-radius: 10px;
+    color: #5ED5A8;
+    border: none;
+}
+ .input-max:after {
+  content: " ";
+  background: #3E474F;
+  padding: 0 8px;
+  font-size: 12px;
+  position: absolute;
+  z-index: 1;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+} 
+select {
+  padding-right: 25px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 .modal_wallet {
   margin-bottom: 36px;
   color: #C1C7CD;
-  /* margin-left: 51px; */
 }
 .modal_wallet_link {
   color: #4285F4;
@@ -307,12 +337,9 @@ margin-bottom: 44px;
   color: #C1C7CD;
   font-size: 18px;
   margin-bottom: 10px;
-  /* margin-left: 51px; */
 }
 .input_trusted-wallet {
   width: 600px;
-  /* height: 40px; */
-  /* margin-left: 51px; */
   background: #161C22;
   border-radius: 10px;
   padding: 15px;
@@ -329,7 +356,6 @@ margin-bottom: 44px;
   border: none;
 }
 .input-max {
-  width: 150px;
   border: none;
   background-color: #161c22;
   border-radius: 10px;
@@ -370,12 +396,13 @@ margin-bottom: 44px;
   margin-left: 7px;
 }
 .input-group-time {
-  /* padding: 8px 40px 11px 10px; */
+  padding: 8px 40px 11px 10px;
   background: #161C22;
   border-radius: 10px;
   color:#4285F4;
   border: none;
   box-shadow: -4px -6px 17px 1px rgba(22, 28, 34, 0.5);
+  max-width: 80px;
 }
 .input-group-time-name {
   width: 18px;
@@ -383,6 +410,11 @@ margin-bottom: 44px;
   color: #C1C7CD;
   padding: 10px;
 }
+
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
 .input-amount-maxbutton {
   font-style: normal;
   font-weight: 400;
@@ -393,6 +425,10 @@ margin-bottom: 44px;
   border: none;
   padding: 10px 15px;
   border-radius: 10px;
+}
+.checkbox_unlimited {
+  margin-right: 17px;
+  margin-left: 5px;
 }
 .modal_checkbox {
   color: #C1C7CD;
@@ -406,15 +442,50 @@ margin-bottom: 44px;
 }
 .button_make-new-will {
   display: flex;
-  /* margin-left: 51px; */
   text-align: center;
-  margin-bottom: 44px;
-  width: 600px;
+  max-width: 550px;
   background: #3E474F;
   border-radius: 15px;
-  height: 50px;
+  padding: 15px 210px;
   border: none;
   font-size: 18px;
+  margin-left: 49px;
+  line-height: 21px;
+  align-items: center;
+  justify-content: center;
+  color: #171D22;
+}
+.button_approve {
+  display: flex;
+  text-align: center;
+  margin-bottom: 15px;
+  max-width: 550px;
+  background: #3E474F;
+  border-radius: 15px;
+  padding: 15px 238px;
+  border: none;
+  font-size: 18px;
+  margin-left: 49px;
+  line-height: 21px;
+  align-items: center;
+  justify-content: center;
+  color: #171D22;
+}
+.button_number-span {
+  display: flex;
+  width: 124px;
+}
+..button_ {
+  display: flex;
+  text-align: center;
+  margin-bottom: 15px;
+  max-width: 550px;
+  background: #3E474F;
+  border-radius: 15px;
+  padding: 15px 238px;
+  border: none;
+  font-size: 18px;
+  margin-left: 49px;
   line-height: 21px;
   align-items: center;
   justify-content: center;
@@ -424,9 +495,9 @@ margin-bottom: 44px;
   background-color: #1B232A;
   color :#3E474F;
   border: none;
-  margin-top: 10px;
-  font-size: 25px;
-  margin-left: 595px;
+  margin-top: 27px;
+  margin-left: 600px;
+
 }
 .title_trusted-wallet {
   gap: 25px;
@@ -450,7 +521,7 @@ margin-bottom: 44px;
   margin-top: 63px;
 }
 .your_inheritances {
-  width:600px;
+  width: 700px;
   /* text-align: center; */
   margin-top: 33px;
   padding-left: 50px;
@@ -462,7 +533,7 @@ margin-bottom: 44px;
   color :#4285F4;
 }
 .wills_list-my-wills {
-  max-width: 600px;
+  width: 700px;
   margin-top: 33px;
   padding-left: 50px;
   padding-right: 50px;
@@ -486,6 +557,7 @@ margin-bottom: 44px;
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
+  padding-bottom: 30px;
   line-height: 17px;
   letter-spacing: 0.0264em;
   color: #C1C7CD;
@@ -502,6 +574,7 @@ margin-bottom: 44px;
   flex-direction: column;
 }
 .your_inheritances-h3 {
+  width: 600px;
   font-weight: 400;
   font-size: 18px;
   line-height: 21px;
@@ -512,13 +585,15 @@ margin-bottom: 44px;
   margin: 0 auto;
 }
 .wills_list_h3 {
+  width: 600px;
   font-weight: 400;
   font-size: 18px;
   line-height: 21px;
   text-align: center;
   letter-spacing: 0.0264em;
   color: #5ED5A8;
-  padding-top: 17px;
+  padding: 17px;
+
 }
 .btn_btn-success {
   display: flex;
@@ -538,9 +613,12 @@ margin-bottom: 44px;
 }
 .btn_btn-danger {
   display: flex;
-  width: 130px;
+  width: 120px;
+  max-height: 40px;
   font-style: normal;
   font-weight: 400;
+  margin-top: 81px;
+  margin-bottom: 15px;
   font-size: 14px;
   line-height: 17px;
   border: 1px solid #5ED5A8;
@@ -554,6 +632,7 @@ margin-bottom: 44px;
 }
 .btn_receive {
   margin-left: 100px;
+
 }
 .block_your-wills-h3 {
   font-size: 18px;
@@ -589,7 +668,6 @@ padding-bottom: 20px;
 }
 .btn_green {
   display: flex;
-  padding: 15px 40px;
   font-weight: 400;
   font-size: 14px;
   gap: 8px;
@@ -602,6 +680,26 @@ padding-bottom: 20px;
   justify-content: center;
   border-radius: 15px;
 }
+.btn_green_revoke {
+  display: flex;
+  font-weight: 400;
+  font-size: 14px;
+  padding: 13px 29px;
+  width: 120px;
+  gap: 8px;
+  padding: 13px 29px;
+  max-height: 40px;
+  border: 1px solid #5ED5A8;
+  background-color: #161c22;
+  color: #5ED5A8;
+  background: #1B232A;
+  box-shadow: 2px 0px 19px 3px #161C22;
+  align-items: center;
+  justify-content: center;
+  border-radius: 15px;
+  padding: 13px 29px;
+  max-height: 40px;
+}
 .page-data {
   max-width: 1172px;
   margin: 0 auto;
@@ -613,19 +711,21 @@ padding-bottom: 20px;
 .btn_data-js {
   margin-top: 25px;
 }
-.modal_checkbox-add-nft {
+/* .modal_checkbox-add-nft {
   margin-top: 40px;
   margin-right: 5px;
+  margin-bottom: 15px;
 }
-.modal_checkbox-automatic {
-  margin-top: 13px;
+.modal_checkbox-automatic-token-delivery {
   margin-bottom: 14px;
   margin-right: 5px;
 }
 .modal_checkbox-notication {
   margin-bottom: 48px;
   margin-right: 5px;
-}
+  margin-bottom: 14px;
+} */
+
 .wills-list_ul-btn {
   display: flex;
   /* border-top: 1px solid #3E474F; */
@@ -636,15 +736,15 @@ padding-bottom: 20px;
   align-content: center;
   align-items: center;
   flex-direction: column;
-  gap: 139px;
-  left: 20%;
   top: 50%;
+  left: 36%;
   background-color: #1B232A;
   color: #4285F4;
   padding: 50px 70px 48px 77px;
   max-width: 400px;
   box-shadow: 0px 6px 28px -1px rgba(66, 133, 244, 0.3);
 border-radius: 10px;
+z-index: 9999;
 }
 .modal-confirm_h2 {
   width: 173px;
@@ -663,11 +763,16 @@ border-radius: 10px;
   text-align: center;
 }
 .modal-await {
-background: #1B232A;
-box-shadow: 0px 6px 28px -1px rgba(94, 213, 168, 0.25);
-border-radius: 10px;
-}
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate (-50%, -50% ) ;
+  background: #1B232A;
+  box-shadow: 0px 6px 28px -1px rgba(94, 213, 168, 0.25);
+  border-radius: 10px;
+  }
 .modal-await_text {
+  position: absolute;
   width: 265px;
   font-style: normal;
   font-weight: 400;
@@ -700,8 +805,144 @@ line-height: 17px;
 .your-wills_text {
   display: flex;
   flex-direction: column;
+  align-content: flex-end;
+  justify-content: space-evenly;
+  align-items: stretch;
+  word-break: break-word;
+  width: 406px;
 }
 .your_inheritances_li {
   margin-bottom: 20px;
   margin-top: 20px;
 }
+.modal-wrapper {
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  z-index: 9;
+  background-image: url('./background.jpg');
+}
+.button_number_one {
+display: flex;
+width: 14px;
+font-weight: 400;
+font-size: 18px;
+line-height: 21px;
+color: #FFFFFF;
+margin-top: 40px;
+align-items: baseline
+}
+.button_number_two {
+  display: flex;
+  width: 14px;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 21px;
+  color: #FFFFFF;
+  margin-top: 15px;
+  align-items: baseline
+  }
+
+.modal_input-max {
+  background: #161C22;
+    width: 150px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    padding-right: 10px;
+    border-radius: 10px;
+    max-height: 40px;
+    margin-left: 29px;
+}
+.checkbox_unlited {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+}
+/* .checkbox_unlited + label {
+  display: inline-flex;
+  align-items: center;
+  user-select: none;
+} */
+.checkbox_unlited+label::before {
+  content: url(./content/button-unlited.svg);
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  flex-grow: 0;
+  border: 1px solid #5ED5A8;
+  border-radius: 50%;
+  margin-right: 0.5em;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 50% 50%;
+  margin-left: 28px;
+}
+.custom-checkbox:checked+label::before {
+  border-color: #5ED5A8;
+  background-color: #5ED5A8;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
+}
+
+.modal_checkbox-contaner {
+display: none;
+} 
+..modal_checkbox-label {
+  padding-left: 20px;
+}
+
+.modal_checkbox-label::before {
+  content : "";
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: #161C22;
+  border-radius: 5px;
+  margin-right: 5px;
+  margin-bottom: 10px;
+  vertical-align: middle;
+}
+..modal_checkbox-contaner + .modal_checkbox-label::before {
+  background-color: #5ED5A8;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  flex-grow: 0;
+  border: 1px solid #adb5bd;
+  border-radius: 0.25em;
+  margin-right: 0.5em;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 50% 50%;
+}
+
+/* .fake {
+  display: block;
+  content : "";
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  position: relative;
+  background-color: #161C22;
+}
+.fake::before {
+  content : "";
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: .2s;
+
+}
+.modal_checkbox-contaner:checked + .fake::before {
+  opacity: 1;
+  content : "kkk";
+  background-color: #61dafb;
+}  */
+
