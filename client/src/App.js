@@ -137,7 +137,7 @@ class App extends Component {
           <header className="header">
             <div className='header_boxes'>
               <div className="logo-will">
-                <img src="content/logo.svg"/>
+                <img src="/heritage-defi/client/src/content/logo.svg"/>
               </div>
               <div className="number-of-wills">
                 <div className="amount-will">

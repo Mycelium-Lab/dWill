@@ -726,7 +726,7 @@ class Wills extends Component {
                                         })
                                     }
                                     onClick={this.state.showEdit == false ? this.handleShowEdit : this.handleCloseEdit}>
-                                        <img src="content/edit.svg"/>
+                                        <img src="/./heritage-defi/client/src/content/edit.svg"/>
                                         Edit</button>
                                     <button type="button" className="btn_green_revoke" id='' value={v.ID.toString()} onClick={this.cancelWill}>
                                         <img src="content/revoke.svg"/>  

@@ -373,7 +373,7 @@ class NewWill extends Component {
                 <Modal show={this.state.show} onHide={this.handleClose} className='modal_content' style={styles.modal_new_will}>
                     <Modal.Header className='modal_new_will'>
                         <Button className='bnt_close' onClick={this.handleClose}>
-                            <img src="content/button_close.svg" />
+                            <img src="/heritage-defi/client/src/content/button_close.svg" />
                         </Button>
                         <Modal.Title className='modal_title'>New Will</Modal.Title>
                         <hr />
@@ -382,8 +382,7 @@ class NewWill extends Component {
                         <div className='modal_will-tokens'>
                             <div>
                                 Я завещаю мои
-                            </div>
-                            <hr />
+                            </div> 
                             <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
                                 <option value={"select"}>Select</option>
                                 <option value={TokenAddress}>TFT</option>
@@ -391,8 +390,8 @@ class NewWill extends Component {
                             </select>
                             <div>
                             </div>
-                            <input type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="checkbox_unlited" />
-                            <label className='checkbox_unlimited'>Unlimited</label><br />
+                            <input type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="checkbox_unlited" id='unlimited' />
+                            <label className='checkbox_unlimited' for="unlimited">Unlimited</label><br />
                             <div className="modal_input-max">
                             <input onChange={this.onChangeAmount} value={this.state.amount}  type='number' className="input-max" placeholder="Введите сумму" style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} />
                             <Button variant="outline-success" className='input-max-button' onClick={this.onSetMaxAmount} style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }}>
@@ -421,14 +420,17 @@ class NewWill extends Component {
                             </div>
                         </div>
                         <div className='modal_checkbox'>
-                            <input type="checkbox" disabled={true} className="modal_checkbox-add-nft" />
-                            <label>Add NFT Message (coming soon)</label>
-
+                            <input type="checkbox" disabled={true} className="modal_checkbox-contaner" />
+                            <span className='fake'></span>
+                            <label className="modal_checkbox-label">Add NFT Message (coming soon)</label>
+                            <img scr="/./heritage-defi/client/src/content/question.svg"/>
                             <br />
-                            <input type="checkbox" disabled={true} className="modal_checkbox-automatic-token-delivery" />
-                            <label>Automatic token delivery (coming soon)</label><br />
-                            <input type="checkbox" onChange={this.changeNotifications} disabled={false} className="modal_checkbox-notifications" />
-                            <label>Notifications</label><br />
+                            <input type="checkbox" disabled={true} className="modal_checkbox-contaner" />
+                            <span className='fake'></span>
+                            <label className="modal_checkbox-label">Automatic token delivery (coming soon)</label><br />
+                            <input type="checkbox" onChange={this.changeNotifications} disabled={false} className="modal_checkbox-contaner" />
+                            <span className='fake'></span>
+                            <label className="modal_checkbox-label">Notifications</label><br />
                             <div style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
                                 <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
                             </div>
