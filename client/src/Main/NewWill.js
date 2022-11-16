@@ -13,16 +13,17 @@ import PolygonPic from '../content/poligon.svg'
 import QuestionPic from '../content/question.svg'
 import ConfiPic from '../content/confi.svg'
 import LoadingPic from '../content/loading.svg'
+import arrowDown from '../content/arrow-down.svg'
 
 import ERC20 from '../Contract/ERC20.json'
 const styles = {
     modal_new_will: {
-        
+
         width: '700px',
         // left: '25%',
-        
+
         // top: '1%',
-        
+
         background: '#1B232A',
     }
 }
@@ -391,11 +392,16 @@ class NewWill extends Component {
                                 <div>
                                     Я завещаю мои
                                 </div>
-                                <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
-                                    <option value={"select"}>Select</option>
-                                    <option value={TokenAddress}>TFT</option>
-                                    <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
-                                </select>
+                                <div class="form-select__wrapper">
+                                    <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
+                                        <option value={"select"}>Select</option>
+                                        <option value={TokenAddress}>TFT</option>
+                                        <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
+                                    </select>
+                                    <div class="form-select__arrow">
+                                        <img src={arrowDown}/>
+                                    </div>
+                                </div>
                                 <div class="your-wills__checkbox">
                                     <input id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
                                     <label for="unlimited">Unlimited</label><br />
@@ -433,16 +439,16 @@ class NewWill extends Component {
                         </div>
                         <div class="your-wills__settings">
                             <div class="will-date__row will-date__row--checkbox">
-                                <input type="checkbox" disabled={true} className="form-check form-check-input mt-0" />
-                                <label >Add NFT Message (coming soon)</label><br />
+                                <input id="wills-set1" type="checkbox" disabled={true} className="form-check form-check-input mt-0" />
+                                <label for="wills-set1">Add NFT Message (coming soon)</label><br />
                             </div>
                             <div class="will-date__row will-date__row--checkbox">
-                                <input type="checkbox" disabled={true} className="form-check form-check-input mt-0" />
-                                <label >Automatic token delivery (coming soon)</label><br />
+                                <input id="wills-set2" type="checkbox" disabled={true} className="form-check form-check-input mt-0" />
+                                <label for="wills-set2">Automatic token delivery (coming soon)</label><br />
                             </div>
                             <div class="will-date__row will-date__row--checkbox">
-                                <input type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
-                                <label >Notifications</label><br />
+                                <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
+                                <label for="wills-set3">Notifications</label><br />
                             </div>
                             <div style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
                                 <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
@@ -460,10 +466,8 @@ class NewWill extends Component {
                                     </Button>
                                 </li>
                                 <li>
-                                    <Button variant="primary" onClick={this.state.approved === true ? this.edit : null} style={
-                                        { "background": this.state.approved === false ? '#3E474F' : '#5ED5A8' }
-                                    } >
-                                        Make new will
+                                    <Button variant="primary" onClick={this.state.approved === false ? null : this.newWill} style={{ "background": (this.state.approved === false) || (this.state.amount === '0') || (this.state.amount === '') ? '#3E474F' : '#5ED5A8' }} className='button_make-new-will'>
+                                        <span className="button_number-span">Make new will </span>
                                     </Button>
                                 </li>
                             </ul>

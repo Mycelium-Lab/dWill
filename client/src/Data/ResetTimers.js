@@ -2,7 +2,7 @@ import React, { Component, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import TheWill from '../Contract/TheWill.json'
-
+import LoadingPic from '../content/loading.svg'
 import { ethers } from "ethers";
 import { TheWillAddress, TokenAddress } from '../Utils/Constants';
 
@@ -102,7 +102,7 @@ class ResetTimers extends Component {
             <Modal.Header>
                 <h2 className='modal-confirm_h2'>Pending  transaction</h2>
             </Modal.Header>
-                <img scr='content/confi.svg'/>  
+                <img scr={LoadingPic}/>  
                 <Modal.Footer>
                     <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
                 </Modal.Footer>

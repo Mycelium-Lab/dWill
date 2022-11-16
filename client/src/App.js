@@ -169,7 +169,7 @@ class App extends Component {
             </div>
           </header>
 
-            <main>
+            <main className="_container">
               {
                 this.state.signer === null || this.state.willsLength === 0
                 ? 
