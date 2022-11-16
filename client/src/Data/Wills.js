@@ -901,7 +901,7 @@ class Wills extends Component {
                         </Button>
                     </Modal.Footer>
                 </Modal>
-                <Modal show={this.state.showError}>
+                <Modal className="modal-small" show={this.state.showError}>
                     <Modal.Header>
                         <div>
                             <h1>Error</h1>

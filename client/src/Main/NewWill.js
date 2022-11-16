@@ -17,13 +17,12 @@ import LoadingPic from '../content/loading.svg'
 import ERC20 from '../Contract/ERC20.json'
 const styles = {
     modal_new_will: {
-        position: 'absolute',
+        
         width: '700px',
         // left: '25%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
+        
         // top: '1%',
-        top: '50%',
+        
         background: '#1B232A',
     }
 }
@@ -387,12 +386,16 @@ class NewWill extends Component {
                         <hr />
                     </Modal.Header>
                     <Modal.Body>
-                    <div class="modal-body__row">
+                        <div class="modal-body__row">
                             <div class="your-wills__header">
                                 <div>
                                     Я завещаю мои
                                 </div>
-                                <div>{this.state.currentEditSymbol}</div>
+                                <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
+                                    <option value={"select"}>Select</option>
+                                    <option value={TokenAddress}>TFT</option>
+                                    <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
+                                </select>
                                 <div class="your-wills__checkbox">
                                     <input id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
                                     <label for="unlimited">Unlimited</label><br />
@@ -460,17 +463,18 @@ class NewWill extends Component {
                                     <Button variant="primary" onClick={this.state.approved === true ? this.edit : null} style={
                                         { "background": this.state.approved === false ? '#3E474F' : '#5ED5A8' }
                                     } >
-                                        Make new will 
+                                        Make new will
                                     </Button>
                                 </li>
                             </ul>
                             <Button className="btn-close-modal" onClick={this.handleCloseEdit}>
-                               
+
                             </Button>
                         </div>
                     </Modal.Footer>
                 </Modal>
-            </div><Modal show={this.state.showConfirm} className="modal-confirm">
+            </div>
+                <Modal show={this.state.showConfirm} className="modal-confirm">
                     <Modal.Header>
                         <h2 className='modal-confirm_h2'>Pending  transaction</h2>
                     </Modal.Header>
@@ -478,7 +482,8 @@ class NewWill extends Component {
                     <Modal.Footer>
                         <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
                     </Modal.Footer>
-                </Modal><Modal show={this.state.showAwait} className="modal-await">
+                </Modal>
+                <Modal show={this.state.showAwait} className="modal-await">
                     <Modal.Header>
                         {/* <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
     <img src="content/button_close.svg"/>
@@ -488,7 +493,8 @@ class NewWill extends Component {
                     <Modal.Footer>
                         <p className="modal-await_text">Завещание успешно создано!</p>
                     </Modal.Footer>
-                </Modal><Modal show={this.state.showError}>
+                </Modal>
+                <Modal className="modal-small" show={this.state.showError}>
                     <Modal.Header>
                         <div>
                             <h1>Error</h1>
