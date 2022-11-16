@@ -5,26 +5,13 @@ import Connect from '../Utils/Connect';
 import Inheritances from '../Data/Inheritances';
 import NewWill from './NewWill';
 import { TheWillAddress } from '../Utils/Constants';
-import TheWill from '../Contract/TheWill.json'
 
 class Main extends Component {
     constructor(props) {
         super(props)
         this.state = {
             signer: null,
-            willsLength: props.willsLength,
             contractAddress: TheWillAddress
-        }
-    }
-    componentDidMount = async () => {
-        try {
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
-            await provider.send("eth_requestAccounts", []);
-            const signer = provider.getSigner()
-
-            this.setState({ signer })
-        } catch (error) {
-            console.error(error)
         }
     }
 
@@ -52,10 +39,10 @@ class Main extends Component {
 (или например на свой резервный кошелек)</p>
                 <p className="block-two">Благодаря технологии смарт-контрактов Will работает полностью децентрализованно,
 надежно и автономно. Ни у кого (вообще ни у кого, даже у команды проекта)
-не будет доступа к средствам, которые вы завещали. <a href='#'>Подробнее о том, как это работает.</a></p>
+не будет доступа к средствам, которые вы завещали. <a href='https://memepedia.ru/wp-content/uploads/2021/04/qblulgcbrwk-%E2%80%94-kopija.jpg' target="_blank" rel="noreferrer">Подробнее о том, как это работает.</a></p>
                 <p className="block-three">
                 {
-                    (this.state.willsLength === 0) && (this.state.signer !== null) 
+                    (this.props.willsLength === 0) && (this.state.signer !== null) 
                     ? 
                     'У вас еще нет активных завещаний.'
                     : 
@@ -63,14 +50,18 @@ class Main extends Component {
                 }
                 </p>
                 {
-                    !window.ethereum ? <NewWill isEthereumNull={true}/> : null
+                    this.props.signerAddress 
+                    ? 
+                    <NewWill isEthereumNull={false} network={this.props.network} signer={this.props.signer} signerAddress={this.props.signerAddress}/>
+                    :
+                    null
                 }
-                {
+                {/*{
                     this.state.signer === null ? <Connect disconnect={this.disconnect}/> : <NewWill isEthereumNull={false}/>
                 }
                 {
                     this.props.inheritancesLength === 0 ? '' : <Inheritances/>
-                }
+                } */}
             </div>
         )
     }
