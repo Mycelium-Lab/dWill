@@ -6,19 +6,13 @@ import NewWill from '../Main/NewWill';
 import ResetTimers from './ResetTimers';
 class Data extends Component {
     render() {
-        return(
+        return (
             <div className='page-data'>
-                <div>
-                    <ResetTimers/>
-                </div>
-                <div>
-                    <Inheritances/>
-                </div>
-                <div>
-                    <Wills/>
-                </div>
+                <ResetTimers />
+                <Inheritances />
+                <Wills />
                 <div className='btn_data-js'>
-                    <NewWill isEthereumNull={false}/>
+                    <NewWill isEthereumNull={false} />
                 </div>
             </div>
         )

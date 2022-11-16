@@ -144,11 +144,11 @@ class App extends Component {
   render(){
       return(
         <div className="App">
-          <header className="header">
+          <header className="header _container">
             <div className='header_boxes'>
-              <div className="logo-will">
+              <a href="/" className="logo-will">
                 <img src={logoWill}/>
-              </div>
+              </a>
               <div className="number-of-wills">
                 <div className="amount-will">
                 <div>
