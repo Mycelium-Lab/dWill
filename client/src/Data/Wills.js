@@ -9,6 +9,9 @@ import { ethers } from "ethers";
 
 import ERC20 from '../Contract/ERC20.json'
 import { TheWillAddress, TokenAddress, UnlimitedAmount } from '../Utils/Constants';
+import editPic from '../content/edit.svg'
+import revokePic from '../content/revoke.svg'
+import closePic from '../content/button_close.svg';
 
 class Wills extends Component {
     constructor(props) {
@@ -740,11 +743,11 @@ class Wills extends Component {
                                             })
                                         ) 
                                         : this.handleCloseEdit}>
-                                        <img src="content/edit.svg"/>
+                                        <img src={editPic}/>
                                         Edit
                                     </div>
                                     <button type="button" className="btn_green_revoke" id='' value={v.ID.toString()} onClick={this.cancelWill}>
-                                        <img src="content/revoke.svg"/>  
+                                        <img src={revokePic}/>  
                                         Revoke</button>
                                 </div>
                             )
@@ -820,7 +823,7 @@ class Wills extends Component {
                     Edit
                 </Button>
                 <Button onClick={this.handleCloseEdit}>
-                <img src="content/img/close.svg"/>  
+                <img src={closePic}/>  
                 </Button>
                     </div>
                 </Modal.Footer>

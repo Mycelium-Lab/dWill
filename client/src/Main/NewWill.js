@@ -7,6 +7,12 @@ import TheWill from '../Contract/TheWill.json'
 
 import { ethers } from "ethers";
 import { TheWillAddress, TokenAddress, UnlimitedAmount } from '../Utils/Constants';
+import closeModalPic from '../content/close_modal.svg'
+import buttonClosePic from '../content/button_close.svg'
+import PolygonPic from '../content/poligon.svg'
+import QuestionPic from '../content/question.svg'
+import ConfiPic from '../content/confi.svg'
+import LoadingPic from '../content/loading.svg'
 
 import ERC20 from '../Contract/ERC20.json'
 const styles = {
@@ -352,7 +358,7 @@ class NewWill extends Component {
                 }}>
                     <Modal.Header className='modal_new_will'>
                         <Button className='bnt_close' onClick={this.handleCloseWalletNotExist}>
-                            <img src="./content/close_modal.svg"/>  
+                            <img src={closeModalPic}/>  
                         </Button>
                         <Modal.Title className='modal_title'>Wallet Not Exist</Modal.Title>
                     </Modal.Header>
@@ -372,7 +378,7 @@ class NewWill extends Component {
                 <Modal show={this.state.show} onHide={this.handleClose} className='modal_content' style={styles.modal_new_will}>
                     <Modal.Header className='modal_new_will'>
                         <Button className='bnt_close' onClick={this.handleClose}>
-                            <img src="/heritage-defi/client/src/content/button_close.svg" />
+                            <img src={buttonClosePic} />
                         </Button>
                         <Modal.Title className='modal_title'>New Will</Modal.Title>
                         <hr />
@@ -390,7 +396,7 @@ class NewWill extends Component {
                             <div>
                             </div>
                             <input type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="checkbox_unlited" id='unlimited' />
-                            <label className='checkbox_unlimited' for="unlimited">Unlimited</label><br />
+                            <label className='checkbox_unlimited' htmlFor="unlimited">Unlimited</label><br />
                             <div className="modal_input-max">
                             <input onChange={this.onChangeAmount} value={this.state.amount}  type='number' className="input-max" placeholder="Введите сумму" style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} />
                             <Button variant="outline-success" className='input-max-button' onClick={this.onSetMaxAmount} style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }}>
@@ -398,7 +404,7 @@ class NewWill extends Component {
                             </Button>
                             </div>
                         </div>
-                        <div className='modal_wallet'>С кошелька <a href='#' className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a> на сети {this.state.network} <img scr="./content/poligun.svg"/></div>
+                        <div className='modal_wallet'>С кошелька <a href='#' className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a> на сети {this.state.network} <img src={PolygonPic}/></div>
                         <span className='title_trusted-wallet'>Доверенному кошельку</span>
                         <div><input onChange={this.onChangeHeirAddress} required className="input_trusted-wallet " /></div>
                         <div>
@@ -422,12 +428,12 @@ class NewWill extends Component {
                             <input type="checkbox" disabled={true} className="modal_checkbox-contaner" />
                             <span className='fake'></span>
                             <label className="modal_checkbox-label">Add NFT Message (coming soon)</label>
-                            <img scr="/./heritage-defi/client/src/content/question.svg"/>
+                            <img scr={QuestionPic}/>
                             <br />
                             <input type="checkbox" disabled={true} className="modal_checkbox-contaner" />
                             <span className='fake'></span>
                             <label className="modal_checkbox-label">Automatic token delivery (coming soon)</label><br />
-                            <input type="checkbox" onChange={this.changeNotifications} disabled={false} className="modal_checkbox-contaner" />
+                            <input type="checkbox" onChange={this.changeNotifications} checked={this.state.notificationsOn} disabled={false} className="modal_checkbox-contaner" />
                             <span className='fake'></span>
                             <label className="modal_checkbox-label">Notifications</label><br />
                             <div style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
@@ -452,7 +458,7 @@ class NewWill extends Component {
                     <Modal.Header>
                         <h2 className='modal-confirm_h2'>Pending  transaction</h2>
                     </Modal.Header>
-                    <img scr='content/confi.svg' />
+                    <img scr={ConfiPic} />
                     <Modal.Footer>
                         <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
                     </Modal.Footer>
@@ -462,7 +468,7 @@ class NewWill extends Component {
     <img src="content/button_close.svg"/>
     </Button>   */}
                     </Modal.Header>
-                    <img src="content/loading.svg" />
+                    <img src={LoadingPic} />
                     <Modal.Footer>
                         <p className="modal-await_text">Завещание успешно создано!</p>
                     </Modal.Footer>
