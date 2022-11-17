@@ -13,16 +13,37 @@ class Data extends Component {
                 ?
                 <div>
                     <div>
-                        <ResetTimers signer={this.props.signer} signerAddress={this.props.signerAddress}/>
+                        <ResetTimers 
+                            contractAddress={this.props.contractAddress} 
+                            signer={this.props.signer} 
+                            signerAddress={this.props.signerAddress}
+                        />
                     </div>
                      <div>
-                        <Inheritances network={this.props.network} signer={this.props.signer} signerAddress={this.props.signerAddress}/>
+                        <Inheritances 
+                            contractAddress={this.props.contractAddress}
+                            network={this.props.network} 
+                            signer={this.props.signer} 
+                            signerAddress={this.props.signerAddress}
+                        />
                     </div>
                     <div>
-                        <Wills network={this.props.network} signer={this.props.signer} signerAddress={this.props.signerAddress}/>
+                        <Wills 
+                            contractAddress={this.props.contractAddress} 
+                            network={this.props.network} 
+                            signer={this.props.signer} 
+                            signerAddress={this.props.signerAddress}
+                        />
                     </div>
                     <div className='btn_data-js'>
-                        <NewWill isEthereumNull={false} network={this.props.network} signer={this.props.signer} signerAddress={this.props.signerAddress}/>
+                        <NewWill 
+                            contractAddress={this.props.contractAddress} 
+                            tokenAddress={this.props.tokenAddress} 
+                            isEthereumNull={false} 
+                            network={this.props.network} 
+                            signer={this.props.signer} 
+                            signerAddress={this.props.signerAddress}
+                        />
                     </div>
                 </div>
                 :

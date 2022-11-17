@@ -6,10 +6,9 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 
 import './App.css';
 
-
 import Connect from './Utils/Connect';
 import TheWill from './Contract/TheWill.json'
-import { TheWillAddress } from './Utils/Constants';
+import { chainIDs, chainRPCURL, TheWillAddresses, TokenAddresses } from './Utils/Constants';
 import Data from './Data/Data';
 import Main from './Main/Main';
 
@@ -22,6 +21,8 @@ class App extends Component {
     provider: null,
     signerAddress: null,
     contract: null,
+    contractAddress: '',
+    tokenAddress: '',
     network: null,
     total: '',
     showConfirm: false,
@@ -34,39 +35,84 @@ class App extends Component {
     try {
       const localStorageAccount = localStorage.getItem('account')
       const walletType = localStorage.getItem('wallet')
+      const walletconnect = localStorage.getItem('walletconnect')
       let providerExist = false;
-      if (localStorageAccount !== null && walletType !== null) {
+      if (localStorageAccount !== null && (walletType !== null || walletconnect !== null)) {
         if (walletType === 'Metamask') {
           const provider = new ethers.providers.Web3Provider(window.ethereum)
           const accounts = await provider.send("eth_requestAccounts", []);
           const signer = provider.getSigner()
-          const network = (await provider.getNetwork()).chainId
-          localStorage.setItem('account', accounts[0]);
-          providerExist = true
-          this.setState({
-            provider,
-            signer,
-            signerAddress:accounts[0],
-            network
+          window.ethereum.on('accountsChanged', async (_accounts) => {
+            if (_accounts.length === 0) {
+              localStorage.removeItem('account')
+              localStorage.removeItem('wallet')
+              this.setState({
+                provider: null,
+                signer: null,
+                signerAddress: null
+              })
+            } else {
+              localStorage.setItem('account', _accounts[0])
+              await provider.send("eth_requestAccounts", []);
+              const _signer = provider.getSigner()
+              this.setState({
+                signer: _signer,
+                signerAddress:_accounts[0]
+              })
+            }
           })
+          localStorage.setItem('account', accounts[0]);
+          localStorage.setItem('wallet', 'Metamask');
+          providerExist = true
+          this.setProperties(provider, signer, accounts[0])
         }
-        if (walletType === 'WalletConnect') {
+        if (walletType === 'WalletConnect' || walletconnect !== null) {
           const provider = new WalletConnectProvider({
-            rpc: {80001: "https://rpc-mumbai.maticvigil.com"}
+            rpc: {
+              80001: chainRPCURL.Mumbai,
+              97: chainRPCURL.BinanceTestnet,
+              5: chainRPCURL.Goerli,
+            }
           })
           await provider.enable();
           const _provider = new ethers.providers.Web3Provider(provider)
+          provider.on('accountsChanged', async (__accounts) => {
+            if (__accounts.length === 0) {
+              localStorage.removeItem('account')
+              localStorage.removeItem('wallet')
+              this.setState({
+                provider: null,
+                signer: null,
+                signerAddress: null
+              })
+            } else {
+              localStorage.setItem('account', __accounts[0])
+              const _signer = _provider.getSigner()
+              this.setState({
+                signer: _signer,
+                signerAddress:__accounts[0]
+              })
+            }
+          })
+          provider.on('disconnect', () => {
+            localStorage.removeItem('account')
+            localStorage.removeItem('wallet')
+            localStorage.removeItem('walletconnect')
+            this.setState({
+              provider: null,
+              signer: null,
+              signerAddress: null
+            })
+          })
+          provider.on('chainChanged', () => {
+            window.location.reload()
+          })
           const _signer = _provider.getSigner()
           const _address = await _signer.getAddress()
-          const network = (await _provider.getNetwork()).chainId
           localStorage.setItem('account', _address);
+          localStorage.setItem('wallet', 'WalletConnect');
           providerExist = true
-          this.setState({
-            provider:_provider,
-            signer:_signer,
-            signerAddress:_address,
-            network
-          })
+          this.setProperties(_provider, _signer, _address)
         }
       }
       axios.get('https://docs.google.com/spreadsheets/d/1Aiw5wJGoqmTFcMB595Sv4TX6pDjd0lytaProjyQO7ac/gviz/tq?tqx=out:csv&tq=SELECT *')
@@ -96,18 +142,44 @@ class App extends Component {
   };
 
   async setProperties(provider, signer, signerAddress) {
-    this.setState({
-      provider,
-      signer,
-      signerAddress
-    })
+    try {
+      const network = (await provider.getNetwork()).chainId
+      let contractAddress;
+      let tokenAddress;
+      if (network === chainIDs.Mumbai) {
+        contractAddress = TheWillAddresses.Mumbai
+        tokenAddress = TokenAddresses.Mumbai
+      } else if (network === chainIDs.Goerli) {
+        contractAddress = TheWillAddresses.Goerli
+        tokenAddress = TokenAddresses.Goerli
+      } else if (network === chainIDs.Polygon) {
+        contractAddress = TheWillAddresses.Polygon
+      } else if (network === chainIDs.BinanceTestnet) {
+        contractAddress = TheWillAddresses.BinanceTestnet
+        tokenAddress = TokenAddresses.BinanceTestnet
+      } else if (network === chainIDs.BinanceMainnet) {
+        contractAddress = TheWillAddresses.BinanceMainnet
+      } else if (network === chainIDs.EthereumMainnet) {
+        contractAddress = TheWillAddresses.EthereumMainnet
+      }
+      this.setState({
+        provider,
+        signer,
+        signerAddress,
+        network,
+        contractAddress,
+        tokenAddress
+      })
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   setProperties = this.setProperties.bind(this)
 
   async loadBasic() {
-      const { signer, signerAddress } = this.state
-      const contract = new ethers.Contract(TheWillAddress, TheWill.abi, signer)
+      const { signer, signerAddress, contractAddress } = this.state
+      const contract = new ethers.Contract(contractAddress, TheWill.abi, signer)
       const wills = await contract.getAllWills(signerAddress)
       const inheritances = await contract.getAllInheritances(signerAddress)
       contract.on('AddAnHeir', async (ID, owner, heir, token, timeWhenWithdraw, amount) => {
@@ -154,7 +226,7 @@ class App extends Component {
                     ?
                     null
                     :
-                    <Connect setProperties={this.setProperties}/>
+                    <Connect setProperties={this.setProperties} network={this.state.network}/>
                   }
               </div>
               </div>
@@ -171,6 +243,9 @@ class App extends Component {
                   signer={this.state.signer}
                   signerAddress={this.state.signerAddress}
                   network={this.state.network}
+                  setProperties={this.setProperties}
+                  tokenAddress={this.state.tokenAddress}
+                  contractAddress={this.state.contractAddress}
                   />
                   :
                   <Data 
@@ -178,6 +253,8 @@ class App extends Component {
                   signer={this.state.signer}
                   signerAddress={this.state.signerAddress}
                   network={this.state.network}
+                  tokenAddress={this.state.tokenAddress}
+                  contractAddress={this.state.contractAddress}
                   />
                 }
               </main>

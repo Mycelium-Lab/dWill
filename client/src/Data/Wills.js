@@ -8,7 +8,7 @@ import TheWill from '../Contract/TheWill.json'
 import { ethers } from "ethers";
 
 import ERC20 from '../Contract/ERC20.json'
-import { TheWillAddress, UnlimitedAmount } from '../Utils/Constants';
+import { chainIDs, TheWillAddress, UnlimitedAmount } from '../Utils/Constants';
 import editPic from '../content/edit.svg'
 import revokePic from '../content/revoke.svg'
 import closePic from '../content/button_close.svg';
@@ -44,7 +44,7 @@ class Wills extends Component {
             network: '',
             approved: true,
             tokensValueToApprove: '',
-            contractAddress: TheWillAddress,
+            contractAddress: props.contractAddress,
             year: 0,
             month: 0,
             day: 0,
@@ -61,7 +61,7 @@ class Wills extends Component {
         try {
             const signer = this.props.signer
             const signerAddress = this.props.signerAddress
-            const contract = new ethers.Contract(TheWillAddress, TheWill.abi, signer)
+            const contract = new ethers.Contract(this.props.contractAddress, TheWill.abi, signer)
             const wills = await contract.getAllWills(signerAddress)
             let _wills = [];
             for (let i = 0; i < wills.length; i++) {
@@ -82,14 +82,20 @@ class Wills extends Component {
                 }
             }
             let networkName
-            if (this.props.network === 56) {
+            if (this.props.network === chainIDs.BinanceMainnet) {
                 networkName = `BNB Chain`
-            } else if (this.props.network  === 137) {
+            } else if (this.props.network  === chainIDs.Polygon) {
                 networkName = `Polygon`
             } else if (this.props.network  === 31337) {
                 networkName = `Hardhat`
-            } else if (this.props.network  === 80001) {
+            } else if (this.props.network  === chainIDs.Mumbai) {
                 networkName = `Mumbai`
+            } else if (this.props.network  === chainIDs.Goerli) {
+                networkName = `Goerli`
+            } else if (this.props.network  === chainIDs.EthereumMainnet) {
+                networkName = `Ethereum`
+            } else if (this.props.network  === chainIDs.BinanceTestnet) {
+                networkName = `BNBTest Chain`
             }
             this.setState({ signer, signerAddress, network: networkName, contract, wills: _wills })
             contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
@@ -443,9 +449,9 @@ class Wills extends Component {
     }
 
     async approve() {
-        const { contractAddress, signer, currentEditToken, currentEditBaseAmount, currentEditAmount } = this.state
+        const { contractAddress, signer, currentEditToken, currentEditBaseAmount, isUnlimitedAmount, currentEditAmount } = this.state
         const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
-        const amountToApprove = (
+        const amountToApprove = isUnlimitedAmount === true ? currentEditAmount : (
             BigInt(
                 (
                     parseFloat(currentEditAmount) - parseFloat(currentEditBaseAmount)
@@ -510,7 +516,8 @@ class Wills extends Component {
                 signerAddress, 
                 currentEditBaseAmount, 
                 currentEditToken,
-                currentEditDecimals
+                currentEditDecimals,
+                contract
             } = this.state
             if (parseFloat(currentEditBaseAmount) < parseFloat(event.target.value)) {
                 this.setState({
@@ -519,13 +526,14 @@ class Wills extends Component {
                 })
                 const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
                 const allowance = (await _token.allowance(signerAddress, contractAddress)).toString()
+                const allWillsAmountThisToken = await contract.getAllWillsAmountThisToken(signerAddress, _token.address)
                 this.changeApproved(
                     BigInt(allowance), 
                     BigInt(
                         (parseFloat(event.target.value) - parseFloat(currentEditBaseAmount)) 
                         * 
                         Math.pow(10, await _token.decimals())
-                    ),
+                    ) + BigInt(allWillsAmountThisToken),
                     currentEditDecimals
                 )
             } 
@@ -572,12 +580,16 @@ class Wills extends Component {
     }
 
     async onSetMaxAmount() {
-        const { signer, signerAddress, currentEditToken } = this.state
+        const { signer, signerAddress, currentEditToken, contract, contractAddress } = this.state
         const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
+        const allowance = (await _token.allowance(signerAddress, contractAddress)).toString()
+        const allWillsAmountThisToken = await contract.getAllWillsAmountThisToken(signerAddress, _token.address)
         await _token.balanceOf(signerAddress)
             .then(async (balance) => {
                 this.setState({
-                    currentEditAmount: (balance / Math.pow(10, await _token.decimals())).toString()
+                    currentEditAmount: Math.floor((balance / Math.pow(10, await _token.decimals()))).toString()
+                }, () => {
+                    this.changeApproved(BigInt(allowance), BigInt(allWillsAmountThisToken) + BigInt(balance))
                 })
             })
     }
@@ -635,19 +647,21 @@ class Wills extends Component {
 
     async onChangeUnlimitedAmount() {
         try {
-            let { contractAddress, signer, signerAddress, tokensValue, isUnlimitedAmount, isUnlimitedAmountBase, contract } = this.state
+            let { contractAddress, signer, signerAddress, currentEditToken, isUnlimitedAmount, isUnlimitedAmountBase, contract } = this.state
             //max amount uint256
             isUnlimitedAmount = isUnlimitedAmount === true ? false : true
             this.setState({
-                amount: isUnlimitedAmount === false ? UnlimitedAmount : '0',
+                currentEditAmount: isUnlimitedAmount === true ? UnlimitedAmount : '0',
                 isUnlimitedAmount,
                 updateAmount: isUnlimitedAmount !== isUnlimitedAmountBase
+            }, async () => {
+                const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
+                const allowance = await _token.allowance(signerAddress, contractAddress)
+                const allWillsAmountThisToken = await contract.getAllWillsAmountThisToken(signerAddress, _token.address)
+                this.changeApproved(BigInt(allowance), BigInt(allWillsAmountThisToken) + BigInt(this.state.currentEditAmount))
             })
-            const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
-            const allowance = await _token.allowance(signerAddress, contractAddress)
-            const allWillsAmountThisToken = await contract.getAllWillsAmountThisToken(signerAddress, _token.address)
-            this.changeApproved(BigInt(allowance), BigInt(allWillsAmountThisToken) + BigInt(this.state.amount))
         } catch (error) {
+            console.error(error)
             if (error.message.includes('resolver or addr is not configured')) {
                 this.setState({
                     errortext: 'Выберите токен',

@@ -12,7 +12,7 @@ class ResetTimers extends Component {
         this.state = {
             signer: null,
             signerAddress: '',
-            contractAddress: TheWillAddress,
+            contractAddress: props.contractAddress,
             contract: null,
             showConfirm: false,
             showAwait: false,
@@ -23,7 +23,7 @@ class ResetTimers extends Component {
         try {
             const signer = this.props.signer
             const signerAddress = this.props.signerAddress
-            const contract = new ethers.Contract(TheWillAddress, TheWill.abi, signer)
+            const contract = new ethers.Contract(this.props.contractAddress, TheWill.abi, signer)
             this.setState({ signer, signerAddress, contract })
         } catch (error) {
             console.error(error)

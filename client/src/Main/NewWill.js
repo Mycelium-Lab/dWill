@@ -6,7 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 import TheWill from '../Contract/TheWill.json'
 
 import { ethers } from "ethers";
-import { TheWillAddress, TokenAddress, UnlimitedAmount } from '../Utils/Constants';
+import { chainIDs, TheWillAddress, TokenAddress, UnlimitedAmount } from '../Utils/Constants';
 import closeModalPic from '../content/close_modal.svg'
 import buttonClosePic from '../content/button_close.svg'
 import PolygonPic from '../content/poligon.svg'
@@ -44,7 +44,7 @@ class NewWill extends Component {
             network: '',
             approved: false,
             tokensValue: '',
-            contractAddress: TheWillAddress,
+            contractAddress: props.contractAddress,
             year: 2,
             month: 0,
             day: 0,
@@ -63,18 +63,22 @@ class NewWill extends Component {
         try {
             const signer = this.props.signer
             const signerAddress = this.props.signerAddress
-            const contract = new ethers.Contract(TheWillAddress, TheWill.abi, signer)
+            const contract = new ethers.Contract(this.props.contractAddress, TheWill.abi, signer)
             let networkName
-            if (this.props.network === 56) {
+            if (this.props.network === chainIDs.BinanceMainnet) {
                 networkName = `BNB Chain`
-            } else if (this.props.network === 137) {
+            } else if (this.props.network  === chainIDs.Polygon) {
                 networkName = `Polygon`
-            } else if (this.props.network === 31337) {
+            } else if (this.props.network  === 31337) {
                 networkName = `Hardhat`
-            } else if (this.props.network === 5) {
-                networkName = `Goerli`
-            } else if (this.props.network === 80001) {
+            } else if (this.props.network  === chainIDs.Mumbai) {
                 networkName = `Mumbai`
+            } else if (this.props.network  === chainIDs.Goerli) {
+                networkName = `Goerli`
+            } else if (this.props.network  === chainIDs.EthereumMainnet) {
+                networkName = `Ethereum`
+            } else if (this.props.network  === chainIDs.BinanceTestnet) {
+                networkName = `BNBTest Chain`
             }
             this.setState({ signer, signerAddress, network: networkName, contract })
         } catch (error) {
@@ -346,32 +350,6 @@ class NewWill extends Component {
                     New Will
                 </Button>
                 <div className='modal_fade'></div>
-                <Modal show={this.state.showWalletNotExist} onHide={this.handleCloseWalletNotExist} className='modal_content' style={{
-                    position: 'absolute',
-                    // width: '700px',
-                    left: '25%',
-                    top: '150px',
-                    background: '#1B232A',
-                }}>
-                    <Modal.Header className='modal_new_will'>
-                        <Button className='bnt_close' onClick={this.handleCloseWalletNotExist}>
-                            <img src={closeModalPic} alt="closepic"/>  
-                        </Button>
-                        <Modal.Title className='modal_title'>Wallet Not Exist</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body className='modal_new_will'>
-                        <div className='title_trusted-wallet'>To create a dWill connect a Web3 wallet</div>
-                        <button className='btn-new-will'>
-                            <img src="" alt="" />
-                            Connect MetaMask
-                        </button>
-                        <p className='title_trusted-wallet'>What is a wallet?</p>
-                        <p className='title_trusted-wallet'>Wallets are used to send, receive, and store digital
-                            assets. Connecting a wallet lets you interact with apps.
-                            <a href="https://metamask.io/" target="_blank" rel="noreferrer">Install the wallet.</a>
-                        </p>
-                    </Modal.Body>
-                </Modal>
                 <Modal show={this.state.show} onHide={this.handleClose} className='modal_content' style={styles.modal_new_will}>
                     <Modal.Header className='modal_new_will'>
                         <Button className='bnt_close' onClick={this.handleClose}>
@@ -387,7 +365,7 @@ class NewWill extends Component {
                             </div> 
                             <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
                                 <option value={"select"}>Select</option>
-                                <option value={TokenAddress}>TFT</option>
+                                <option value={this.props.tokenAddress}>TFT</option>
                                 <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
                             </select>
                             <div>
@@ -401,7 +379,7 @@ class NewWill extends Component {
                             </Button>
                             </div>
                         </div>
-                        <div className='modal_wallet'>С кошелька <a href={`https://mumbai.polygonscan.com/address/${this.state.signerAddress}`}  target="_blank" rel="noreferrer" className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a> на сети {this.state.network} <img src={PolygonPic} alt="networkpic"/></div>
+                        <div className='modal_wallet'>С кошелька <a href={`https://mumbai.polygonscan.com/address/${this.props.signerAddress}`}  target="_blank" rel="noreferrer" className='modal_wallet_link'>{this.props.signerAddress.slice(0, 6) + '...' + this.props.signerAddress.slice(this.props.signerAddress.length - 4, this.props.signerAddress.length)}</a> на сети {this.state.network} <img src={PolygonPic} alt="networkpic"/></div>
                         <span className='title_trusted-wallet'>Доверенному кошельку</span>
                         <div><input onChange={this.onChangeHeirAddress} required className="input_trusted-wallet " /></div>
                         <div>

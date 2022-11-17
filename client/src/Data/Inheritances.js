@@ -18,7 +18,7 @@ class Inheritances extends Component {
             network: '',
             approved: false,
             tokensValue: '',
-            contractAddress: TheWillAddress,
+            contractAddress: props.contractAddress,
             year: '',
             month: '',
             day: '',
@@ -34,7 +34,7 @@ class Inheritances extends Component {
         try {
             const signer = this.props.signer
             const signerAddress = this.props.signerAddress
-            const contract = new ethers.Contract(TheWillAddress, TheWill.abi, signer)
+            const contract = new ethers.Contract(this.props.contractAddress, TheWill.abi, signer)
             const inheritances = await contract.getAllInheritances(signerAddress)
             let _inheritances = [];
             for (let i = 0; i < inheritances.length; i++) {
