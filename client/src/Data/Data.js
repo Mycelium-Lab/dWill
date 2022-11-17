@@ -6,7 +6,7 @@ import ResetTimers from './ResetTimers';
 class Data extends Component {
 
     render() {
-        return(
+        return (
             <div className='page-data'>
             {
                 this.props.signer
