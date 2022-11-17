@@ -775,16 +775,7 @@ class Wills extends Component {
                                 <div>
                                     Я завещаю мои
                                 </div>
-                                <div class="form-select__wrapper">
-                                    <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
-                                        <option value={"select"}>Select</option>
-                                        <option value={TokenAddress}>TFT</option>
-                                        <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
-                                    </select>
-                                    <div class="form-select__arrow">
-                                        <img src={arrowDown} />
-                                    </div>
-                                </div>
+                                <div className="your-wills__current-token">{this.state.currentEditSymbol}</div>
                                 <div class="your-wills__checkbox">
                                     <input id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
                                     <label for="unlimited">Unlimited</label><br />

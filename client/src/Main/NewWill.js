@@ -18,14 +18,11 @@ import arrowDown from '../content/arrow-down.svg'
 import ERC20 from '../Contract/ERC20.json'
 const styles = {
     modal_new_will: {
-
-        maxWidth: '700px',
+        // maxWidth: '700px',
         // left: '25%',
-        width: '100%',
-
+        // width: '100%',
         // top: '1%',
-
-        background: '#1B232A',
+        // background: '#1B232A',
     }
 }
 
@@ -379,7 +376,7 @@ class NewWill extends Component {
                         </p>
                     </Modal.Body>
                 </Modal>
-                <Modal show={this.state.show} onHide={this.handleClose} className='modal_content' style={styles.modal_new_will}>
+                <Modal show={this.state.show} onHide={this.handleClose} className='will-block' style={styles.modal_new_will}>
                     <Modal.Header className='modal_new_will'>
                         <Button className='bnt_close' onClick={this.handleClose}>
                             <img src={buttonClosePic} />
