@@ -6,12 +6,15 @@ import Modal from 'react-bootstrap/Modal';
 import TheWill from '../Contract/TheWill.json'
 // import revoke from '../content/revoke.svg';
 import { ethers } from "ethers";
-
+import ConfiPic from '../content/confi.svg'
 import ERC20 from '../Contract/ERC20.json'
 import { chainIDs, TheWillAddress, UnlimitedAmount } from '../Utils/Constants';
 import editPic from '../content/edit.svg'
+import LoadingPic from '../content/loading.svg'
 import revokePic from '../content/revoke.svg'
-import closePic from '../content/button_close.svg';
+import closePic from '../content/button_close.svg'
+import arrowDown from '../content/arrow-down.svg'
+import closeModalPic from '../content/close_modal.svg'
 
 class Wills extends Component {
     constructor(props) {
@@ -125,21 +128,21 @@ class Wills extends Component {
                             decimals
                         })
                     }
-                    this.setState({wills: __wills})
+                    this.setState({ wills: __wills })
                 }
             })
             contract.on('Withdraw', async (ID,owner, heir,timeWhenWithdraw) => {
                 if (owner === signerAddress) {
                     let __wills = this.state.wills
                     __wills = __wills.filter(v => v.ID !== ID.toString())
-                    this.setState({wills: __wills})
+                    this.setState({ wills: __wills })
                 }
             })
             contract.on('RemoveWill', async (ID, owner, heir) => {
                 if (owner === signerAddress) {
                     let __wills = this.state.wills
                     __wills = __wills.filter(v => v.ID !== ID.toString())
-                    this.setState({wills: __wills})
+                    this.setState({ wills: __wills })
                 }
             })
             contract.on('UpdateWillTimeWhenWithdraw', (ID, owner, heir, newTime) => {
@@ -201,13 +204,13 @@ class Wills extends Component {
         }
     }
 
-    timeConverter(UNIX_timestamp){
+    timeConverter(UNIX_timestamp) {
         var a = new Date(parseInt(UNIX_timestamp) * 1000);
         var year = a.getFullYear();
         var month = a.getMonth();
         var date = a.getDate();
-        month+=1
-        var time = `${date < 10 ? '0'+ date : date}` + '.' + `${month < 10 ? '0' + month : month}` + '.' + year;
+        month += 1
+        var time = `${date < 10 ? '0' + date : date}` + '.' + `${month < 10 ? '0' + month : month}` + '.' + year;
         return time;
     }
 
@@ -233,7 +236,7 @@ class Wills extends Component {
             let mo = Math.floor((seconds % 31536000) / 2628000);
             let d = Math.floor(((seconds % 31536000) % 2628000) / 86400);
             let h = Math.floor((seconds % (3600 * 24)) / 3600);
-          
+
             let yDisplay = y > 0 ? y + (y === 1 ? " year, " : " years, ") : " 0 years,";
             let moDisplay = mo > 0 ? mo + (mo === 1 ? " month, " : " months, ") : " 0 months,";
             let dDisplay = d > 0 ? d + (d === 1 ? " day, " : " days, ") : " 0 days, ";
@@ -326,8 +329,8 @@ class Wills extends Component {
             let promise;
             if (year !== 0 || month !== 0 || day !== 0) {
                 let whenCreated = new Date((parseInt(currentEditTimeWhenWithdraw) - parseInt(currentEditTimeBetweenWithdrawAndStart)) * 1000)
-                whenCreated = new Date(whenCreated.setFullYear(whenCreated.getFullYear()+parseInt(year)))
-                whenCreated = new Date(whenCreated.setMonth(whenCreated.getMonth()+parseInt(month)))
+                whenCreated = new Date(whenCreated.setFullYear(whenCreated.getFullYear() + parseInt(year)))
+                whenCreated = new Date(whenCreated.setMonth(whenCreated.getMonth() + parseInt(month)))
                 whenCreated = whenCreated.addDays(parseInt(day))
                 _updatedTime = Math.floor(whenCreated.getTime() / 1000)
             }
@@ -399,22 +402,22 @@ class Wills extends Component {
             if (updateHeir === false && updateAmount === false && year === 0 && month === 0 && day === 0) throw Error('Nothing to update')
             this.handleShowConfirm()
             promise
-            .then(async (tx) => {
-                this.handleCloseConfirm()
-                this.handleShowAwait()
-                await tx.wait()
-                .then(() => {
-                    this.handleCloseAwait()
-                    this.handleCloseEdit()
-                    this.setState({
-                        updateHeir: false,
-                        updateAmount: false,
-                        year: 0,
-                        month: 0,
-                        day: 0,
-                    })
+                .then(async (tx) => {
+                    this.handleCloseConfirm()
+                    this.handleShowAwait()
+                    await tx.wait()
+                        .then(() => {
+                            this.handleCloseAwait()
+                            this.handleCloseEdit()
+                            this.setState({
+                                updateHeir: false,
+                                updateAmount: false,
+                                year: 0,
+                                month: 0,
+                                day: 0,
+                            })
+                        })
                 })
-            })
         } catch (error) {
             console.error(error)
             if (error.message.includes('Time is undefined')) {
@@ -455,22 +458,22 @@ class Wills extends Component {
             BigInt(
                 (
                     parseFloat(currentEditAmount) - parseFloat(currentEditBaseAmount)
-                ) 
-                * 
+                )
+                *
                 Math.pow(10, await _token.decimals())
             )
-        ).toString() 
+        ).toString()
         this.handleShowConfirm()
         await _token.increaseAllowance(contractAddress, amountToApprove)
             .then(async (tx) => {
                 this.handleShowAwait()
                 await tx.wait()
-                .then(() => {
-                    this.handleCloseAwait()
-                    this.setState({
-                        approved: true
+                    .then(() => {
+                        this.handleCloseAwait()
+                        this.setState({
+                            approved: true
+                        })
                     })
-                })
             })
             .catch(err => {
                 console.error(err)
@@ -528,15 +531,15 @@ class Wills extends Component {
                 const allowance = (await _token.allowance(signerAddress, contractAddress)).toString()
                 const allWillsAmountThisToken = await contract.getAllWillsAmountThisToken(signerAddress, _token.address)
                 this.changeApproved(
-                    BigInt(allowance), 
+                    BigInt(allowance),
                     BigInt(
-                        (parseFloat(event.target.value) - parseFloat(currentEditBaseAmount)) 
-                        * 
+                        (parseFloat(event.target.value) - parseFloat(currentEditBaseAmount))
+                        *
                         Math.pow(10, await _token.decimals())
                     ) + BigInt(allWillsAmountThisToken),
                     currentEditDecimals
                 )
-            } 
+            }
             if (parseFloat(currentEditBaseAmount) > parseFloat(event.target.value)) {
                 this.setState({
                     currentEditAmount: event.target.value,
@@ -617,7 +620,7 @@ class Wills extends Component {
         try {
             const data = JSON.parse(params)
             this.setState({
-                showEdit: true, 
+                showEdit: true,
                 currentEditID: data.ID,
                 currentEditHeirAddress: data.heir,
                 currentEditBaseHeirAddress: data.heir,
@@ -679,10 +682,10 @@ class Wills extends Component {
     handleCloseEdit = this.handleCloseEdit.bind(this)
     handleShowEdit = this.handleShowEdit.bind(this)
 
-    handleShowConfirm = () => this.setState({showConfirm: true})
-    handleShowAwait = () => this.setState({showConfirm: false, showAwait: true})
-    handleCloseConfirm = () => this.setState({showConfirm: false})
-    handleCloseAwait = () => this.setState({showAwait: false})
+    handleShowConfirm = () => this.setState({ showConfirm: true })
+    handleShowAwait = () => this.setState({ showConfirm: false, showAwait: true })
+    handleCloseConfirm = () => this.setState({ showConfirm: false })
+    handleCloseAwait = () => this.setState({ showAwait: false })
     handleShowConfirm = this.handleShowConfirm.bind(this)
     handleShowAwait = this.handleShowAwait.bind(this)
     handleCloseConfirm = this.handleCloseConfirm.bind(this)
@@ -690,208 +693,237 @@ class Wills extends Component {
 
     timeConverter = this.timeConverter.bind(this)
     remainingTime = this.remainingTime.bind(this)
-    
-    handleShowError = () => this.setState({showError: true})
-    handleCloseError = () => this.setState({showError: false})
+
+    handleShowError = () => this.setState({ showError: true })
+    handleCloseError = () => this.setState({ showError: false })
 
     handleShowError = this.handleShowError.bind(this)
     handleCloseError = this.handleCloseError.bind(this)
 
     render() {
-        return(
+        return (
             // <div id='wills'>
-            <div className='wills_list-my-wills'>
+            <div className='wills_list-my-wills wills-description-block'>
             {
                 this.state.wills.length > 0 
                 ?
                 <div id='wills-list_ul-btn'>
                     {
                         this.state.wills.map((v) => {
-                            return (
-                                <div key={v.ID} className="your-wills">
-                                    <div className='your-wills_text'>
-                                    <h3 className='wills_list_h3'>Your wills</h3>
-                                    <hr/> 
-                                        {/* <span>id: {v.ID.toString()} </span> */}
-                                        <div className='your-wills_text-info'>
-                                        <span>
-                                            You bequeathed up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited': (v.amount / Math.pow(10, v.decimals)).toString()} of your {v.symbol} from {this.state.network} chain to wallet
-                                        </span>
-                                        <a href={`https://mumbai.polygonscan.com/address/${v.heir}`} target="_blank" rel="noreferrer">
-                                            {` ${v.heir}`}
-                                        </a>
-                                    <span>
-                                    <p>
-                                    Inheritance can be harvest if the period of inactivity is longer than
-                                    </p> 
-                                    <p className='your-wills_date'>{this.timeBetweenWithdrawAndStartConverter(v.timeBetweenWithdrawAndStart)}</p>
-                                    
-                                    <p className='your-wills_remain'>
-                                        ( Remain: {this.remainingTime(v.timeWhenWithdraw.toString())})
-                                    </p>
-                                    </span>
-                                    </div> 
-                                       </div>
-                                        
-                                    <div className="btn_btns" 
-                                        onClick={
-                                        this.state.showEdit === false 
-                                        ? 
-                                        () => this.handleShowEdit(
-                                            JSON.stringify({
-                                            ID: v.ID.toString(), 
-                                            timeWhenWithdraw: v.timeWhenWithdraw.toString(),
-                                            timeBetweenWithdrawAndStart: v.timeBetweenWithdrawAndStart.toString(),
-                                            heir: v.heir, 
-                                            token: v.token,
-                                            symbol: v.symbol,
-                                            amount: v.amount.toString(),
-                                            decimals: v.decimals
-                                            })
-                                        ) 
-                                        : this.handleCloseEdit}>
-                                        <img src={editPic} alt="editpic"/>
-                                        Edit
-                                    </div>
-                                    <button type="button" className="btn_green_revoke" id='' value={v.ID.toString()} onClick={this.cancelWill}>
-                                        <img src={revokePic} alt="revokepic"/>  
-                                        Revoke</button>
-                                </div>
-                            )
-                        })
+                                    return (
+                                        <div key={v.ID} className="your-wills">
+                                            <div className='your-wills_text'>
+                                                <h3 className='wills_list_h3'>Your wills</h3>
+                                                <hr />
+                                                {/* <span>id: {v.ID.toString()} </span> */}
+                                                <div class="page-data__block-container">
+                                                    <div className='your-wills_text-info'>
+                                                        <span>
+                                                            You bequeathed up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited' : (v.amount / Math.pow(10, v.decimals)).toString()} of your {v.symbol} from {this.state.network} chain to wallet
+                                                        </span>
+                                                        <a href={`https://mumbai.polygonscan.com/address/${v.heir}`} target="_blank" rel="noreferrer">
+                                                            {` ${v.heir}`}
+                                                        </a>
+                                                        <span>
+                                                            <p>
+                                                                Inheritance can be harvest if the period of inactivity is longer than
+                                                            </p>
+                                                            <p className='your-wills_date'>{this.timeBetweenWithdrawAndStartConverter(v.timeBetweenWithdrawAndStart)}</p>
+
+                                                            <p className='your-wills_remain'>
+                                                                ( Remain: {this.remainingTime(v.timeWhenWithdraw.toString())})
+                                                            </p>
+                                                        </span>
+                                                    </div>
+                                                    <div class="your-wills__btns">
+                                                        <button className="btn_btns btn-default"
+                                                            onClick={
+                                                                this.state.showEdit == false
+                                                                    ?
+                                                                    () => this.handleShowEdit(
+                                                                        JSON.stringify({
+                                                                            ID: v.ID.toString(),
+                                                                            timeWhenWithdraw: v.timeWhenWithdraw.toString(),
+                                                                            timeBetweenWithdrawAndStart: v.timeBetweenWithdrawAndStart.toString(),
+                                                                            heir: v.heir,
+                                                                            token: v.token,
+                                                                            symbol: v.symbol,
+                                                                            amount: v.amount.toString(),
+                                                                            decimals: v.decimals
+                                                                        })
+                                                                    )
+                                                                    : this.handleCloseEdit}>
+                                                            <img src={editPic} />
+                                                            Edit
+                                                        </button>
+                                                        <button type="button" className="btn_green_revoke btn-default" id='' value={v.ID.toString()} onClick={this.cancelWill}>
+                                                            <img src={revokePic} />
+                                                            Revoke</button>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+
+                                        </div>
+                                    )
+                                })
                     }
                 </div>
                 :
                 <h4>У вас еще нет активных завещаний.</h4>
-            }
-            <Modal show={this.state.showEdit} onHide={this.handleCloseEdit} style={{height: "500px"}}>
-                <Modal.Header>
-                <Modal.Title>Edit Will</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <div>
-                        Я завещаю мои
-                    </div>
-                    <div>{this.state.currentEditSymbol}</div>
-                    <div>
-                        <input type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0"/>
-                        <label>Unlimited</label><br/>
-                    </div>
-                    <div style={{display: this.state.isUnlimitedAmount === false ? 'block' : 'none'}} className="form-check-input mt-0">
-                        <input onChange={this.onChangeAmount} value={this.state.currentEditAmount} type="number" className="input-group mb-3"/>
-                        <Button variant="outline-success" onClick={this.onSetMaxAmount}>
-                            max
-                        </Button>
-                    </div>
-                    <div>С кошелька <a href={`https://mumbai.polygonscan.com/address/${this.state.signerAddress}`}>{
-                        this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)
+                }
+                <Modal className="will-block" show={this.state.showEdit} onHide={this.handleCloseEdit} style={{ height: "" }}>
+                    <Modal.Header>
+                        <Modal.Title>Edit Will</Modal.Title>
+                        <hr />
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div class="modal-body__row">
+                            <div class="your-wills__header">
+                                <div>
+                                    Я завещаю мои
+                                </div>
+                                <div className="your-wills__current-token">{this.state.currentEditSymbol}</div>
+                                <div class="your-wills__checkbox">
+                                    <input id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
+                                    <label for="unlimited">Unlimited</label><br />
+                                </div>
+                                <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
+                                    <input onChange={this.onChangeAmount} value={this.state.currentEditAmount} type="number" className="input-group mb-3" />
+                                    <Button variant="outline-success" onClick={this.onSetMaxAmount}>
+                                        All
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-body__row">С кошелька <a href='#'>{
+                            this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)
                         }</a> на сети {this.state.network}</div>
-                    <div>
-                        Доверенному кошельку
-                        <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3"/>
-                    </div>
-                    <div>
+                        <div class="your-wills__wallet modal-body__row">
+                            Доверенному кошельку
+                            <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" />
+                        </div>
+                        <div class="modal-body__row">
+                            <div class="will-date__text">
+                                При условии что я буду неактивен(неактивна), начиная с момента создания наследства ({
+                                    this.timeConverter((parseInt(this.state.currentEditTimeWhenWithdraw) - parseInt(this.state.currentEditTimeBetweenWithdrawAndStart)).toString())
+                                }) более чем:
+                            </div>
+                            <div class="will-date">
+                                <div class="will-date__row">
+                                    <input type="number" onChange={this.onChangeYear} value={this.state.year} className="input-group input-group-year" />
+                                    <label >Лет</label><br />
+                                </div>
+                                <div class="will-date__row">
+                                    <input type="number" onChange={this.onChangeMonth} value={this.state.month} className="input-group input-group-month" />
+                                    <label >Месяцев</label><br />
+                                </div>
+                                <div class="will-date__row">
+                                    <input type="number" onChange={this.onChangeDay} value={this.state.day} className="input-group input-group-days" />
+                                    <label >Дней</label><br />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="your-wills__settings">
+                            <div class="will-date__row will-date__row--checkbox">
+                                <input id="wills-set1" type="checkbox" disabled={true} className="form-check form-check-input mt-0" />
+                                <label for="wills-set1">Add NFT Message (coming soon)</label><br />
+                            </div>
+                            <div class="will-date__row will-date__row--checkbox">
+                                <input id="wills-set2" type="checkbox" disabled={true} className="form-check form-check-input mt-0" />
+                                <label for="wills-set2">Automatic token delivery (coming soon)</label><br />
+                            </div>
+                            <div class="will-date__row will-date__row--checkbox">
+                                <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
+                                <label for="wills-set3">Notifications</label><br />
+                            </div>
+                            <div style={this.state.notificationsOn === true ? { opacity: '1', transition: 'all 0.3s ease' } : { opacity: '0', transition: 'all 0.3s ease' }}>
+                                <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
                         <div>
-                        При условии что я буду неактивен(неактивна), начиная с момента создания наследства ({
-                            this.timeConverter((parseInt(this.state.currentEditTimeWhenWithdraw) - parseInt(this.state.currentEditTimeBetweenWithdrawAndStart)).toString())
-                            }) более чем:
+                            <ul class="your-wills__footer">
+                                <li>
+                                    <Button variant="primary" onClick={this.state.approved === false ? this.approve : null} style={
+                                        { "background": this.state.approved === true ? '#3E474F' : '#5ED5A8' }
+                                    } >
+                                        Approve
+                                    </Button>
+                                </li>
+                                <li>
+                                    <Button variant="primary" onClick={this.state.approved === true ? this.edit : null} style={
+                                        { "background": this.state.approved === false ? '#3E474F' : '#5ED5A8' }
+                                    } >
+                                        Edit
+                                    </Button>
+                                </li>
+                            </ul>
+                            <Button className="btn-close-modal" onClick={this.handleCloseEdit}>
+                                <img src={closePic} />
+                            </Button>
                         </div>
+                    </Modal.Footer>
+                </Modal>
+                <Modal show={this.state.showConfirm} className="modal-confirm">
+                    <Modal.Header>
+                        <h2 className='modal-confirm_h2'>Pending  transaction</h2>
+                    </Modal.Header>
+                    <img className="spinner" src={LoadingPic} />
+                    <Modal.Footer>
+                        <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
+                        <button className="btn-close-modal btn btn-primary">
+                            <img src={closeModalPic}></img>
+                        </button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal className="modal-loading modal-loading--process" show={this.state.showAwait}>
+                    <Modal.Header>
+                        <div className="className='modal_confirm">
+                            <h2 className="modal-loading__title modal-loading__title--processing">Processing...</h2>
+                            <p className="modal-loading__subtitle">Approve  &lt;Token&gt;</p>
+                            <div class="modal-loading__progress-bar modal-loading__progress-bar--processing">
+                                <span></span>
+                            </div>
+                        </div>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
+                            <img src={closePic} />
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                {/* <Modal className="modal-small" show={this.state.showError}>
+                    <Modal.Header>
                         <div>
-                            <input type="number" onChange={this.onChangeYear} value={this.state.year} className="input-group-year"/>
-                            <label >Лет</label><br/>
-                            <input type="number" onChange={this.onChangeMonth} value={this.state.month} className="input-group-month"/>
-                            <label >Месяцев</label><br/>
-                            <input type="number" onChange={this.onChangeDay} value={this.state.day} className="input-group-days"/>
-                            <label >Дней</label><br/>
+                            <h1>Error</h1>
+                            <div>{this.state.errortext}</div>
                         </div>
-                    </div>
-                    <div>
-                        <input type="checkbox" disabled={true} className="form-check-input mt-0"/>
-                        <label >Add NFT Message (coming soon)</label><br/>
-                        <input type="checkbox" disabled={true} className="form-check-input mt-0"/>
-                        <label >Automatic token delivery (coming soon)</label><br/>
-                        <input type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check-input mt-0"/>
-                        <label >Notifications</label><br/>
-                        <div style={this.state.notificationsOn === true ? {display: 'block'} : {display: 'none'}}>
-                            <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={this.handleCloseError} className="btn btn-danger">
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal> */}
+                <Modal className="modal-loading modal-loading--process" show={this.state.showError}>
+                    <Modal.Header>
+                        <div className="modal_confirm">
+                            <h2 className="modal-loading__title modal-loading__title--error">Error</h2>
+                            <div>{this.state.errortext}</div>
+                            <div class="modal-loading__progress-bar modal-loading__progress-bar--error">
+                                <span></span>
+                            </div>
                         </div>
-                    </div>
-                </Modal.Body>
-                <Modal.Footer>
-                    <div>
-                    <Button variant="primary" onClick={this.state.approved === false ? this.approve: null} style={
-                    {"background": this.state.approved === true ? '#3E474F' : '#5ED5A8'}
-                } >
-                    Approve
-                </Button>
-                <Button variant="primary" onClick={this.state.approved === true ? this.edit: null} style={
-                    {"background": this.state.approved === false ? '#3E474F' : '#5ED5A8'}
-                } >
-                    Edit
-                </Button>
-                <Button onClick={this.handleCloseEdit}>
-                <img src={closePic} alt="closepic"/>  
-                </Button>
-                    </div>
-                </Modal.Footer>
-            </Modal>
-            <Modal show={this.state.showConfirm}>
-                <Modal.Header>
-                    <div className="className='modal_confirm">
-                        <div className="letter-holder">
-                        <div className="l-1 letter">C</div>
-                        <div className="l-2 letter">o</div>
-                        <div className="l-3 letter">n</div>
-                        <div className="l-4 letter">f</div>
-                        <div className="l-5 letter">i</div>
-                        <div className="l-6 letter">r</div>
-                        <div className="l-7 letter">m</div>
-                        <div className="l-8 letter">.</div>
-                        <div className="l-9 letter">.</div>
-                        <div className="l-10 letter">.</div>
-                        </div>
-                    </div>
-                </Modal.Header>
-                <Modal.Footer>
-                    <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal show={this.state.showAwait}>
-                <Modal.Header>
-                    <div className="load-6">
-                        <div className="letter-holder">
-                        <div className="l-1 letter">A</div>
-                        <div className="l-2 letter">w</div>
-                        <div className="l-3 letter">a</div>
-                        <div className="l-4 letter">i</div>
-                        <div className="l-5 letter">t</div>
-                        <div className="l-6 letter">.</div>
-                        <div className="l-7 letter">.</div>
-                        <div className="l-8 letter">.</div>
-                        </div>
-                    </div>
-                </Modal.Header>
-                <Modal.Footer>
-                    <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal show={this.state.showError}>
-                <Modal.Header>
-                    <div>
-                        <h1>Error</h1>
-                        <div>{this.state.errortext}</div>
-                    </div>
-                </Modal.Header>
-                <Modal.Footer>
-                    <Button variant="danger" onClick={this.handleCloseError} className="btn btn-danger">
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
+                            <img src={closePic} />
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
         </div>
         )
     }

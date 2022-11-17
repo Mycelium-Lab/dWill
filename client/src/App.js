@@ -205,37 +205,33 @@ class App extends Component {
   loadBasic = this.loadBasic.bind(this)
 
   render(){
-        return(
-          <div className="App">
-            <header className="header">
-              <div className='header_boxes'>
-                <div className="logo-will">
-                  <img src={logoWill} alt='logowill'/>
-                </div>
-                <div className="number-of-wills">
-                  <div className="amount-will">
-                  <div>
-                        Всего завещано:
-                    </div>
-                    <div>
-                        {this.state.total} USD
-                    </div>
+      return(
+        <div className="App">
+          <header className="header _container">
+            <div className='header_boxes'>
+              <a href="/" className="logo-will">
+                <img src={logoWill}/>
+              </a>
+              <div className="number-of-wills">
+                <div className="amount-will">
+                <div>
+                      Всего завещано:
                   </div>
-                  {
-                    !window.ethereum
-                    ?
-                    null
-                    :
-                    <Connect setProperties={this.setProperties} network={this.state.network}/>
-                  }
-              </div>
-              </div>
-            </header>
-  
-              <main>
+                  <div>
+                      {this.state.total} USD
+                  </div>
+                </div>
                 {
-                  this.state.signer === null || this.state.willsLength === 0
-                  ? 
+                  <Connect setProperties={this.setProperties} network={this.state.network}/>
+                }
+            </div>
+            </div>
+          </header>
+
+            <main className="_container">
+              {
+                this.state.signer === null || this.state.willsLength === 0
+                ?  
                   <Main 
                   inheritancesLength={this.state.inheritancesLength} 
                   willsLength={this.state.willsLength}
@@ -256,10 +252,10 @@ class App extends Component {
                   tokenAddress={this.state.tokenAddress}
                   contractAddress={this.state.contractAddress}
                   />
-                }
-              </main>
-          </div>
-      );
+              }
+            </main>
+        </div>
+    );
   }
 }
 
