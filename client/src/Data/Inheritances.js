@@ -15,12 +15,10 @@ class Inheritances extends Component {
             signer: null,
             signerAddress: '',
             tokenAddress: '',
-            amount: '0',
-            show: false,
             network: '',
             approved: false,
             tokensValue: '',
-            contractAddress: TheWillAddress,
+            contractAddress: props.contractAddress,
             year: '',
             month: '',
             day: '',
@@ -34,12 +32,9 @@ class Inheritances extends Component {
 
     componentDidMount = async () => {
         try {
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
-            const network = await provider.getNetwork()
-            await provider.send("eth_requestAccounts", []);
-            const signer = provider.getSigner()
-            const signerAddress = await signer.getAddress()
-            const contract = new ethers.Contract(TheWillAddress, TheWill.abi, signer)
+            const signer = this.props.signer
+            const signerAddress = this.props.signerAddress
+            const contract = new ethers.Contract(this.props.contractAddress, TheWill.abi, signer)
             const inheritances = await contract.getAllInheritances(signerAddress)
             let _inheritances = [];
             for (let i = 0; i < inheritances.length; i++) {
@@ -59,18 +54,18 @@ class Inheritances extends Component {
                 }
             }
             let networkName
-            if (network.chainId === 56) {
+            if (this.props.network === 56) {
                 networkName = `BNB Chain`
-            } else if (network.chainId === 137) {
+            } else if (this.props.network  === 137) {
                 networkName = `Polygon`
-            } else if (network.chainId === 31337) {
+            } else if (this.props.network  === 31337) {
                 networkName = `Hardhat`
-            } else if (network.chainId === 80001) {
+            } else if (this.props.network  === 80001) {
                 networkName = `Mumbai`
             }
             contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
                 let __inheritances = this.state.inheritances
-                if (heir == signerAddress) {
+                if (heir === signerAddress) {
                     const inheritance = await contract.inheritanceData(ID.toString())
                     const token = new ethers.Contract(inheritance.token, ERC20.abi, signer)
                     const symbol = await token.symbol()
@@ -81,7 +76,7 @@ class Inheritances extends Component {
                             exist = true
                         }
                     }
-                    if (exist == false) {
+                    if (exist === false) {
                         __inheritances.push({
                             ID: inheritance.ID.toString(),
                             amount: inheritance.amount.toString(),
@@ -99,20 +94,20 @@ class Inheritances extends Component {
             })
             contract.on('Withdraw', async (ID,owner, heir,timeWhenWithdraw) => {
                 let __inheritances = this.state.inheritances
-                if (heir == signerAddress) {
+                if (heir === signerAddress) {
                     __inheritances = __inheritances.filter(v => v.ID !== ID.toString())
                     this.setState({inheritances: __inheritances})
                 }
             })
             contract.on('RemoveWill', async (ID, owner, heir) => {
                 let __inheritances = this.state.inheritances
-                if (heir == signerAddress) {
+                if (heir === signerAddress) {
                     __inheritances = __inheritances.filter(v => v.ID !== ID.toString())
                     this.setState({inheritances: __inheritances})
                 }
             })
             contract.on('UpdateWillTimeWhenWithdraw', (ID, owner, heir, newTime) => {
-                if (heir == signerAddress) {
+                if (heir === signerAddress) {
                     let __inheritances = this.state.inheritances
                     for (let i = 0; i < __inheritances.length; i++) {
                         if (__inheritances[i].ID === ID.toString()) {
@@ -149,7 +144,7 @@ class Inheritances extends Component {
                 })
             })
             contract.on('UpdateAmount', (ID, owner, amount) => {
-                if (owner == signerAddress) {
+                if (owner === signerAddress) {
                     let __inheritances = this.state.inheritances
                     for (let i = 0; i < __inheritances.length; i++) {
                         if (__inheritances[i].ID === ID.toString()) {

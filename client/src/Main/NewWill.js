@@ -1,12 +1,12 @@
 /* global BigInt */
 
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import TheWill from '../Contract/TheWill.json'
 
 import { ethers } from "ethers";
-import { TheWillAddress, TokenAddress, UnlimitedAmount } from '../Utils/Constants';
+import { chainIDs, TheWillAddress, TokenAddress, UnlimitedAmount } from '../Utils/Constants';
 import closeModalPic from '../content/close_modal.svg'
 import buttonClosePic from '../content/button_close.svg'
 import PolygonPic from '../content/poligon.svg'
@@ -44,7 +44,7 @@ class NewWill extends Component {
             network: '',
             approved: false,
             tokensValue: '',
-            contractAddress: TheWillAddress,
+            contractAddress: props.contractAddress,
             year: 2,
             month: 0,
             day: 0,
@@ -61,23 +61,24 @@ class NewWill extends Component {
 
     componentDidMount = async () => {
         try {
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
-            const network = await provider.getNetwork()
-            await provider.send("eth_requestAccounts", []);
-            const signer = provider.getSigner()
-            const signerAddress = await signer.getAddress()
-            const contract = new ethers.Contract(TheWillAddress, TheWill.abi, signer)
+            const signer = this.props.signer
+            const signerAddress = this.props.signerAddress
+            const contract = new ethers.Contract(this.props.contractAddress, TheWill.abi, signer)
             let networkName
-            if (network.chainId === 56) {
+            if (this.props.network === chainIDs.BinanceMainnet) {
                 networkName = `BNB Chain`
-            } else if (network.chainId === 137) {
+            } else if (this.props.network  === chainIDs.Polygon) {
                 networkName = `Polygon`
-            } else if (network.chainId === 31337) {
+            } else if (this.props.network  === 31337) {
                 networkName = `Hardhat`
-            } else if (network.chainId === 5) {
-                networkName = `Goerli`
-            } else if (network.chainId === 80001) {
+            } else if (this.props.network  === chainIDs.Mumbai) {
                 networkName = `Mumbai`
+            } else if (this.props.network  === chainIDs.Goerli) {
+                networkName = `Goerli`
+            } else if (this.props.network  === chainIDs.EthereumMainnet) {
+                networkName = `Ethereum`
+            } else if (this.props.network  === chainIDs.BinanceTestnet) {
+                networkName = `BNBTest Chain`
             }
             this.setState({ signer, signerAddress, network: networkName, contract })
         } catch (error) {
@@ -154,7 +155,7 @@ class NewWill extends Component {
 
     async onChangeAmount(event) {
         try {
-            const { contractAddress, signer, signerAddress, tokensValue, amount, contract } = this.state
+            const { contractAddress, signer, signerAddress, tokensValue, contract } = this.state
             this.setState({
                 amount: event.target.value
             })
@@ -179,7 +180,7 @@ class NewWill extends Component {
 
     async onChangeUnlimitedAmount() {
         try {
-            const { contractAddress, signer, signerAddress, tokensValue, amount, isUnlimitedAmount, contract } = this.state
+            const { contractAddress, signer, signerAddress, tokensValue, isUnlimitedAmount } = this.state
             //max amount uint256
             this.setState({
                 amount: isUnlimitedAmount === false ? UnlimitedAmount : '0',
@@ -201,7 +202,7 @@ class NewWill extends Component {
     }
 
     async onSetMaxAmount() {
-        const { contractAddress, signer, signerAddress, tokensValue, amount, contract } = this.state
+        const { contractAddress, signer, signerAddress, tokensValue, contract } = this.state
         const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
         const allowance = await _token.allowance(signerAddress, contractAddress)
         const decimals = await _token.decimals()
@@ -220,7 +221,7 @@ class NewWill extends Component {
             })
     }
 
-    changeApproved(allowance, amount, decimals) {
+    changeApproved(allowance, amount) {
         try {
             if (allowance >= amount) {
                 this.setState({
@@ -243,7 +244,7 @@ class NewWill extends Component {
 
     async onChangeTokens(event) {
         try {
-            const { contractAddress, signer, signerAddress, tokenAddress, amount, contract } = this.state
+            const { contractAddress, signer, signerAddress, amount, contract } = this.state
             const _token = new ethers.Contract(event.target.value, ERC20.abi, signer)
             this.setState({
                 tokensValue: event.target.value
@@ -349,36 +350,10 @@ class NewWill extends Component {
                     New Will
                 </Button>
                 <div className='modal_fade'></div>
-                <Modal show={this.state.showWalletNotExist} onHide={this.handleCloseWalletNotExist} className='modal_content' style={{
-                    position: 'absolute',
-                    // width: '700px',
-                    left: '25%',
-                    top: '150px',
-                    background: '#1B232A',
-                }}>
-                    <Modal.Header className='modal_new_will'>
-                        <Button className='bnt_close' onClick={this.handleCloseWalletNotExist}>
-                            <img src={closeModalPic}/>  
-                        </Button>
-                        <Modal.Title className='modal_title'>Wallet Not Exist</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body className='modal_new_will'>
-                        <div className='title_trusted-wallet'>To create a dWill connect a Web3 wallet</div>
-                        <button className='btn-new-will'>
-                            <img src="" alt="" />
-                            Connect MetaMask
-                        </button>
-                        <p className='title_trusted-wallet'>What is a wallet?</p>
-                        <p className='title_trusted-wallet'>Wallets are used to send, receive, and store digital
-                            assets. Connecting a wallet lets you interact with apps.
-                            <a href="https://metamask.io/" target="_blank">Install the wallet.</a>
-                        </p>
-                    </Modal.Body>
-                </Modal>
                 <Modal show={this.state.show} onHide={this.handleClose} className='modal_content' style={styles.modal_new_will}>
                     <Modal.Header className='modal_new_will'>
                         <Button className='bnt_close' onClick={this.handleClose}>
-                            <img src={buttonClosePic} />
+                            <img src={buttonClosePic} alt="closepic"/>
                         </Button>
                         <Modal.Title className='modal_title'>New Will</Modal.Title>
                         <hr />
@@ -390,7 +365,7 @@ class NewWill extends Component {
                             </div> 
                             <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
                                 <option value={"select"}>Select</option>
-                                <option value={TokenAddress}>TFT</option>
+                                <option value={this.props.tokenAddress}>TFT</option>
                                 <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
                             </select>
                             <div>
@@ -404,7 +379,7 @@ class NewWill extends Component {
                             </Button>
                             </div>
                         </div>
-                        <div className='modal_wallet'>С кошелька <a href='#' className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a> на сети {this.state.network} <img src={PolygonPic}/></div>
+                        <div className='modal_wallet'>С кошелька <a href={`https://mumbai.polygonscan.com/address/${this.props.signerAddress}`}  target="_blank" rel="noreferrer" className='modal_wallet_link'>{this.props.signerAddress.slice(0, 6) + '...' + this.props.signerAddress.slice(this.props.signerAddress.length - 4, this.props.signerAddress.length)}</a> на сети {this.state.network} <img src={PolygonPic} alt="networkpic"/></div>
                         <span className='title_trusted-wallet'>Доверенному кошельку</span>
                         <div><input onChange={this.onChangeHeirAddress} required className="input_trusted-wallet " /></div>
                         <div>
@@ -428,7 +403,7 @@ class NewWill extends Component {
                             <input type="checkbox" disabled={true} className="modal_checkbox-contaner" />
                             <span className='fake'></span>
                             <label className="modal_checkbox-label">Add NFT Message (coming soon)</label>
-                            <img scr={QuestionPic}/>
+                            <img scr={QuestionPic} alt="questionpic"/>
                             <br />
                             <input type="checkbox" disabled={true} className="modal_checkbox-contaner" />
                             <span className='fake'></span>
@@ -458,7 +433,7 @@ class NewWill extends Component {
                     <Modal.Header>
                         <h2 className='modal-confirm_h2'>Pending  transaction</h2>
                     </Modal.Header>
-                    <img scr={ConfiPic} />
+                    <img scr={ConfiPic} alt="confipic"/>
                     <Modal.Footer>
                         <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
                     </Modal.Footer>
@@ -468,7 +443,7 @@ class NewWill extends Component {
     <img src="content/button_close.svg"/>
     </Button>   */}
                     </Modal.Header>
-                    <img src={LoadingPic} />
+                    <img src={LoadingPic} alt="loadingpic"/>
                     <Modal.Footer>
                         <p className="modal-await_text">Завещание успешно создано!</p>
                     </Modal.Footer>

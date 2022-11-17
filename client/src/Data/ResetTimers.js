@@ -1,10 +1,10 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import TheWill from '../Contract/TheWill.json'
 
 import { ethers } from "ethers";
-import { TheWillAddress, TokenAddress } from '../Utils/Constants';
+import { TheWillAddress } from '../Utils/Constants';
 
 class ResetTimers extends Component {
     constructor(props) {
@@ -12,17 +12,7 @@ class ResetTimers extends Component {
         this.state = {
             signer: null,
             signerAddress: '',
-            tokenAddress: '',
-            amount: '0',
-            show: false,
-            network: '',
-            approved: false,
-            tokensValue: '',
-            contractAddress: TheWillAddress,
-            year: '',
-            month: '',
-            day: '',
-            heirAddress: '',
+            contractAddress: props.contractAddress,
             contract: null,
             showConfirm: false,
             showAwait: false,
@@ -31,25 +21,10 @@ class ResetTimers extends Component {
 
     componentDidMount = async () => {
         try {
-            const provider = new ethers.providers.Web3Provider(window.ethereum)
-            const network = await provider.getNetwork()
-            await provider.send("eth_requestAccounts", []);
-            const signer = provider.getSigner()
-            const signerAddress = await signer.getAddress()
-            const contract = new ethers.Contract(TheWillAddress, TheWill.abi, signer)
-            let networkName
-            if (network.chainId === 56) {
-                networkName = `BNB Chain`
-            } else if (network.chainId === 137) {
-                networkName = `Polygon`
-            } else if (network.chainId === 31337) {
-                networkName = `Hardhat`
-            } else if (network.chainId === 5) {
-                networkName = `Goerli`
-            } else if (network.chainId === 80001) {
-                networkName = `Mumbai`
-            }
-            this.setState({ signer, signerAddress, network: networkName, contract })
+            const signer = this.props.signer
+            const signerAddress = this.props.signerAddress
+            const contract = new ethers.Contract(this.props.contractAddress, TheWill.abi, signer)
+            this.setState({ signer, signerAddress, contract })
         } catch (error) {
             console.error(error)
         }
@@ -102,7 +77,7 @@ class ResetTimers extends Component {
             <Modal.Header>
                 <h2 className='modal-confirm_h2'>Pending  transaction</h2>
             </Modal.Header>
-                <img scr='content/confi.svg'/>  
+                <img scr='content/confi.svg' alt='confirm'/>  
                 <Modal.Footer>
                     <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
                 </Modal.Footer>
@@ -113,7 +88,7 @@ class ResetTimers extends Component {
                 <img src="content/button_close.svg"/>  
                 </Button>   */}
                 </Modal.Header>
-                <img src="content/loading.svg"/>
+                <img src="content/loading.svg" alt='loading'/>
                 <Modal.Footer>
                 <p className="modal-await_text">Завещание успешно создано!</p>
                 </Modal.Footer>
