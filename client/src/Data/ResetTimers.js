@@ -4,6 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 import TheWill from '../Contract/TheWill.json'
 import LoadingPic from '../content/loading.svg'
 import closeModalPic from '../content/close_modal.svg'
+import ConfiPic from '../content/confi.svg'
 import { ethers } from "ethers";
 import { TheWillAddress, TokenAddress } from '../Utils/Constants';
 
@@ -103,7 +104,7 @@ class ResetTimers extends Component {
                     <Modal.Header>
                         <h2 className='modal-confirm_h2'>Pending  transaction</h2>
                     </Modal.Header>
-                    <img src={LoadingPic} />
+                    <img className="spinner" src={LoadingPic} />
                     <Modal.Footer>
                         <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
                         <button className="btn-close-modal btn btn-primary">
@@ -112,13 +113,12 @@ class ResetTimers extends Component {
                     </Modal.Footer>
                 </Modal>
                 <Modal show={this.state.showAwait} className="modal-await">
-                    <Modal.Header>
-                        {/* <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
-                <img src="content/button_close.svg"/>  
-                </Button>   */}
-                    </Modal.Header>
-                    <img src="content/loading.svg" />
+
+                    <img src={ConfiPic} />
                     <Modal.Footer>
+                        <button className="btn-close-modal btn btn-primary">
+                            <img src={closeModalPic}></img>
+                        </button>
                         <p className="modal-await_text">Завещание успешно создано!</p>
                     </Modal.Footer>
                 </Modal>

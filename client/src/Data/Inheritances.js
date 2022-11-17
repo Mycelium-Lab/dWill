@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import TheWill from '../Contract/TheWill.json'
+import closePic from '../content/button_close.svg'
 
 import { ethers } from "ethers";
 
@@ -307,7 +308,7 @@ class Inheritances extends Component {
                         </Button>
                     </Modal.Footer>
                 </Modal>
-                <Modal show={this.state.showAwait}>
+                {/* <Modal show={this.state.showAwait}>
                     <Modal.Header>
                         <div className="load-6">
                             <div className="letter-holder">
@@ -325,6 +326,22 @@ class Inheritances extends Component {
                     <Modal.Footer>
                         <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
                             Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal> */}
+                <Modal className="modal-loading modal-loading--process" show={this.state.showAwait}>
+                    <Modal.Header>
+                        <div className="className='modal_confirm">
+                            <h2 className="modal-loading__title modal-loading__title--processing">Processing...</h2>
+                            <p className="modal-loading__subtitle">Approve  &lt;Token&gt;</p>
+                            <div class="modal-loading__progress-bar modal-loading__progress-bar--processing">
+                                <span></span>
+                            </div>
+                        </div>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
+                            <img src={closePic} />
                         </Button>
                     </Modal.Footer>
                 </Modal>

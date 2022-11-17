@@ -888,24 +888,19 @@ class Wills extends Component {
                         </button>
                     </Modal.Footer>
                 </Modal>
-                <Modal className="modal-await" show={this.state.showAwait}>
+                <Modal className="modal-loading modal-loading--process" show={this.state.showAwait}>
                     <Modal.Header>
-                        <div className="load-6">
-                            <div className="letter-holder">
-                                <div className="l-1 letter">A</div>
-                                <div className="l-2 letter">w</div>
-                                <div className="l-3 letter">a</div>
-                                <div className="l-4 letter">i</div>
-                                <div className="l-5 letter">t</div>
-                                <div className="l-6 letter">.</div>
-                                <div className="l-7 letter">.</div>
-                                <div className="l-8 letter">.</div>
+                        <div className="className='modal_confirm">
+                            <h2 className="modal-loading__title modal-loading__title--processing">Processing...</h2>
+                            <p className="modal-loading__subtitle">Approve  &lt;Token&gt;</p>
+                            <div class="modal-loading__progress-bar modal-loading__progress-bar--processing">
+                                <span></span>
                             </div>
                         </div>
                     </Modal.Header>
                     <Modal.Footer>
-                        <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
-                            Close
+                        <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
+                            <img src={closePic} />
                         </Button>
                     </Modal.Footer>
                 </Modal>

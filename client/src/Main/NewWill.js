@@ -494,12 +494,15 @@ class NewWill extends Component {
                 </Modal>
                 <Modal show={this.state.showAwait} className="modal-await">
                     <Modal.Header>
-                        {/* <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
-    <img src="content/button_close.svg"/>
-    </Button>   */}
+                        <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
+    <img src={closePic}/>
+    </Button>  
                     </Modal.Header>
                     <img src={ConfiPic} />
                     <Modal.Footer>
+                        {/* <button className="btn-close-modal btn btn-primary">
+                            <img src={closeModalPic}></img>
+                        </button> */}
                         <p className="modal-await_text">Завещание успешно создано!</p>
                     </Modal.Footer>
                 </Modal>
