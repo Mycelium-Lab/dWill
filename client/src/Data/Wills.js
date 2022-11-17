@@ -829,7 +829,7 @@ class Wills extends Component {
                                 <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
                                 <label for="wills-set3">Notifications</label><br />
                             </div>
-                            <div style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
+                            <div style={this.state.notificationsOn === true ? { opacity: '1', transition: 'all 0.3s ease' } : { opacity: '0', transition: 'all 0.3s ease' }}>
                                 <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
                             </div>
                         </div>
@@ -874,7 +874,7 @@ class Wills extends Component {
                         </Button>
                     </Modal.Footer>
                 </Modal>
-                <Modal show={this.state.showAwait}>
+                <Modal className="modal-await" show={this.state.showAwait}>
                     <Modal.Header>
                         <div className="load-6">
                             <div className="letter-holder">

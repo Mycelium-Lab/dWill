@@ -377,6 +377,7 @@ class NewWill extends Component {
                     </Modal.Body>
                 </Modal>
                 <Modal show={this.state.show} onHide={this.handleClose} className='will-block' style={styles.modal_new_will}>
+
                     <Modal.Header className='modal_new_will'>
                         <Button className='bnt_close' onClick={this.handleClose}>
                             <img src={buttonClosePic} />
@@ -412,10 +413,11 @@ class NewWill extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className='modal-body__row'>С кошелька <a href='#' className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a> на сети {this.state.network} <img src={PolygonPic} /></div>
+                        <div className='modal-body__row modal-body__row-direction'>С кошелька <a href='#' className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a> на сети {this.state.network} <img src={PolygonPic} /></div>
                         <div class="your-wills__wallet modal-body__row">
                             Доверенному кошельку
-                            <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" />
+                            <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" required="required" />
+                            <p>Поле обязательно для заполнения*</p>
                         </div>
                         <div class="modal-body__row">
                             <div className='modal_title-time-will'>{"При условии что я буду неактивен(неактивна) более чем:"}</div>
@@ -448,7 +450,7 @@ class NewWill extends Component {
                                 <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
                                 <label for="wills-set3">Notifications</label><br />
                             </div>
-                            <div style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
+                            <div style={this.state.notificationsOn === true ? { opacity: '1', transition: 'all 0.3s ease' } : { opacity: '0', transition: 'all 0.3s ease' }}>
                                 <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
                             </div>
                         </div>
@@ -474,13 +476,14 @@ class NewWill extends Component {
                             </Button>
                         </div>
                     </Modal.Footer>
+
                 </Modal>
             </div>
                 <Modal show={this.state.showConfirm} className="modal-confirm">
                     <Modal.Header>
                         <h2 className='modal-confirm_h2'>Pending  transaction</h2>
                     </Modal.Header>
-                    <img src={ConfiPic} />
+                    <img src={LoadingPic} />
                     <Modal.Footer>
                         <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
                         <button className="btn-close-modal btn btn-primary">
@@ -494,7 +497,7 @@ class NewWill extends Component {
     <img src="content/button_close.svg"/>
     </Button>   */}
                     </Modal.Header>
-                    <img src={LoadingPic} />
+                    <img src={ConfiPic} />
                     <Modal.Footer>
                         <p className="modal-await_text">Завещание успешно создано!</p>
                     </Modal.Footer>

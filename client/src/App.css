@@ -507,6 +507,19 @@ a {
   color: #4285F4;
 }
 
+.modal-body__row-direction {
+  position: relative;
+}
+
+.modal-body__row-direction::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 19px;
+  height: 19px;
+}
+
 .modal-title {
   text-align: center;
   font-size: 18px;
@@ -1546,6 +1559,12 @@ input::-webkit-inner-spin-button {
   /* border-top: 1px solid #3E474F; */
 }
 
+#wills-list_ul-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
 .modal-confirm {
   position: absolute;
   display: flex;
@@ -1640,6 +1659,20 @@ input::-webkit-inner-spin-button {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  max-width: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+}
+
+.modal-await .modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .modal-await_text {
@@ -1733,6 +1766,20 @@ input::-webkit-inner-spin-button {
   color: #C1C7CD;
   font-size: 10px;
   font-weight: 400;
+}
+
+.your-wills__wallet input+p {
+  opacity: 0;
+  transition: all 0.3s ease;
+  font-size: 10px;
+  font-weight: 400;
+  color: #DD4B4B;
+  margin-top: -5px;
+}
+
+.your-wills__wallet input:invalid+p {
+  opacity: 1;
+  transition: all 0.3s ease;
 }
 
 .your-wills__wallet input:focus-visible {
