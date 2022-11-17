@@ -388,24 +388,24 @@ class NewWill extends Component {
                         <hr />
                     </Modal.Header>
                     <Modal.Body>
-                        <div class="modal-body__row">
-                            <div class="your-wills__header">
+                        <div className="modal-body__row">
+                            <div className="your-wills__header">
                                 <div>
                                     Я завещаю мои
                                 </div>
-                                <div class="form-select__wrapper">
+                                <div className="form-select__wrapper">
                                     <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
                                         <option value={"select"}>Select</option>
                                         <option value={this.props.tokenAddress}>TFT</option>
                                         <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
                                     </select>
-                                    <div class="form-select__arrow">
+                                    <div className="form-select__arrow">
                                         <img src={arrowDown} />
                                     </div>
                                 </div>
-                                <div class="your-wills__checkbox">
+                                <div className="your-wills__checkbox">
                                     <input id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
-                                    <label for="unlimited">Unlimited</label><br />
+                                    <label htmlFor="unlimited">Unlimited</label><br />
                                 </div>
                                 <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
                                     <input onChange={this.onChangeAmount} value={this.state.currentEditAmount} type="number" className="input-group mb-3" />
@@ -416,41 +416,41 @@ class NewWill extends Component {
                             </div>
                         </div>
                         <div className='modal-body__row modal-body__row-direction'>С кошелька <a href='#' className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a> на сети {this.state.network} <img src={PolygonPic} /></div>
-                        <div class="your-wills__wallet modal-body__row">
+                        <div className="your-wills__wallet modal-body__row">
                             Доверенному кошельку
                             <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" required="required" />
                             <p>Поле обязательно для заполнения*</p>
                         </div>
-                        <div class="modal-body__row">
+                        <div className="modal-body__row">
                             <div className='modal_title-time-will'>{"При условии что я буду неактивен(неактивна) более чем:"}</div>
-                            <div class="will-date">
-                                <div class="will-date__row">
+                            <div className="will-date">
+                                <div className="will-date__row">
                                     <input type="number" onChange={this.onChangeYear} value={this.state.year} className="input-group input-group-year" />
                                     <label >Лет</label><br />
                                 </div>
-                                <div class="will-date__row">
+                                <div className="will-date__row">
                                     <input type="number" onChange={this.onChangeMonth} value={this.state.month} className="input-group input-group-month" />
                                     <label >Месяцев</label><br />
                                 </div>
-                                <div class="will-date__row">
+                                <div className="will-date__row">
                                     <input type="number" onChange={this.onChangeDay} value={this.state.day} className="input-group input-group-days" />
                                     <label >Дней</label><br />
                                 </div>
                             </div>
 
                         </div>
-                        <div class="your-wills__settings">
-                            <div class="will-date__row will-date__row--checkbox">
+                        <div className="your-wills__settings">
+                            <div className="will-date__row will-date__row--checkbox">
                                 <input id="wills-set1" type="checkbox" disabled={true} className="form-check form-check-input mt-0" />
-                                <label for="wills-set1">Add NFT Message (coming soon)</label><br />
+                                <label htmlFor="wills-set1">Add NFT Message (coming soon)</label><br />
                             </div>
-                            <div class="will-date__row will-date__row--checkbox">
+                            <div className="will-date__row will-date__row--checkbox">
                                 <input id="wills-set2" type="checkbox" disabled={true} className="form-check form-check-input mt-0" />
-                                <label for="wills-set2">Automatic token delivery (coming soon)</label><br />
+                                <label htmlFor="wills-set2">Automatic token delivery (coming soon)</label><br />
                             </div>
-                            <div class="will-date__row will-date__row--checkbox">
+                            <div className="will-date__row will-date__row--checkbox">
                                 <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
-                                <label for="wills-set3">Notifications</label><br />
+                                <label htmlFor="wills-set3">Notifications</label><br />
                             </div>
                             <div style={this.state.notificationsOn === true ? { opacity: '1', transition: 'all 0.3s ease' } : { opacity: '0', transition: 'all 0.3s ease' }}>
                                 <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
@@ -459,7 +459,7 @@ class NewWill extends Component {
                     </Modal.Body>
                     <Modal.Footer>
                         <div>
-                            <ul class="your-wills__footer">
+                            <ul className="your-wills__footer">
                                 <li>
                                     <Button variant="primary" onClick={this.state.approved === false ? this.approve : null} style={
                                         { "background": this.state.approved === true ? '#3E474F' : '#5ED5A8' }
@@ -526,7 +526,7 @@ class NewWill extends Component {
                         <div className="modal_confirm">
                             <h2 className="modal-loading__title modal-loading__title--error">Error</h2>
                             <div>{this.state.errortext}</div>
-                            <div class="modal-loading__progress-bar modal-loading__progress-bar--error">
+                            <div className="modal-loading__progress-bar modal-loading__progress-bar--error">
                                 <span></span>
                             </div>
                         </div>

@@ -329,7 +329,7 @@ class Inheritances extends Component {
                         <div className="className='modal_confirm">
                             <h2 className="modal-loading__title modal-loading__title--processing">Processing...</h2>
                             <p className="modal-loading__subtitle">Approve  &lt;Token&gt;</p>
-                            <div class="modal-loading__progress-bar modal-loading__progress-bar--processing">
+                            <div className="modal-loading__progress-bar modal-loading__progress-bar--processing">
                                 <span></span>
                             </div>
                         </div>
