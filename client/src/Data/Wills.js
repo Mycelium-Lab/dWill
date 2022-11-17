@@ -6,13 +6,15 @@ import Modal from 'react-bootstrap/Modal';
 import TheWill from '../Contract/TheWill.json'
 // import revoke from '../content/revoke.svg';
 import { ethers } from "ethers";
-
+import ConfiPic from '../content/confi.svg'
 import ERC20 from '../Contract/ERC20.json'
 import { TheWillAddress, TokenAddress, UnlimitedAmount } from '../Utils/Constants';
 import editPic from '../content/edit.svg'
+import LoadingPic from '../content/loading.svg'
 import revokePic from '../content/revoke.svg'
 import closePic from '../content/button_close.svg'
 import arrowDown from '../content/arrow-down.svg'
+import closeModalPic from '../content/close_modal.svg'
 
 class Wills extends Component {
     constructor(props) {
@@ -858,7 +860,7 @@ class Wills extends Component {
                         </div>
                     </Modal.Footer>
                 </Modal>
-                <Modal className="modal-loading modal-loading--process" show={this.state.showConfirm}>
+                {/* <Modal className="modal-loading modal-loading--process" show={this.state.showConfirm}>
                     <Modal.Header>
                         <div className="className='modal_confirm">
                             <h2 className="modal-loading__title modal-loading__title--processing">Processing...</h2>
@@ -872,6 +874,18 @@ class Wills extends Component {
                         <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
                             <img src={closePic} />
                         </Button>
+                    </Modal.Footer>
+                </Modal> */}
+                <Modal show={this.state.showConfirm} className="modal-confirm">
+                    <Modal.Header>
+                        <h2 className='modal-confirm_h2'>Pending  transaction</h2>
+                    </Modal.Header>
+                    <img className="spinner" src={LoadingPic} />
+                    <Modal.Footer>
+                        <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
+                        <button className="btn-close-modal btn btn-primary">
+                            <img src={closeModalPic}></img>
+                        </button>
                     </Modal.Footer>
                 </Modal>
                 <Modal className="modal-await" show={this.state.showAwait}>
@@ -895,7 +909,7 @@ class Wills extends Component {
                         </Button>
                     </Modal.Footer>
                 </Modal>
-                <Modal className="modal-small" show={this.state.showError}>
+                {/* <Modal className="modal-small" show={this.state.showError}>
                     <Modal.Header>
                         <div>
                             <h1>Error</h1>
@@ -905,6 +919,22 @@ class Wills extends Component {
                     <Modal.Footer>
                         <Button variant="danger" onClick={this.handleCloseError} className="btn btn-danger">
                             Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal> */}
+                <Modal className="modal-loading modal-loading--process" show={this.state.showError}>
+                    <Modal.Header>
+                        <div className="modal_confirm">
+                            <h2 className="modal-loading__title modal-loading__title--error">Error</h2>
+                            <div>{this.state.errortext}</div>
+                            <div class="modal-loading__progress-bar modal-loading__progress-bar--error">
+                                <span></span>
+                            </div>
+                        </div>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
+                            <img src={closePic} />
                         </Button>
                     </Modal.Footer>
                 </Modal>

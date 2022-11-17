@@ -396,6 +396,11 @@ a {
   animation: 2s barTime infinite;
 }
 
+.modal-loading__progress-bar--error span {
+  background-color: #E84142;
+  width: 100%;
+}
+
 @keyframes barTime {
   0% {
     width: 0;
@@ -411,6 +416,10 @@ a {
   width: 100%;
 }
 
+.modal_confirm {
+  color: #fff;
+}
+
 .modal-loading__progress-bar--error span {
   background-color: #E84142;
   width: 100%;
@@ -420,6 +429,10 @@ a {
   font-size: 18px;
   font-weight: 400;
   margin-bottom: 10px;
+}
+
+.modal-loading__title--error {
+  color: #E84142;
 }
 
 @media (max-width: 767px) {
@@ -1668,6 +1681,24 @@ input::-webkit-inner-spin-button {
   height: 300px;
 }
 
+.modal-await .modal-dialog {
+  align-self: center;
+}
+
+.spinner {
+  animation: spinner 1s linear infinite;
+}
+
+@keyframes spinner {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .modal-await .modal-content {
   display: flex;
   flex-direction: column;
@@ -1676,8 +1707,8 @@ input::-webkit-inner-spin-button {
 }
 
 .modal-await_text {
-  position: absolute;
-  width: 265px;
+  /* position: absolute; */
+  /* width: 265px; */
   font-style: normal;
   font-weight: 400;
   font-size: 18px;

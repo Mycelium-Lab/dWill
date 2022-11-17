@@ -14,6 +14,7 @@ import QuestionPic from '../content/question.svg'
 import ConfiPic from '../content/confi.svg'
 import LoadingPic from '../content/loading.svg'
 import arrowDown from '../content/arrow-down.svg'
+import closePic from '../content/button_close.svg'
 
 import ERC20 from '../Contract/ERC20.json'
 const styles = {
@@ -483,7 +484,7 @@ class NewWill extends Component {
                     <Modal.Header>
                         <h2 className='modal-confirm_h2'>Pending  transaction</h2>
                     </Modal.Header>
-                    <img src={LoadingPic} />
+                    <img className="spinner" src={LoadingPic} />
                     <Modal.Footer>
                         <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
                         <button className="btn-close-modal btn btn-primary">
@@ -502,7 +503,7 @@ class NewWill extends Component {
                         <p className="modal-await_text">Завещание успешно создано!</p>
                     </Modal.Footer>
                 </Modal>
-                <Modal className="modal-small" show={this.state.showError}>
+                {/* <Modal className="modal-small" show={this.state.showError}>
                     <Modal.Header>
                         <div>
                             <h1>Error</h1>
@@ -514,7 +515,25 @@ class NewWill extends Component {
                             Close
                         </Button>
                     </Modal.Footer>
-                </Modal><div className='overlay'></div></>
+                </Modal> */}
+
+                <Modal className="modal-loading modal-loading--process" show={this.state.showError}>
+                    <Modal.Header>
+                        <div className="modal_confirm">
+                            <h2 className="modal-loading__title modal-loading__title--error">Error</h2>
+                            <div>{this.state.errortext}</div>
+                            <div class="modal-loading__progress-bar modal-loading__progress-bar--error">
+                                <span></span>
+                            </div>
+                        </div>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
+                            <img src={closePic} />
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                <div className='overlay'></div></>
         )
     }
 }
