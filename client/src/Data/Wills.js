@@ -11,7 +11,8 @@ import ERC20 from '../Contract/ERC20.json'
 import { TheWillAddress, TokenAddress, UnlimitedAmount } from '../Utils/Constants';
 import editPic from '../content/edit.svg'
 import revokePic from '../content/revoke.svg'
-import closePic from '../content/button_close.svg';
+import closePic from '../content/button_close.svg'
+import arrowDown from '../content/arrow-down.svg'
 
 class Wills extends Component {
     constructor(props) {
@@ -763,7 +764,7 @@ class Wills extends Component {
                         :
                         <h4>У вас еще нет активных завещаний.</h4>
                 }
-                <Modal show={this.state.showEdit} onHide={this.handleCloseEdit} style={{ height: "" }}>
+                <Modal className="will-block" show={this.state.showEdit} onHide={this.handleCloseEdit} style={{ height: "" }}>
                     <Modal.Header>
                         <Modal.Title>Edit Will</Modal.Title>
                         <hr />
@@ -774,7 +775,16 @@ class Wills extends Component {
                                 <div>
                                     Я завещаю мои
                                 </div>
-                                <div>{this.state.currentEditSymbol}</div>
+                                <div class="form-select__wrapper">
+                                    <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
+                                        <option value={"select"}>Select</option>
+                                        <option value={TokenAddress}>TFT</option>
+                                        <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
+                                    </select>
+                                    <div class="form-select__arrow">
+                                        <img src={arrowDown} />
+                                    </div>
+                                </div>
                                 <div class="your-wills__checkbox">
                                     <input id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
                                     <label for="unlimited">Unlimited</label><br />
@@ -817,16 +827,16 @@ class Wills extends Component {
                         </div>
                         <div class="your-wills__settings">
                             <div class="will-date__row will-date__row--checkbox">
-                                <input type="checkbox" disabled={true} className="form-check form-check-input mt-0" />
-                                <label >Add NFT Message (coming soon)</label><br />
+                                <input id="wills-set1" type="checkbox" disabled={true} className="form-check form-check-input mt-0" />
+                                <label for="wills-set1">Add NFT Message (coming soon)</label><br />
                             </div>
                             <div class="will-date__row will-date__row--checkbox">
-                                <input type="checkbox" disabled={true} className="form-check form-check-input mt-0" />
-                                <label >Automatic token delivery (coming soon)</label><br />
+                                <input id="wills-set2" type="checkbox" disabled={true} className="form-check form-check-input mt-0" />
+                                <label for="wills-set2">Automatic token delivery (coming soon)</label><br />
                             </div>
                             <div class="will-date__row will-date__row--checkbox">
-                                <input type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
-                                <label >Notifications</label><br />
+                                <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
+                                <label for="wills-set3">Notifications</label><br />
                             </div>
                             <div style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
                                 <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
@@ -857,26 +867,19 @@ class Wills extends Component {
                         </div>
                     </Modal.Footer>
                 </Modal>
-                <Modal show={this.state.showConfirm}>
+                <Modal className="modal-loading modal-loading--process" show={this.state.showConfirm}>
                     <Modal.Header>
                         <div className="className='modal_confirm">
-                            <div className="letter-holder">
-                                <div className="l-1 letter">C</div>
-                                <div className="l-2 letter">o</div>
-                                <div className="l-3 letter">n</div>
-                                <div className="l-4 letter">f</div>
-                                <div className="l-5 letter">i</div>
-                                <div className="l-6 letter">r</div>
-                                <div className="l-7 letter">m</div>
-                                <div className="l-8 letter">.</div>
-                                <div className="l-9 letter">.</div>
-                                <div className="l-10 letter">.</div>
+                            <h2 className="modal-loading__title modal-loading__title--processing">Processing...</h2>
+                            <p className="modal-loading__subtitle">Approve  &lt;Token&gt;</p>
+                            <div class="modal-loading__progress-bar modal-loading__progress-bar--processing">
+                                <span></span>
                             </div>
                         </div>
                     </Modal.Header>
                     <Modal.Footer>
                         <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
-                            Close
+                            <img src={closePic} />
                         </Button>
                     </Modal.Footer>
                 </Modal>
