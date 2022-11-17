@@ -11,6 +11,10 @@
   margin: 0;
 }
 
+button {
+  cursor: pointer;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -157,8 +161,9 @@ ul {
 .btn-new-will {
   background: #5ED5A8;
   width: 350px;
+  height: 50px;
   margin-top: 50px;
-  padding: 15px 136px;
+  /* padding: 15px 136px; */
   box-shadow: 3px -2px 10px rgba(94, 213, 168, 0.4);
   border-radius: 15px;
   border: none;
@@ -168,6 +173,13 @@ ul {
   text-align: center;
   letter-spacing: 0.0264em;
   color: #171D22;
+}
+
+@media (max-width: 767px) {
+  .btn-new-will {
+    width: 200px;
+    height: 40px;
+  }
 }
 
 .btn-default {
@@ -228,6 +240,7 @@ ul {
     margin-bottom: 15px;
     max-width: 241px;
   }
+
   .block-two:nth-child(4) {
     max-width: 298px;
   }
@@ -305,6 +318,13 @@ a {
   transform: translate(-50%, -50%);
 }
 
+@media (max-width: 767px) {
+  .modal.show {
+    max-width: 340px;
+    width: 100%;
+  }
+}
+
 .modal-small {
   width: 400px;
   height: 300px;
@@ -318,15 +338,17 @@ a {
 
 .modal-small .modal-content {
   box-shadow: none;
+  width: auto;
+  padding: 0;
 }
 
 .modal-content {
-  position: relative;
+  /* position: relative; */
   margin: auto;
   /* margin-top: 10vh; */
   padding-left: 50px;
   padding-right: 50px;
-  max-width: 700px;
+  width: 700px;
   padding-bottom: 62px;
   background-color: #1B232A;
   color: #C1C7CD;
@@ -337,6 +359,16 @@ a {
   left: 50%;
   transform: translate(-50%, -50%); */
   box-shadow: -4px -6px 17px 1px rgba(22, 28, 34, 0.5);
+}
+
+@media (max-width: 767px) {
+  .modal-content {
+    /* width: 340px; */
+    width: 100%;
+    padding: 20px;
+    padding-top: 14px;
+    padding-bottom: 30px;
+  }
 }
 
 .modal-body {
@@ -357,7 +389,11 @@ a {
   margin-bottom: 26px;
 }
 
-
+@media (max-width: 767px) {
+  .modal-title {
+    font-size: 14px;
+  }
+}
 
 .btn-close-modal {
   position: absolute;
@@ -366,7 +402,14 @@ a {
   background-color: transparent;
   border: 0;
   box-shadow: none;
-  width: auto !important;
+  width: auto;
+}
+
+@media (max-width: 767px) {
+  .btn-close-modal {
+    width: 14px;
+    height: 14px;
+  }
 }
 
 .will-date {
@@ -385,6 +428,7 @@ a {
 
 .number-of-wills {
   display: flex;
+  align-items: center;
   font-size: 18px;
   gap: 20px;
   /* line-height: 21px; */
@@ -476,9 +520,16 @@ a {
   /* padding-left: 80px; */
 }
 
+.logo-will a {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+}
+
 @media (max-width: 767px) {
   .logo-will {
     width: 92px;
+    height: 20px;
   }
 }
 
@@ -503,7 +554,7 @@ a {
 }
 
 @media (max-width: 767px) {
-  .btn-header-connect button {  
+  .btn-header-connect button {
     height: 40px;
     min-width: 150px;
     font-size: 14px;
@@ -513,11 +564,24 @@ a {
 
 .btn-header-connect>div {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 19px;
   /* margin-right: 130px; */
   border: 1px solid #5ED5A8;
   border-radius: 16px;
   color: #5ED5A8;
-  max-width: 190px;
+  min-width: 190px;
+  height: 60px;
+  /* width: 100%; */
+}
+
+@media (max-width: 767px) {
+  .btn-header-connect>div {
+    min-width: 160px;
+    height: 50px;
+    padding: 0 14px;
+  }
 }
 
 .main-text .btn-header-connect button {
@@ -540,7 +604,7 @@ a {
   flex-direction: column;
   font-weight: 700;
   width: 159px;
-  height: 21px;
+  /* height: 21px; */
 }
 
 @media (max-width: 767px) {
@@ -885,16 +949,40 @@ input::-webkit-inner-spin-button {
   margin-top: 63px;
 }
 
+@media (max-width: 767px) {
+  .btn_reset-timers {
+    margin-top: 50px;
+  }
+}
+
 .your_inheritances {
-  width: 700px;
   /* text-align: center; */
   /* margin-top: 33px; */
   margin-top: 80px;
-  padding-left: 50px;
-  padding-right: 50px;
+
+}
+
+@media (max-width: 767px) {
+  .your_inheritances {
+    margin-top: 40px;
+  }
+}
+
+.wills-description-block {
+  max-width: 700px;
+  width: 100%;
+  padding: 20px 50px;
   background: #1B232A;
   box-shadow: 2px 0px 19px 3px #161c22;
   color: #C1C7CD;
+}
+
+@media (max-width: 767px) {
+  .wills-description-block {
+    padding: 10px 20px;
+    padding-bottom: 20px;
+    text-align: center;
+  }
 }
 
 .your-inheritances_color-text {
@@ -902,14 +990,20 @@ input::-webkit-inner-spin-button {
 }
 
 .wills_list-my-wills {
-  width: 700px;
+  /* width: 700px; */
   margin-top: 33px;
-  padding: 20px 50px;
+  /* padding: 20px 50px;
   background: #1B232A;
   box-shadow: 2px 0px 19px 3px #161c22;
   color: #C1C7CD;
-  /* margin-top: 62px; */
-  margin-bottom: 84 px;
+  margin-top: 62px;
+  margin-bottom: 84 px; */
+}
+
+@media (max-width: 767px) {
+  .wills_list-my-wills {
+    margin-top: 20px;
+  }
 }
 
 .buttons {
@@ -927,7 +1021,7 @@ input::-webkit-inner-spin-button {
   font-style: normal;
   font-weight: 600;
   font-size: 14px;
-  padding-bottom: 30px;
+  /* padding-bottom: 30px; */
   line-height: 17px;
   letter-spacing: 0.0264em;
   color: #C1C7CD;
@@ -1015,16 +1109,26 @@ input::-webkit-inner-spin-button {
   flex-direction: column;
 }
 
-.your_inheritances-h3 {
-  width: 600px;
+.your_inheritances-h3,
+.wills_list_h3 {
+  /* width: 600px; */
+  width: 100%;
   font-weight: 400;
   font-size: 18px;
   line-height: 21px;
   text-align: center;
   letter-spacing: 0.0264em;
   color: #5ED5A8;
-  padding: 17px;
+  padding-bottom: 17px;
   margin: 0 auto;
+}
+
+@media (max-width: 767px) {
+
+  .your_inheritances-h3,
+  .wills_list_h3 {
+    padding-bottom: 10px;
+  }
 }
 
 .your-wills__footer {
@@ -1053,12 +1157,19 @@ input::-webkit-inner-spin-button {
   margin-left: 30px;
 }
 
+@media (max-width: 767px) {
+  .your-wills__footer button {
+    max-width: 260px;
+    margin-left: 20px;
+  }
+}
+
 /* .modal-footer > div {
   display: flex;
   flex-direction: column;
 } */
 
-.wills_list_h3 {
+/* .wills_list_h3 {
   width: 600px;
   font-weight: 400;
   font-size: 18px;
@@ -1067,8 +1178,7 @@ input::-webkit-inner-spin-button {
   letter-spacing: 0.0264em;
   color: #5ED5A8;
   padding: 17px;
-
-}
+} */
 
 .btn_btn-success {
   display: flex;
@@ -1133,7 +1243,7 @@ input::-webkit-inner-spin-button {
   font-size: 14px;
   line-height: 17px;
   letter-spacing: 0.0264em;
-  padding-bottom: 27px;
+  /* padding-bottom: 27px; */
 }
 
 .input-group-year {
@@ -1217,6 +1327,12 @@ input::-webkit-inner-spin-button {
   align-items: center;
 }
 
+@media (max-width: 767px) {
+  .page-data {
+    padding-bottom: 80px;
+  }
+}
+
 .page-data a {
   color: #4285F4;
 }
@@ -1224,6 +1340,12 @@ input::-webkit-inner-spin-button {
 .page-data__block-container {
   display: flex;
   gap: 40px;
+}
+
+@media (max-width: 767px) {
+  .page-data__block-container {
+    flex-direction: column;
+  }
 }
 
 .btn_data-js {
@@ -1269,6 +1391,12 @@ input::-webkit-inner-spin-button {
   z-index: 9999;
 }
 
+@media (max-width: 767px) {
+  .modal-confirm {
+    max-width: 340px;
+  }
+}
+
 .modal-confirm .modal-content {
   box-shadow: none;
   color: #4282F4;
@@ -1278,7 +1406,22 @@ input::-webkit-inner-spin-button {
   align-items: center;
   justify-content: center;
   gap: 40px;
+  width: 100%;
 }
+/* 
+.modal-confirm .modal-content img {
+  animation: rotateInfinity 1s infinite linear;
+}
+
+@keyframes rotateInfinity {
+  from {
+    transform: rotate(0%);
+  }
+
+  to {
+    transform: rotate(180deg);
+  }
+} */
 
 .modal-confirm_h2 {
   width: 173px;
@@ -1289,6 +1432,12 @@ input::-webkit-inner-spin-button {
   text-align: center;
 }
 
+@media (max-width: 767px) {
+  .modal-confirm_h2 {
+    font-size: 14px;
+  }
+}
+
 .modal-confirm_text {
   width: 247px;
   font-style: normal;
@@ -1296,6 +1445,12 @@ input::-webkit-inner-spin-button {
   font-size: 18px;
   line-height: 21px;
   text-align: center;
+}
+
+@media (max-width: 767px) {
+  .modal-confirm_text {
+    font-size: 14px;
+  }
 }
 
 .modal-await {
@@ -1331,6 +1486,12 @@ input::-webkit-inner-spin-button {
   line-height: 24px;
 }
 
+@media (max-width: 767px) {
+  .btn_reset-timers-h2 {
+    font-size: 18px;
+  }
+}
+
 .btn_reset-timers-h3 {
   margin-top: 5px;
   max-width: 332px;
@@ -1338,6 +1499,12 @@ input::-webkit-inner-spin-button {
   font-weight: 600;
   font-size: 14px;
   line-height: 17px;
+}
+
+@media (max-width: 767px) {
+  .btn_reset-timers-h3 {
+    font-size: 12px;
+  }
 }
 
 .your-wills_remain {
@@ -1358,10 +1525,22 @@ input::-webkit-inner-spin-button {
   /* width: 406px; */
 }
 
+.your-wills_text-info a {
+  margin-bottom: 20px;
+  display: block;
+}
+
 .your-wills__btns {
   display: flex;
   flex-direction: column;
   gap: 15px;
+}
+
+@media (max-width: 767px) {
+  .your-wills__btns {
+    flex-direction: row;
+    justify-content: center;
+  }
 }
 
 .your-wills__wallet {

@@ -693,7 +693,7 @@ class Wills extends Component {
     render() {
         return (
             // <div id='wills'>
-            <div className='wills_list-my-wills'>
+            <div className='wills_list-my-wills wills-description-block'>
                 {
                     this.state.wills.length > 0
                         ?
@@ -763,7 +763,7 @@ class Wills extends Component {
                         :
                         <h4>У вас еще нет активных завещаний.</h4>
                 }
-                <Modal show={this.state.showEdit} onHide={this.handleCloseEdit} style={{ height: "500px" }}>
+                <Modal show={this.state.showEdit} onHide={this.handleCloseEdit} style={{ height: "" }}>
                     <Modal.Header>
                         <Modal.Title>Edit Will</Modal.Title>
                         <hr />

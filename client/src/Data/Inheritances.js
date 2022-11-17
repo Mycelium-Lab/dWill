@@ -68,7 +68,7 @@ class Inheritances extends Component {
             } else if (network.chainId === 80001) {
                 networkName = `Mumbai`
             }
-            contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
+            contract.on('AddAnHeir', async (ID, owner, heir, token, timeWhenWithdraw, amount) => {
                 let __inheritances = this.state.inheritances
                 if (heir == signerAddress) {
                     const inheritance = await contract.inheritanceData(ID.toString())
@@ -94,21 +94,21 @@ class Inheritances extends Component {
                             decimals
                         })
                     }
-                    this.setState({inheritances: __inheritances})
+                    this.setState({ inheritances: __inheritances })
                 }
             })
-            contract.on('Withdraw', async (ID,owner, heir,timeWhenWithdraw) => {
+            contract.on('Withdraw', async (ID, owner, heir, timeWhenWithdraw) => {
                 let __inheritances = this.state.inheritances
                 if (heir == signerAddress) {
                     __inheritances = __inheritances.filter(v => v.ID !== ID.toString())
-                    this.setState({inheritances: __inheritances})
+                    this.setState({ inheritances: __inheritances })
                 }
             })
             contract.on('RemoveWill', async (ID, owner, heir) => {
                 let __inheritances = this.state.inheritances
                 if (heir == signerAddress) {
                     __inheritances = __inheritances.filter(v => v.ID !== ID.toString())
-                    this.setState({inheritances: __inheritances})
+                    this.setState({ inheritances: __inheritances })
                 }
             })
             contract.on('UpdateWillTimeWhenWithdraw', (ID, owner, heir, newTime) => {
@@ -176,7 +176,7 @@ class Inheritances extends Component {
                     inheritances: __inheritances
                 })
             })
-            this.setState({ signer, signerAddress, contract, inheritances: _inheritances, network:networkName })
+            this.setState({ signer, signerAddress, contract, inheritances: _inheritances, network: networkName })
         } catch (error) {
             console.error(error)
         }
@@ -210,7 +210,7 @@ class Inheritances extends Component {
             let mo = Math.floor((seconds % 31536000) / 2628000);
             let d = Math.floor(((seconds % 31536000) % 2628000) / 86400);
             let h = Math.floor((seconds % (3600 * 24)) / 3600);
-          
+
             let yDisplay = y > 0 ? y + (y === 1 ? " year, " : " years, ") : " 0 years,";
             let moDisplay = mo > 0 ? mo + (mo === 1 ? " month, " : " months, ") : " 0 months,";
             let dDisplay = d > 0 ? d + (d === 1 ? " day, " : " days, ") : " 0 days, ";
@@ -233,102 +233,102 @@ class Inheritances extends Component {
     checkIfTimeIsEnd = this.checkIfTimeIsEnd.bind(this)
     claim = this.claim.bind(this)
 
-    handleShowConfirm = () => this.setState({showConfirm: true})
-    handleShowAwait = () => this.setState({showConfirm: false, showAwait: true})
-    handleCloseConfirm = () => this.setState({showConfirm: false})
-    handleCloseAwait = () => this.setState({showAwait: false})
+    handleShowConfirm = () => this.setState({ showConfirm: true })
+    handleShowAwait = () => this.setState({ showConfirm: false, showAwait: true })
+    handleCloseConfirm = () => this.setState({ showConfirm: false })
+    handleCloseAwait = () => this.setState({ showAwait: false })
     handleShowConfirm = this.handleShowConfirm.bind(this)
     handleShowAwait = this.handleShowAwait.bind(this)
     handleCloseConfirm = this.handleCloseConfirm.bind(this)
     handleCloseAwait = this.handleCloseAwait.bind(this)
 
     render() {
-        return(
-        <div className='your_inheritances'>
-            {
-                this.state.inheritances.length > 0 
-                ?
-                <div className='your_inheritances_ul-btn'>
-                    <ul className='your_inheritances_ul'>
-                    {
-                        this.state.inheritances.map((v) => {
-                            return (
-                                <li key={v.ID} style={{"marginBottom": '10px'}}>
-                                
-                                    <div className='your_inheritances_ul-text'>
-                                    <h3 className='your_inheritances-h3'>Your inheritances</h3>
-                                    <hr />
-                                    <span>id: {v.ID.toString()} </span>
-                                    <span>
-                                    {
-                                        this.remainingTime(v.timeWhenWithdraw) === 'Nothing.'
-                                        ?
-                                        'You '
-                                        :
-                                        `After ${this.remainingTime(v.timeWhenWithdraw)} you `
-                                    }
-                                    can harvest up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited': (v.amount / Math.pow(10, v.decimals)).toString()} {v.symbol} from wallet</span>
-                                    <a href={`https://mumbai.polygonscan.com/address/${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`} </a>
-                                    on {this.state.network} chain</div>
-                                    <div><button value={v.ID.toString()} onClick={this.claim} 
-                                    style={{
-                                        display: this.checkIfTimeIsEnd(v.timeWhenWithdraw) ? 'block' : 'none'
-                                    }} className="btn_btn-success">
-                                    Receive</button></div>
-                                </li>
-                            )
-                        })
-                    }
-                </ul>
-                </div>
-                :
-                <h4>У вас еще нет активных завещаний.</h4>
-            }
-            <Modal show={this.state.showConfirm}>
-                <Modal.Header>
-                    <div className="load-6">
-                        <div className="letter-holder">
-                        <div className="l-1 letter">C</div>
-                        <div className="l-2 letter">o</div>
-                        <div className="l-3 letter">n</div>
-                        <div className="l-4 letter">f</div>
-                        <div className="l-5 letter">i</div>
-                        <div className="l-6 letter">r</div>
-                        <div className="l-7 letter">m</div>
-                        <div className="l-8 letter">.</div>
-                        <div className="l-9 letter">.</div>
-                        <div className="l-10 letter">.</div>
+        return (
+            <div className='your_inheritances wills-description-block'>
+                {
+                    this.state.inheritances.length > 0
+                        ?
+                        <div className='your_inheritances_ul-btn'>
+                            <ul className='your_inheritances_ul'>
+                                {
+                                    this.state.inheritances.map((v) => {
+                                        return (
+                                            <li key={v.ID} style={{ "marginBottom": '10px' }}>
+
+                                                <div className='your_inheritances_ul-text'>
+                                                    <h3 className='your_inheritances-h3'>Your inheritances</h3>
+                                                    <hr />
+                                                    <span>id: {v.ID.toString()} </span>
+                                                    <span>
+                                                        {
+                                                            this.remainingTime(v.timeWhenWithdraw) === 'Nothing.'
+                                                                ?
+                                                                'You '
+                                                                :
+                                                                `After ${this.remainingTime(v.timeWhenWithdraw)} you `
+                                                        }
+                                                        can harvest up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited' : (v.amount / Math.pow(10, v.decimals)).toString()} {v.symbol} from wallet</span>
+                                                    <a href={`https://mumbai.polygonscan.com/address/${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`} </a>
+                                                    on {this.state.network} chain</div>
+                                                <div><button value={v.ID.toString()} onClick={this.claim}
+                                                    style={{
+                                                        display: this.checkIfTimeIsEnd(v.timeWhenWithdraw) ? 'block' : 'none'
+                                                    }} className="btn_btn-success">
+                                                    Receive</button></div>
+                                            </li>
+                                        )
+                                    })
+                                }
+                            </ul>
                         </div>
-                    </div>
-                </Modal.Header>
-                <Modal.Footer>
-                    <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal show={this.state.showAwait}>
-                <Modal.Header>
-                    <div className="load-6">
-                        <div className="letter-holder">
-                        <div className="l-1 letter">A</div>
-                        <div className="l-2 letter">w</div>
-                        <div className="l-3 letter">a</div>
-                        <div className="l-4 letter">i</div>
-                        <div className="l-5 letter">t</div>
-                        <div className="l-6 letter">.</div>
-                        <div className="l-7 letter">.</div>
-                        <div className="l-8 letter">.</div>
+                        :
+                        <h4>У вас еще нет активных завещаний.</h4>
+                }
+                <Modal show={this.state.showConfirm}>
+                    <Modal.Header>
+                        <div className="load-6">
+                            <div className="letter-holder">
+                                <div className="l-1 letter">C</div>
+                                <div className="l-2 letter">o</div>
+                                <div className="l-3 letter">n</div>
+                                <div className="l-4 letter">f</div>
+                                <div className="l-5 letter">i</div>
+                                <div className="l-6 letter">r</div>
+                                <div className="l-7 letter">m</div>
+                                <div className="l-8 letter">.</div>
+                                <div className="l-9 letter">.</div>
+                                <div className="l-10 letter">.</div>
+                            </div>
                         </div>
-                    </div>
-                </Modal.Header>
-                <Modal.Footer>
-                    <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-        </div>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal show={this.state.showAwait}>
+                    <Modal.Header>
+                        <div className="load-6">
+                            <div className="letter-holder">
+                                <div className="l-1 letter">A</div>
+                                <div className="l-2 letter">w</div>
+                                <div className="l-3 letter">a</div>
+                                <div className="l-4 letter">i</div>
+                                <div className="l-5 letter">t</div>
+                                <div className="l-6 letter">.</div>
+                                <div className="l-7 letter">.</div>
+                                <div className="l-8 letter">.</div>
+                            </div>
+                        </div>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            </div>
         )
     }
 }

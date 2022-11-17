@@ -19,8 +19,9 @@ import ERC20 from '../Contract/ERC20.json'
 const styles = {
     modal_new_will: {
 
-        width: '700px',
+        maxWidth: '700px',
         // left: '25%',
+        width: '100%',
 
         // top: '1%',
 
@@ -399,7 +400,7 @@ class NewWill extends Component {
                                         <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
                                     </select>
                                     <div class="form-select__arrow">
-                                        <img src={arrowDown}/>
+                                        <img src={arrowDown} />
                                     </div>
                                 </div>
                                 <div class="your-wills__checkbox">
@@ -482,9 +483,12 @@ class NewWill extends Component {
                     <Modal.Header>
                         <h2 className='modal-confirm_h2'>Pending  transaction</h2>
                     </Modal.Header>
-                    <img scr={ConfiPic} />
+                    <img src={ConfiPic} />
                     <Modal.Footer>
                         <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
+                        <button className="btn-close-modal btn btn-primary">
+                            <img src={closeModalPic}></img>
+                        </button>
                     </Modal.Footer>
                 </Modal>
                 <Modal show={this.state.showAwait} className="modal-await">

@@ -76,7 +76,7 @@ class Connect extends Component {
                     <img src="./content/buttom-metamask.svg"/> 
                     </div>
                     <div>
-                    <img scr="./content/button-m.svg"/> 
+                    <img src="./content/button-m.svg"/> 
                     </div> */}
                 </div>
                 </div>
