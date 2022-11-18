@@ -13,4 +13,4 @@ const schema = new Schema({
     }
 })
 
-module.exports = model('Will', schema)
+module.exports = model('WillBinanceTest', schema)
