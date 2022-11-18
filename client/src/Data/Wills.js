@@ -93,27 +93,27 @@ class Wills extends Component {
             if (this.props.network === chainIDs.BinanceMainnet) {
                 networkName = `BNB Chain`
                 networkPic = BinancePic
-            } else if (this.props.network  === chainIDs.Polygon) {
+            } else if (this.props.network === chainIDs.Polygon) {
                 networkName = `Polygon`
                 networkPic = PolygonPic
-            } else if (this.props.network  === 31337) {
+            } else if (this.props.network === 31337) {
                 networkName = `Hardhat`
                 networkPic = EthereumPic
-            } else if (this.props.network  === chainIDs.Mumbai) {
+            } else if (this.props.network === chainIDs.Mumbai) {
                 networkName = `Mumbai`
                 networkPic = PolygonPic
-            } else if (this.props.network  === chainIDs.Goerli) {
+            } else if (this.props.network === chainIDs.Goerli) {
                 networkName = `Goerli`
                 networkPic = EthereumPic
-            } else if (this.props.network  === chainIDs.EthereumMainnet) {
+            } else if (this.props.network === chainIDs.EthereumMainnet) {
                 networkName = `Ethereum`
                 networkPic = EthereumPic
-            } else if (this.props.network  === chainIDs.BinanceTestnet) {
+            } else if (this.props.network === chainIDs.BinanceTestnet) {
                 networkName = `BNBTest Chain`
                 networkPic = BinancePic
             }
             this.setState({ signer, signerAddress, network: networkName, contract, wills: _wills, networkPic })
-            contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
+            contract.on('AddAnHeir', async (ID, owner, heir, token, timeWhenWithdraw, amount) => {
                 if (owner.toLowerCase() === signerAddress.toLowerCase()) {
                     let __wills = this.state.wills
                     const will = await contract.inheritanceData(ID.toString())
@@ -143,7 +143,7 @@ class Wills extends Component {
                     this.setState({ wills: __wills })
                 }
             })
-            contract.on('Withdraw', async (ID,owner, heir,timeWhenWithdraw) => {
+            contract.on('Withdraw', async (ID, owner, heir, timeWhenWithdraw) => {
                 if (owner.toLowerCase() === signerAddress.toLowerCase()) {
                     let __wills = this.state.wills
                     __wills = __wills.filter(v => v.ID !== ID.toString())
@@ -814,7 +814,7 @@ class Wills extends Component {
                         </div>
                         <div className="modal-body__row">С кошелька <a href='#'>{
                             this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)
-                        }</a> на сети {this.state.network} <img src={this.state.networkPic} alt="networkpic"/></div>
+                        }</a> <i class="br"></i> на сети {this.state.network} <img src={this.state.networkPic} alt="networkpic" /></div>
                         <div className="your-wills__wallet modal-body__row">
                             Доверенному кошельку
                             <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" />
@@ -887,7 +887,11 @@ class Wills extends Component {
                         <h2 className='modal-confirm_h2'>Pending  transaction</h2>
                     </Modal.Header>
                     {/* <img className="spinner" src={LoadingPic} /> */}
-                    <div class="circle-loader">
+                    <div class="ml-loader">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
                         <div></div>
                         <div></div>
                         <div></div>

@@ -74,22 +74,22 @@ class NewWill extends Component {
             if (this.props.network === chainIDs.BinanceMainnet) {
                 networkName = `BNB Chain`
                 networkPic = BinancePic
-            } else if (this.props.network  === chainIDs.Polygon) {
+            } else if (this.props.network === chainIDs.Polygon) {
                 networkName = `Polygon`
                 networkPic = PolygonPic
-            } else if (this.props.network  === 31337) {
+            } else if (this.props.network === 31337) {
                 networkName = `Hardhat`
                 networkPic = EthereumPic
-            } else if (this.props.network  === chainIDs.Mumbai) {
+            } else if (this.props.network === chainIDs.Mumbai) {
                 networkName = `Mumbai`
                 networkPic = PolygonPic
-            } else if (this.props.network  === chainIDs.Goerli) {
+            } else if (this.props.network === chainIDs.Goerli) {
                 networkName = `Goerli`
                 networkPic = EthereumPic
-            } else if (this.props.network  === chainIDs.EthereumMainnet) {
+            } else if (this.props.network === chainIDs.EthereumMainnet) {
                 networkName = `Ethereum`
                 networkPic = EthereumPic
-            } else if (this.props.network  === chainIDs.BinanceTestnet) {
+            } else if (this.props.network === chainIDs.BinanceTestnet) {
                 networkName = `BNBTest Chain`
                 networkPic = BinancePic
             }
@@ -396,7 +396,7 @@ class NewWill extends Component {
                 }}>
                     <Modal.Header className='modal_new_will'>
                         <Button className='bnt_close' onClick={this.handleCloseWalletNotExist}>
-                            <img src={closeModalPic} alt="close"/>
+                            <img src={closeModalPic} alt="close" />
                         </Button>
                         <Modal.Title className='modal_title'>Wallet Not Exist</Modal.Title>
                     </Modal.Header>
@@ -416,7 +416,7 @@ class NewWill extends Component {
                 <Modal show={this.state.show} onHide={this.handleClose} className='will-block' style={styles.modal_new_will}>
                     <Modal.Header className='modal_new_will'>
                         <Button className='bnt_close' onClick={this.handleClose}>
-                            <img src={buttonClosePic} alt="close"/>
+                            <img src={buttonClosePic} alt="close" />
                         </Button>
                         <Modal.Title className='modal_title'>New Will</Modal.Title>
                         <hr />
@@ -434,7 +434,7 @@ class NewWill extends Component {
                                         <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
                                     </select>
                                     <div className="form-select__arrow">
-                                        <img src={arrowDown} alt="arrow"/>
+                                        <img src={arrowDown} alt="arrow" />
                                     </div>
                                 </div>
                                 <div className="your-wills__checkbox">
@@ -449,8 +449,8 @@ class NewWill extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className='modal-body__row modal-body__row-direction'>С кошелька <a href={`${this.props.networkProvider}${this.state.signerAddress}`} className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a> на сети {this.state.network} 
-                        <img src={this.state.networkPic} alt="networkpic"/></div>
+                        <div className='modal-body__row modal-body__row-direction'>С кошелька <a href={`${this.props.networkProvider}${this.state.signerAddress}`} className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a><i class="br"></i> на сети {this.state.network}
+                            <img src={this.state.networkPic} alt="networkpic" /></div>
                         <div className="your-wills__wallet modal-body__row">
                             Доверенному кошельку
                             <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" required="required" />
@@ -487,12 +487,12 @@ class NewWill extends Component {
                                 <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
                                 <label htmlFor="wills-set3">Notifications</label><br />
                             </div>
-                            <div style={this.state.notificationsOn === true ? { opacity: '1', transition: 'all 0.3s ease' } : { opacity: '0', transition: 'all 0.3s ease' }}>
+                            <div style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
                                 <div>
-                                    <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider+this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer">Set notifications in Google Calendar</a>
+                                    <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider + this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer">Set notifications in Google Calendar</a>
                                 </div>
                                 <div>
-                                <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
+                                    <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
                                 </div>
                             </div>
                         </div>
@@ -526,7 +526,11 @@ class NewWill extends Component {
                         <h2 className='modal-confirm_h2'>Pending  transaction</h2>
                     </Modal.Header>
                     {/* <img className="spinner" src={LoadingPic} /> */}
-                    <div class="circle-loader">
+                    <div class="ml-loader">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
                         <div></div>
                         <div></div>
                         <div></div>
@@ -536,6 +540,7 @@ class NewWill extends Component {
                         <div></div>
                         <div></div>
                     </div>
+
                     <Modal.Footer>
                         <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
                         {/* <button className="btn-close-modal btn btn-primary">
@@ -586,7 +591,6 @@ class NewWill extends Component {
                         </Button>
                     </Modal.Footer>
                 </Modal> */}
-
                 <Modal className="modal-loading modal-loading--process" show={this.state.showError}>
                     <Modal.Header>
                         <div className="modal_confirm">
@@ -598,8 +602,8 @@ class NewWill extends Component {
                         </div>
                     </Modal.Header>
                     <Modal.Footer>
-                        <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
-                            <img src={closePic} alt="close"/>
+                        <Button variant="danger" className="btn btn-danger">
+                            <img src={closePic} alt="close" />
                         </Button>
                     </Modal.Footer>
                 </Modal>

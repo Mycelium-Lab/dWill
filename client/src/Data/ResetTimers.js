@@ -79,8 +79,11 @@ class ResetTimers extends Component {
                     <Modal.Header>
                         <h2 className='modal-confirm_h2'>Pending  transaction</h2>
                     </Modal.Header>
-                    {/* <img className="spinner" src={LoadingPic} /> */}
-                    <div class="circle-loader">
+                    <div class="ml-loader">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
                         <div></div>
                         <div></div>
                         <div></div>
@@ -92,19 +95,34 @@ class ResetTimers extends Component {
                     </div>
                     <Modal.Footer>
                         <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
-                        {/* <button className="btn-close-modal btn btn-primary">
+                        <button className="btn-close-modal btn btn-primary">
                             <img src={closeModalPic}></img>
-                        </button> */}
+                        </button>
                     </Modal.Footer>
                 </Modal>
-                <Modal show={this.state.showAwait} className="modal-await">
-
+                {/* <Modal show={this.state.showAwait} className="modal-await">
                     <img src={ConfiPic} />
                     <Modal.Footer>
-                        {/* <button className="btn-close-modal btn btn-primary">
+                        <button className="btn-close-modal btn btn-primary">
                             <img src={closeModalPic}></img>
-                        </button> */}
-                        <p className="modal-await_text">Завещание успешно создано!</p>
+                        </button>
+                        <p className="modal-await_text">Завещание успешно создано!!!!</p>
+                    </Modal.Footer>
+                </Modal> */}
+                <Modal className="modal-loading modal-loading--process" show={this.state.showAwait}>
+                    <Modal.Header>
+                        <div className="className='modal_confirm">
+                            <h2 className="modal-loading__title modal-loading__title--confirmed">Confirmed...</h2>
+                            <p className="modal-loading__subtitle">Approve  &lt;Token&gt;</p>
+                            <div className="modal-loading__progress-bar modal-loading__progress-bar--confirmed">
+                                <span></span>
+                            </div>
+                        </div>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
+                            <img src={closeModalPic} />
+                        </Button>
                     </Modal.Footer>
                 </Modal>
             </div>
