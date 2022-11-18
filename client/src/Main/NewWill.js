@@ -151,6 +151,7 @@ class NewWill extends Component {
             let timeUnixWhenWithdraw = 0;
             timeUnixWhenWithdraw = Math.floor(date.getTime() / 1000)
             let sendTo = isUnlimitedAmount === true ? amount : BigInt(amount * Math.pow(10, await _token.decimals())).toString()
+            this.handleShowConfirm()
             await contract.addNewWill(heirAddress, tokensValue, timeUnixWhenWithdraw.toString(), sendTo)
                 .then(async (tx) => {
                     this.handleShowAwait()
@@ -542,7 +543,23 @@ class NewWill extends Component {
                         </button> */}
                     </Modal.Footer>
                 </Modal>
-                <Modal show={this.state.showAwait} className="modal-await">
+                <Modal className="modal-loading modal-loading--process" show={this.state.showAwait}>
+                    <Modal.Header>
+                        <div className="className='modal_confirm">
+                            <h2 className="modal-loading__title modal-loading__title--processing">Processing...</h2>
+                            <p className="modal-loading__subtitle">Approve  &lt;Token&gt;</p>
+                            <div className="modal-loading__progress-bar modal-loading__progress-bar--processing">
+                                <span></span>
+                            </div>
+                        </div>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
+                            <img src={closePic} />
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal show={false} className="modal-await">
                     {/* <Modal.Header>
                         <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
                             <img src={closePic} />
