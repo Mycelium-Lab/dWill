@@ -72,7 +72,7 @@ class Inheritances extends Component {
             }
             contract.on('AddAnHeir', async (ID, owner, heir, token, timeWhenWithdraw, amount) => {
                 let __inheritances = this.state.inheritances
-                if (heir === signerAddress) {
+                if (heir.toLowerCase() === signerAddress.toLowerCase()) {
                     const inheritance = await contract.inheritanceData(ID.toString())
                     const token = new ethers.Contract(inheritance.token, ERC20.abi, signer)
                     const symbol = await token.symbol()
@@ -101,20 +101,20 @@ class Inheritances extends Component {
             })
             contract.on('Withdraw', async (ID, owner, heir, timeWhenWithdraw) => {
                 let __inheritances = this.state.inheritances
-                if (heir === signerAddress) {
+                if (heir.toLowerCase() === signerAddress.toLowerCase()) {
                     __inheritances = __inheritances.filter(v => v.ID !== ID.toString())
                     this.setState({ inheritances: __inheritances })
                 }
             })
             contract.on('RemoveWill', async (ID, owner, heir) => {
                 let __inheritances = this.state.inheritances
-                if (heir === signerAddress) {
+                if (heir.toLowerCase() === signerAddress.toLowerCase()) {
                     __inheritances = __inheritances.filter(v => v.ID !== ID.toString())
                     this.setState({ inheritances: __inheritances })
                 }
             })
             contract.on('UpdateWillTimeWhenWithdraw', (ID, owner, heir, newTime) => {
-                if (heir === signerAddress) {
+                if (heir.toLowerCase() === signerAddress.toLowerCase()) {
                     let __inheritances = this.state.inheritances
                     for (let i = 0; i < __inheritances.length; i++) {
                         if (__inheritances[i].ID === ID.toString()) {
@@ -129,7 +129,7 @@ class Inheritances extends Component {
             contract.on('UpdateAnHeir', async (ID, owner, heir) => {
                 let __inheritances = this.state.inheritances
                 __inheritances = __inheritances.filter(v => v.ID !== ID.toString())
-                if (heir === signerAddress) {
+                if (heir.toLowerCase() === signerAddress.toLowerCase()) {
                     const inheritance = await contract.inheritanceData(ID.toString())
                     const token = new ethers.Contract(inheritance.token, ERC20.abi, signer)
                     const symbol = await token.symbol()
@@ -151,7 +151,7 @@ class Inheritances extends Component {
                 })
             })
             contract.on('UpdateAmount', (ID, owner, amount) => {
-                if (owner === signerAddress) {
+                if (owner.toLowerCase() === signerAddress.toLowerCase()) {
                     let __inheritances = this.state.inheritances
                     for (let i = 0; i < __inheritances.length; i++) {
                         if (__inheritances[i].ID === ID.toString()) {
@@ -165,7 +165,7 @@ class Inheritances extends Component {
             })
             contract.on('ResetTimers', (IDs, owner, newTimes) => {
                 let __inheritances = this.state.inheritances
-                if (__inheritances[0] !== undefined && __inheritances[0].owner === owner) {
+                if (__inheritances[0] !== undefined && __inheritances[0].owner.toLowerCase() === owner.toLowerCase()) {
                     for (let i = 0; i < IDs.length; i++) {
                         for (let j = 0; j < __inheritances.length; j++) {
                             if (IDs[i].toString() === __inheritances[j].ID) {

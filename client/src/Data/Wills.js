@@ -114,7 +114,7 @@ class Wills extends Component {
             }
             this.setState({ signer, signerAddress, network: networkName, contract, wills: _wills, networkPic })
             contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
-                if (owner === signerAddress) {
+                if (owner.toLowerCase() === signerAddress.toLowerCase()) {
                     let __wills = this.state.wills
                     const will = await contract.inheritanceData(ID.toString())
                     const token = new ethers.Contract(will.token, ERC20.abi, signer)
@@ -144,21 +144,21 @@ class Wills extends Component {
                 }
             })
             contract.on('Withdraw', async (ID,owner, heir,timeWhenWithdraw) => {
-                if (owner === signerAddress) {
+                if (owner.toLowerCase() === signerAddress.toLowerCase()) {
                     let __wills = this.state.wills
                     __wills = __wills.filter(v => v.ID !== ID.toString())
                     this.setState({ wills: __wills })
                 }
             })
             contract.on('RemoveWill', async (ID, owner, heir) => {
-                if (owner === signerAddress) {
+                if (owner.toLowerCase() === signerAddress.toLowerCase()) {
                     let __wills = this.state.wills
                     __wills = __wills.filter(v => v.ID !== ID.toString())
                     this.setState({ wills: __wills })
                 }
             })
             contract.on('UpdateWillTimeWhenWithdraw', (ID, owner, heir, newTime) => {
-                if (owner === signerAddress) {
+                if (owner.toLowerCase() === signerAddress.toLowerCase()) {
                     let __wills = this.state.wills
                     for (let i = 0; i < __wills.length; i++) {
                         if (__wills[i].ID === ID.toString()) {
@@ -171,7 +171,7 @@ class Wills extends Component {
                 }
             })
             contract.on('UpdateAnHeir', (ID, owner, heir) => {
-                if (owner === signerAddress) {
+                if (owner.toLowerCase() === signerAddress.toLowerCase()) {
                     let __wills = this.state.wills
                     for (let i = 0; i < __wills.length; i++) {
                         if (_wills[i].ID === ID.toString()) {
@@ -184,7 +184,7 @@ class Wills extends Component {
                 }
             })
             contract.on('UpdateAmount', (ID, owner, amount) => {
-                if (owner === signerAddress) {
+                if (owner.toLowerCase() === signerAddress.toLowerCase()) {
                     let __wills = this.state.wills
                     for (let i = 0; i < __wills.length; i++) {
                         if (_wills[i].ID === ID.toString()) {
@@ -197,7 +197,7 @@ class Wills extends Component {
                 }
             })
             contract.on('ResetTimers', (IDs, owner, newTimes) => {
-                if (owner === signerAddress) {
+                if (owner.toLowerCase() === signerAddress.toLowerCase()) {
                     let __wills = this.state.wills
                     for (let i = 0; i < IDs.length; i++) {
                         for (let j = 0; j < __wills.length; j++) {
