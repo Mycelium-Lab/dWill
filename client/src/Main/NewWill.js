@@ -52,6 +52,7 @@ class NewWill extends Component {
             month: 0,
             day: 0,
             heirAddress: '',
+            heirAddressShort: '',
             contract: null,
             showConfirm: false,
             showAwait: false,
@@ -59,7 +60,8 @@ class NewWill extends Component {
             isUnlimitedAmount: true,
             errortext: '',
             notificationsOn: false,
-            networkPic: EthereumPic
+            networkPic: EthereumPic,
+            googleCalendarDateText: ''
         };
     }
 
@@ -92,6 +94,7 @@ class NewWill extends Component {
                 networkName = `BNBTest Chain`
                 networkPic = BinancePic
             }
+            this.createTime()
             this.setState({ signer, signerAddress, network: networkName, contract, networkPic })
         } catch (error) {
             console.error(error)
@@ -127,15 +130,26 @@ class NewWill extends Component {
             })
     }
 
+    createTime() {
+        const { year, month, day } = this.state
+        let date = new Date()
+        date = new Date(date.setFullYear(date.getFullYear() + parseInt(year)))
+        date = new Date(date.setMonth(date.getMonth() + parseInt(month)))
+        date = date.addDays(parseInt(day))
+        let _gTime = date.toISOString().replaceAll('-', '').replaceAll(':', '')
+        _gTime = _gTime.slice(0, _gTime.indexOf('.'))
+        this.setState({
+            googleCalendarDateText: `${_gTime}Z`
+        })
+        return date
+    }
+
     async newWill() {
         try {
-            const { contract, heirAddress, amount, year, month, day, isUnlimitedAmount, tokensValue, signer } = this.state
+            const { contract, heirAddress, amount, isUnlimitedAmount, tokensValue, signer } = this.state
             const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
-            let date = new Date()
+            let date = this.createTime()
             let timeUnixWhenWithdraw = 0;
-            date = new Date(date.setFullYear(date.getFullYear() + parseInt(year)))
-            date = new Date(date.setMonth(date.getMonth() + parseInt(month)))
-            date = date.addDays(parseInt(day))
             timeUnixWhenWithdraw = Math.floor(date.getTime() / 1000)
             let sendTo = isUnlimitedAmount === true ? amount : BigInt(amount * Math.pow(10, await _token.decimals())).toString()
             await contract.addNewWill(heirAddress, tokensValue, timeUnixWhenWithdraw.toString(), sendTo)
@@ -279,28 +293,39 @@ class NewWill extends Component {
     onChangeYear(event) {
         this.setState({
             year: event.target.value
+        }, () => {
+            this.createTime()
         })
     }
 
     onChangeMonth(event) {
         this.setState({
             month: event.target.value
+        }, () => {
+            this.createTime()
         })
     }
 
     onChangeDay(event) {
         this.setState({
             day: event.target.value
+        }, () => {
+            this.createTime()
         })
     }
 
     onChangeHeirAddress(event) {
         this.setState({
             heirAddress: event.target.value
+        }, () => {
+            this.setState({
+                heirAddressShort: this.state.heirAddress.slice(0, 6) + '...' + this.state.heirAddress.slice(this.state.heirAddress.length - 4, this.state.heirAddress.length)
+            })
         })
     }
 
     changeNotifications() {
+        this.createTime()
         this.setState({
             notificationsOn: this.state.notificationsOn === true ? false : true
         })
@@ -464,7 +489,12 @@ class NewWill extends Component {
                                 <label htmlFor="wills-set3">Notifications</label><br />
                             </div>
                             <div style={this.state.notificationsOn === true ? { opacity: '1', transition: 'all 0.3s ease' } : { opacity: '0', transition: 'all 0.3s ease' }}>
+                                <div>
+                                    <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider+this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer">Set notifications in Google Calendar</a>
+                                </div>
+                                <div>
                                 <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
+                                </div>
                             </div>
                         </div>
                     </Modal.Body>
