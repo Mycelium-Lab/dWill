@@ -196,7 +196,7 @@ class App extends Component {
       const wills = await contract.getAllWills(signerAddress)
       const inheritances = await contract.getAllInheritances(signerAddress)
       contract.on('AddAnHeir', async (ID, owner, heir, token, timeWhenWithdraw, amount) => {
-        if (owner === signerAddress) {
+        if (owner.toLowerCase() === signerAddress.toLowerCase()) {
           this.setState({
             willsLength: this.state.willsLength + 1
           })
