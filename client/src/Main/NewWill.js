@@ -5,11 +5,12 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import TheWill from '../Contract/TheWill.json'
 import { ethers } from "ethers";
-import { chainIDs, TheWillAddress, TokenAddress, UnlimitedAmount } from '../Utils/Constants';
+import { chainIDs, UnlimitedAmount } from '../Utils/Constants';
 import closeModalPic from '../content/close_modal.svg'
 import buttonClosePic from '../content/button_close.svg'
 import PolygonPic from '../content/poligon.svg'
-import QuestionPic from '../content/question.svg'
+import EthereumPic from '../content/ethereum.svg'
+import BinancePic from '../content/binance.svg'
 import ConfiPic from '../content/confi.svg'
 import LoadingPic from '../content/loading.svg'
 import arrowDown from '../content/arrow-down.svg'
@@ -50,13 +51,16 @@ class NewWill extends Component {
             month: 0,
             day: 0,
             heirAddress: '',
+            heirAddressShort: '',
             contract: null,
             showConfirm: false,
             showAwait: false,
             showError: false,
             isUnlimitedAmount: true,
             errortext: '',
-            notificationsOn: false
+            notificationsOn: false,
+            networkPic: EthereumPic,
+            googleCalendarDateText: ''
         };
     }
 
@@ -66,22 +70,31 @@ class NewWill extends Component {
             const signerAddress = this.props.signerAddress
             const contract = new ethers.Contract(this.props.contractAddress, TheWill.abi, signer)
             let networkName
+            let networkPic
             if (this.props.network === chainIDs.BinanceMainnet) {
                 networkName = `BNB Chain`
-            } else if (this.props.network === chainIDs.Polygon) {
+                networkPic = BinancePic
+            } else if (this.props.network  === chainIDs.Polygon) {
                 networkName = `Polygon`
-            } else if (this.props.network === 31337) {
+                networkPic = PolygonPic
+            } else if (this.props.network  === 31337) {
                 networkName = `Hardhat`
-            } else if (this.props.network === chainIDs.Mumbai) {
+                networkPic = EthereumPic
+            } else if (this.props.network  === chainIDs.Mumbai) {
                 networkName = `Mumbai`
-            } else if (this.props.network === chainIDs.Goerli) {
+                networkPic = PolygonPic
+            } else if (this.props.network  === chainIDs.Goerli) {
                 networkName = `Goerli`
-            } else if (this.props.network === chainIDs.EthereumMainnet) {
+                networkPic = EthereumPic
+            } else if (this.props.network  === chainIDs.EthereumMainnet) {
                 networkName = `Ethereum`
-            } else if (this.props.network === chainIDs.BinanceTestnet) {
+                networkPic = EthereumPic
+            } else if (this.props.network  === chainIDs.BinanceTestnet) {
                 networkName = `BNBTest Chain`
+                networkPic = BinancePic
             }
-            this.setState({ signer, signerAddress, network: networkName, contract })
+            this.createTime()
+            this.setState({ signer, signerAddress, network: networkName, contract, networkPic })
         } catch (error) {
             console.error(error)
         }
@@ -116,15 +129,26 @@ class NewWill extends Component {
             })
     }
 
+    createTime() {
+        const { year, month, day } = this.state
+        let date = new Date()
+        date = new Date(date.setFullYear(date.getFullYear() + parseInt(year)))
+        date = new Date(date.setMonth(date.getMonth() + parseInt(month)))
+        date = date.addDays(parseInt(day))
+        let _gTime = date.toISOString().replaceAll('-', '').replaceAll(':', '')
+        _gTime = _gTime.slice(0, _gTime.indexOf('.'))
+        this.setState({
+            googleCalendarDateText: `${_gTime}Z`
+        })
+        return date
+    }
+
     async newWill() {
         try {
-            const { contract, heirAddress, amount, year, month, day, isUnlimitedAmount, tokensValue, signer } = this.state
+            const { contract, heirAddress, amount, isUnlimitedAmount, tokensValue, signer } = this.state
             const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
-            let date = new Date()
+            let date = this.createTime()
             let timeUnixWhenWithdraw = 0;
-            date = new Date(date.setFullYear(date.getFullYear() + parseInt(year)))
-            date = new Date(date.setMonth(date.getMonth() + parseInt(month)))
-            date = date.addDays(parseInt(day))
             timeUnixWhenWithdraw = Math.floor(date.getTime() / 1000)
             let sendTo = isUnlimitedAmount === true ? amount : BigInt(amount * Math.pow(10, await _token.decimals())).toString()
             await contract.addNewWill(heirAddress, tokensValue, timeUnixWhenWithdraw.toString(), sendTo)
@@ -268,28 +292,39 @@ class NewWill extends Component {
     onChangeYear(event) {
         this.setState({
             year: event.target.value
+        }, () => {
+            this.createTime()
         })
     }
 
     onChangeMonth(event) {
         this.setState({
             month: event.target.value
+        }, () => {
+            this.createTime()
         })
     }
 
     onChangeDay(event) {
         this.setState({
             day: event.target.value
+        }, () => {
+            this.createTime()
         })
     }
 
     onChangeHeirAddress(event) {
         this.setState({
             heirAddress: event.target.value
+        }, () => {
+            this.setState({
+                heirAddressShort: this.state.heirAddress.slice(0, 6) + '...' + this.state.heirAddress.slice(this.state.heirAddress.length - 4, this.state.heirAddress.length)
+            })
         })
     }
 
     changeNotifications() {
+        this.createTime()
         this.setState({
             notificationsOn: this.state.notificationsOn === true ? false : true
         })
@@ -360,7 +395,7 @@ class NewWill extends Component {
                 }}>
                     <Modal.Header className='modal_new_will'>
                         <Button className='bnt_close' onClick={this.handleCloseWalletNotExist}>
-                            <img src={closeModalPic} />
+                            <img src={closeModalPic} alt="close"/>
                         </Button>
                         <Modal.Title className='modal_title'>Wallet Not Exist</Modal.Title>
                     </Modal.Header>
@@ -373,14 +408,14 @@ class NewWill extends Component {
                         <p className='title_trusted-wallet'>What is a wallet?</p>
                         <p className='title_trusted-wallet'>Wallets are used to send, receive, and store digital
                             assets. Connecting a wallet lets you interact with apps.
-                            <a href="https://metamask.io/" target="_blank">Install the wallet.</a>
+                            <a href="https://metamask.io/" target="_blank" rel="noreferrer">Install the wallet.</a>
                         </p>
                     </Modal.Body>
                 </Modal>
                 <Modal show={this.state.show} onHide={this.handleClose} className='will-block' style={styles.modal_new_will}>
                     <Modal.Header className='modal_new_will'>
                         <Button className='bnt_close' onClick={this.handleClose}>
-                            <img src={buttonClosePic} />
+                            <img src={buttonClosePic} alt="close"/>
                         </Button>
                         <Modal.Title className='modal_title'>New Will</Modal.Title>
                         <hr />
@@ -398,7 +433,7 @@ class NewWill extends Component {
                                         <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
                                     </select>
                                     <div className="form-select__arrow">
-                                        <img src={arrowDown} />
+                                        <img src={arrowDown} alt="arrow"/>
                                     </div>
                                 </div>
                                 <div className="your-wills__checkbox">
@@ -413,7 +448,8 @@ class NewWill extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className='modal-body__row modal-body__row-direction'>С кошелька <a href='#' className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a> на сети {this.state.network} <img src={PolygonPic} /></div>
+                        <div className='modal-body__row modal-body__row-direction'>С кошелька <a href={`${this.props.networkProvider}${this.state.signerAddress}`} className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a> на сети {this.state.network} 
+                        <img src={this.state.networkPic} alt="networkpic"/></div>
                         <div className="your-wills__wallet modal-body__row">
                             Доверенному кошельку
                             <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" required="required" />
@@ -450,8 +486,13 @@ class NewWill extends Component {
                                 <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
                                 <label htmlFor="wills-set3">Notifications</label><br />
                             </div>
-                            <div style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
+                            <div style={this.state.notificationsOn === true ? { opacity: '1', transition: 'all 0.3s ease' } : { opacity: '0', transition: 'all 0.3s ease' }}>
+                                <div>
+                                    <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider+this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer">Set notifications in Google Calendar</a>
+                                </div>
+                                <div>
                                 <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
+                                </div>
                             </div>
                         </div>
                     </Modal.Body>
@@ -541,7 +582,7 @@ class NewWill extends Component {
                     </Modal.Header>
                     <Modal.Footer>
                         <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
-                            <img src={closePic} />
+                            <img src={closePic} alt="close"/>
                         </Button>
                     </Modal.Footer>
                 </Modal>

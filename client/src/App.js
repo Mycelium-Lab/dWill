@@ -8,7 +8,7 @@ import './App.css';
 
 import Connect from './Utils/Connect';
 import TheWill from './Contract/TheWill.json'
-import { chainIDs, chainRPCURL, TheWillAddresses, TokenAddresses } from './Utils/Constants';
+import { chainIDs, chainRPCURL, NetworkProviders, TheWillAddresses, TokenAddresses } from './Utils/Constants';
 import Data from './Data/Data';
 import Main from './Main/Main';
 
@@ -24,6 +24,7 @@ class App extends Component {
     contractAddress: '',
     tokenAddress: '',
     network: null,
+    networkProvider: '',
     total: '',
     showConfirm: false,
     showAwait: false,
@@ -118,14 +119,14 @@ class App extends Component {
       axios.get('https://docs.google.com/spreadsheets/d/1Aiw5wJGoqmTFcMB595Sv4TX6pDjd0lytaProjyQO7ac/gviz/tq?tqx=out:csv&tq=SELECT *')
         .then(response => {
           this.setState({
-            total: response.data
+            total: this.numberWithSpaces(response.data)
           })
         })
       setInterval(() => {
         axios.get('https://docs.google.com/spreadsheets/d/1Aiw5wJGoqmTFcMB595Sv4TX6pDjd0lytaProjyQO7ac/gviz/tq?tqx=out:csv&tq=SELECT *')
         .then(response => {
           this.setState({
-            total: response.data
+            total: this.numberWithSpaces(response.data)
           })
         })
       }, 5000)
@@ -141,26 +142,37 @@ class App extends Component {
     } 
   };
 
+  numberWithSpaces(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  }
+
   async setProperties(provider, signer, signerAddress) {
     try {
       const network = (await provider.getNetwork()).chainId
       let contractAddress;
       let tokenAddress;
+      let networkProvider;
       if (network === chainIDs.Mumbai) {
         contractAddress = TheWillAddresses.Mumbai
         tokenAddress = TokenAddresses.Mumbai
+        networkProvider = NetworkProviders.Mumbai
       } else if (network === chainIDs.Goerli) {
         contractAddress = TheWillAddresses.Goerli
         tokenAddress = TokenAddresses.Goerli
+        networkProvider = NetworkProviders.Goerli
       } else if (network === chainIDs.Polygon) {
         contractAddress = TheWillAddresses.Polygon
+        networkProvider = NetworkProviders.Polygon
       } else if (network === chainIDs.BinanceTestnet) {
         contractAddress = TheWillAddresses.BinanceTestnet
         tokenAddress = TokenAddresses.BinanceTestnet
+        networkProvider = NetworkProviders.BinanceTestnet
       } else if (network === chainIDs.BinanceMainnet) {
         contractAddress = TheWillAddresses.BinanceMainnet
+        networkProvider = NetworkProviders.BinanceMainnet
       } else if (network === chainIDs.EthereumMainnet) {
         contractAddress = TheWillAddresses.EthereumMainnet
+        networkProvider = NetworkProviders.EthereumMainnet
       }
       this.setState({
         provider,
@@ -168,7 +180,8 @@ class App extends Component {
         signerAddress,
         network,
         contractAddress,
-        tokenAddress
+        tokenAddress,
+        networkProvider
       })
     } catch (error) {
       console.error(error)
@@ -183,7 +196,7 @@ class App extends Component {
       const wills = await contract.getAllWills(signerAddress)
       const inheritances = await contract.getAllInheritances(signerAddress)
       contract.on('AddAnHeir', async (ID, owner, heir, token, timeWhenWithdraw, amount) => {
-        if (owner === signerAddress) {
+        if (owner.toLowerCase() === signerAddress.toLowerCase()) {
           this.setState({
             willsLength: this.state.willsLength + 1
           })
@@ -192,7 +205,7 @@ class App extends Component {
           axios.get('https://docs.google.com/spreadsheets/d/1Aiw5wJGoqmTFcMB595Sv4TX6pDjd0lytaProjyQO7ac/gviz/tq?tqx=out:csv&tq=SELECT *')
           .then(response => {
             this.setState({
-              total: response.data
+              total: this.numberWithSpaces(response.data)
             })
           })
         }, 5000)
@@ -242,6 +255,7 @@ class App extends Component {
                   setProperties={this.setProperties}
                   tokenAddress={this.state.tokenAddress}
                   contractAddress={this.state.contractAddress}
+                  networkProvider={this.state.networkProvider}
                   />
                   :
                   <Data 
@@ -251,6 +265,7 @@ class App extends Component {
                   network={this.state.network}
                   tokenAddress={this.state.tokenAddress}
                   contractAddress={this.state.contractAddress}
+                  networkProvider={this.state.networkProvider}
                   />
               }
             </main>
