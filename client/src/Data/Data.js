@@ -25,6 +25,7 @@ class Data extends Component {
                             network={this.props.network} 
                             signer={this.props.signer} 
                             signerAddress={this.props.signerAddress}
+                            networkProvider={this.props.networkProvider}
                         />
                     </div>
                     <div>
@@ -33,6 +34,7 @@ class Data extends Component {
                             network={this.props.network} 
                             signer={this.props.signer} 
                             signerAddress={this.props.signerAddress}
+                            networkProvider={this.props.networkProvider}
                         />
                     </div>
                     <div className='btn_data-js'>
@@ -43,6 +45,7 @@ class Data extends Component {
                             network={this.props.network} 
                             signer={this.props.signer} 
                             signerAddress={this.props.signerAddress}
+                            networkProvider={this.props.networkProvider}
                         />
                     </div>
                 </div>

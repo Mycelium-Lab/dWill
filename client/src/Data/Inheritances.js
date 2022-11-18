@@ -7,7 +7,7 @@ import closePic from '../content/button_close.svg'
 import { ethers } from "ethers";
 
 import ERC20 from '../Contract/ERC20.json'
-import { TheWillAddress, UnlimitedAmount } from '../Utils/Constants';
+import { chainIDs, TheWillAddress, UnlimitedAmount } from '../Utils/Constants';
 
 class Inheritances extends Component {
     constructor(props) {
@@ -55,14 +55,20 @@ class Inheritances extends Component {
                 }
             }
             let networkName
-            if (this.props.network === 56) {
+            if (this.props.network === chainIDs.BinanceMainnet) {
                 networkName = `BNB Chain`
-            } else if (this.props.network  === 137) {
+            } else if (this.props.network  === chainIDs.Polygon) {
                 networkName = `Polygon`
             } else if (this.props.network  === 31337) {
                 networkName = `Hardhat`
-            } else if (this.props.network  === 80001) {
+            } else if (this.props.network  === chainIDs.Mumbai) {
                 networkName = `Mumbai`
+            } else if (this.props.network  === chainIDs.Goerli) {
+                networkName = `Goerli`
+            } else if (this.props.network  === chainIDs.EthereumMainnet) {
+                networkName = `Ethereum`
+            } else if (this.props.network  === chainIDs.BinanceTestnet) {
+                networkName = `BNBTest Chain`
             }
             contract.on('AddAnHeir', async (ID, owner, heir, token, timeWhenWithdraw, amount) => {
                 let __inheritances = this.state.inheritances
@@ -264,7 +270,7 @@ class Inheritances extends Component {
                                                                 `After ${this.remainingTime(v.timeWhenWithdraw)} you `
                                                         }
                                                         can harvest up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited' : (v.amount / Math.pow(10, v.decimals)).toString()} {v.symbol} from wallet</span>
-                                                    <a href={`https://mumbai.polygonscan.com/address/${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`} </a>
+                                                    <a href={`${this.props.networkProvider}${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`} </a>
                                                     on {this.state.network} chain</div>
                                                 <div><button value={v.ID.toString()} onClick={this.claim}
                                                     style={{

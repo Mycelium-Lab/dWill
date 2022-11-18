@@ -15,6 +15,9 @@ import revokePic from '../content/revoke.svg'
 import closePic from '../content/button_close.svg'
 import arrowDown from '../content/arrow-down.svg'
 import closeModalPic from '../content/close_modal.svg'
+import PolygonPic from '../content/poligon.svg'
+import EthereumPic from '../content/ethereum.svg'
+import BinancePic from '../content/binance.svg'
 
 class Wills extends Component {
     constructor(props) {
@@ -56,7 +59,8 @@ class Wills extends Component {
             wills: [],
             showError: false,
             errortext: '',
-            notificationsOn: false
+            notificationsOn: false,
+            networkPic: EthereumPic
         };
     }
 
@@ -85,22 +89,30 @@ class Wills extends Component {
                 }
             }
             let networkName
+            let networkPic
             if (this.props.network === chainIDs.BinanceMainnet) {
                 networkName = `BNB Chain`
+                networkPic = BinancePic
             } else if (this.props.network  === chainIDs.Polygon) {
                 networkName = `Polygon`
+                networkPic = PolygonPic
             } else if (this.props.network  === 31337) {
                 networkName = `Hardhat`
+                networkPic = EthereumPic
             } else if (this.props.network  === chainIDs.Mumbai) {
                 networkName = `Mumbai`
+                networkPic = PolygonPic
             } else if (this.props.network  === chainIDs.Goerli) {
                 networkName = `Goerli`
+                networkPic = EthereumPic
             } else if (this.props.network  === chainIDs.EthereumMainnet) {
                 networkName = `Ethereum`
+                networkPic = EthereumPic
             } else if (this.props.network  === chainIDs.BinanceTestnet) {
                 networkName = `BNBTest Chain`
+                networkPic = BinancePic
             }
-            this.setState({ signer, signerAddress, network: networkName, contract, wills: _wills })
+            this.setState({ signer, signerAddress, network: networkName, contract, wills: _wills, networkPic })
             contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
                 if (owner === signerAddress) {
                     let __wills = this.state.wills
@@ -721,7 +733,7 @@ class Wills extends Component {
                                                         <span>
                                                             You bequeathed up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited' : (v.amount / Math.pow(10, v.decimals)).toString()} of your {v.symbol} from {this.state.network} chain to wallet
                                                         </span>
-                                                        <a href={`https://mumbai.polygonscan.com/address/${v.heir}`} target="_blank" rel="noreferrer">
+                                                        <a href={`${this.props.networkProvider}${v.heir}`} target="_blank" rel="noreferrer">
                                                             {` ${v.heir}`}
                                                         </a>
                                                         <span>
@@ -738,7 +750,7 @@ class Wills extends Component {
                                                     <div className="your-wills__btns">
                                                         <button className="btn_btns btn-default"
                                                             onClick={
-                                                                this.state.showEdit == false
+                                                                this.state.showEdit === false
                                                                     ?
                                                                     () => this.handleShowEdit(
                                                                         JSON.stringify({
@@ -799,7 +811,7 @@ class Wills extends Component {
                         </div>
                         <div className="modal-body__row">С кошелька <a href='#'>{
                             this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)
-                        }</a> на сети {this.state.network}</div>
+                        }</a> на сети {this.state.network} <img src={this.state.networkPic} alt="networkpic"/></div>
                         <div className="your-wills__wallet modal-body__row">
                             Доверенному кошельку
                             <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" />

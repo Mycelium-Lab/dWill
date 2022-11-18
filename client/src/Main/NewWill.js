@@ -6,11 +6,12 @@ import Modal from 'react-bootstrap/Modal';
 import TheWill from '../Contract/TheWill.json'
 
 import { ethers } from "ethers";
-import { chainIDs, TheWillAddress, TokenAddress, UnlimitedAmount } from '../Utils/Constants';
+import { chainIDs, UnlimitedAmount } from '../Utils/Constants';
 import closeModalPic from '../content/close_modal.svg'
 import buttonClosePic from '../content/button_close.svg'
 import PolygonPic from '../content/poligon.svg'
-import QuestionPic from '../content/question.svg'
+import EthereumPic from '../content/ethereum.svg'
+import BinancePic from '../content/binance.svg'
 import ConfiPic from '../content/confi.svg'
 import LoadingPic from '../content/loading.svg'
 import arrowDown from '../content/arrow-down.svg'
@@ -57,7 +58,8 @@ class NewWill extends Component {
             showError: false,
             isUnlimitedAmount: true,
             errortext: '',
-            notificationsOn: false
+            notificationsOn: false,
+            networkPic: EthereumPic
         };
     }
 
@@ -67,22 +69,30 @@ class NewWill extends Component {
             const signerAddress = this.props.signerAddress
             const contract = new ethers.Contract(this.props.contractAddress, TheWill.abi, signer)
             let networkName
+            let networkPic
             if (this.props.network === chainIDs.BinanceMainnet) {
                 networkName = `BNB Chain`
+                networkPic = BinancePic
             } else if (this.props.network  === chainIDs.Polygon) {
                 networkName = `Polygon`
+                networkPic = PolygonPic
             } else if (this.props.network  === 31337) {
                 networkName = `Hardhat`
+                networkPic = EthereumPic
             } else if (this.props.network  === chainIDs.Mumbai) {
                 networkName = `Mumbai`
+                networkPic = PolygonPic
             } else if (this.props.network  === chainIDs.Goerli) {
                 networkName = `Goerli`
+                networkPic = EthereumPic
             } else if (this.props.network  === chainIDs.EthereumMainnet) {
                 networkName = `Ethereum`
+                networkPic = EthereumPic
             } else if (this.props.network  === chainIDs.BinanceTestnet) {
                 networkName = `BNBTest Chain`
+                networkPic = BinancePic
             }
-            this.setState({ signer, signerAddress, network: networkName, contract })
+            this.setState({ signer, signerAddress, network: networkName, contract, networkPic })
         } catch (error) {
             console.error(error)
         }
@@ -361,7 +371,7 @@ class NewWill extends Component {
                 }}>
                     <Modal.Header className='modal_new_will'>
                         <Button className='bnt_close' onClick={this.handleCloseWalletNotExist}>
-                            <img src={closeModalPic} />
+                            <img src={closeModalPic} alt="close"/>
                         </Button>
                         <Modal.Title className='modal_title'>Wallet Not Exist</Modal.Title>
                     </Modal.Header>
@@ -374,7 +384,7 @@ class NewWill extends Component {
                         <p className='title_trusted-wallet'>What is a wallet?</p>
                         <p className='title_trusted-wallet'>Wallets are used to send, receive, and store digital
                             assets. Connecting a wallet lets you interact with apps.
-                            <a href="https://metamask.io/" target="_blank">Install the wallet.</a>
+                            <a href="https://metamask.io/" target="_blank" rel="noreferrer">Install the wallet.</a>
                         </p>
                     </Modal.Body>
                 </Modal>
@@ -382,7 +392,7 @@ class NewWill extends Component {
 
                     <Modal.Header className='modal_new_will'>
                         <Button className='bnt_close' onClick={this.handleClose}>
-                            <img src={buttonClosePic} />
+                            <img src={buttonClosePic} alt="close"/>
                         </Button>
                         <Modal.Title className='modal_title'>New Will</Modal.Title>
                         <hr />
@@ -400,7 +410,7 @@ class NewWill extends Component {
                                         <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
                                     </select>
                                     <div className="form-select__arrow">
-                                        <img src={arrowDown} />
+                                        <img src={arrowDown} alt="arrow"/>
                                     </div>
                                 </div>
                                 <div className="your-wills__checkbox">
@@ -415,7 +425,8 @@ class NewWill extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className='modal-body__row modal-body__row-direction'>С кошелька <a href='#' className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a> на сети {this.state.network} <img src={PolygonPic} /></div>
+                        <div className='modal-body__row modal-body__row-direction'>С кошелька <a href={`${this.props.networkProvider}${this.state.signerAddress}`} className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a> на сети {this.state.network} 
+                        <img src={this.state.networkPic} alt="networkpic"/></div>
                         <div className="your-wills__wallet modal-body__row">
                             Доверенному кошельку
                             <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" required="required" />
@@ -485,21 +496,21 @@ class NewWill extends Component {
                     <Modal.Header>
                         <h2 className='modal-confirm_h2'>Pending  transaction</h2>
                     </Modal.Header>
-                    <img className="spinner" src={LoadingPic} />
+                    <img className="spinner" src={LoadingPic} alt="loading"/>
                     <Modal.Footer>
                         <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
                         <button className="btn-close-modal btn btn-primary">
-                            <img src={closeModalPic}></img>
+                            <img src={closeModalPic} alt="close"></img>
                         </button>
                     </Modal.Footer>
                 </Modal>
                 <Modal show={this.state.showAwait} className="modal-await">
                     <Modal.Header>
                         <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
-    <img src={closePic}/>
+    <img src={closePic} alt="close"/>
     </Button>  
                     </Modal.Header>
-                    <img src={ConfiPic} />
+                    <img src={ConfiPic} alt="confi"/>
                     <Modal.Footer>
                         {/* <button className="btn-close-modal btn btn-primary">
                             <img src={closeModalPic}></img>
@@ -533,7 +544,7 @@ class NewWill extends Component {
                     </Modal.Header>
                     <Modal.Footer>
                         <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
-                            <img src={closePic} />
+                            <img src={closePic} alt="close"/>
                         </Button>
                     </Modal.Footer>
                 </Modal>

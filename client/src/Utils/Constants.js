@@ -33,3 +33,11 @@ export const chainRPCURL = {
     EthereumMainnet: 'https://mainnet.infura.io/v3/',
     Goerli: 'https://goerli.infura.io/v3/'
 }
+export const NetworkProviders = {
+    Polygon: 'https://explorer.matic.network/address/',
+    Mumbai: 'https://mumbai.polygonscan.com/address/',
+    BinanceTestnet: 'https://testnet.bscscan.com/address/',
+    BinanceMainnet: 'https://bscscan.com/address/',
+    EthereumMainnet: 'https://etherscan.io/address/',
+    Goerli: 'https://goerli.etherscan.io/address/'
+}

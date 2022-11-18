@@ -102,7 +102,7 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
                 await bot.sendMessage(user.tgID, `
 🟢 <b>Wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> bequeathed you ${_tokenSymbol} tokens</b>
                 
-<b>▪️Parameters of the dWill:</b>
+<b>▪️ Parameters of the dWill:</b>
 <b>id</b>: ${ID.toString()}
 <b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a>
 <b>Token</b> - ${_tokenSymbol}
@@ -125,7 +125,7 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
                     <p>🟢 
                         <b>Wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> bequeathed you ${_tokenSymbol} tokens</b>
                         </p>
-                    <div><b>▪️Parameters of the dWill:</b></div>
+                    <div><b>▪️ Parameters of the dWill:</b></div>
                     <div><b>id</b>: ${ID.toString()}</div>
                     <div><b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a></div>
                     <div><b>Token</b> - ${_tokenSymbol}</div>
@@ -152,7 +152,7 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
                 await bot.sendMessage(_owner.tgID, `
 🔵 <b>You have created new dWill from wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a></b>
 
-<b>▪️Parameters of the dWill:</b>
+<b>▪️ Parameters of the dWill:</b>
 <b>id</b>: ${ID.toString()}
 <b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a>
 <b>Token</b> - ${_tokenSymbol}
@@ -175,7 +175,7 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
                         <br/>
                         <p>🔵 <b>You have created new dWill from wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a></b>
                         </p>
-                        <div><b>▪️Parameters of the dWill:</b></div>
+                        <div><b>▪️ Parameters of the dWill:</b></div>
                         <div><b>id</b>: ${ID.toString()}</div>
                         <div><b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a></div>
                         <div><b>Token</b> - ${_tokenSymbol}</div>
@@ -375,12 +375,12 @@ cron.schedule("18 18 18 * * *", async () => {
                                 const __heir = await User.findOne({address: wills[j].heir})
                                 if (__heir !== null) {
                                     await bot.sendMessage(__heir.tgID, `
-ℹ️ dWill notification:
+<b>ℹ️ dWill notification:</b>
 
 The time to unlock the dWill (id: ${wills[j].ID.toString()}) has expired
 You can withdraw your tokens on our site <a href='https://dwill.app/'>dWill.app</a>.
 
-<b>▪️Parameters of the dWill:</b>
+<b>▪️ Parameters of the dWill:</b>
 <b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a>
 <b>Token</b> - ${_tokenSymbol}
 <b>Limit on the amount</b> - ${heritageAmountInNormalView}
@@ -397,12 +397,12 @@ You can withdraw your tokens on our site <a href='https://dwill.app/'>dWill.app<
                                                 <a href="http://dwill.app">dwill.app</a> project
                                             </p>
                                             <br/>
-                                            <p>ℹ️ dWill notification:</p>
+                                            <p><b>ℹ️ dWill notification:</b></p>
                                             
                                             <div>The time to unlock the dWill (id: ${wills[j].ID.toString()}) has expired</div>
                                             <div>You can withdraw your tokens on our site <a href='https://dwill.app/'>dWill.app</a>.</div>
                                             
-                                            <div><b>▪️Parameters of the dWill:</b></div>
+                                            <div><b>▪️ Parameters of the dWill:</b></div>
                                             <div><b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a></div>
                                             <div><b>Token</b> - ${_tokenSymbol}</div>
                                             <div><b>Limit on the amount</b> - ${heritageAmountInNormalView}</div>
@@ -459,11 +459,11 @@ The time to unlock the dWill (id: ${wills[j].ID.toString()}) has expired.`, {par
                             }
                         } else {
                             await bot.sendMessage(users[i].tgID, `
-ℹ️ dWill notification:
+<b>ℹ️ dWill notification:</b>
 
 Time to unlock the dWill - ${remaining}
 
-<b>▪️Parameters of the dWill:</b>
+<b>▪️ Parameters of the dWill:</b>
 <b>id</b>: ${wills[j].ID.toString()}
 <b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a>
 <b>Token</b> - ${_tokenSymbol}
@@ -482,11 +482,11 @@ Time to unlock the dWill - ${remaining}
                                         <a href="http://dwill.app">dwill.app</a> project
                                     </p>
                                     <br/>
-                                    <p>ℹ️ dWill notification:</p>
+                                    <p><b>ℹ️ dWill notification:</b></p>
                                     
                                     <p>Time to unlock the dWill - ${remaining}</p>
                                     
-                                    <div><b>▪️Parameters of the dWill:</b></div>
+                                    <div><b>▪️ Parameters of the dWill:</b></div>
                                     <div><b>id</b>: ${wills[j].ID.toString()}</div>
                                     <div><b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a></div>
                                     <div><b>Token</b> - ${_tokenSymbol}</div>
