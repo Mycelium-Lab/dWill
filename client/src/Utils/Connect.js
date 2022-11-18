@@ -268,7 +268,7 @@ class Connect extends Component {
                         )
                     }
                     </div>
-                    <div>
+                    <div className="btn-header-connect__footer">
                         {
                             this.renderNetwork(this.props.network)
                         }
@@ -277,14 +277,14 @@ class Connect extends Component {
                             ?
                             null
                             :
-                            <button onClick={this.state.showNetworks === false ? this.showNetworksModal : this.closeNetworksModal }>
+                            <button className="btn-change-token" onClick={this.state.showNetworks === false ? this.showNetworksModal : this.closeNetworksModal }>
                                 (change)
                             </button>
                         }
                     </div>
-                    <Modal show={this.state.showNetworks}>
+                    <Modal className="modal-choose" show={this.state.showNetworks}>
                         <Modal.Header>
-                            <h1>Choose network</h1>
+                            <h1 className="modal-choose__title">Choose network</h1>
                         </Modal.Header>
                         <Modal.Footer>
                             <img src={PolygonPic} alt="Polygon" onClick={() => this.changeNetwork(chainIDs.Mumbai)}/>

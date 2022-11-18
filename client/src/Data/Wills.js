@@ -525,11 +525,11 @@ class Wills extends Component {
 
     async onChangeAmount(event) {
         try {
-            const { 
-                contractAddress, 
-                signer, 
-                signerAddress, 
-                currentEditBaseAmount, 
+            const {
+                contractAddress,
+                signer,
+                signerAddress,
+                currentEditBaseAmount,
                 currentEditToken,
                 currentEditDecimals,
                 contract
@@ -716,12 +716,12 @@ class Wills extends Component {
         return (
             // <div id='wills'>
             <div className='wills_list-my-wills wills-description-block'>
-            {
-                this.state.wills.length > 0 
-                ?
-                <div id='wills-list_ul-btn'>
-                    {
-                        this.state.wills.map((v) => {
+                {
+                    this.state.wills.length > 0
+                        ?
+                        <div id='wills-list_ul-btn'>
+                            {
+                                this.state.wills.map((v) => {
                                     return (
                                         <div key={v.ID} className="your-wills">
                                             <div className='your-wills_text'>
@@ -780,10 +780,10 @@ class Wills extends Component {
                                         </div>
                                     )
                                 })
-                    }
-                </div>
-                :
-                <h4>У вас еще нет активных завещаний.</h4>
+                            }
+                        </div>
+                        :
+                        <h4>У вас еще нет активных завещаний.</h4>
                 }
                 <Modal className="will-block" show={this.state.showEdit} onHide={this.handleCloseEdit} style={{ height: "" }}>
                     <Modal.Header>
@@ -797,16 +797,19 @@ class Wills extends Component {
                                     Я завещаю мои
                                 </div>
                                 <div className="your-wills__current-token">{this.state.currentEditSymbol}</div>
-                                <div className="your-wills__checkbox">
-                                    <input id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
-                                    <label htmlFor="unlimited">Unlimited</label><br />
+                                <div class="your-wills__check-token">
+                                    <div className="your-wills__checkbox">
+                                        <input id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
+                                        <label htmlFor="unlimited">Unlimited</label><br />
+                                    </div>
+                                    <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
+                                        <input onChange={this.onChangeAmount} value={this.state.currentEditAmount} type="number" className="input-group mb-3" />
+                                        <Button variant="outline-success" onClick={this.onSetMaxAmount}>
+                                            All
+                                        </Button>
+                                    </div>
                                 </div>
-                                <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
-                                    <input onChange={this.onChangeAmount} value={this.state.currentEditAmount} type="number" className="input-group mb-3" />
-                                    <Button variant="outline-success" onClick={this.onSetMaxAmount}>
-                                        All
-                                    </Button>
-                                </div>
+
                             </div>
                         </div>
                         <div className="modal-body__row">С кошелька <a href='#'>{
@@ -850,7 +853,7 @@ class Wills extends Component {
                                 <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
                                 <label htmlFor="wills-set3">Notifications</label><br />
                             </div>
-                            <div style={this.state.notificationsOn === true ? { opacity: '1', transition: 'all 0.3s ease' } : { opacity: '0', transition: 'all 0.3s ease' }}>
+                            <div style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
                                 <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
                             </div>
                         </div>
@@ -883,12 +886,22 @@ class Wills extends Component {
                     <Modal.Header>
                         <h2 className='modal-confirm_h2'>Pending  transaction</h2>
                     </Modal.Header>
-                    <img className="spinner" src={LoadingPic} />
+                    {/* <img className="spinner" src={LoadingPic} /> */}
+                    <div class="circle-loader">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
                     <Modal.Footer>
                         <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
-                        <button className="btn-close-modal btn btn-primary">
+                        {/* <button className="btn-close-modal btn btn-primary">
                             <img src={closeModalPic}></img>
-                        </button>
+                        </button> */}
                     </Modal.Footer>
                 </Modal>
                 <Modal className="modal-loading modal-loading--process" show={this.state.showAwait}>
@@ -936,7 +949,7 @@ class Wills extends Component {
                         </Button>
                     </Modal.Footer>
                 </Modal>
-        </div>
+            </div>
         )
     }
 }

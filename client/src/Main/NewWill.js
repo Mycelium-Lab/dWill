@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import TheWill from '../Contract/TheWill.json'
-
 import { ethers } from "ethers";
 import { chainIDs, UnlimitedAmount } from '../Utils/Constants';
 import closeModalPic from '../content/close_modal.svg'
@@ -16,8 +15,8 @@ import ConfiPic from '../content/confi.svg'
 import LoadingPic from '../content/loading.svg'
 import arrowDown from '../content/arrow-down.svg'
 import closePic from '../content/button_close.svg'
-
 import ERC20 from '../Contract/ERC20.json'
+
 const styles = {
     modal_new_will: {
         // maxWidth: '700px',
@@ -197,7 +196,7 @@ class NewWill extends Component {
         } catch (error) {
             if (error.message.includes('resolver or addr is not configured')) {
                 this.setState({
-                    errortext: 'Выберите токен'
+                    errortext: 'Выберите токен1'
                 })
                 this.handleShowError()
             }
@@ -414,7 +413,6 @@ class NewWill extends Component {
                     </Modal.Body>
                 </Modal>
                 <Modal show={this.state.show} onHide={this.handleClose} className='will-block' style={styles.modal_new_will}>
-
                     <Modal.Header className='modal_new_will'>
                         <Button className='bnt_close' onClick={this.handleClose}>
                             <img src={buttonClosePic} alt="close"/>
@@ -443,7 +441,7 @@ class NewWill extends Component {
                                     <label htmlFor="unlimited">Unlimited</label><br />
                                 </div>
                                 <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
-                                    <input onChange={this.onChangeAmount} value={this.state.currentEditAmount} type="number" className="input-group mb-3" />
+                                    <input placeholder="Введите сумму" onChange={this.onChangeAmount} value={this.state.currentEditAmount} type="number" className="input-group mb-3" />
                                     <Button variant="outline-success" onClick={this.onSetMaxAmount}>
                                         All
                                     </Button>
@@ -526,21 +524,31 @@ class NewWill extends Component {
                     <Modal.Header>
                         <h2 className='modal-confirm_h2'>Pending  transaction</h2>
                     </Modal.Header>
-                    <img className="spinner" src={LoadingPic} alt="loading"/>
+                    {/* <img className="spinner" src={LoadingPic} /> */}
+                    <div class="circle-loader">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
                     <Modal.Footer>
                         <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
-                        <button className="btn-close-modal btn btn-primary">
-                            <img src={closeModalPic} alt="close"></img>
-                        </button>
+                        {/* <button className="btn-close-modal btn btn-primary">
+                            <img src={closeModalPic}></img>
+                        </button> */}
                     </Modal.Footer>
                 </Modal>
                 <Modal show={this.state.showAwait} className="modal-await">
-                    <Modal.Header>
+                    {/* <Modal.Header>
                         <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
-    <img src={closePic} alt="close"/>
-    </Button>  
-                    </Modal.Header>
-                    <img src={ConfiPic} alt="confi"/>
+                            <img src={closePic} />
+                        </Button>
+                    </Modal.Header> */}
+                    <img src={ConfiPic} />
                     <Modal.Footer>
                         {/* <button className="btn-close-modal btn btn-primary">
                             <img src={closeModalPic}></img>
