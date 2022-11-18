@@ -32,6 +32,7 @@ class Wills extends Component {
             showEdit: false,
             showEditTimeWhenWithdraw: false,
             showEditHeir: false,
+            showEventConfirmed: false,
             currentEditID: '',
             currentEditBaseHeirAddress: '',
             currentEditHeirAddress: '',
@@ -60,7 +61,9 @@ class Wills extends Component {
             showError: false,
             errortext: '',
             notificationsOn: false,
-            networkPic: EthereumPic
+            networkPic: EthereumPic,
+            processingText: '',
+            confirmedText: ''
         };
     }
 
@@ -263,55 +266,10 @@ class Wills extends Component {
             this.handleShowConfirm()
             await contract.removeWill(event.target.value)
                 .then(async (tx) => {
-                    this.handleShowAwait()
+                    this.handleShowAwait('Revoke Will')
                     await tx.wait()
                     this.handleCloseAwait()
-                })
-        } catch (error) {
-            console.error(error)
-            this.handleCloseConfirm()
-            this.handleCloseAwait()
-        }
-    }
-
-    async editTimeWhenWithdraw() {
-        try {
-            const { currentEditID, contract, year, month, day } = this.state
-            const secondsInADay = 86400
-            let timeWhenWithdraw = (new Date()).getTime();
-            timeWhenWithdraw = Math.round(timeWhenWithdraw / 1000) + year * 365 * secondsInADay + month * 30 * secondsInADay + day * secondsInADay;
-            this.handleShowConfirm()
-            await contract.updateWillTimeWhenWithdraw(currentEditID, timeWhenWithdraw)
-                .then(async (tx) => {
-                    this.handleShowAwait()
-                    await tx.wait()
-                    this.handleCloseAwait()
-                    this.handleCloseEditTimeWhenWithdraw()
-                    this.handleCloseEdit()
-                    this.setState({
-                        year: '',
-                        month: '',
-                        day: ''
-                    })
-                })
-        } catch (error) {
-            console.error(error)
-            this.handleCloseConfirm()
-            this.handleCloseAwait()
-        }
-    }
-
-    async editHeir() {
-        try {
-            const { currentEditID, contract, heirAddress } = this.state
-            this.handleShowConfirm()
-            await contract.updateAnHeir(currentEditID, heirAddress)
-                .then(async (tx) => {
-                    this.handleShowAwait()
-                    await tx.wait()
-                    this.handleCloseAwait()
-                    this.handleCloseEditHeir()
-                    this.handleCloseEdit()
+                    this.handleShowEventConfirmed(`Will has been revoked`)
                 })
         } catch (error) {
             console.error(error)
@@ -416,11 +374,12 @@ class Wills extends Component {
             promise
                 .then(async (tx) => {
                     this.handleCloseConfirm()
-                    this.handleShowAwait()
+                    this.handleShowAwait(`Edit Will`)
                     await tx.wait()
                         .then(() => {
                             this.handleCloseAwait()
                             this.handleCloseEdit()
+                            this.handleShowEventConfirmed(`Will has been edited`)
                             this.setState({
                                 updateHeir: false,
                                 updateAmount: false,
@@ -464,7 +423,7 @@ class Wills extends Component {
     }
 
     async approve() {
-        const { contractAddress, signer, currentEditToken, currentEditBaseAmount, isUnlimitedAmount, currentEditAmount } = this.state
+        const { contractAddress, signer, currentEditToken, currentEditBaseAmount, currentEditSymbol, isUnlimitedAmount, currentEditAmount } = this.state
         const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
         const amountToApprove = isUnlimitedAmount === true ? currentEditAmount : (
             BigInt(
@@ -478,7 +437,7 @@ class Wills extends Component {
         this.handleShowConfirm()
         await _token.increaseAllowance(contractAddress, amountToApprove)
             .then(async (tx) => {
-                this.handleShowAwait()
+                this.handleShowAwait(`Approve ${currentEditSymbol}`)
                 await tx.wait()
                     .then(() => {
                         this.handleCloseAwait()
@@ -616,8 +575,6 @@ class Wills extends Component {
     onChangeAmount = this.onChangeAmount.bind(this)
     onChangeTime = this.onChangeTime.bind(this)
     cancelWill = this.cancelWill.bind(this)
-    editTimeWhenWithdraw = this.editTimeWhenWithdraw.bind(this)
-    editHeir = this.editHeir.bind(this)
     edit = this.edit.bind(this)
     onChangeYear = this.onChangeYear.bind(this)
     onChangeMonth = this.onChangeMonth.bind(this)
@@ -695,7 +652,7 @@ class Wills extends Component {
     handleShowEdit = this.handleShowEdit.bind(this)
 
     handleShowConfirm = () => this.setState({ showConfirm: true })
-    handleShowAwait = () => this.setState({ showConfirm: false, showAwait: true })
+    handleShowAwait = (processingText) => this.setState({ showConfirm: false, showAwait: true, processingText })
     handleCloseConfirm = () => this.setState({ showConfirm: false })
     handleCloseAwait = () => this.setState({ showAwait: false })
     handleShowConfirm = this.handleShowConfirm.bind(this)
@@ -711,6 +668,12 @@ class Wills extends Component {
 
     handleShowError = this.handleShowError.bind(this)
     handleCloseError = this.handleCloseError.bind(this)
+
+    handleShowEventConfirmed = (confirmedText) => this.setState({ showEventConfirmed: true, confirmedText })
+    handleCloseEventConfirmed = () => this.setState({ showEventConfirmed: false })
+
+    handleShowEventConfirmed = this.handleShowEventConfirmed.bind(this)
+    handleCloseEventConfirmed = this.handleCloseEventConfirmed.bind(this)
 
     render() {
         return (
@@ -908,11 +871,27 @@ class Wills extends Component {
                         </button> */}
                     </Modal.Footer>
                 </Modal>
+                <Modal className="modal-loading modal-loading--process" show={this.state.showEventConfirmed}>
+                    <Modal.Header>
+                        <div className="modal_confirm">
+                            <h2 className="modal-loading__title modal-loading__title--processing">Confirmed!</h2>
+                            <p className="modal-loading__subtitle">{this.state.confirmedText}</p>
+                            <div className="modal-loading__progress-bar modal-loading__progress-bar--processing">
+                                <span></span>
+                            </div>
+                        </div>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={this.handleCloseEventConfirmed} className="btn btn-danger">
+                            <img src={closePic} />
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
                 <Modal className="modal-loading modal-loading--process" show={this.state.showAwait}>
                     <Modal.Header>
                         <div className="className='modal_confirm">
                             <h2 className="modal-loading__title modal-loading__title--processing">Processing...</h2>
-                            <p className="modal-loading__subtitle">Approve  &lt;Token&gt;</p>
+                            <p className="modal-loading__subtitle">{this.state.processingText}</p>
                             <div className="modal-loading__progress-bar modal-loading__progress-bar--processing">
                                 <span></span>
                             </div>

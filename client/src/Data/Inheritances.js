@@ -28,6 +28,9 @@ class Inheritances extends Component {
             inheritances: [],
             showConfirm: false,
             showAwait: false,
+            showEventConfirmed: false,
+            processingText: '',
+            confirmedText: ''
         };
     }
 
@@ -190,9 +193,10 @@ class Inheritances extends Component {
             this.handleShowConfirm()
             await contract.withdraw(event.target.value)
                 .then(async (tx) => {
-                    this.handleShowAwait()
+                    this.handleShowAwait(`Receive Tokens`)
                     await tx.wait()
                     this.handleCloseAwait()
+                    this.handleShowEventConfirmed(`Tokens has been recieved`)
                 })
         } catch (error) {
             console.error(error)
@@ -236,13 +240,19 @@ class Inheritances extends Component {
     claim = this.claim.bind(this)
 
     handleShowConfirm = () => this.setState({ showConfirm: true })
-    handleShowAwait = () => this.setState({ showConfirm: false, showAwait: true })
+    handleShowAwait = (processingText) => this.setState({ showConfirm: false, showAwait: true, processingText })
     handleCloseConfirm = () => this.setState({ showConfirm: false })
     handleCloseAwait = () => this.setState({ showAwait: false })
     handleShowConfirm = this.handleShowConfirm.bind(this)
     handleShowAwait = this.handleShowAwait.bind(this)
     handleCloseConfirm = this.handleCloseConfirm.bind(this)
     handleCloseAwait = this.handleCloseAwait.bind(this)
+
+    handleShowEventConfirmed = (confirmedText) => this.setState({ showEventConfirmed: true, confirmedText })
+    handleCloseEventConfirmed = () => this.setState({ showEventConfirmed: false })
+
+    handleShowEventConfirmed = this.handleShowEventConfirmed.bind(this)
+    handleCloseEventConfirmed = this.handleCloseEventConfirmed.bind(this)
 
     render() {
         return (
@@ -330,11 +340,27 @@ class Inheritances extends Component {
                         </Button>
                     </Modal.Footer>
                 </Modal> */}
+                <Modal className="modal-loading modal-loading--process" show={this.state.showEventConfirmed}>
+                    <Modal.Header>
+                        <div className="modal_confirm">
+                            <h2 className="modal-loading__title modal-loading__title--processing">Confirmed!</h2>
+                            <p className="modal-loading__subtitle">{this.state.confirmedText}</p>
+                            <div className="modal-loading__progress-bar modal-loading__progress-bar--processing">
+                                <span></span>
+                            </div>
+                        </div>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={this.handleCloseEventConfirmed} className="btn btn-danger">
+                            <img src={closePic} />
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
                 <Modal className="modal-loading modal-loading--process" show={this.state.showAwait}>
                     <Modal.Header>
                         <div className="className='modal_confirm">
                             <h2 className="modal-loading__title modal-loading__title--processing">Processing...</h2>
-                            <p className="modal-loading__subtitle">Approve  &lt;Token&gt;</p>
+                            <p className="modal-loading__subtitle">{this.state.processingText}</p>
                             <div className="modal-loading__progress-bar modal-loading__progress-bar--processing">
                                 <span></span>
                             </div>

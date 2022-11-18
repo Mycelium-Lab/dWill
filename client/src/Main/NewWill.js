@@ -56,11 +56,15 @@ class NewWill extends Component {
             showConfirm: false,
             showAwait: false,
             showError: false,
+            newWillDone: false,
+            showEventConfirmed: false,
             isUnlimitedAmount: true,
             errortext: '',
             notificationsOn: false,
             networkPic: EthereumPic,
-            googleCalendarDateText: ''
+            googleCalendarDateText: '',
+            processingText: '',
+            confirmedText: ''
         };
     }
 
@@ -105,12 +109,14 @@ class NewWill extends Component {
         const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
         this.handleShowConfirm()
         let toSend = isUnlimitedAmount === true ? amount : BigInt(amount * Math.pow(10, await _token.decimals())).toString()
+        const symbol = await _token.symbol()
         await _token.increaseAllowance(contractAddress, toSend)
             .then(async (tx) => {
-                this.handleShowAwait()
+                this.handleShowAwait(`Approve ${symbol}`)
                 await tx.wait()
                     .then(() => {
                         this.handleCloseAwait()
+                        this.handleShowEventConfirmed(`Approved ${symbol}`)
                         this.setState({
                             approved: true
                         })
@@ -154,10 +160,11 @@ class NewWill extends Component {
             this.handleShowConfirm()
             await contract.addNewWill(heirAddress, tokensValue, timeUnixWhenWithdraw.toString(), sendTo)
                 .then(async (tx) => {
-                    this.handleShowAwait()
+                    this.handleShowAwait('New Will Creation')
                     await tx.wait()
                     this.handleCloseAwait()
                     this.handleClose()
+                    this.handleShowDoneNewWill()
                 })
         } catch (error) {
             console.error(error)
@@ -360,7 +367,7 @@ class NewWill extends Component {
     handleShow = this.handleShow.bind(this)
 
     handleShowConfirm = () => this.setState({ showConfirm: true })
-    handleShowAwait = () => this.setState({ showConfirm: false, showAwait: true })
+    handleShowAwait = (processingText) => this.setState({ showConfirm: false, showAwait: true, processingText })
     handleCloseConfirm = () => this.setState({ showConfirm: false })
     handleCloseAwait = () => this.setState({ showAwait: false })
     handleShowConfirm = this.handleShowConfirm.bind(this)
@@ -379,6 +386,18 @@ class NewWill extends Component {
 
     handleShowWalletNotExist = this.handleShowWalletNotExist.bind(this)
     handleCloseWalletNotExist = this.handleCloseWalletNotExist.bind(this)
+
+    handleShowDoneNewWill = () => this.setState({ newWillDone: true })
+    handleCloseDoneNewWill = () => this.setState({ newWillDone: false })
+
+    handleShowDoneNewWill = this.handleShowDoneNewWill.bind(this)
+    handleCloseDoneNewWill = this.handleCloseDoneNewWill.bind(this)
+
+    handleShowEventConfirmed = (confirmedText) => this.setState({ showEventConfirmed: true, confirmedText })
+    handleCloseEventConfirmed = () => this.setState({ showEventConfirmed: false })
+
+    handleShowEventConfirmed = this.handleShowEventConfirmed.bind(this)
+    handleCloseEventConfirmed = this.handleCloseEventConfirmed.bind(this)
 
     render() {
         return (
@@ -548,28 +567,44 @@ class NewWill extends Component {
                         </button> */}
                     </Modal.Footer>
                 </Modal>
-                <Modal className="modal-loading modal-loading--process" show={this.state.showAwait}>
+                <Modal className="modal-loading modal-loading--process" show={this.state.showEventConfirmed}>
                     <Modal.Header>
-                        <div className="className='modal_confirm">
-                            <h2 className="modal-loading__title modal-loading__title--processing">Processing...</h2>
-                            <p className="modal-loading__subtitle">Approve  &lt;Token&gt;</p>
+                        <div className="modal_confirm">
+                            <h2 className="modal-loading__title modal-loading__title--processing">Confirmed!</h2>
+                            <p className="modal-loading__subtitle">{this.state.confirmedText}</p>
                             <div className="modal-loading__progress-bar modal-loading__progress-bar--processing">
                                 <span></span>
                             </div>
                         </div>
                     </Modal.Header>
                     <Modal.Footer>
-                        <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
+                        <Button variant="danger" onClick={this.handleCloseEventConfirmed} className="btn btn-danger">
                             <img src={closePic} />
                         </Button>
                     </Modal.Footer>
                 </Modal>
-                <Modal show={false} className="modal-await">
-                    {/* <Modal.Header>
+                <Modal className="modal-loading modal-loading--process" show={this.state.showAwait}>
+                    <Modal.Header>
+                        <div className="modal_confirm">
+                            <h2 className="modal-loading__title modal-loading__title--processing">Processing...</h2>
+                            <p className="modal-loading__subtitle">{this.state.processingText}</p>
+                            <div className="modal-loading__progress-bar modal-loading__progress-bar--processing">
+                                <span></span>
+                            </div>
+                        </div>
+                    </Modal.Header>
+                    <Modal.Footer>
                         <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
                             <img src={closePic} />
                         </Button>
-                    </Modal.Header> */}
+                    </Modal.Footer>
+                </Modal>
+                <Modal show={this.state.newWillDone} className="modal-await">
+                    <Modal.Header>
+                        <Button variant="danger" onClick={this.handleCloseDoneNewWill} className="btn btn-danger">
+                            <img src={closePic} />
+                        </Button>
+                    </Modal.Header>
                     <img src={ConfiPic} />
                     <Modal.Footer>
                         {/* <button className="btn-close-modal btn btn-primary">
