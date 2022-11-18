@@ -79,21 +79,31 @@ class ResetTimers extends Component {
                     <Modal.Header>
                         <h2 className='modal-confirm_h2'>Pending  transaction</h2>
                     </Modal.Header>
-                    <img className="spinner" src={LoadingPic} />
+                    {/* <img className="spinner" src={LoadingPic} /> */}
+                    <div class="circle-loader">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
                     <Modal.Footer>
                         <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
-                        <button className="btn-close-modal btn btn-primary">
+                        {/* <button className="btn-close-modal btn btn-primary">
                             <img src={closeModalPic}></img>
-                        </button>
+                        </button> */}
                     </Modal.Footer>
                 </Modal>
                 <Modal show={this.state.showAwait} className="modal-await">
 
                     <img src={ConfiPic} />
                     <Modal.Footer>
-                        <button className="btn-close-modal btn btn-primary">
+                        {/* <button className="btn-close-modal btn btn-primary">
                             <img src={closeModalPic}></img>
-                        </button>
+                        </button> */}
                         <p className="modal-await_text">Завещание успешно создано!</p>
                     </Modal.Footer>
                 </Modal>

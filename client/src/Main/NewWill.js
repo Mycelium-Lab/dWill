@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import TheWill from '../Contract/TheWill.json'
-
 import { ethers } from "ethers";
 import { chainIDs, TheWillAddress, TokenAddress, UnlimitedAmount } from '../Utils/Constants';
 import closeModalPic from '../content/close_modal.svg'
@@ -15,8 +14,8 @@ import ConfiPic from '../content/confi.svg'
 import LoadingPic from '../content/loading.svg'
 import arrowDown from '../content/arrow-down.svg'
 import closePic from '../content/button_close.svg'
-
 import ERC20 from '../Contract/ERC20.json'
+
 const styles = {
     modal_new_will: {
         // maxWidth: '700px',
@@ -69,17 +68,17 @@ class NewWill extends Component {
             let networkName
             if (this.props.network === chainIDs.BinanceMainnet) {
                 networkName = `BNB Chain`
-            } else if (this.props.network  === chainIDs.Polygon) {
+            } else if (this.props.network === chainIDs.Polygon) {
                 networkName = `Polygon`
-            } else if (this.props.network  === 31337) {
+            } else if (this.props.network === 31337) {
                 networkName = `Hardhat`
-            } else if (this.props.network  === chainIDs.Mumbai) {
+            } else if (this.props.network === chainIDs.Mumbai) {
                 networkName = `Mumbai`
-            } else if (this.props.network  === chainIDs.Goerli) {
+            } else if (this.props.network === chainIDs.Goerli) {
                 networkName = `Goerli`
-            } else if (this.props.network  === chainIDs.EthereumMainnet) {
+            } else if (this.props.network === chainIDs.EthereumMainnet) {
                 networkName = `Ethereum`
-            } else if (this.props.network  === chainIDs.BinanceTestnet) {
+            } else if (this.props.network === chainIDs.BinanceTestnet) {
                 networkName = `BNBTest Chain`
             }
             this.setState({ signer, signerAddress, network: networkName, contract })
@@ -173,7 +172,7 @@ class NewWill extends Component {
         } catch (error) {
             if (error.message.includes('resolver or addr is not configured')) {
                 this.setState({
-                    errortext: 'Выберите токен'
+                    errortext: 'Выберите токен1'
                 })
                 this.handleShowError()
             }
@@ -379,7 +378,6 @@ class NewWill extends Component {
                     </Modal.Body>
                 </Modal>
                 <Modal show={this.state.show} onHide={this.handleClose} className='will-block' style={styles.modal_new_will}>
-
                     <Modal.Header className='modal_new_will'>
                         <Button className='bnt_close' onClick={this.handleClose}>
                             <img src={buttonClosePic} />
@@ -408,7 +406,7 @@ class NewWill extends Component {
                                     <label htmlFor="unlimited">Unlimited</label><br />
                                 </div>
                                 <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
-                                    <input onChange={this.onChangeAmount} value={this.state.currentEditAmount} type="number" className="input-group mb-3" />
+                                    <input placeholder="Введите сумму" onChange={this.onChangeAmount} value={this.state.currentEditAmount} type="number" className="input-group mb-3" />
                                     <Button variant="outline-success" onClick={this.onSetMaxAmount}>
                                         All
                                     </Button>
@@ -452,7 +450,7 @@ class NewWill extends Component {
                                 <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
                                 <label htmlFor="wills-set3">Notifications</label><br />
                             </div>
-                            <div style={this.state.notificationsOn === true ? { opacity: '1', transition: 'all 0.3s ease' } : { opacity: '0', transition: 'all 0.3s ease' }}>
+                            <div style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
                                 <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
                             </div>
                         </div>
@@ -485,20 +483,30 @@ class NewWill extends Component {
                     <Modal.Header>
                         <h2 className='modal-confirm_h2'>Pending  transaction</h2>
                     </Modal.Header>
-                    <img className="spinner" src={LoadingPic} />
+                    {/* <img className="spinner" src={LoadingPic} /> */}
+                    <div class="circle-loader">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
                     <Modal.Footer>
                         <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
-                        <button className="btn-close-modal btn btn-primary">
+                        {/* <button className="btn-close-modal btn btn-primary">
                             <img src={closeModalPic}></img>
-                        </button>
+                        </button> */}
                     </Modal.Footer>
                 </Modal>
                 <Modal show={this.state.showAwait} className="modal-await">
-                    <Modal.Header>
+                    {/* <Modal.Header>
                         <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
-    <img src={closePic}/>
-    </Button>  
-                    </Modal.Header>
+                            <img src={closePic} />
+                        </Button>
+                    </Modal.Header> */}
                     <img src={ConfiPic} />
                     <Modal.Footer>
                         {/* <button className="btn-close-modal btn btn-primary">
