@@ -7,14 +7,24 @@ require('dotenv').config()
 
 const { bot, sendMessage } = require('./bot/bot');
 const User = require('./db/User.js')
-const Will = require('./db/Will.js')
+const WillMumbai = require('./db/WillMumbai.js')
+const WillGoerli= require('./db/WillGoerli.js')
+const WillBinanceTest = require('./db/WillBinanceTest.js')
 const WillAbi = require('../artifacts/contracts/dWill.sol/dWill.json')
 const ERC20 = require('../artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json')
 const { update } = require('./sheets')
+const { contractAddresses, NetworkExplorers } = require('./utils/constants')
 
-const provider = new ethers.providers.WebSocketProvider(process.env.RPC)
-const signer = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
-const contract = new ethers.Contract(process.env.CONTRACT, WillAbi.abi, signer)
+const providerMumbai = new ethers.providers.JsonRpcProvider(process.env.MUMBAI_RPC)
+const providerGoerli = new ethers.providers.JsonRpcProvider(process.env.GOERLI_RPC)
+const providerBinanceTestnet = new ethers.providers.JsonRpcProvider(process.env.BINANCETEST_RPC)
+const signerMumbai = new ethers.Wallet(process.env.PRIVATE_KEY, providerMumbai);
+const signerGoerli = new ethers.Wallet(process.env.PRIVATE_KEY, providerGoerli);
+const signerBinanceTestnet = new ethers.Wallet(process.env.PRIVATE_KEY, providerBinanceTestnet);
+const contractMumbai = new ethers.Contract(contractAddresses.Mumbai, WillAbi.abi, signerMumbai)
+const contractGoerli = new ethers.Contract(contractAddresses.Goerli, WillAbi.abi, signerGoerli)
+const contractBinanceTestnet = new ethers.Contract(contractAddresses.BinanceTestnet, WillAbi.abi, signerBinanceTestnet)
+
 const UnlimitedAmount = '11579208923731619542357098500868790785326998466564056403945758400791312963993'
 
 const transporter = nodemailer.createTransport({
@@ -62,24 +72,51 @@ function remainingTime(timeWhenWithdraw) {
     }
 }
 
-contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
+contractMumbai.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
+    await addAnHeir(ID,owner,heir,token,timeWhenWithdraw,amount, 'Mumbai Chain', NetworkExplorers.Mumbai, signerMumbai)
+})
+
+contractGoerli.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
+    await addAnHeir(ID,owner,heir,token,timeWhenWithdraw,amount, 'Goerli Chain', NetworkExplorers.Goerli, signerGoerli)
+})
+
+contractBinanceTestnet.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
+    await addAnHeir(ID,owner,heir,token,timeWhenWithdraw,amount, 'BinanceTest Chain', NetworkExplorers.BinanceTestnet, signerBinanceTestnet)
+})
+
+contractMumbai.on('RemoveWill', async (ID, owner, heir) => {
+    await removeWill(ID, owner, heir, 'Mumbai Chain', NetworkExplorers.Mumbai)
+})
+
+contractGoerli.on('RemoveWill', async (ID, owner, heir) => {
+    await removeWill(ID, owner, heir, 'Goerli Chain', NetworkExplorers.Goerli)
+})
+
+contractBinanceTestnet.on('RemoveWill', async (ID, owner, heir) => {
+    await removeWill(ID, owner, heir, 'BinanceTest Chain', NetworkExplorers.BinanceTestnet)
+})
+
+contractMumbai.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
+    await withdraw(ID, owner, 'Mumbai Chain')
+})
+
+contractGoerli.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
+    await withdraw(ID, owner, 'Goerli Chain')
+})
+
+contractBinanceTestnet.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
+    await withdraw(ID, owner, 'BinanceTest Chain')
+})
+
+async function addAnHeir(ID,owner,heir,token,timeWhenWithdraw,amount, network, explorer, signer) {
     try {
-        let _token;
+        let _token = new ethers.Contract(token, ERC20.abi, signer);
+        //добавить распознование токенов и определение цены
         if (amount.toString() !== UnlimitedAmount) {
-            if (token === '0x7ad56BdD1d9c70C0C94cA2BF4b1397756dfbbfc8') {
-                await update(Math.floor(amount / Math.pow(10, 18) * 0.5))
-            } else {
-                await update(Math.floor(amount / Math.pow(10, 6)))
-            }
-            _token = new ethers.Contract(token, ERC20.abi, signer)
+            await update(Math.floor(amount / Math.pow(10, 18) * 1))
         } else {
-            _token = new ethers.Contract(token, ERC20.abi, signer)
             const _balance = await _token.balanceOf(owner)
-            if (token === '0x7ad56BdD1d9c70C0C94cA2BF4b1397756dfbbfc8') {
-                await update(Math.floor(_balance / Math.pow(10, 18) * 0.5))
-            } else {
-                await update(Math.floor(_balance / Math.pow(10, 6)))
-            }
+            await update(Math.floor(_balance / Math.pow(10, 18) * 1))
         }
         const user = await User.findOne({address: heir})
         const _owner = await User.findOne({address: owner})
@@ -100,12 +137,13 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
         if (user !== null) {
             if (user.tgID.length > 0) {
                 await bot.sendMessage(user.tgID, `
-🟢 <b>Wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> bequeathed you ${_tokenSymbol} tokens</b>
+🟢 <b>Wallet <a href='${explorer}${owner}'>${cutOwnerAddress}</a> bequeathed you ${_tokenSymbol} tokens</b>
                 
 <b>▪️ Parameters of the dWill:</b>
 <b>id</b>: ${ID.toString()}
-<b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a>
+<b>Heir</b> - <a href='${explorer}${heir}'>${cutHeirAddress}</a>
 <b>Token</b> - ${_tokenSymbol}
+<b>Network</b> - ${network}
 <b>Limit on the amount</b> - ${heritageAmountInNormalView}
 <b>Time to unlock the dWill</b> - ${_remainingTime}
                 `, {parse_mode: 'HTML'})
@@ -123,12 +161,13 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
                     </p>
                     <br/>
                     <p>🟢 
-                        <b>Wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> bequeathed you ${_tokenSymbol} tokens</b>
+                        <b>Wallet <a href='${explorer}${owner}'>${cutOwnerAddress}</a> bequeathed you ${_tokenSymbol} tokens</b>
                         </p>
                     <div><b>▪️ Parameters of the dWill:</b></div>
                     <div><b>id</b>: ${ID.toString()}</div>
-                    <div><b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a></div>
+                    <div><b>Heir</b> - <a href='${explorer}${heir}'>${cutHeirAddress}</a></div>
                     <div><b>Token</b> - ${_tokenSymbol}</div>
+                    <div><b>Network</b> - ${network}</div>
                     <div><b>Limit on the amount</b> - ${heritageAmountInNormalView}</div>
                     <div><b>Time to unlock the dWill</b> - ${_remainingTime}</div>
                     <br/>
@@ -150,12 +189,13 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
         if (_owner !== null) {
             if (_owner.tgID.length > 0) {
                 await bot.sendMessage(_owner.tgID, `
-🔵 <b>You have created new dWill from wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a></b>
+🔵 <b>You have created new dWill from wallet <a href='${explorer}${owner}'>${cutOwnerAddress}</a></b>
 
 <b>▪️ Parameters of the dWill:</b>
 <b>id</b>: ${ID.toString()}
-<b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a>
+<b>Heir</b> - <a href='${explorer}${heir}'>${cutHeirAddress}</a>
 <b>Token</b> - ${_tokenSymbol}
+<b>Network</b> - ${network}
 <b>Limit on the amount</b> - ${heritageAmountInNormalView}
 <b>Time to unlock the dWill</b> - ${_remainingTime}
 `, {parse_mode: 'HTML'})
@@ -173,12 +213,13 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
                             <a href="http://dwill.app">dwill.app</a> project
                         </p>
                         <br/>
-                        <p>🔵 <b>You have created new dWill from wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a></b>
+                        <p>🔵 <b>You have created new dWill from wallet <a href='${explorer}${owner}'>${cutOwnerAddress}</a></b>
                         </p>
                         <div><b>▪️ Parameters of the dWill:</b></div>
                         <div><b>id</b>: ${ID.toString()}</div>
-                        <div><b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a></div>
+                        <div><b>Heir</b> - <a href='${explorer}${heir}'>${cutHeirAddress}</a></div>
                         <div><b>Token</b> - ${_tokenSymbol}</div>
+                        <div><b>Network</b> - ${network}</div>
                         <div><b>Limit on the amount</b> - ${heritageAmountInNormalView}</div>
                         <div><b>Time to unlock the dWill</b> - ${_remainingTime}</div>
                         <br/>
@@ -201,9 +242,10 @@ contract.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => 
     } catch (error) {
         console.error(error)
     }
-})
+}
 
-contract.on('RemoveWill', async (ID, owner, heir) => {
+
+async function removeWill(ID, owner, heir, network, explorer) {
     try {
         const user = await User.findOne({address: heir})
         const _owner = await User.findOne({address: owner})
@@ -216,7 +258,7 @@ contract.on('RemoveWill', async (ID, owner, heir) => {
         if (user !== null) {
             if (user.tgID.length > 0) {
                 await bot.sendMessage(_owner.tgID, `
-                🔴 <b>Wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> removed you from his dWill (id: ${ID.toString()})</b>
+                🔴 <b>Wallet <a href='${explorer}${owner}'>${cutOwnerAddress}</a> removed you from his dWill (id: ${ID.toString()}) on ${network}</b>
                 `, {parse_mode: 'HTML'})
             }
             if (user.email !== null) {
@@ -231,7 +273,7 @@ contract.on('RemoveWill', async (ID, owner, heir) => {
                         <a href="http://dwill.app">dwill.app</a> project
                     </p>
                     <br/>
-                    <div>🔴 <b>Wallet <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> removed you from his dWill (id: ${ID.toString()})</b>
+                    <div>🔴 <b>Wallet <a href='${explorer}${owner}'>${cutOwnerAddress}</a> removed you from his dWill (id: ${ID.toString()}) on ${network}</b>
                     </div>
                     <br/>
                     <br/>
@@ -252,7 +294,7 @@ contract.on('RemoveWill', async (ID, owner, heir) => {
         if (_owner !== null) {
             if (_owner.tgID.length > 0) {
                 await bot.sendMessage(_owner.tgID, `
-                🔴 <b>You <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> removed <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a> from yours dWill (id: ${ID.toString()})</b>
+                🔴 <b>You <a href='${explorer}${owner}'>${cutOwnerAddress}</a> removed <a href='${explorer}${heir}'>${cutHeirAddress}</a> from yours dWill (id: ${ID.toString()}) on ${network}</b>
                 `, {parse_mode: 'HTML'})
             }
             if (_owner.email !== null) {
@@ -268,7 +310,7 @@ contract.on('RemoveWill', async (ID, owner, heir) => {
                             <a href="http://dwill.app">dwill.app</a> project
                         </p>
                         <br/>
-                        <div>🔴 <b>You <a href='https://mumbai.polygonscan.com/address/${owner}'>${cutOwnerAddress}</a> removed <a href='https://mumbai.polygonscan.com/address/${heir}'>${cutHeirAddress}</a> from yours dWill (id: ${ID.toString()})</b>
+                        <div>🔴 <b>You <a href='${explorer}${owner}'>${cutOwnerAddress}</a> removed <a href='${explorer}${heir}'>${cutHeirAddress}</a> from yours dWill (id: ${ID.toString()}) on ${network}</b>
                         </div>
                         <br/>
                         <br/>
@@ -290,19 +332,15 @@ contract.on('RemoveWill', async (ID, owner, heir) => {
     } catch (error) {
         console.error(error)
     }
-})
+}
 
-contract.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
+async function withdraw(ID, owner, network) {
     try {
         const _owner = await User.findOne({address: owner})
-        let cutHeirAddress;
-        if (_owner !== null) {
-            cutHeirAddress = heir.slice(0, 6) + '...' + heir.slice(heir.length - 4, heir.length);
-        }
         if (_owner !== null) {
             if (_owner.tgID.length > 0) {
                 await bot.sendMessage(_owner.tgID, `
-                Your dWill (id: ${ID.toString()}) has been executed.
+                ℹ️ Your dWill (id: ${ID.toString()}) on ${network} has been executed.
                 `, {parse_mode: 'HTML'})
             }
             if (_owner.email !== null) {
@@ -317,7 +355,7 @@ contract.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
                         <a href="http://dwill.app">dwill.app</a> project
                     </p>
                     <br/>
-                    <div>ℹ️ Your dWill (id: ${ID.toString()}) has been executed.
+                    <div>ℹ️ Your dWill (id: ${ID.toString()}) on ${network} has been executed.
                     </div>
                     <br/>
                     <br/>
@@ -336,12 +374,30 @@ contract.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
             }
         }
     } catch (error) {
-        
+        console.error(error)
     }
+}
+
+// //Running a job at Europe/Moscow timezone
+cron.schedule("10 10 10 * * *", async () => {
+    await remainTimeCron(contractMumbai, 'Mumbai Chain', NetworkExplorers.Mumbai, WillMumbai, signerMumbai)
+}, {
+    timezone: 'Europe/Moscow'
 })
 
-//Running a job at 01:00 at Europe/Moscow timezone
-cron.schedule("18 18 18 * * *", async () => {
+cron.schedule("13 13 13 * * *", async () => {
+    await remainTimeCron(contractGoerli, 'Goerli Chain', NetworkExplorers.Goerli, WillGoerli, signerGoerli)
+}, {
+    timezone: 'Europe/Moscow'
+})
+
+cron.schedule("16 16 16 * * *", async () => {
+    await remainTimeCron(contractBinanceTestnet, 'BinanceTest Chain', NetworkExplorers.BinanceTestnet, WillBinanceTest, signerBinanceTestnet)
+}, {
+    timezone: 'Europe/Moscow'
+})
+
+async function remainTimeCron(contract, network, explorer, Will, signer) {
     try {
         const users = await User.find()
         for (let i = 0; i < users.length; i++) {
@@ -381,8 +437,9 @@ The time to unlock the dWill (id: ${wills[j].ID.toString()}) has expired
 You can withdraw your tokens on our site <a href='https://dwill.app/'>dWill.app</a>.
 
 <b>▪️ Parameters of the dWill:</b>
-<b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a>
+<b>Heir</b> - <a href='${explorer}${wills[j].heir}'>${cutHeirAddress}</a>
 <b>Token</b> - ${_tokenSymbol}
+<b>Network</b> - ${network}
 <b>Limit on the amount</b> - ${heritageAmountInNormalView}
                                     `, {parse_mode: 'HTML'})
                                     if (__heir.email !== null) {
@@ -403,8 +460,9 @@ You can withdraw your tokens on our site <a href='https://dwill.app/'>dWill.app<
                                             <div>You can withdraw your tokens on our site <a href='https://dwill.app/'>dWill.app</a>.</div>
                                             
                                             <div><b>▪️ Parameters of the dWill:</b></div>
-                                            <div><b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a></div>
+                                            <div><b>Heir</b> - <a href='${explorer}${wills[j].heir}'>${cutHeirAddress}</a></div>
                                             <div><b>Token</b> - ${_tokenSymbol}</div>
+                                            <div><b>Network</b> - ${network}</div>
                                             <div><b>Limit on the amount</b> - ${heritageAmountInNormalView}</div>
                                             <br/>
                                             <br/>
@@ -424,7 +482,7 @@ You can withdraw your tokens on our site <a href='https://dwill.app/'>dWill.app<
                                 }
                                 await bot.sendMessage(users[i].tgID, `
 ℹ️ dWill notification:
-The time to unlock the dWill (id: ${wills[j].ID.toString()}) has expired.`, {parse_mode: 'HTML'})
+The time to unlock the dWill (id: ${wills[j].ID.toString()}) on ${network} has expired.`, {parse_mode: 'HTML'})
                                 if (users[i].email !== null) {
                                     transporter.sendMail({
                                         from: process.env.EMAILUSER,
@@ -465,8 +523,9 @@ Time to unlock the dWill - ${remaining}
 
 <b>▪️ Parameters of the dWill:</b>
 <b>id</b>: ${wills[j].ID.toString()}
-<b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a>
+<b>Heir</b> - <a href='${explorer}${wills[j].heir}'>${cutHeirAddress}</a>
 <b>Token</b> - ${_tokenSymbol}
+<b>Network</b> - ${network}
 <b>Limit on the amount</b> - ${heritageAmountInNormalView}
 <b>Time to unlock the dWill</b> - ${remaining}
 `, {parse_mode: 'HTML'})
@@ -488,8 +547,9 @@ Time to unlock the dWill - ${remaining}
                                     
                                     <div><b>▪️ Parameters of the dWill:</b></div>
                                     <div><b>id</b>: ${wills[j].ID.toString()}</div>
-                                    <div><b>Heir</b> - <a href='https://mumbai.polygonscan.com/address/${wills[j].heir}'>${cutHeirAddress}</a></div>
+                                    <div><b>Heir</b> - <a href='${explorer}${wills[j].heir}'>${cutHeirAddress}</a></div>
                                     <div><b>Token</b> - ${_tokenSymbol}</div>
+                                    <div><b>Network</b> - ${network}</div>
                                     <div><b>Limit on the amount</b> - ${heritageAmountInNormalView}</div>
                                     <div><b>Time to unlock the dWill</b> - ${remaining}</div>
                                     <br/>
@@ -516,6 +576,4 @@ Time to unlock the dWill - ${remaining}
     } catch (error) {
         console.error(error)
     }
-}, {
-    timezone: 'Europe/Moscow'
-})
+}
