@@ -1606,13 +1606,13 @@ input::-webkit-inner-spin-button {
 
 .btn_btn-success {
   display: flex !important;
-  min-width: 130px;
+  min-width: 120px;
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
   border: 1px solid #5ED5A8;
-  height: 45px;
+  height: 40px;
   color: #5ED5A8;
   background: #1B232A;
   box-shadow: 2px 0px 19px 3px #161C22;
