@@ -146,7 +146,15 @@ class NewWill extends Component {
             })
             return date
         } catch (error) {
-            this.handleShowError('Something wrong with time')
+            if (
+                (this.state.year === '' || this.state.month === '' || this.state.day === '')
+                || 
+                (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
+                || 
+                (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+            ) {} else {
+                this.handleShowError('Something wrong with time')
+            }
         }
     }
 
@@ -295,7 +303,7 @@ class NewWill extends Component {
 
     onChangeYear(event) {
         this.setState({
-            year: event.target.value
+            year: parseInt(event.target.value)
         }, () => {
             this.createTime()
         })
@@ -303,7 +311,7 @@ class NewWill extends Component {
 
     onChangeMonth(event) {
         this.setState({
-            month: event.target.value
+            month: parseInt(event.target.value)
         }, () => {
             this.createTime()
         })
@@ -311,7 +319,7 @@ class NewWill extends Component {
 
     onChangeDay(event) {
         this.setState({
-            day: event.target.value
+            day: parseInt(event.target.value)
         }, () => {
             this.createTime()
         })
@@ -464,7 +472,7 @@ class NewWill extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className='modal-body__row modal-body__row-direction'>С кошелька <a href={`${this.props.networkProvider}${this.state.signerAddress}`} className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a><i class="br"></i> на сети {this.state.network}
+                        <div className='modal-body__row modal-body__row-direction'>С кошелька <a href={`${this.props.networkProvider}${this.state.signerAddress}`} className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a><i className="br"></i> на сети {this.state.network}
                             <img src={this.state.networkPic} alt="networkpic" /></div>
                         <div className="your-wills__wallet modal-body__row">
                             Доверенному кошельку
@@ -516,14 +524,100 @@ class NewWill extends Component {
                         <div>
                             <ul className="your-wills__footer">
                                 <li>
-                                    <Button variant="primary" onClick={this.state.approved === false ? this.approve : null} style={
-                                        { "background": this.state.approved === true ? '#3E474F' : '#5ED5A8' }
+                                    <Button variant="primary" disabled={
+                                        (this.state.approved === true) 
+                                        || 
+                                        (this.state.amount === '0') 
+                                        || 
+                                        (this.state.amount === '')
+                                        || 
+                                        (this.state.heirAddress === '')
+                                        || 
+                                        (this.state.year === '' || this.state.month === '' || this.state.day === '')
+                                        || 
+                                        (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
+                                        || 
+                                        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                    } onClick={
+                                        this.state.approved !== false 
+                                        || 
+                                        (this.state.amount !== '0') 
+                                        || 
+                                        (this.state.amount !== '')
+                                        || 
+                                        (this.state.heirAddress !== '')
+                                        || 
+                                        (this.state.year !== '' || this.state.month !== '' || this.state.day !== '')
+                                        || 
+                                        (this.state.year !== 0 && this.state.month !== 0 && this.state.day !== 0)
+                                        || 
+                                        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                        ? this.approve : null} style={
+                                        { "background": 
+                                        (this.state.approved === true)
+                                        || 
+                                        (this.state.amount === '0') 
+                                        || 
+                                        (this.state.amount === '')
+                                        || 
+                                        (this.state.heirAddress === '')
+                                        || 
+                                        (this.state.year === '' || this.state.month === '' || this.state.day === '')
+                                        || 
+                                        (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
+                                        || 
+                                        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                         ? '#3E474F' : '#5ED5A8' }
                                     } >
                                         Approve
                                     </Button>
                                 </li>
                                 <li>
-                                    <Button variant="primary" onClick={this.state.approved === false ? null : this.newWill} style={{ "background": (this.state.approved === false) || (this.state.amount === '0') || (this.state.amount === '') ? '#3E474F' : '#5ED5A8' }} className='button_make-new-will'>
+                                    <Button variant="primary" disabled={
+                                        (this.state.approved === false) 
+                                        || 
+                                        (this.state.amount === '0') 
+                                        || 
+                                        (this.state.amount === '')
+                                        || 
+                                        (this.state.heirAddress === '')
+                                        || 
+                                        (this.state.year === '' || this.state.month === '' || this.state.day === '')
+                                        || 
+                                        (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
+                                        || 
+                                        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                    } onClick={
+                                        this.state.approved === false
+                                        || 
+                                        (this.state.amount === '0') 
+                                        || 
+                                        (this.state.amount === '')
+                                        || 
+                                        (this.state.heirAddress === '')
+                                        || 
+                                        (this.state.year === '' || this.state.month === '' || this.state.day === '')
+                                        || 
+                                        (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
+                                        || 
+                                        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                         ? null : this.newWill} style={
+                                        { "background": 
+                                        (this.state.approved === false) 
+                                        || 
+                                        (this.state.amount === '0') 
+                                        || 
+                                        (this.state.amount === '')
+                                        || 
+                                        (this.state.heirAddress === '')
+                                        || 
+                                        (this.state.year === '' || this.state.month === '' || this.state.day === '')
+                                        || 
+                                        (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
+                                        || 
+                                        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                        ? '#3E474F' : '#5ED5A8' }} 
+                                        className='button_make-new-will'>
                                         <span className="button_number-span">Make new will </span>
                                     </Button>
                                 </li>
@@ -541,7 +635,7 @@ class NewWill extends Component {
                         <h2 className='modal-confirm_h2'>Pending  transaction</h2>
                     </Modal.Header>
                     {/* <img className="spinner" src={LoadingPic} /> */}
-                    <div class="ml-loader">
+                    <div className="ml-loader">
                         <div></div>
                         <div></div>
                         <div></div>
