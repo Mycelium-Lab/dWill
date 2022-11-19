@@ -874,9 +874,9 @@ class Wills extends Component {
                 <Modal className="modal-loading modal-loading--process" show={this.state.showEventConfirmed}>
                     <Modal.Header>
                         <div className="modal_confirm">
-                            <h2 className="modal-loading__title modal-loading__title--processing">Confirmed!</h2>
+                            <h2 className="modal-loading__title modal-loading__title--confirmed">Confirmed!</h2>
                             <p className="modal-loading__subtitle">{this.state.confirmedText}</p>
-                            <div className="modal-loading__progress-bar modal-loading__progress-bar--processing">
+                            <div className="modal-loading__progress-bar modal-loading__progress-bar--confirmed">
                                 <span></span>
                             </div>
                         </div>
