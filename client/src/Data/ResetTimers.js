@@ -5,8 +5,8 @@ import TheWill from '../Contract/TheWill.json'
 import LoadingPic from '../content/loading.svg'
 import closeModalPic from '../content/close_modal.svg'
 import ConfiPic from '../content/confi.svg'
+import closePic from '../content/button_close.svg'
 import { ethers } from "ethers";
-import { TheWillAddress } from '../Utils/Constants';
 
 class ResetTimers extends Component {
     constructor(props) {
@@ -18,6 +18,10 @@ class ResetTimers extends Component {
             contract: null,
             showConfirm: false,
             showAwait: false,
+            showEventConfirmed: false,
+            showError: false,
+            processingText: '',
+            confirmedText: '',
         };
     }
 
@@ -38,16 +42,18 @@ class ResetTimers extends Component {
         await contract.resetTimers()
             .then(async (tx) => {
                 this.handleCloseConfirm()
-                this.handleShowAwait()
+                this.handleShowAwait('Reset timers')
                 return tx.wait()
             })
             .then(() => {
                 this.handleCloseAwait()
+                this.handleShowEventConfirmed('Timers has been reseted')
             })
             .catch((err) => {
                 console.error(err)
                 this.handleCloseConfirm()
                 this.handleCloseAwait()
+                this.handleShowError('Something went wrong')
             })
     }
 
@@ -60,13 +66,25 @@ class ResetTimers extends Component {
     handleShow = this.handleShow.bind(this)
 
     handleShowConfirm = () => this.setState({ showConfirm: true })
-    handleShowAwait = () => this.setState({ showConfirm: false, showAwait: true })
+    handleShowAwait = (processingText) => this.setState({ showConfirm: false, showAwait: true, processingText })
     handleCloseConfirm = () => this.setState({ showConfirm: false })
     handleCloseAwait = () => this.setState({ showAwait: false })
     handleShowConfirm = this.handleShowConfirm.bind(this)
     handleShowAwait = this.handleShowAwait.bind(this)
     handleCloseConfirm = this.handleCloseConfirm.bind(this)
     handleCloseAwait = this.handleCloseAwait.bind(this)
+
+    handleShowEventConfirmed = (confirmedText) => this.setState({ showEventConfirmed: true, confirmedText })
+    handleCloseEventConfirmed = () => this.setState({ showEventConfirmed: false })
+
+    handleShowEventConfirmed = this.handleShowEventConfirmed.bind(this)
+    handleCloseEventConfirmed = this.handleCloseEventConfirmed.bind(this)
+
+    handleShowError = (errortext) => this.setState({ showError: true, errortext })
+    handleCloseError = () => this.setState({ showError: false })
+
+    handleShowError = this.handleShowError.bind(this)
+    handleCloseError = this.handleCloseError.bind(this)
 
     render() {
         return (
@@ -109,19 +127,51 @@ class ResetTimers extends Component {
                         <p className="modal-await_text">Завещание успешно создано!!!!</p>
                     </Modal.Footer>
                 </Modal> */}
-                <Modal className="modal-loading modal-loading--process" show={this.state.showAwait}>
+                <Modal className="modal-loading modal-loading--process" show={this.state.showEventConfirmed}>
                     <Modal.Header>
-                        <div className="className='modal_confirm">
-                            <h2 className="modal-loading__title modal-loading__title--confirmed">Confirmed...</h2>
-                            <p className="modal-loading__subtitle">Approve  &lt;Token&gt;</p>
+                        <div className="modal_confirm">
+                            <h2 className="modal-loading__title modal-loading__title--confirmed">Confirmed!</h2>
+                            <p className="modal-loading__subtitle">{this.state.confirmedText}</p>
                             <div className="modal-loading__progress-bar modal-loading__progress-bar--confirmed">
                                 <span></span>
                             </div>
                         </div>
                     </Modal.Header>
                     <Modal.Footer>
-                        <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
-                            <img src={closeModalPic} />
+                        <Button variant="danger" onClick={this.handleCloseEventConfirmed} className="btn btn-danger">
+                            <img src={closePic} />
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal className="modal-loading modal-loading--process" show={this.state.showAwait}>
+                    <Modal.Header>
+                        <div className="className='modal_confirm">
+                            <h2 className="modal-loading__title modal-loading__title--processing">Processing...</h2>
+                            <p className="modal-loading__subtitle">{this.state.processingText}</p>
+                            <div className="modal-loading__progress-bar modal-loading__progress-bar--processing">
+                                <span></span>
+                            </div>
+                        </div>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
+                            <img src={closePic} />
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal className="modal-loading modal-loading--process" show={this.state.showError}>
+                    <Modal.Header>
+                        <div className="modal_confirm">
+                            <h2 className="modal-loading__title modal-loading__title--error">Error</h2>
+                            <div>{this.state.errortext}</div>
+                            <div className="modal-loading__progress-bar modal-loading__progress-bar--error">
+                                <span></span>
+                            </div>
+                        </div>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="danger" className="btn btn-danger" onClick={this.handleCloseError}>
+                            <img src={closePic} alt="close" />
                         </Button>
                     </Modal.Footer>
                 </Modal>

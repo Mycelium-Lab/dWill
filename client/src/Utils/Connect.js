@@ -41,6 +41,7 @@ class Connect extends Component {
                     const _signer = provider.getSigner()
                     this.props.setProperties(provider, _signer, accounts[0])
                 }
+                window.location.reload()
             })
         } catch (error) {
             console.error(error)
@@ -48,22 +49,26 @@ class Connect extends Component {
     }
 
     async walletConnect() {
-        const provider = new WalletConnectProvider({
-            rpc: { 80001: "https://rpc-mumbai.maticvigil.com" }
-        })
-
-        await provider.enable();
-
-        const _provider = new ethers.providers.Web3Provider(provider)
-        // const accounts = await _provider.send("eth_requestAccounts", []);
-        const _signer = _provider.getSigner()
-        const _address = await _signer.getAddress()
-        localStorage.setItem('account', _address);
-        localStorage.setItem('wallet', 'WalletConnect');
-        this.setState({
-            selectedAddress: _address
-        })
-        this.props.setProperties(_provider, _signer, _address)
+        try {
+            const provider = new WalletConnectProvider({
+                rpc: { 80001: "https://rpc-mumbai.maticvigil.com" }
+            })
+    
+            await provider.enable();
+    
+            const _provider = new ethers.providers.Web3Provider(provider)
+            // const accounts = await _provider.send("eth_requestAccounts", []);
+            const _signer = _provider.getSigner()
+            const _address = await _signer.getAddress()
+            localStorage.setItem('account', _address);
+            localStorage.setItem('wallet', 'WalletConnect');
+            this.setState({
+                selectedAddress: _address
+            })
+            this.props.setProperties(_provider, _signer, _address)
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     async changeNetwork(chainId) {
@@ -258,7 +263,7 @@ class Connect extends Component {
             } else {
                 return (
                     <div>
-                        <div class="btn-header__main">
+                        <div className="btn-header__main">
                             <div>
                                 {
                                     localStorage.getItem('account').slice(0, 6)

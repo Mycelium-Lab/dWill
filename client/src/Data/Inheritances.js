@@ -31,7 +31,8 @@ class Inheritances extends Component {
             showAwait: false,
             showEventConfirmed: false,
             processingText: '',
-            confirmedText: ''
+            confirmedText: '',
+            showError: false,
         };
     }
 
@@ -203,6 +204,9 @@ class Inheritances extends Component {
             console.error(error)
             this.handleCloseConfirm()
             this.handleCloseAwait()
+            if (error.reason.includes('dWill: Time is not over yet')) {
+                this.handleShowError('Time is not over yet')
+            }
         }
     }
 
@@ -255,6 +259,12 @@ class Inheritances extends Component {
     handleShowEventConfirmed = this.handleShowEventConfirmed.bind(this)
     handleCloseEventConfirmed = this.handleCloseEventConfirmed.bind(this)
 
+    handleShowError = (errortext) => this.setState({ showError: true, errortext })
+    handleCloseError = () => this.setState({ showError: false })
+
+    handleShowError = this.handleShowError.bind(this)
+    handleCloseError = this.handleCloseError.bind(this)
+
     render() {
         return (
             <div className='your_inheritances wills-description-block'>
@@ -270,8 +280,8 @@ class Inheritances extends Component {
                                                 <div className='your_inheritances_ul-text'>
                                                     <h3 className='your_inheritances-h3'>Your inheritances</h3>
                                                     <hr />
-                                                    <div class="wills-description-block__header">
-                                                        <div class="wills-description-block__col">
+                                                    <div className="wills-description-block__header">
+                                                        <div className="wills-description-block__col">
                                                             <span>id: {v.ID.toString()} </span>
                                                             <span>
                                                                 {
@@ -287,7 +297,7 @@ class Inheritances extends Component {
                                                         </div>
                                                         <button value={v.ID.toString()} onClick={this.claim}
                                                             style={{
-                                                                display: this.checkIfTimeIsEnd(v.timeWhenWithdraw) ? 'block' : 'none'
+                                                                display: this.checkIfTimeIsEnd(v.timeWhenWithdraw) ? 'flex' : 'none'
                                                             }} className="btn_btn-success">
                                                             <img src={receivePic}></img>Receive
                                                         </button>
@@ -332,7 +342,7 @@ class Inheritances extends Component {
                         <h2 className='modal-confirm_h2'>Pending  transaction</h2>
                     </Modal.Header>
                     {/* <img className="spinner" src={LoadingPic} /> */}
-                    <div class="ml-loader">
+                    <div className="ml-loader">
                         <div></div>
                         <div></div>
                         <div></div>
@@ -402,8 +412,24 @@ class Inheritances extends Component {
                         </div>
                     </Modal.Header>
                     <Modal.Footer>
-                        <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
+                        <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
                             <img src={closePic} />
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal className="modal-loading modal-loading--process" show={this.state.showError}>
+                    <Modal.Header>
+                        <div className="modal_confirm">
+                            <h2 className="modal-loading__title modal-loading__title--error">Error</h2>
+                            <div>{this.state.errortext}</div>
+                            <div className="modal-loading__progress-bar modal-loading__progress-bar--error">
+                                <span></span>
+                            </div>
+                        </div>
+                    </Modal.Header>
+                    <Modal.Footer>
+                        <Button variant="danger" className="btn btn-danger" onClick={this.handleCloseError}>
+                            <img src={closePic} alt="close" />
                         </Button>
                     </Modal.Footer>
                 </Modal>

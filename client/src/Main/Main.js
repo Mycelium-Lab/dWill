@@ -61,7 +61,7 @@ class Main extends Component {
                     this.props.signer === null ? <Connect setProperties={this.props.setProperties} network={this.props.network}/> : <NewWill contractAddress={this.props.contractAddress} tokenAddress={this.props.tokenAddress} isEthereumNull={false} network={this.props.network} signer={this.props.signer} signerAddress={this.props.signerAddress}/>
                 }
                 {
-                    this.props.inheritancesLength === 0 ? '' : <Inheritances network={this.props.network} signer={this.props.signer} signerAddress={this.props.signerAddress}/>
+                    this.props.inheritancesLength === 0 ? '' : <Inheritances contractAddress={this.props.contractAddress} network={this.props.network} signer={this.props.signer} signerAddress={this.props.signerAddress}/>
                 }
             </div>
         )

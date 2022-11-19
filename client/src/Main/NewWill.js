@@ -125,10 +125,7 @@ class NewWill extends Component {
             .catch(err => {
                 console.log(err)
                 if (err.message.includes('resolver or addr is not ')) {
-                    this.setState({
-                        errortext: 'Choose token'
-                    })
-                    this.handleShowError()
+                    this.handleShowError('Choose token')
                 }
                 this.handleCloseConfirm()
                 this.handleCloseAwait()
@@ -136,17 +133,21 @@ class NewWill extends Component {
     }
 
     createTime() {
-        const { year, month, day } = this.state
-        let date = new Date()
-        date = new Date(date.setFullYear(date.getFullYear() + parseInt(year)))
-        date = new Date(date.setMonth(date.getMonth() + parseInt(month)))
-        date = date.addDays(parseInt(day))
-        let _gTime = date.toISOString().replaceAll('-', '').replaceAll(':', '')
-        _gTime = _gTime.slice(0, _gTime.indexOf('.'))
-        this.setState({
-            googleCalendarDateText: `${_gTime}Z`
-        })
-        return date
+        try {
+            const { year, month, day } = this.state
+            let date = new Date()
+            date = new Date(date.setFullYear(date.getFullYear() + parseInt(year)))
+            date = new Date(date.setMonth(date.getMonth() + parseInt(month)))
+            date = date.addDays(parseInt(day))
+            let _gTime = date.toISOString().replaceAll('-', '').replaceAll(':', '')
+            _gTime = _gTime.slice(0, _gTime.indexOf('.'))
+            this.setState({
+                googleCalendarDateText: `${_gTime}Z`
+            })
+            return date
+        } catch (error) {
+            this.handleShowError('Something wrong with time')
+        }
     }
 
     async newWill() {
@@ -169,18 +170,12 @@ class NewWill extends Component {
         } catch (error) {
             console.error(error)
             if (error.message.includes('resolver or addr is not configured')) {
-                this.setState({
-                    errortext: 'Добавьте адрес'
-                })
-                this.handleShowError()
+                this.handleShowError('Добавьте адрес')
             }
             if (error.message.includes('invalid BigNumber string')) {
-                this.setState({
-                    errortext: 'Введите время правильно'
-                })
-                this.handleShowError()
+                this.handleShowError('Введите время правильно')
             }
-            this.handleShowError()
+            if (error.message.includes('user rejected transaction')) {}
             this.handleCloseConfirm()
             this.handleCloseAwait()
         }
@@ -203,10 +198,7 @@ class NewWill extends Component {
             )
         } catch (error) {
             if (error.message.includes('resolver or addr is not configured')) {
-                this.setState({
-                    errortext: 'Выберите токен1'
-                })
-                this.handleShowError()
+                this.handleShowError('Choose token')
             }
         }
     }
@@ -223,13 +215,13 @@ class NewWill extends Component {
             const allowance = await _token.allowance(signerAddress, contractAddress)
             this.changeApproved(BigInt(allowance), BigInt(this.state.amount))
         } catch (error) {
+            console.error(error)
             if (error.message.includes('resolver or addr is not configured')) {
                 this.setState({
-                    errortext: 'Выберите токен',
                     amount: '0',
                     isUnlimitedAmount: false
                 })
-                this.handleShowError()
+                this.handleShowError('Выберите токен')
             }
         }
     }
@@ -292,8 +284,12 @@ class NewWill extends Component {
             )
             this.changeApproved(allowance, amount)
         } catch (error) {
-            console.log(error)
-            this.handleShowError()
+            console.log(error.message)
+            if (error.message.includes('resolver or addr is not configured')) {
+                this.handleShowError('Choose token')
+            } else {
+                this.handleShowError()
+            }
         }
     }
 
@@ -375,7 +371,7 @@ class NewWill extends Component {
     handleCloseConfirm = this.handleCloseConfirm.bind(this)
     handleCloseAwait = this.handleCloseAwait.bind(this)
 
-    handleShowError = () => this.setState({ showError: true })
+    handleShowError = (errortext) => this.setState({ showError: true, errortext })
     handleCloseError = () => this.setState({ showError: false })
 
     handleShowError = this.handleShowError.bind(this)
@@ -432,7 +428,7 @@ class NewWill extends Component {
                         </p>
                     </Modal.Body>
                 </Modal>
-                <Modal show={this.state.show} onHide={this.handleClose} className='will-block' style={styles.modal_new_will}>
+                <Modal show={this.state.show} className='will-block' style={styles.modal_new_will}>
                     <Modal.Header className='modal_new_will'>
                         <Button className='bnt_close' onClick={this.handleClose}>
                             <img src={buttonClosePic} alt="close" />
@@ -448,7 +444,7 @@ class NewWill extends Component {
                                 </div>
                                 <div className="form-select__wrapper">
                                     <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
-                                        <option value={"select"}>Select</option>
+                                        <option value={""}>Select</option>
                                         <option value={this.props.tokenAddress}>TFT</option>
                                         <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
                                     </select>
@@ -461,7 +457,7 @@ class NewWill extends Component {
                                     <label htmlFor="unlimited">Unlimited</label><br />
                                 </div>
                                 <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
-                                    <input placeholder="Введите сумму" onChange={this.onChangeAmount} value={this.state.currentEditAmount} type="number" className="input-group mb-3" />
+                                    <input placeholder="Введите сумму" onChange={this.onChangeAmount} value={this.state.amount} type="number" className="input-group mb-3" />
                                     <Button variant="outline-success" onClick={this.onSetMaxAmount}>
                                         All
                                     </Button>
@@ -540,7 +536,7 @@ class NewWill extends Component {
 
                 </Modal>
             </div>
-                <Modal show={this.state.showConfirm} className="modal-confirm">
+                <Modal id='modal_confirm' show={this.state.showConfirm} className="modal-confirm">
                     <Modal.Header>
                         <h2 className='modal-confirm_h2'>Pending  transaction</h2>
                     </Modal.Header>
@@ -607,7 +603,7 @@ class NewWill extends Component {
                     </Modal.Header> */}
                     <img src={ConfiPic} />
                     <Modal.Footer>
-                        <button className="btn-close-modal btn btn-primary">
+                        <button className="btn-close-modal btn btn-primary" onClick={this.handleCloseDoneNewWill}>
                             <img src={closeModalPic}></img>
                         </button>
                         <p className="modal-await_text">Завещание успешно создано!</p>
@@ -637,7 +633,7 @@ class NewWill extends Component {
                         </div>
                     </Modal.Header>
                     <Modal.Footer>
-                        <Button variant="danger" className="btn btn-danger">
+                        <Button variant="danger" className="btn btn-danger" onClick={this.handleCloseError}>
                             <img src={closePic} alt="close" />
                         </Button>
                     </Modal.Footer>

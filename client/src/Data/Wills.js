@@ -445,6 +445,7 @@ class Wills extends Component {
                             approved: true
                         })
                     })
+                this.handleShowEventConfirmed(`Approved ${currentEditSymbol}`)
             })
             .catch(err => {
                 console.error(err)
@@ -898,7 +899,7 @@ class Wills extends Component {
                         </div>
                     </Modal.Header>
                     <Modal.Footer>
-                        <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
+                        <Button variant="danger" onClick={this.handleCloseAwait} className="btn btn-danger">
                             <img src={closePic} />
                         </Button>
                     </Modal.Footer>
@@ -927,7 +928,7 @@ class Wills extends Component {
                         </div>
                     </Modal.Header>
                     <Modal.Footer>
-                        <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
+                        <Button variant="danger" onClick={this.handleCloseError} className="btn btn-danger">
                             <img src={closePic} />
                         </Button>
                     </Modal.Footer>

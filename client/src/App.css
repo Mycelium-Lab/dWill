@@ -1605,7 +1605,7 @@ input::-webkit-inner-spin-button {
 } */
 
 .btn_btn-success {
-  display: flex !important;
+  display: flex;
   min-width: 120px;
   font-style: normal;
   font-weight: 400;
