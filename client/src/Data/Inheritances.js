@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import TheWill from '../Contract/TheWill.json'
 import closePic from '../content/button_close.svg'
+import receivePic from '../content/receive.svg'
 
 import { ethers } from "ethers";
 
@@ -60,17 +61,17 @@ class Inheritances extends Component {
             let networkName
             if (this.props.network === chainIDs.BinanceMainnet) {
                 networkName = `BNB Chain`
-            } else if (this.props.network  === chainIDs.Polygon) {
+            } else if (this.props.network === chainIDs.Polygon) {
                 networkName = `Polygon`
-            } else if (this.props.network  === 31337) {
+            } else if (this.props.network === 31337) {
                 networkName = `Hardhat`
-            } else if (this.props.network  === chainIDs.Mumbai) {
+            } else if (this.props.network === chainIDs.Mumbai) {
                 networkName = `Mumbai`
-            } else if (this.props.network  === chainIDs.Goerli) {
+            } else if (this.props.network === chainIDs.Goerli) {
                 networkName = `Goerli`
-            } else if (this.props.network  === chainIDs.EthereumMainnet) {
+            } else if (this.props.network === chainIDs.EthereumMainnet) {
                 networkName = `Ethereum`
-            } else if (this.props.network  === chainIDs.BinanceTestnet) {
+            } else if (this.props.network === chainIDs.BinanceTestnet) {
                 networkName = `BNBTest Chain`
             }
             contract.on('AddAnHeir', async (ID, owner, heir, token, timeWhenWithdraw, amount) => {
@@ -266,27 +267,34 @@ class Inheritances extends Component {
                                     this.state.inheritances.map((v) => {
                                         return (
                                             <li key={v.ID} style={{ "marginBottom": '10px' }}>
-
                                                 <div className='your_inheritances_ul-text'>
                                                     <h3 className='your_inheritances-h3'>Your inheritances</h3>
                                                     <hr />
-                                                    <span>id: {v.ID.toString()} </span>
-                                                    <span>
-                                                        {
-                                                            this.remainingTime(v.timeWhenWithdraw) === 'Nothing.'
-                                                                ?
-                                                                'You '
-                                                                :
-                                                                `After ${this.remainingTime(v.timeWhenWithdraw)} you `
-                                                        }
-                                                        can harvest up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited' : (v.amount / Math.pow(10, v.decimals)).toString()} {v.symbol} from wallet</span>
-                                                    <a href={`${this.props.networkProvider}${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`} </a>
-                                                    on {this.state.network} chain</div>
-                                                <div><button value={v.ID.toString()} onClick={this.claim}
-                                                    style={{
-                                                        display: this.checkIfTimeIsEnd(v.timeWhenWithdraw) ? 'block' : 'none'
-                                                    }} className="btn_btn-success">
-                                                    Receive</button></div>
+                                                    <div class="wills-description-block__header">
+                                                        <div class="wills-description-block__col">
+                                                            <span>id: {v.ID.toString()} </span>
+                                                            <span>
+                                                                {
+                                                                    this.remainingTime(v.timeWhenWithdraw) === 'Nothing.'
+                                                                        ?
+                                                                        'You '
+                                                                        :
+                                                                        `After ${this.remainingTime(v.timeWhenWithdraw)} you `
+                                                                }
+                                                                can harvest up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited' : (v.amount / Math.pow(10, v.decimals)).toString()} {v.symbol} from wallet
+                                                            </span>
+                                                            <a href={`${this.props.networkProvider}${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`} </a> on {this.state.network} chain
+                                                        </div>
+                                                        <button value={v.ID.toString()} onClick={this.claim}
+                                                            style={{
+                                                                display: this.checkIfTimeIsEnd(v.timeWhenWithdraw) ? 'block' : 'none'
+                                                            }} className="btn_btn-success">
+                                                            <img src={receivePic}></img>Receive
+                                                        </button>
+                                                    </div>
+
+                                                </div>
+
                                             </li>
                                         )
                                     })
@@ -296,7 +304,7 @@ class Inheritances extends Component {
                         :
                         <h4>У вас еще нет активных завещаний.</h4>
                 }
-                <Modal show={this.state.showConfirm}>
+                {/* <Modal show={this.state.showConfirm}>
                     <Modal.Header>
                         <div className="load-6">
                             <div className="letter-holder">
@@ -317,6 +325,33 @@ class Inheritances extends Component {
                         <Button variant="danger" onClick={this.handleCloseConfirm} className="btn btn-danger">
                             Close
                         </Button>
+                    </Modal.Footer>
+                </Modal> */}
+                <Modal show={this.state.showConfirm} className="modal-confirm">
+                    <Modal.Header>
+                        <h2 className='modal-confirm_h2'>Pending  transaction</h2>
+                    </Modal.Header>
+                    {/* <img className="spinner" src={LoadingPic} /> */}
+                    <div class="ml-loader">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+
+                    <Modal.Footer>
+                        <p className="modal-confirm_text">Please confirm transaction in your web3 wallet</p>
+                        {/* <button className="btn-close-modal btn btn-primary">
+                            <img src={closeModalPic}></img>
+                        </button> */}
                     </Modal.Footer>
                 </Modal>
                 {/* <Modal show={this.state.showAwait}>
@@ -343,9 +378,9 @@ class Inheritances extends Component {
                 <Modal className="modal-loading modal-loading--process" show={this.state.showEventConfirmed}>
                     <Modal.Header>
                         <div className="modal_confirm">
-                            <h2 className="modal-loading__title modal-loading__title--processing">Confirmed!</h2>
+                            <h2 className="modal-loading__title modal-loading__title--confirmed">Confirmed!</h2>
                             <p className="modal-loading__subtitle">{this.state.confirmedText}</p>
-                            <div className="modal-loading__progress-bar modal-loading__progress-bar--processing">
+                            <div className="modal-loading__progress-bar modal-loading__progress-bar--confirmed">
                                 <span></span>
                             </div>
                         </div>

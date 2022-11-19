@@ -479,7 +479,7 @@ class NewWill extends Component {
                             <div className='modal_title-time-will'>{"При условии что я буду неактивен(неактивна) более чем:"}</div>
                             <div className="will-date">
                                 <div className="will-date__row">
-                                    <input type="number" onChange={this.onChangeYear} value={this.state.year} className="input-group input-group-year" />
+                                    <input type="number" max="100" onChange={this.onChangeYear} value={this.state.year} className="input-group input-group-year" />
                                     <label >Лет</label><br />
                                 </div>
                                 <div className="will-date__row">
@@ -570,9 +570,9 @@ class NewWill extends Component {
                 <Modal className="modal-loading modal-loading--process" show={this.state.showEventConfirmed}>
                     <Modal.Header>
                         <div className="modal_confirm">
-                            <h2 className="modal-loading__title modal-loading__title--processing">Confirmed!</h2>
+                            <h2 className="modal-loading__title modal-loading__title--confirmed">Confirmed!</h2>
                             <p className="modal-loading__subtitle">{this.state.confirmedText}</p>
-                            <div className="modal-loading__progress-bar modal-loading__progress-bar--processing">
+                            <div className="modal-loading__progress-bar modal-loading__progress-bar--confirmed">
                                 <span></span>
                             </div>
                         </div>
@@ -600,16 +600,16 @@ class NewWill extends Component {
                     </Modal.Footer>
                 </Modal>
                 <Modal show={this.state.newWillDone} className="modal-await">
-                    <Modal.Header>
+                    {/* <Modal.Header>
                         <Button variant="danger" onClick={this.handleCloseDoneNewWill} className="btn btn-danger">
-                            <img src={closePic} />
+                            <img src={closeModalPic} />
                         </Button>
-                    </Modal.Header>
+                    </Modal.Header> */}
                     <img src={ConfiPic} />
                     <Modal.Footer>
-                        {/* <button className="btn-close-modal btn btn-primary">
+                        <button className="btn-close-modal btn btn-primary">
                             <img src={closeModalPic}></img>
-                        </button> */}
+                        </button>
                         <p className="modal-await_text">Завещание успешно создано!</p>
                     </Modal.Footer>
                 </Modal>
