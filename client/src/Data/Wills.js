@@ -18,6 +18,7 @@ import closeModalPic from '../content/close_modal.svg'
 import PolygonPic from '../content/poligon.svg'
 import EthereumPic from '../content/ethereum.svg'
 import BinancePic from '../content/binance.svg'
+import { createRightEditTime } from '../Utils/Time';
 
 class Wills extends Component {
     constructor(props) {
@@ -52,6 +53,10 @@ class Wills extends Component {
             approved: true,
             tokensValueToApprove: '',
             contractAddress: props.contractAddress,
+            baseYear: 0,
+            baseMonth: 0,
+            baseDay: 0,
+            baseHour: 0,
             year: 0,
             month: 0,
             day: 0,
@@ -117,6 +122,7 @@ class Wills extends Component {
             }
             this.setState({ signer, signerAddress, network: networkName, contract, wills: _wills, networkPic })
             contract.on('AddAnHeir', async (ID, owner, heir, token, timeWhenWithdraw, amount) => {
+                console.log(owner.toLowerCase() === signerAddress.toLowerCase())
                 if (owner.toLowerCase() === signerAddress.toLowerCase()) {
                     let __wills = this.state.wills
                     const will = await contract.inheritanceData(ID.toString())
@@ -240,6 +246,15 @@ class Wills extends Component {
         return yDisplay + moDisplay + dDisplay
     }
 
+    timeBetweenWithdrawAndStartConverterNumbers(time) {
+        let seconds = parseInt(time)
+        let y = Math.floor(seconds / 31536000);
+        let mo = Math.floor((seconds % 31536000) / 2628000);
+        let d = Math.floor(((seconds % 31536000) % 2628000) / 86400);
+        let h = Math.floor((seconds % (3600 * 24)) / 3600);
+        return ({y, mo, d, h})
+    }
+
     remainingTime(timeWhenWithdraw) {
         const _timeNow = new Date()
         const _timeWhenWithdraw = new Date(parseInt(timeWhenWithdraw) * 1000)
@@ -290,6 +305,9 @@ class Wills extends Component {
                 year,
                 month,
                 day,
+                baseYear,
+                baseMonth,
+                baseDay,
                 updateHeir,
                 updateAmount,
                 isUnlimitedAmount,
@@ -297,7 +315,11 @@ class Wills extends Component {
             } = this.state
             let _updatedTime = 0;
             let promise;
-            if (year !== 0 || month !== 0 || day !== 0) {
+            if (currentEditAmount === '') throw Error('Enter amount')
+            if (year === 0 && month === 0 && day === 0) throw Error('Time when withdraw is lower then now')
+            if (isNaN(parseInt(year)) || isNaN(parseInt(month)) || isNaN(parseInt(day))) throw Error('Enter time')
+            if (currentEditHeirAddress === '') throw Error('Enter heir')
+            if (year !== baseYear || month !== baseMonth || day !== baseDay) {
                 let whenCreated = new Date((parseInt(currentEditTimeWhenWithdraw) - parseInt(currentEditTimeBetweenWithdrawAndStart)) * 1000)
                 whenCreated = new Date(whenCreated.setFullYear(whenCreated.getFullYear() + parseInt(year)))
                 whenCreated = new Date(whenCreated.setMonth(whenCreated.getMonth() + parseInt(month)))
@@ -307,7 +329,7 @@ class Wills extends Component {
             if (updateAmount === true && isUnlimitedAmount) {
                 currentEditAmount = UnlimitedAmount
             }
-            if (updateHeir === true && updateAmount === true && (year !== 0 || month !== 0 || day !== 0)) {
+            if (updateHeir === true && updateAmount === true && (year !== baseYear || month !== baseMonth || day !== baseDay)) {
                 promise = contract.update(
                     currentEditID,
                     _updatedTime,
@@ -318,7 +340,7 @@ class Wills extends Component {
                     true  //update amount
                 )
             }
-            if (updateHeir === true && updateAmount === true && year === 0 && month === 0 && day === 0) {
+            if (updateHeir === true && updateAmount === true && year === baseYear && month === baseMonth && day === baseDay) {
                 promise = contract.update(
                     currentEditID,
                     _updatedTime,
@@ -329,7 +351,7 @@ class Wills extends Component {
                     true
                 )
             }
-            if (updateHeir === true && updateAmount === false && (year !== 0 || month !== 0 || day !== 0)) {
+            if (updateHeir === true && updateAmount === false && (year !== baseYear || month !== baseMonth || day !== baseDay)) {
                 promise = contract.update(
                     currentEditID,
                     _updatedTime,
@@ -340,13 +362,13 @@ class Wills extends Component {
                     false  //update amount
                 )
             }
-            if (updateHeir === true && updateAmount === false && year === 0 && month === 0 && day === 0) {
+            if (updateHeir === true && updateAmount === false && year === baseYear && month === baseMonth && day === baseDay) {
                 promise = contract.updateAnHeir(
                     currentEditID,
                     currentEditHeirAddress
                 )
             }
-            if (updateHeir === false && updateAmount === true && (year !== 0 || month !== 0 || day !== 0)) {
+            if (updateHeir === false && updateAmount === true && (year !== baseYear || month !== baseMonth || day !== baseDay)) {
                 promise = contract.update(
                     currentEditID,
                     _updatedTime,
@@ -357,19 +379,19 @@ class Wills extends Component {
                     true  //update amount
                 )
             }
-            if (updateHeir === false && updateAmount === true && year === 0 && month === 0 && day === 0) {
+            if (updateHeir === false && updateAmount === true && year === baseYear && month === baseMonth && day === baseDay) {
                 promise = contract.updateAmount(
                     currentEditID,
                     currentEditAmount === UnlimitedAmount ? currentEditAmount : (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString()
                 )
             }
-            if (updateHeir === false && updateAmount === false && (year !== 0 || month !== 0 || day !== 0)) {
+            if (updateHeir === false && updateAmount === false && (year !== baseYear || month !== baseMonth || day !== baseDay)) {
                 promise = contract.updateWillTimeWhenWithdraw(
                     currentEditID,
                     _updatedTime
                 )
             }
-            if (updateHeir === false && updateAmount === false && year === 0 && month === 0 && day === 0) throw Error('Nothing to update')
+            if (updateHeir === false && updateAmount === false && year === baseYear && month === baseMonth && day === baseDay) throw Error('Nothing to update')
             this.handleShowConfirm()
             promise
                 .then(async (tx) => {
@@ -389,35 +411,82 @@ class Wills extends Component {
                             })
                         })
                 })
+                .catch((error) => {
+                    console.error(error)
+                    if (error.reason !== undefined) {
+                        if (error.reason.includes('invalid address')) {
+                            this.setState({
+                                errortext: 'Invalid address'
+                            })
+                            this.handleCloseConfirm()
+                            this.handleShowError()
+                        }
+                    }
+                    if (this.state.currentEditAmount === '0') {
+                        this.setState({
+                            errortext: 'Invalid amount'
+                        })
+                        this.handleCloseConfirm()
+                        this.handleShowError()
+                    }
+                    this.handleCloseConfirm()
+                })
         } catch (error) {
             console.error(error)
-            if (error.message.includes('Time is undefined')) {
-                this.setState({
-                    errortext: 'Выберите что делать со временем'
-                })
-                this.handleShowError()
-            }
-            if (error.message.includes('Nothing to update')) {
-                this.setState({
-                    errortext: 'Нет обновленных данных'
-                })
-                this.handleShowError()
-            }
-            if (error.message === `If you want to change the time, enter all the input data, otherwise do not enter the input data`) {
-                this.setState({
-                    errortext: 'Если вы хотите изменить время, введите все входные данные, в противном случае не вводите входные данные'
-                })
-                this.handleShowError()
+            if (error.message !== undefined) {
+                if (error.message.includes('Time is undefined')) {
+                    this.setState({
+                        errortext: 'Выберите что делать со временем'
+                    })
+                    this.handleShowError()
+                }
+                if (error.message.includes('Nothing to update')) {
+                    this.setState({
+                        errortext: 'Нет обновленных данных'
+                    })
+                    this.handleShowError()
+                }
+                if (error.message === `If you want to change the time, enter all the input data, otherwise do not enter the input data`) {
+                    this.setState({
+                        errortext: 'Если вы хотите изменить время, введите все входные данные, в противном случае не вводите входные данные'
+                    })
+                    this.handleShowError()
+                }
+                if(error.message.includes(`Time when withdraw is lower then now`)) {
+                    this.setState({
+                        errortext: 'Time when withdraw is too low'
+                    })
+                    this.handleShowError()
+                }
+                if (error.message.includes('Enter amount')) {
+                    this.setState({
+                        errortext: 'Enter amount',
+                        currentEditAmount: this.state.currentEditBaseAmount
+                    })
+                    this.handleShowError()
+                }
+                if (error.message.includes('Enter time')) {
+                    this.setState({
+                        errortext: 'Enter time',
+                        year: this.state.baseYear,
+                        month: this.state.baseMonth,
+                        day: this.state.baseDay
+                    })
+                    this.handleShowError()
+                }
+                if (error.message.includes('Enter heir')) {
+                    this.setState({
+                        errortext: 'Enter heir',
+                        currentEditHeirAddress: this.state.currentEditBaseHeirAddress
+                    })
+                    this.handleShowError()
+                }
             }
             this.handleCloseConfirm()
             this.handleCloseAwait()
-            this.handleCloseEdit()
             this.setState({
                 updateHeir: false,
                 updateAmount: false,
-                year: 0,
-                month: 0,
-                day: 0,
             })
         }
     }
@@ -456,19 +525,19 @@ class Wills extends Component {
 
     onChangeYear(event) {
         this.setState({
-            year: event.target.value
+            year: parseInt(event.target.value)
         })
     }
 
     onChangeMonth(event) {
         this.setState({
-            month: event.target.value
+            month: parseInt(event.target.value)
         })
     }
 
     onChangeDay(event) {
         this.setState({
-            day: event.target.value
+            day: parseInt(event.target.value)
         })
     }
 
@@ -526,11 +595,15 @@ class Wills extends Component {
                     updateAmount: false
                 })
             }
+            if (event.target.value === '') {
+                this.setState({
+                    currentEditAmount: ''
+                })
+            }
         } catch (error) {
             console.error(error)
         }
     }
-
 
     onChangeTime(event) {
         this.setState({
@@ -589,6 +662,9 @@ class Wills extends Component {
     handleShowEdit = async (params) => {
         try {
             const data = JSON.parse(params)
+            let base = this.timeBetweenWithdrawAndStartConverterNumbers(data.timeBetweenWithdrawAndStart)
+            console.log(base)
+            const { year,month,day,base_y,base_mo,base_d,base_h } = createRightEditTime(base)
             this.setState({
                 showEdit: true,
                 currentEditID: data.ID,
@@ -603,9 +679,13 @@ class Wills extends Component {
                 currentEditAmount: data.amount === UnlimitedAmount ? 0 : data.amount / Math.pow(10, data.decimals),
                 currentEditBaseAmount: data.amount === UnlimitedAmount ? 0 : data.amount / Math.pow(10, data.decimals),
                 currentEditDecimals: data.decimals,
-                year: 0,
-                month: 0,
-                day: 0,
+                baseYear: base_y,
+                baseMonth: base_mo,
+                baseDay: base_d,
+                baseHour: base_h,
+                year: year,
+                month: month,
+                day,
             })
         } catch (error) {
             console.error(error)
@@ -761,13 +841,14 @@ class Wills extends Component {
                                     Я завещаю мои
                                 </div>
                                 <div className="your-wills__current-token">{this.state.currentEditSymbol}</div>
-                                <div class="your-wills__check-token">
+                                <div className="your-wills__check-token">
                                     <div className="your-wills__checkbox">
                                         <input id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
                                         <label htmlFor="unlimited">Unlimited</label><br />
                                     </div>
                                     <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
-                                        <input onChange={this.onChangeAmount} value={this.state.currentEditAmount} type="number" className="input-group mb-3" />
+                                        <input onChange={this.onChangeAmount} value={this.state.currentEditAmount} 
+                                        type="number" className="input-group mb-3" />
                                         <Button variant="outline-success" onClick={this.onSetMaxAmount}>
                                             All
                                         </Button>
@@ -778,7 +859,7 @@ class Wills extends Component {
                         </div>
                         <div className="modal-body__row">С кошелька <a href='#'>{
                             this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)
-                        }</a> <i class="br"></i> на сети {this.state.network} <img src={this.state.networkPic} alt="networkpic" /></div>
+                        }</a> <i className="br"></i> на сети {this.state.network} <img src={this.state.networkPic} alt="networkpic" /></div>
                         <div className="your-wills__wallet modal-body__row">
                             Доверенному кошельку
                             <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" />
@@ -826,15 +907,71 @@ class Wills extends Component {
                         <div>
                             <ul className="your-wills__footer">
                                 <li>
-                                    <Button variant="primary" onClick={this.state.approved === false ? this.approve : null} style={
-                                        { "background": this.state.approved === true ? '#3E474F' : '#5ED5A8' }
+                                    <Button variant="primary" disabled={
+                                        (this.state.approved === true) 
+                                        || 
+                                        (this.state.currentEditAmount === '0') 
+                                        || 
+                                        (this.state.currentEditAmount === '')
+                                        || 
+                                        (this.state.currentEditHeirAddress === '')
+                                        || 
+                                        (this.state.year === '' || this.state.month === '' || this.state.day === '')
+                                        || 
+                                        (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
+                                        || 
+                                        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                    } onClick={this.state.approved === false ? this.approve : null} style={
+                                        { "background": 
+                                        this.state.approved === true 
+                                        || 
+                                        (this.state.currentEditAmount === '0') 
+                                        || 
+                                        (this.state.currentEditAmount === '')
+                                        || 
+                                        (this.state.currentEditHeirAddress === '')
+                                        || 
+                                        (this.state.year === '' || this.state.month === '' || this.state.day === '')
+                                        || 
+                                        (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
+                                        || 
+                                        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                        ? '#3E474F' : '#5ED5A8' }
                                     } >
                                         Approve
                                     </Button>
                                 </li>
                                 <li>
-                                    <Button variant="primary" onClick={this.state.approved === true ? this.edit : null} style={
-                                        { "background": this.state.approved === false ? '#3E474F' : '#5ED5A8' }
+                                    <Button variant="primary" disabled={
+                                        (this.state.approved === false) 
+                                        || 
+                                        (this.state.currentEditAmount === '0') 
+                                        || 
+                                        (this.state.currentEditAmount === '')
+                                        || 
+                                        (this.state.currentEditHeirAddress === '')
+                                        || 
+                                        (this.state.year === '' || this.state.month === '' || this.state.day === '')
+                                        || 
+                                        (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
+                                        || 
+                                        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                    } onClick={this.state.approved === true ? this.edit : null} style={
+                                        { "background": 
+                                        (this.state.approved === false) 
+                                        || 
+                                        (this.state.currentEditAmount === '0') 
+                                        || 
+                                        (this.state.currentEditAmount === '')
+                                        || 
+                                        (this.state.currentEditHeirAddress === '')
+                                        || 
+                                        (this.state.year === '' || this.state.month === '' || this.state.day === '')
+                                        || 
+                                        (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
+                                        || 
+                                        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                        ? '#3E474F' : '#5ED5A8' }
                                     } >
                                         Edit
                                     </Button>
@@ -851,7 +988,7 @@ class Wills extends Component {
                         <h2 className='modal-confirm_h2'>Pending  transaction</h2>
                     </Modal.Header>
                     {/* <img className="spinner" src={LoadingPic} /> */}
-                    <div class="ml-loader">
+                    <div className="ml-loader">
                         <div></div>
                         <div></div>
                         <div></div>
