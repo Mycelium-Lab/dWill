@@ -479,7 +479,7 @@ class NewWill extends Component {
                             <div className='modal_title-time-will'>{"При условии что я буду неактивен(неактивна) более чем:"}</div>
                             <div className="will-date">
                                 <div className="will-date__row">
-                                    <input type="number" onChange={this.onChangeYear} value={this.state.year} className="input-group input-group-year" />
+                                    <input type="number" max="100" onChange={this.onChangeYear} value={this.state.year} className="input-group input-group-year" />
                                     <label >Лет</label><br />
                                 </div>
                                 <div className="will-date__row">
