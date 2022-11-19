@@ -924,13 +924,9 @@ a {
   justify-content: center;
 }
 
-.modal-choose .modal-footer img {
-  border: 1px solid #3E474F;
-  border-radius: 10px;
-  padding: 15px;
-  width: 90px;
-  height: 90px;
-}
+
+
+
 
 .modal-choose .modal-footer img:hover,
 .modal-choose .modal-footer img:active {
@@ -2539,5 +2535,45 @@ input::-webkit-inner-spin-button {
 }
 
 .chosen-network {
-  background-color: yellow;
+  /* background-color: yellow; */
+}
+
+.modal-choose .modal-footer img {
+  border: 1px solid #3E474F;
+  border-radius: 10px;
+  padding: 15px;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  padding: 15px;
+  width: 55px;
+  height: 55px;
+}
+
+.modal-choose .modal-footer img[alt="Polygon"] {
+  border-color: #8247E5;
+}
+
+.modal-choose .modal-footer img[alt="Polygon"].chosen-network {
+  box-shadow: 0 0 5px 3px #8247E590;
+}
+
+.modal-choose .modal-footer img[alt="Ethereum"] {
+  border-color: #7986CB;
+}
+
+.modal-choose .modal-footer img[alt="Ethereum"].chosen-network {
+  box-shadow: 0 0 5px 3px #7986cb90;
+}
+
+.modal-choose .modal-footer img[alt="Binance"] {
+  border-color: #F0B90B;
+}
+
+.modal-choose .modal-footer img[alt="Binance"].chosen-network {
+  box-shadow: 0 0 5px 3px #F0B90B90;
+}
+
+.modal-choose .modal-footer img[alt="Binance"].chosen-network {
+  box-shadow: 0 0 5px 3px #5ED5A890;
 }
