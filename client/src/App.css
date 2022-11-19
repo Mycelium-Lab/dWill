@@ -2537,3 +2537,7 @@ input::-webkit-inner-spin-button {
     opacity: 1;
   }
 }
+
+.chosen-network {
+  background-color: yellow;
+}
