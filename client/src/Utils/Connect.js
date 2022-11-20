@@ -21,6 +21,20 @@ class Connect extends Component {
         };
     }
 
+    componentDidMount() {
+        const body = document.getElementsByTagName('body')
+        body[0].addEventListener('click', (event) => {
+            if (
+                event.target.id !== 'change-network' &&
+                event.target.id !==  'networkMumbai' &&
+                event.target.id !==  'networkGoerli' &&
+                event.target.id !==  'networkBinanceTestnet' 
+            ) {
+                this.closeNetworksModal()
+            }
+        })
+    }
+
     async connectToMetamask() {
         try {
             const provider = new ethers.providers.Web3Provider(window.ethereum)
@@ -285,7 +299,7 @@ class Connect extends Component {
                                         ?
                                         null
                                         :
-                                        <button className="btn-change-token" onClick={this.state.showNetworks === false ? this.showNetworksModal : this.closeNetworksModal}>
+                                        <button id='change-network' className="btn-change-token" onClick={this.state.showNetworks === false ? this.showNetworksModal : this.closeNetworksModal}>
                                             (change)
                                         </button>
                                 }
@@ -297,13 +311,13 @@ class Connect extends Component {
                                 <h1 className="modal-choose__title">Choose network</h1>
                             </Modal.Header>
                             <Modal.Footer>
-                                <img src={PolygonPic} alt="Polygon" onClick={() => this.changeNetwork(chainIDs.Mumbai)} className={
+                                <img id='networkMumbai' src={PolygonPic} alt="Polygon" onClick={() => this.changeNetwork(chainIDs.Mumbai)} className={
                                     this.props.network === chainIDs.Mumbai ? "chosen-network" : ""
                                 }/>
-                                <img src={EthereumPic} alt="Ethereum" onClick={() => this.changeNetwork(chainIDs.Goerli)} className={
+                                <img id='networkGoerli' src={EthereumPic} alt="Ethereum" onClick={() => this.changeNetwork(chainIDs.Goerli)} className={
                                     this.props.network === chainIDs.Goerli ? "chosen-network" : ""
                                 }/>
-                                <img src={BinancePic} alt="Binance" onClick={() => this.changeNetwork(chainIDs.BinanceTestnet)} className={
+                                <img id='networkBinanceTestnet' src={BinancePic} alt="Binance" onClick={() => this.changeNetwork(chainIDs.BinanceTestnet)} className={
                                     this.props.network === chainIDs.BinanceTestnet ? "chosen-network" : ""
                                 }/>
                             </Modal.Footer>
