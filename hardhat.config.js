@@ -1,5 +1,6 @@
 require("@nomicfoundation/hardhat-toolbox");
 require('dotenv').config()
+require('solidity-docgen')
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
   networks: {

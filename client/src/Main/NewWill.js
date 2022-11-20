@@ -1,6 +1,7 @@
 /* global BigInt */
 
 import React, { Component } from 'react';
+import Select from 'react-select'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import TheWill from '../Contract/TheWill.json'
@@ -19,6 +20,7 @@ import btnTelegram from '../content/btnTelegram.svg'
 import btnCalendar from '../content/btnCalendar.svg'
 import btnEmail from '../content/btnEmail.svg'
 import ERC20 from '../Contract/ERC20.json'
+import BinanceTokenExtended from '../Utils/tokens/extendedBinance.json'
 
 const styles = {
     modal_new_will: {
@@ -454,11 +456,21 @@ class NewWill extends Component {
                                     Я завещаю мои
                                 </div>
                                 <div className="form-select__wrapper">
+                                        {
+                                            this.props.network === chainIDs.BinanceMainnet 
+                                            ?
+                                            <Select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue} options={
+                                                BinanceTokenExtended.tokens.map((v) => {
+                                                    return {value: v.address, label: v.symbol}
+                                                })
+                                            } />
+                                            :
                                     <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
-                                        <option value={""}>Select</option>
-                                        <option value={this.props.tokenAddress}>TFT</option>
-                                        <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
+                                            <option value={""}>Select</option>
+                                            <option value={this.props.tokenAddress}>TFT</option>
+                                            <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
                                     </select>
+                                        }
                                     <div className="form-select__arrow">
                                         <img src={arrowDown} alt="arrow" />
                                     </div>
