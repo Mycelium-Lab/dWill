@@ -18,6 +18,9 @@ import closeModalPic from '../content/close_modal.svg'
 import PolygonPic from '../content/poligon.svg'
 import EthereumPic from '../content/ethereum.svg'
 import BinancePic from '../content/binance.svg'
+import btnTelegram from '../content/btnTelegram.svg'
+import btnCalendar from '../content/btnCalendar.svg'
+import btnEmail from '../content/btnEmail.svg'
 import { createRightEditTime } from '../Utils/Time';
 
 class Wills extends Component {
@@ -933,6 +936,16 @@ class Wills extends Component {
                                 <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
                                 <label htmlFor="wills-set3">Notifications</label><br />
                             </div>
+
+                            {/* <div style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
+                                <div>
+                                    <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider + this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer">Set notifications in Google Calendar</a>
+                                </div>
+                                <div>
+                                    <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
+                                </div>
+                            </div> */}
+
                             <div className="your-wills__notifications" style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
                                 <span>Настройте оповещения в Telegram, Email или Google Calendar и dWill оповестит вас всех важных событиях
                                     связанных с вашими завещаниями и завещаниям предназначенным для вас</span>
@@ -945,6 +958,7 @@ class Wills extends Component {
                                     <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider + this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer"><img src={btnCalendar}></img>Добавить событие в Google Calendar</a>
                                 </div>
                             </div>
+
                         </div>
                     </Modal.Body>
                     <Modal.Footer>
