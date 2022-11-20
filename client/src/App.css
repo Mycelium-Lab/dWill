@@ -2113,9 +2113,7 @@ input::-webkit-inner-spin-button {
   height: 22px;
 }
 
-.your-wills__notifications {
-
-}
+.your-wills__notifications {}
 
 .your-wills__notifications>span {
   font-size: 10px;
@@ -2599,7 +2597,8 @@ input::-webkit-inner-spin-button {
   border-color: #8247E5;
 }
 
-.modal-choose .modal-footer img[alt="Polygon"].chosen-network {
+.modal-choose .modal-footer img[alt="Polygon"].chosen-network,
+.modal-choose .modal-footer img[alt="Polygon"]:hover {
   box-shadow: 0 0 5px 3px #8247E590;
 }
 
@@ -2607,7 +2606,8 @@ input::-webkit-inner-spin-button {
   border-color: #7986CB;
 }
 
-.modal-choose .modal-footer img[alt="Ethereum"].chosen-network {
+.modal-choose .modal-footer img[alt="Ethereum"].chosen-network,
+.modal-choose .modal-footer img[alt="Ethereum"]:hover {
   box-shadow: 0 0 5px 3px #7986cb90;
 }
 
@@ -2615,12 +2615,9 @@ input::-webkit-inner-spin-button {
   border-color: #F0B90B;
 }
 
-.modal-choose .modal-footer img[alt="Binance"].chosen-network {
+.modal-choose .modal-footer img[alt="Binance"].chosen-network,
+.modal-choose .modal-footer img[alt="Binance"]:hover {
   box-shadow: 0 0 5px 3px #F0B90B90;
-}
-
-.modal-choose .modal-footer img[alt="Binance"].chosen-network {
-  box-shadow: 0 0 5px 3px #5ED5A890;
 }
 
 @media (max-width: 767px) {
