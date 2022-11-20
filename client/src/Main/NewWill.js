@@ -1,7 +1,7 @@
 /* global BigInt */
 
 import React, { Component } from 'react';
-import Select from 'react-select'
+import Select, { components } from 'react-select'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import TheWill from '../Contract/TheWill.json'
@@ -20,7 +20,22 @@ import btnTelegram from '../content/btnTelegram.svg'
 import btnCalendar from '../content/btnCalendar.svg'
 import btnEmail from '../content/btnEmail.svg'
 import ERC20 from '../Contract/ERC20.json'
-import BinanceTokenExtended from '../Utils/tokens/extendedBinance.json'
+import BinanceMainnetTokens from '../Utils/tokens/binanceMainnet.json'
+import BinanceTestnetTokens from '../Utils/tokens/binanceTestnet.json'
+import MumbaiTokens from '../Utils/tokens/mumbai.json'
+import GoerliTokens from '../Utils/tokens/goerli.json'
+import { select } from '../Utils/styles/select';
+
+const { Option } = components;
+const IconOption = props => (
+  <Option {...props}>
+    <img
+      src={props.data.icon}
+      alt={props.data.label}
+    />
+    {props.data.label}
+  </Option>
+);
 
 const styles = {
     modal_new_will: {
@@ -29,7 +44,7 @@ const styles = {
         // width: '100%',
         // top: '1%',
         // background: '#1B232A',
-    }
+    },
 }
 
 Date.prototype.addDays = function (days) {
@@ -283,9 +298,9 @@ class NewWill extends Component {
     async onChangeTokens(event) {
         try {
             const { contractAddress, signer, signerAddress, amount, contract } = this.state
-            const _token = new ethers.Contract(event.target.value, ERC20.abi, signer)
+            const _token = new ethers.Contract(event.value, ERC20.abi, signer)
             this.setState({
-                tokensValue: event.target.value
+                tokensValue: event.value
             })
             const allowance = await _token.allowance(signerAddress, contractAddress)
             const decimals = await _token.decimals()
@@ -455,26 +470,58 @@ class NewWill extends Component {
                                 <div>
                                     Я завещаю мои
                                 </div>
-                                <div className="form-select__wrapper">
-                                        {
-                                            this.props.network === chainIDs.BinanceMainnet 
+                                {
+                                    <Select placeholder="Select" styles={select} name="tokens" onChange={this.onChangeTokens} options={
+                                    this.props.network === chainIDs.BinanceMainnet 
+                                    ?
+                                        BinanceMainnetTokens.tokens.map((v) => {
+                                            return {
+                                                value: v.address, 
+                                                label: v.symbol,
+                                                icon: v.logoURI
+                                            }
+                                        })
+                                    :
+                                    (
+                                        this.props.network === chainIDs.Mumbai 
+                                        ?
+                                        MumbaiTokens.tokens.map((v) => {
+                                                return {
+                                                    value: v.address, 
+                                                    label: v.symbol,
+                                                    icon: v.logoURI
+                                                }
+                                        })
+                                        :
+                                        (
+                                            this.props.network === chainIDs.Goerli 
                                             ?
-                                            <Select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue} options={
-                                                BinanceTokenExtended.tokens.map((v) => {
-                                                    return {value: v.address, label: v.symbol}
-                                                })
-                                            } />
+                                            GoerliTokens.tokens.map((v) => {
+                                                    return {
+                                                        value: v.address, 
+                                                        label: v.symbol,
+                                                        icon: v.logoURI
+                                                    }
+                                            })
                                             :
-                                    <select className="form-select" name="tokens" onChange={this.onChangeTokens} value={this.state.tokensValue}>
-                                            <option value={""}>Select</option>
-                                            <option value={this.props.tokenAddress}>TFT</option>
-                                            <option value={'0xE097d6B3100777DC31B34dC2c58fB524C2e76921'}>USDC</option>
-                                    </select>
-                                        }
-                                    <div className="form-select__arrow">
-                                        <img src={arrowDown} alt="arrow" />
-                                    </div>
-                                </div>
+                                            (
+                                                this.props.network === chainIDs.BinanceTestnet 
+                                                ?
+                                                BinanceTestnetTokens.tokens.map((v) => {
+                                                        return {
+                                                            value: v.address, 
+                                                            label: v.symbol,
+                                                            icon: v.logoURI
+                                                        }
+                                                })
+                                                :
+                                                null
+                                            )
+                                        )
+                                    )
+                                    } 
+                                    components={{ Option: IconOption }}/>
+                                }
                                 <div className="your-wills__checkbox">
                                     <input id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
                                     <label htmlFor="unlimited">Unlimited</label><br />
