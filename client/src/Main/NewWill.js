@@ -15,6 +15,9 @@ import ConfiPic from '../content/confi.svg'
 import LoadingPic from '../content/loading.svg'
 import arrowDown from '../content/arrow-down.svg'
 import closePic from '../content/button_close.svg'
+import btnTelegram from '../content/btnTelegram.svg'
+import btnCalendar from '../content/btnCalendar.svg'
+import btnEmail from '../content/btnEmail.svg'
 import ERC20 from '../Contract/ERC20.json'
 
 const styles = {
@@ -148,11 +151,11 @@ class NewWill extends Component {
         } catch (error) {
             if (
                 (this.state.year === '' || this.state.month === '' || this.state.day === '')
-                || 
+                ||
                 (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
-                || 
+                ||
                 (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
-            ) {} else {
+            ) { } else {
                 this.handleShowError('Something wrong with time')
             }
         }
@@ -183,7 +186,7 @@ class NewWill extends Component {
             if (error.message.includes('invalid BigNumber string')) {
                 this.handleShowError('Введите время правильно')
             }
-            if (error.message.includes('user rejected transaction')) {}
+            if (error.message.includes('user rejected transaction')) { }
             this.handleCloseConfirm()
             this.handleCloseAwait()
         }
@@ -510,12 +513,16 @@ class NewWill extends Component {
                                 <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
                                 <label htmlFor="wills-set3">Notifications</label><br />
                             </div>
-                            <div style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
-                                <div>
-                                    <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider + this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer">Set notifications in Google Calendar</a>
+                            <div className="your-wills__notifications" style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
+                                <span>Настройте оповещения в Telegram, Email или Google Calendar и dWill оповестит вас всех важных событиях
+                                    связанных с вашими завещаниями и завещаниям предназначенным для вас</span>
+                                <div className="your-wills__links">
+                                    <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer"><img src={btnTelegram}></img></a>
+                                    <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer"><img src={btnEmail}></img></a>
+                                    <span>Настроить оповещения в телеграм и на email</span>
                                 </div>
-                                <div>
-                                    <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
+                                <div className="your-wills__links">
+                                    <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider + this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer"><img src={btnCalendar}></img>Добавить событие в Google Calendar</a>
                                 </div>
                             </div>
                         </div>
@@ -525,98 +532,102 @@ class NewWill extends Component {
                             <ul className="your-wills__footer">
                                 <li>
                                     <Button variant="primary" disabled={
-                                        (this.state.approved === true) 
-                                        || 
-                                        (this.state.amount === '0') 
-                                        || 
+                                        (this.state.approved === true)
+                                        ||
+                                        (this.state.amount === '0')
+                                        ||
                                         (this.state.amount === '')
-                                        || 
+                                        ||
                                         (this.state.heirAddress === '')
-                                        || 
+                                        ||
                                         (this.state.year === '' || this.state.month === '' || this.state.day === '')
-                                        || 
+                                        ||
                                         (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
-                                        || 
+                                        ||
                                         (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
                                     } onClick={
-                                        this.state.approved !== false 
-                                        || 
-                                        (this.state.amount !== '0') 
-                                        || 
-                                        (this.state.amount !== '')
-                                        || 
-                                        (this.state.heirAddress !== '')
-                                        || 
-                                        (this.state.year !== '' || this.state.month !== '' || this.state.day !== '')
-                                        || 
-                                        (this.state.year !== 0 && this.state.month !== 0 && this.state.day !== 0)
-                                        || 
-                                        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
-                                        ? this.approve : null} style={
-                                        { "background": 
-                                        (this.state.approved === true)
-                                        || 
-                                        (this.state.amount === '0') 
-                                        || 
-                                        (this.state.amount === '')
-                                        || 
-                                        (this.state.heirAddress === '')
-                                        || 
-                                        (this.state.year === '' || this.state.month === '' || this.state.day === '')
-                                        || 
-                                        (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
-                                        || 
-                                        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
-                                         ? '#3E474F' : '#5ED5A8' }
-                                    } >
+                                        this.state.approved !== false
+                                            ||
+                                            (this.state.amount !== '0')
+                                            ||
+                                            (this.state.amount !== '')
+                                            ||
+                                            (this.state.heirAddress !== '')
+                                            ||
+                                            (this.state.year !== '' || this.state.month !== '' || this.state.day !== '')
+                                            ||
+                                            (this.state.year !== 0 && this.state.month !== 0 && this.state.day !== 0)
+                                            ||
+                                            (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                            ? this.approve : null} style={
+                                                {
+                                                    "background":
+                                                        (this.state.approved === true)
+                                                            ||
+                                                            (this.state.amount === '0')
+                                                            ||
+                                                            (this.state.amount === '')
+                                                            ||
+                                                            (this.state.heirAddress === '')
+                                                            ||
+                                                            (this.state.year === '' || this.state.month === '' || this.state.day === '')
+                                                            ||
+                                                            (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
+                                                            ||
+                                                            (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                                            ? '#3E474F' : '#5ED5A8'
+                                                }
+                                            } >
                                         Approve
                                     </Button>
                                 </li>
                                 <li>
                                     <Button variant="primary" disabled={
-                                        (this.state.approved === false) 
-                                        || 
-                                        (this.state.amount === '0') 
-                                        || 
+                                        (this.state.approved === false)
+                                        ||
+                                        (this.state.amount === '0')
+                                        ||
                                         (this.state.amount === '')
-                                        || 
+                                        ||
                                         (this.state.heirAddress === '')
-                                        || 
+                                        ||
                                         (this.state.year === '' || this.state.month === '' || this.state.day === '')
-                                        || 
+                                        ||
                                         (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
-                                        || 
+                                        ||
                                         (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
                                     } onClick={
                                         this.state.approved === false
-                                        || 
-                                        (this.state.amount === '0') 
-                                        || 
-                                        (this.state.amount === '')
-                                        || 
-                                        (this.state.heirAddress === '')
-                                        || 
-                                        (this.state.year === '' || this.state.month === '' || this.state.day === '')
-                                        || 
-                                        (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
-                                        || 
-                                        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
-                                         ? null : this.newWill} style={
-                                        { "background": 
-                                        (this.state.approved === false) 
-                                        || 
-                                        (this.state.amount === '0') 
-                                        || 
-                                        (this.state.amount === '')
-                                        || 
-                                        (this.state.heirAddress === '')
-                                        || 
-                                        (this.state.year === '' || this.state.month === '' || this.state.day === '')
-                                        || 
-                                        (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
-                                        || 
-                                        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
-                                        ? '#3E474F' : '#5ED5A8' }} 
+                                            ||
+                                            (this.state.amount === '0')
+                                            ||
+                                            (this.state.amount === '')
+                                            ||
+                                            (this.state.heirAddress === '')
+                                            ||
+                                            (this.state.year === '' || this.state.month === '' || this.state.day === '')
+                                            ||
+                                            (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
+                                            ||
+                                            (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                            ? null : this.newWill} style={
+                                                {
+                                                    "background":
+                                                        (this.state.approved === false)
+                                                            ||
+                                                            (this.state.amount === '0')
+                                                            ||
+                                                            (this.state.amount === '')
+                                                            ||
+                                                            (this.state.heirAddress === '')
+                                                            ||
+                                                            (this.state.year === '' || this.state.month === '' || this.state.day === '')
+                                                            ||
+                                                            (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
+                                                            ||
+                                                            (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                                            ? '#3E474F' : '#5ED5A8'
+                                                }}
                                         className='button_make-new-will'>
                                         <span className="button_number-span">Make new will </span>
                                     </Button>
