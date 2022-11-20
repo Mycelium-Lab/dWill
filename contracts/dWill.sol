@@ -13,11 +13,9 @@ contract dWill is IHeritage {
     InheritanceData[] public inheritanceData;
     
     ///@notice the IDs of wills (inheritance) made by a person
-    ///@return uint256
     mapping(address => uint256[]) public inheritancesOwner;
 
     ///@notice the IDs of wills intended for a person
-    ///@return uint256
     mapping(address => uint256[]) public inheritancesHeir;
 
     ///@notice creates the will (heritage)

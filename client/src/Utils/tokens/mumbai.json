@@ -1,0 +1,20 @@
+{
+    "tokens": [
+        {
+          "name": "Test Token",
+          "symbol": "TFT",
+          "address": "0xDCBdA40D57961b9C7f11d7E155aCbaB80Fb6fE6f",
+          "chainId": 56,
+          "decimals": 18,
+          "logoURI": "https://assets.coingecko.com/coins/images/325/thumb/Tether-logo.png?1598003707"
+        },
+        {
+            "name": "USDC",
+            "symbol": "USDC",
+            "address": "0xE097d6B3100777DC31B34dC2c58fB524C2e76921",
+            "chainId": 56,
+            "decimals": 6,
+            "logoURI": "https://assets.coingecko.com/coins/images/6319/thumb/USD_Coin_icon.png?1547042389"
+        }
+    ]
+}
