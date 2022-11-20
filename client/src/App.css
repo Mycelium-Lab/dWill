@@ -2081,6 +2081,52 @@ input::-webkit-inner-spin-button {
   flex: 1 0 auto;
 }
 
+.your-wills__links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.your-wills__links span {
+  text-decoration: underline;
+  font-size: 14px;
+  font-weight: 400;
+  color: #C1C7CD;
+}
+
+.your-wills__links:last-child {
+  margin-bottom: 0;
+}
+
+.your-wills__links a {
+  font-size: 14px;
+  font-weight: 400;
+  color: #C1C7CD;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.your-wills__links a img {
+  width: 22px;
+  height: 22px;
+}
+
+.your-wills__notifications {
+
+}
+
+.your-wills__notifications>span {
+  font-size: 10px;
+  font-weight: 400;
+  color: #C1C7CD;
+  line-height: 12px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  display: block;
+}
+
 @media (max-width: 767px) {
   .your-wills__check-token {
     width: 100%;
@@ -2541,7 +2587,6 @@ input::-webkit-inner-spin-button {
 .modal-choose .modal-footer img {
   border: 1px solid #3E474F;
   border-radius: 10px;
-  padding: 15px;
   width: 90px;
   height: 90px;
   border-radius: 50%;
@@ -2576,4 +2621,12 @@ input::-webkit-inner-spin-button {
 
 .modal-choose .modal-footer img[alt="Binance"].chosen-network {
   box-shadow: 0 0 5px 3px #5ED5A890;
+}
+
+@media (max-width: 767px) {
+  .modal-choose .modal-footer img {
+    width: 35px;
+    height: 35px;
+    padding: 7px;
+  }
 }
