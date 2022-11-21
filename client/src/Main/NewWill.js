@@ -31,7 +31,7 @@ import { select } from '../Utils/styles/select';
 const { Option } = components;
 const IconOption = props => (
     <Option {...props}>
-        <img
+        <img className="select-pic"
             src={props.data.icon}
             alt={props.data.label}
         />
@@ -99,24 +99,24 @@ class NewWill extends Component {
             let networkPic
             if (this.props.network === chainIDs.Mumbai) {
                 networkPic = PolygonPic
-              } else if (this.props.network === chainIDs.Goerli) {
+            } else if (this.props.network === chainIDs.Goerli) {
                 networkPic = EthereumPic
-              } else if (this.props.network === chainIDs.Polygon) {
+            } else if (this.props.network === chainIDs.Polygon) {
                 networkPic = PolygonPic
-              } else if (this.props.network === chainIDs.BinanceTestnet) {
+            } else if (this.props.network === chainIDs.BinanceTestnet) {
                 networkPic = BinancePic
-              } else if (this.props.network === chainIDs.BinanceMainnet) {
+            } else if (this.props.network === chainIDs.BinanceMainnet) {
                 networkPic = BinancePic
-              } else if (this.props.network === chainIDs.EthereumMainnet) {
+            } else if (this.props.network === chainIDs.EthereumMainnet) {
                 networkPic = EthereumPic
-              } else if (this.props.network === chainIDs.AvalancheMainnet) {
+            } else if (this.props.network === chainIDs.AvalancheMainnet) {
                 networkPic = AvalanchePic
-              } else if (this.props.network === chainIDs.OptimismMainnet) {
+            } else if (this.props.network === chainIDs.OptimismMainnet) {
                 networkPic = OptimismPic
-              } else if (this.props.network === chainIDs.ArbitrumMainnet) {
+            } else if (this.props.network === chainIDs.ArbitrumMainnet) {
                 networkPic = ArbitrumPic
-              }
-            this.setState({ signer, signerAddress, contract,networkPic })
+            }
+            this.setState({ signer, signerAddress, contract, networkPic })
         } catch (error) {
             console.error(error)
         }
@@ -511,13 +511,13 @@ class NewWill extends Component {
                                     <Select placeholder="Select" styles={select} name="tokens" onChange={this.onChangeTokens} options={
                                         this.getTokensLists().map((v) => {
                                             return {
-                                                value: v.address, 
+                                                value: v.address,
                                                 label: v.symbol,
                                                 icon: v.logoURI
                                             }
                                         })
-                                    } 
-                                    components={{ Option: IconOption }}/>
+                                    }
+                                        components={{ Option: IconOption }} />
                                 }
                                 <div className="your-wills__checkbox">
                                     <input id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
