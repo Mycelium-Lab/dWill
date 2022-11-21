@@ -28,13 +28,13 @@ import { select } from '../Utils/styles/select';
 
 const { Option } = components;
 const IconOption = props => (
-  <Option {...props}>
-    <img
-      src={props.data.icon}
-      alt={props.data.label}
-    />
-    {props.data.label}
-  </Option>
+    <Option {...props}>
+        <img
+            src={props.data.icon}
+            alt={props.data.label}
+        />
+        {props.data.label}
+    </Option>
 );
 
 const styles = {
@@ -362,6 +362,20 @@ class NewWill extends Component {
         })
     }
 
+    changeDelivery() {
+        this.createTime()
+        this.setState({
+            deliveryOn: this.state.deliveryOn === true ? false : true
+        })
+    }
+
+    changeMessage() {
+        this.createTime()
+        this.setState({
+            messageOn: this.state.messageOn === true ? false : true
+        })
+    }
+
     onChangeUnlimitedAmount = this.onChangeUnlimitedAmount.bind(this)
     onSetMaxAmount = this.onSetMaxAmount.bind(this)
     approve = this.approve.bind(this)
@@ -374,6 +388,8 @@ class NewWill extends Component {
     onChangeDay = this.onChangeDay.bind(this)
     onChangeHeirAddress = this.onChangeHeirAddress.bind(this)
     changeNotifications = this.changeNotifications.bind(this)
+    changeDelivery = this.changeDelivery.bind(this)
+    changeMessage = this.changeMessage.bind(this)
 
     handleClose = () => this.setState({
         show: false,
@@ -472,55 +488,55 @@ class NewWill extends Component {
                                 </div>
                                 {
                                     <Select placeholder="Select" styles={select} name="tokens" onChange={this.onChangeTokens} options={
-                                    this.props.network === chainIDs.BinanceMainnet 
-                                    ?
-                                        BinanceMainnetTokens.tokens.map((v) => {
-                                            return {
-                                                value: v.address, 
-                                                label: v.symbol,
-                                                icon: v.logoURI
-                                            }
-                                        })
-                                    :
-                                    (
-                                        this.props.network === chainIDs.Mumbai 
-                                        ?
-                                        MumbaiTokens.tokens.map((v) => {
+                                        this.props.network === chainIDs.BinanceMainnet
+                                            ?
+                                            BinanceMainnetTokens.tokens.map((v) => {
                                                 return {
-                                                    value: v.address, 
+                                                    value: v.address,
                                                     label: v.symbol,
                                                     icon: v.logoURI
                                                 }
-                                        })
-                                        :
-                                        (
-                                            this.props.network === chainIDs.Goerli 
-                                            ?
-                                            GoerliTokens.tokens.map((v) => {
-                                                    return {
-                                                        value: v.address, 
-                                                        label: v.symbol,
-                                                        icon: v.logoURI
-                                                    }
                                             })
                                             :
                                             (
-                                                this.props.network === chainIDs.BinanceTestnet 
-                                                ?
-                                                BinanceTestnetTokens.tokens.map((v) => {
+                                                this.props.network === chainIDs.Mumbai
+                                                    ?
+                                                    MumbaiTokens.tokens.map((v) => {
                                                         return {
-                                                            value: v.address, 
+                                                            value: v.address,
                                                             label: v.symbol,
                                                             icon: v.logoURI
                                                         }
-                                                })
-                                                :
-                                                null
+                                                    })
+                                                    :
+                                                    (
+                                                        this.props.network === chainIDs.Goerli
+                                                            ?
+                                                            GoerliTokens.tokens.map((v) => {
+                                                                return {
+                                                                    value: v.address,
+                                                                    label: v.symbol,
+                                                                    icon: v.logoURI
+                                                                }
+                                                            })
+                                                            :
+                                                            (
+                                                                this.props.network === chainIDs.BinanceTestnet
+                                                                    ?
+                                                                    BinanceTestnetTokens.tokens.map((v) => {
+                                                                        return {
+                                                                            value: v.address,
+                                                                            label: v.symbol,
+                                                                            icon: v.logoURI
+                                                                        }
+                                                                    })
+                                                                    :
+                                                                    null
+                                                            )
+                                                    )
                                             )
-                                        )
-                                    )
-                                    } 
-                                    components={{ Option: IconOption }}/>
+                                    }
+                                        components={{ Option: IconOption }} />
                                 }
                                 <div className="your-wills__checkbox">
                                     <input id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
@@ -561,12 +577,21 @@ class NewWill extends Component {
                         </div>
                         <div className="your-wills__settings">
                             <div className="will-date__row will-date__row--checkbox">
-                                <input id="wills-set1" type="checkbox" disabled={true} className="form-check form-check-input mt-0" />
+                                <input id="wills-set1" type="checkbox" onChange={this.changeMessage} disabled={false} className="form-check form-check-input mt-0" />
                                 <label htmlFor="wills-set1">Add NFT Message (coming soon)</label><br />
                             </div>
+                            <div className="your-wills__notifications" style={this.state.messageOn === true ? { display: 'block' } : { display: 'none' }}>
+                                <span>Сообщение хранится в зашифрованном виде и может быть прочитано получателем
+                                    только в момент получения завещания</span>
+                                <textarea placeholder="NFT message"></textarea>
+                            </div>
                             <div className="will-date__row will-date__row--checkbox">
-                                <input id="wills-set2" type="checkbox" disabled={true} className="form-check form-check-input mt-0" />
+                                <input id="wills-set2" type="checkbox" onChange={this.changeDelivery} disabled={false} className="form-check form-check-input mt-0" />
                                 <label htmlFor="wills-set2">Automatic token delivery (coming soon)</label><br />
+                            </div>
+                            <div className="your-wills__notifications" style={this.state.deliveryOn === true ? { display: 'block' } : { display: 'none' }}>
+                                <span>После того как условие будет выполнено завещанные токены будут автоматически отправлены
+                                    на доверенный кошелек (10 USDT)</span>
                             </div>
                             <div className="will-date__row will-date__row--checkbox">
                                 <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />

@@ -736,6 +736,20 @@ class Wills extends Component {
         })
     }
 
+    changeDelivery() {
+        this.createTime()
+        this.setState({
+            deliveryOn: this.state.deliveryOn === true ? false : true
+        })
+    }
+
+    changeMessage() {
+        this.createTime()
+        this.setState({
+            messageOn: this.state.messageOn === true ? false : true
+        })
+    }
+
     async onChangeUnlimitedAmount() {
         try {
             let { contractAddress, signer, signerAddress, currentEditToken, isUnlimitedAmount, isUnlimitedAmountBase, contract } = this.state
@@ -765,6 +779,8 @@ class Wills extends Component {
     }
 
     changeNotifications = this.changeNotifications.bind(this)
+    changeDelivery = this.changeDelivery.bind(this)
+    changeMessage = this.changeMessage.bind(this)
     onChangeUnlimitedAmount = this.onChangeUnlimitedAmount.bind(this)
 
     handleCloseEdit = this.handleCloseEdit.bind(this)
@@ -925,27 +941,26 @@ class Wills extends Component {
                         </div>
                         <div className="your-wills__settings">
                             <div className="will-date__row will-date__row--checkbox">
-                                <input id="wills-set1" type="checkbox" disabled={true} className="form-check form-check-input mt-0" />
+                                <input id="wills-set1" type="checkbox" onChange={this.changeMessage} disabled={false} className="form-check form-check-input mt-0" />
                                 <label htmlFor="wills-set1">Add NFT Message (coming soon)</label><br />
                             </div>
+                            <div className="your-wills__notifications" style={this.state.messageOn === true ? { display: 'block' } : { display: 'none' }}>
+                                <span>Сообщение хранится в зашифрованном виде и может быть прочитано получателем
+                                    только в момент получения завещания</span>
+                                <textarea placeholder="NFT message"></textarea>
+                            </div>
                             <div className="will-date__row will-date__row--checkbox">
-                                <input id="wills-set2" type="checkbox" disabled={true} className="form-check form-check-input mt-0" />
+                                <input id="wills-set2" type="checkbox" onChange={this.changeDelivery} disabled={false} className="form-check form-check-input mt-0" />
                                 <label htmlFor="wills-set2">Automatic token delivery (coming soon)</label><br />
+                            </div>
+                            <div className="your-wills__notifications" style={this.state.deliveryOn === true ? { display: 'block' } : { display: 'none' }}>
+                                <span>После того как условие будет выполнено завещанные токены будут автоматически отправлены
+                                    на доверенный кошелек (10 USDT)</span>
                             </div>
                             <div className="will-date__row will-date__row--checkbox">
                                 <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
                                 <label htmlFor="wills-set3">Notifications</label><br />
                             </div>
-
-                            {/* <div style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
-                                <div>
-                                    <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider + this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer">Set notifications in Google Calendar</a>
-                                </div>
-                                <div>
-                                    <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer">Добавить оповещения вы можете в нашем телеграмм боте</a>
-                                </div>
-                            </div> */}
-
                             <div className="your-wills__notifications" style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
                                 <span>Настройте оповещения в Telegram, Email или Google Calendar и dWill оповестит вас всех важных событиях
                                     связанных с вашими завещаниями и завещаниям предназначенным для вас</span>
@@ -958,7 +973,6 @@ class Wills extends Component {
                                     <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider + this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer"><img src={btnCalendar}></img>Добавить событие в Google Calendar</a>
                                 </div>
                             </div>
-
                         </div>
                     </Modal.Body>
                     <Modal.Footer>

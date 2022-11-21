@@ -62,7 +62,8 @@ export const select = {
         color: '#4285F4',
         backgroundColor: '#161C22',
         border: 'none',
-        borderRadius: '10px'
+        borderRadius: '10px',
+
         // fontSize: '18px'
     }),
     menuList: (provided, state) => ({
@@ -71,7 +72,7 @@ export const select = {
         backgroundColor: '#161C22',
         border: 'none',
         borderRadius: '10px',
-        width: '100%'
+        width: '100%',
         // fontSize: '18px'
     }),
     menuPortal: (provided, state) => ({
@@ -95,7 +96,10 @@ export const select = {
         color: '#4285F4',
         backgroundColor: '#161C22',
         border: 'none',
-        borderRadius: '10px'
+        borderRadius: '10px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '10px',
         // fontSize: '18px'
     }),
     valueContainer: (provided, state) => ({
