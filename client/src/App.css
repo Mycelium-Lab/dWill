@@ -184,7 +184,7 @@ ul {
   max-width: 700px;
   width: 100%;
   color: #C1C7CD;
-  top: 180px !important;
+  top: 0 !important;
   max-height: 100%;
   overflow-y: auto;
 }
@@ -785,7 +785,7 @@ a {
 
 .btn-header-connect img {
   display: inline-flex;
-  width: 17px;
+  min-width: 17px;
   height: 17px;
   object-fit: cover;
   margin-right: 7px;
@@ -874,11 +874,12 @@ a {
 }
 
 .modal-open {
-  overflow: visible !important;
+  /* overflow: visible !important; */
+  overflow: auto !important;
   padding: 0 !important;
-  /* position: fixed;
+  position: fixed;
   width: 100%;
-  height: 100%; */
+  height: 100%;
 }
 
 .modal_title {
@@ -901,8 +902,8 @@ a {
 
 .modal-choose.show {
   position: fixed;
-  max-width: 350px;
-  width: 100%;
+  /* min-width: 350px; */
+  /* width: 100%; */
   padding: 24px 18px 24px 30px !important;
   top: 20px;
   right: 80px;
