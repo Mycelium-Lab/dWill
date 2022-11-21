@@ -23,7 +23,10 @@ export const chainIDs = {
     BinanceTestnet: 97,
     BinanceMainnet: 56,
     EthereumMainnet: 1,
-    Goerli: 5
+    Goerli: 5,
+    AvalancheMainnet: 43114,
+    ArbitrumMainnet: 42161,
+    OptimismMainnet: 10
 }
 export const chainRPCURL = {
     Polygon: 'https://polygon-rpc.com',
@@ -31,7 +34,10 @@ export const chainRPCURL = {
     BinanceTestnet: 'https://data-seed-prebsc-1-s1.binance.org:8545',
     BinanceMainnet: 'https://bsc-dataseed.binance.org',
     EthereumMainnet: 'https://mainnet.infura.io/v3/',
-    Goerli: 'https://goerli.infura.io/v3/'
+    Goerli: 'https://goerli.infura.io/v3/',
+    AvalancheMainnet: 'https://rpc.ankr.com/avalanche',
+    ArbitrumMainnet: 'https://rpc.ankr.com/arbitrum',
+    OptimismMainnet: 'https://mainnet.optimism.io'
 }
 export const NetworkProviders = {
     Polygon: 'https://explorer.matic.network/address/',
@@ -39,5 +45,8 @@ export const NetworkProviders = {
     BinanceTestnet: 'https://testnet.bscscan.com/address/',
     BinanceMainnet: 'https://bscscan.com/address/',
     EthereumMainnet: 'https://etherscan.io/address/',
-    Goerli: 'https://goerli.etherscan.io/address/'
+    Goerli: 'https://goerli.etherscan.io/address/',
+    AvalancheMainnet: 'https://snowtrace.io/address/',
+    ArbitrumMainnet: 'https://arbiscan.io/address/',
+    OptimismMainnet: 'https://optimistic.etherscan.io/address/'
 }

@@ -16,8 +16,11 @@ import closePic from '../content/button_close.svg'
 import arrowDown from '../content/arrow-down.svg'
 import closeModalPic from '../content/close_modal.svg'
 import PolygonPic from '../content/poligon.svg'
-import EthereumPic from '../content/ethereum.svg'
 import BinancePic from '../content/binance.svg'
+import EthereumPic from '../content/ethereum.svg'
+import AvalanchePic from '../content/avalanche.svg'
+import OptimismPic from '../content/optimism.svg'
+import ArbitrumPic from '../content/arbitrum.svg'
 import btnTelegram from '../content/btnTelegram.svg'
 import btnCalendar from '../content/btnCalendar.svg'
 import btnEmail from '../content/btnEmail.svg'
@@ -100,31 +103,27 @@ class Wills extends Component {
                     decimals
                 }
             }
-            let networkName
             let networkPic
-            if (this.props.network === chainIDs.BinanceMainnet) {
-                networkName = `BNB Chain`
-                networkPic = BinancePic
-            } else if (this.props.network === chainIDs.Polygon) {
-                networkName = `Polygon`
+            if (this.props.network === chainIDs.Mumbai) {
                 networkPic = PolygonPic
-            } else if (this.props.network === 31337) {
-                networkName = `Hardhat`
+              } else if (this.props.network === chainIDs.Goerli) {
                 networkPic = EthereumPic
-            } else if (this.props.network === chainIDs.Mumbai) {
-                networkName = `Mumbai`
+              } else if (this.props.network === chainIDs.Polygon) {
                 networkPic = PolygonPic
-            } else if (this.props.network === chainIDs.Goerli) {
-                networkName = `Goerli`
-                networkPic = EthereumPic
-            } else if (this.props.network === chainIDs.EthereumMainnet) {
-                networkName = `Ethereum`
-                networkPic = EthereumPic
-            } else if (this.props.network === chainIDs.BinanceTestnet) {
-                networkName = `BNBTest Chain`
+              } else if (this.props.network === chainIDs.BinanceTestnet) {
                 networkPic = BinancePic
-            }
-            this.setState({ signer, signerAddress, network: networkName, contract, wills: _wills, networkPic })
+              } else if (this.props.network === chainIDs.BinanceMainnet) {
+                networkPic = BinancePic
+              } else if (this.props.network === chainIDs.EthereumMainnet) {
+                networkPic = EthereumPic
+              } else if (this.props.network === chainIDs.AvalancheMainnet) {
+                networkPic = AvalanchePic
+              } else if (this.props.network === chainIDs.OptimismMainnet) {
+                networkPic = OptimismPic
+              } else if (this.props.network === chainIDs.ArbitrumMainnet) {
+                networkPic = ArbitrumPic
+              }
+            this.setState({ signer, signerAddress, contract, wills: _wills, networkPic })
             contract.on('AddAnHeir', async (ID, owner, heir, token, timeWhenWithdraw, amount) => {
                 console.log(owner.toLowerCase() === signerAddress.toLowerCase())
                 if (owner.toLowerCase() === signerAddress.toLowerCase()) {
@@ -913,7 +912,7 @@ class Wills extends Component {
                         </div>
                         <div className="modal-body__row">С кошелька <a href='#'>{
                             this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)
-                        }</a> <i className="br"></i> на сети {this.state.network} <img src={this.state.networkPic} alt="networkpic" /></div>
+                        }</a> <i className="br"></i> на сети {this.props.networkName} <img src={this.state.networkPic} alt="networkpic" /></div>
                         <div className="your-wills__wallet modal-body__row">
                             Доверенному кошельку
                             <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" />

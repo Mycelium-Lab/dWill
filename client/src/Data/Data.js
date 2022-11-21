@@ -35,6 +35,7 @@ class Data extends Component {
                             signer={this.props.signer} 
                             signerAddress={this.props.signerAddress}
                             networkProvider={this.props.networkProvider}
+                            networkName={this.props.networkName}
                         />
                     </div>
                     <div className='btn_data-js'>

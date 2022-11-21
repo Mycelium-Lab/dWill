@@ -5,7 +5,12 @@ import axios from 'axios';
 import WalletConnectProvider from "@walletconnect/web3-provider";
 
 import './App.css';
-
+import PolygonPic from './content/poligon.svg'
+import BinancePic from './content/binance.svg'
+import EthereumPic from './content/ethereum.svg'
+import AvalanchePic from './content/avalanche.svg'
+import OptimismPic from './content/optimism.svg'
+import ArbitrumPic from './content/arbitrum.svg'
 import Connect from './Utils/Connect';
 import TheWill from './Contract/TheWill.json'
 import { chainIDs, chainRPCURL, NetworkProviders, TheWillAddresses, TokenAddresses } from './Utils/Constants';
@@ -25,6 +30,8 @@ class App extends Component {
     tokenAddress: '',
     network: null,
     networkProvider: '',
+    networkName: null,
+    networkPic: null,
     total: '',
     showConfirm: false,
     showAwait: false,
@@ -157,27 +164,56 @@ class App extends Component {
       let contractAddress;
       let tokenAddress;
       let networkProvider;
+      let networkPicture;
+      let networkName;
       if (network === chainIDs.Mumbai) {
         contractAddress = TheWillAddresses.Mumbai
         tokenAddress = TokenAddresses.Mumbai
         networkProvider = NetworkProviders.Mumbai
+        networkPicture = PolygonPic
+        networkName = 'Mumbai'
       } else if (network === chainIDs.Goerli) {
         contractAddress = TheWillAddresses.Goerli
         tokenAddress = TokenAddresses.Goerli
         networkProvider = NetworkProviders.Goerli
+        networkPicture = EthereumPic
+        networkName = 'Goerli'
       } else if (network === chainIDs.Polygon) {
         contractAddress = TheWillAddresses.Polygon
         networkProvider = NetworkProviders.Polygon
+        networkPicture = PolygonPic
+        networkName = 'Polygon'
       } else if (network === chainIDs.BinanceTestnet) {
         contractAddress = TheWillAddresses.BinanceTestnet
         tokenAddress = TokenAddresses.BinanceTestnet
         networkProvider = NetworkProviders.BinanceTestnet
+        networkPicture = BinancePic
+        networkName = 'BNB Test'
       } else if (network === chainIDs.BinanceMainnet) {
         contractAddress = TheWillAddresses.BinanceMainnet
         networkProvider = NetworkProviders.BinanceMainnet
+        networkPicture = BinancePic
+        networkName = 'BNB'
       } else if (network === chainIDs.EthereumMainnet) {
         contractAddress = TheWillAddresses.EthereumMainnet
         networkProvider = NetworkProviders.EthereumMainnet
+        networkPicture = EthereumPic
+        networkName = 'Ethereum'
+      } else if (network === chainIDs.AvalancheMainnet) {
+        contractAddress = ''
+        networkProvider = NetworkProviders.AvalancheMainnet
+        networkPicture = AvalanchePic
+        networkName = 'Avalance'
+      } else if (network === chainIDs.OptimismMainnet) {
+        contractAddress = ''
+        networkProvider = NetworkProviders.OptimismMainnet
+        networkPicture = OptimismPic
+        networkName = 'Optimism'
+      } else if (network === chainIDs.ArbitrumMainnet) {
+        contractAddress = ''
+        networkProvider = NetworkProviders.ArbitrumMainnet
+        networkPicture = ArbitrumPic
+        networkName = 'Arbitrum'
       }
       this.setState({
         provider,
@@ -186,7 +222,9 @@ class App extends Component {
         network,
         contractAddress,
         tokenAddress,
-        networkProvider
+        networkProvider,
+        networkPic: networkPicture,
+        networkName
       })
     } catch (error) {
       console.error(error)
@@ -240,7 +278,12 @@ class App extends Component {
                   </div>
                 </div>
                 {
-                  <Connect setProperties={this.setProperties} network={this.state.network}/>
+                  <Connect 
+                  setProperties={this.setProperties} 
+                  network={this.state.network}
+                  networkName={this.state.networkName}
+                  networkPic={this.state.networkPic}
+                  />
                 }
             </div>
             </div>
@@ -261,6 +304,7 @@ class App extends Component {
                   tokenAddress={this.state.tokenAddress}
                   contractAddress={this.state.contractAddress}
                   networkProvider={this.state.networkProvider}
+                  networkName={this.state.networkName}
                   />
                   :
                   <Data 
@@ -271,6 +315,7 @@ class App extends Component {
                   tokenAddress={this.state.tokenAddress}
                   contractAddress={this.state.contractAddress}
                   networkProvider={this.state.networkProvider}
+                  networkName={this.state.networkName}
                   />
               }
             </main>
