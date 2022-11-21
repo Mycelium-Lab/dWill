@@ -20,7 +20,7 @@ class Data extends Component {
                         />
                     </div>
                      <div>
-                        <Inheritances 
+                        <Inheritances
                             contractAddress={this.props.contractAddress}
                             network={this.props.network} 
                             signer={this.props.signer} 

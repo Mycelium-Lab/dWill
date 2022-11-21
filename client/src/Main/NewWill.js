@@ -79,7 +79,7 @@ class NewWill extends Component {
             showConfirm: false,
             showAwait: false,
             showError: false,
-            newWillDone: false,
+            newWillDone: true,
             showEventConfirmed: false,
             isUnlimitedAmount: true,
             errortext: '',
@@ -126,15 +126,20 @@ class NewWill extends Component {
             const blockTwo = document.getElementsByClassName('block-two')
             const blockThree = document.getElementsByClassName('block-three')
             const pageData = document.getElementsByClassName('page-data')
+            const your_inheritances = document.getElementsByClassName('your_inheritances_ul')
             //for show confirm
             const modalContent = document.getElementsByClassName('modal-content')
             const modalConfirm = document.getElementsByClassName('modal-confirm')
             const modalConfirmText = document.getElementsByClassName('modal-confirm_text')
             const modalConfirmH2 = document.getElementsByClassName('modal-confirm_h2')
             const modalConfirmLoader = document.getElementsByClassName('ml-loader')
+            //for done modal
+            const modalDone = document.getElementsByClassName('modal-await')
+            const modalAwaitText = document.getElementsByClassName('modal-await_text')
+            const imageInModalDone = document.getElementById('modal-done-image')
             body[0].addEventListener('click', (event) => {
                 if(
-                    this.state.show
+                    (this.state.show)
                     &&
                     (
                         event.target === App[0]
@@ -174,9 +179,22 @@ class NewWill extends Component {
                     event.target !== modalConfirmLoader[0]
                     
                 ) {
-                    console.log(event.target)
                     this.handleCloseConfirm()
                 }
+                if (
+                    this.state.newWillDone
+                    &&
+                    event.target !== modalDone[0]
+                    &&
+                    event.target !== modalAwaitText[0]
+                    &&
+                    event.target !== modalContent[0]
+                    &&
+                    event.target !== imageInModalDone
+                ) {
+                    this.handleCloseDoneNewWill()
+                }
+
             })
             this.setState({ signer, signerAddress, contract, networkPic })
         } catch (error) {
@@ -838,7 +856,7 @@ class NewWill extends Component {
                             <img src={closeModalPic} />
                         </Button>
                     </Modal.Header> */}
-                    <img src={ConfiPic} />
+                    <img id="modal-done-image" src={ConfiPic} alt="confi"/>
                     <Modal.Footer>
                         <button className="btn-close-modal btn btn-primary" onClick={this.handleCloseDoneNewWill}>
                             <img src={closeModalPic}></img>
