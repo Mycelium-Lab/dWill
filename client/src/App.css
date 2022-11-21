@@ -966,6 +966,11 @@ a {
   width: 100%;
 }
 
+.select-pic {
+  width: 15px;
+  height: 15px;
+}
+
 
 
 .form-select__wrapper {
@@ -2622,9 +2627,15 @@ input::-webkit-inner-spin-button {
   --color-polygon: #8247E5;
   --color-ethereum: #7986CB;
   --color-binance: #F0B90B;
+  --color-avalanche: #E84142;
+  --color-optimism: #FE0000;
+  --color-arbitrum: #96BEDC;
   --color-polygon-active: #8247E590;
   --color-ethereum-active: #7986CB90;
   --color-binance-active: #F0B90B90;
+  --color-avalanche-active: #E8414290;
+  --color-optimism-active: #FE000090;
+  --color-arbitrum-active: #96BEDC90;
 }
 
 .modal-choose .modal-footer img[alt="Polygon"] {
@@ -2637,6 +2648,18 @@ input::-webkit-inner-spin-button {
 
 .modal-choose .modal-footer img[alt="Binance"] {
   border-color: var(--color-binance);
+}
+
+.modal-choose .modal-footer img[alt="Avalanche"] {
+  border-color: var(--color-avalanche);
+}
+
+.modal-choose .modal-footer img[alt="Optimism"] {
+  border-color: var(--color-optimism);
+}
+
+.modal-choose .modal-footer img[alt="Arbitrum"] {
+  border-color: var(--color-arbitrum);
 }
 
 .modal-choose .modal-footer img[alt="Polygon"].chosen-network,
@@ -2652,6 +2675,21 @@ input::-webkit-inner-spin-button {
 .modal-choose .modal-footer img[alt="Binance"].chosen-network,
 .modal-choose .modal-footer img[alt="Binance"]:hover {
   box-shadow: 0 0 5px 3px var(--color-binance-active);
+}
+
+.modal-choose .modal-footer img[alt="Avalanche"].chosen-network,
+.modal-choose .modal-footer img[alt="Avalanche"]:hover {
+  box-shadow: 0 0 5px 3px var(--color-avalanche-active);
+}
+
+.modal-choose .modal-footer img[alt="Optimism"].chosen-network,
+.modal-choose .modal-footer img[alt="Optimism"]:hover {
+  box-shadow: 0 0 5px 3px var(--color-optimism-active);
+}
+
+.modal-choose .modal-footer img[alt="Arbitrum"].chosen-network,
+.modal-choose .modal-footer img[alt="Arbitrum"]:hover {
+  box-shadow: 0 0 5px 3px var(--color-arbitrum-active);
 }
 
 @media (max-width: 767px) {
