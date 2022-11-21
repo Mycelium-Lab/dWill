@@ -10,11 +10,12 @@ import { chainIDs, UnlimitedAmount } from '../Utils/Constants';
 import closeModalPic from '../content/close_modal.svg'
 import buttonClosePic from '../content/button_close.svg'
 import PolygonPic from '../content/poligon.svg'
-import EthereumPic from '../content/ethereum.svg'
 import BinancePic from '../content/binance.svg'
+import EthereumPic from '../content/ethereum.svg'
+import AvalanchePic from '../content/avalanche.svg'
+import OptimismPic from '../content/optimism.svg'
+import ArbitrumPic from '../content/arbitrum.svg'
 import ConfiPic from '../content/confi.svg'
-import LoadingPic from '../content/loading.svg'
-import arrowDown from '../content/arrow-down.svg'
 import closePic from '../content/button_close.svg'
 import btnTelegram from '../content/btnTelegram.svg'
 import btnCalendar from '../content/btnCalendar.svg'
@@ -24,6 +25,7 @@ import BinanceMainnetTokens from '../Utils/tokens/binanceMainnet.json'
 import BinanceTestnetTokens from '../Utils/tokens/binanceTestnet.json'
 import MumbaiTokens from '../Utils/tokens/mumbai.json'
 import GoerliTokens from '../Utils/tokens/goerli.json'
+import UniswapTokens from '../Utils/tokens/uniswap.json'
 import { select } from '../Utils/styles/select';
 
 const { Option } = components;
@@ -93,35 +95,54 @@ class NewWill extends Component {
             const signer = this.props.signer
             const signerAddress = this.props.signerAddress
             const contract = new ethers.Contract(this.props.contractAddress, TheWill.abi, signer)
-            let networkName
-            let networkPic
-            if (this.props.network === chainIDs.BinanceMainnet) {
-                networkName = `BNB Chain`
-                networkPic = BinancePic
-            } else if (this.props.network === chainIDs.Polygon) {
-                networkName = `Polygon`
-                networkPic = PolygonPic
-            } else if (this.props.network === 31337) {
-                networkName = `Hardhat`
-                networkPic = EthereumPic
-            } else if (this.props.network === chainIDs.Mumbai) {
-                networkName = `Mumbai`
-                networkPic = PolygonPic
-            } else if (this.props.network === chainIDs.Goerli) {
-                networkName = `Goerli`
-                networkPic = EthereumPic
-            } else if (this.props.network === chainIDs.EthereumMainnet) {
-                networkName = `Ethereum`
-                networkPic = EthereumPic
-            } else if (this.props.network === chainIDs.BinanceTestnet) {
-                networkName = `BNBTest Chain`
-                networkPic = BinancePic
-            }
             this.createTime()
-            this.setState({ signer, signerAddress, network: networkName, contract, networkPic })
+            let networkPic
+            if (this.props.network === chainIDs.Mumbai) {
+                networkPic = PolygonPic
+              } else if (this.props.network === chainIDs.Goerli) {
+                networkPic = EthereumPic
+              } else if (this.props.network === chainIDs.Polygon) {
+                networkPic = PolygonPic
+              } else if (this.props.network === chainIDs.BinanceTestnet) {
+                networkPic = BinancePic
+              } else if (this.props.network === chainIDs.BinanceMainnet) {
+                networkPic = BinancePic
+              } else if (this.props.network === chainIDs.EthereumMainnet) {
+                networkPic = EthereumPic
+              } else if (this.props.network === chainIDs.AvalancheMainnet) {
+                networkPic = AvalanchePic
+              } else if (this.props.network === chainIDs.OptimismMainnet) {
+                networkPic = OptimismPic
+              } else if (this.props.network === chainIDs.ArbitrumMainnet) {
+                networkPic = ArbitrumPic
+              }
+            this.setState({ signer, signerAddress, contract,networkPic })
         } catch (error) {
             console.error(error)
         }
+    }
+
+    getTokensLists() {
+        if (this.props.network === chainIDs.BinanceMainnet) {
+            return BinanceMainnetTokens.tokens
+        } else if (this.props.network === chainIDs.Polygon) {
+            return UniswapTokens.tokens.filter((v) => v.chainId === chainIDs.Polygon)
+        } else if (this.props.network === chainIDs.EthereumMainnet) {
+            return UniswapTokens.tokens.filter((v) => v.chainId === chainIDs.EthereumMainnet)
+        } else if (this.props.network === chainIDs.Mumbai) {
+            return MumbaiTokens.tokens
+        } else if (this.props.network === chainIDs.Goerli) {
+            return GoerliTokens.tokens
+        } else if (this.props.network === chainIDs.BinanceTestnet) {
+            return BinanceTestnetTokens.tokens
+        } else if (this.props.network === chainIDs.AvalancheMainnet) {
+            return UniswapTokens.tokens.filter((v) => v.chainId === chainIDs.AvalancheMainnet)
+        } else if (this.props.network === chainIDs.OptimismMainnet) {
+            return UniswapTokens.tokens.filter((v) => v.chainId === chainIDs.OptimismMainnet)
+        } else if (this.props.network === chainIDs.ArbitrumMainnet) {
+            return UniswapTokens.tokens.filter((v) => v.chainId === chainIDs.ArbitrumMainnet)
+        }
+        return []
     }
 
     async approve() {
@@ -472,53 +493,13 @@ class NewWill extends Component {
                                 </div>
                                 {
                                     <Select placeholder="Select" styles={select} name="tokens" onChange={this.onChangeTokens} options={
-                                    this.props.network === chainIDs.BinanceMainnet 
-                                    ?
-                                        BinanceMainnetTokens.tokens.map((v) => {
+                                        this.getTokensLists().map((v) => {
                                             return {
                                                 value: v.address, 
                                                 label: v.symbol,
                                                 icon: v.logoURI
                                             }
                                         })
-                                    :
-                                    (
-                                        this.props.network === chainIDs.Mumbai 
-                                        ?
-                                        MumbaiTokens.tokens.map((v) => {
-                                                return {
-                                                    value: v.address, 
-                                                    label: v.symbol,
-                                                    icon: v.logoURI
-                                                }
-                                        })
-                                        :
-                                        (
-                                            this.props.network === chainIDs.Goerli 
-                                            ?
-                                            GoerliTokens.tokens.map((v) => {
-                                                    return {
-                                                        value: v.address, 
-                                                        label: v.symbol,
-                                                        icon: v.logoURI
-                                                    }
-                                            })
-                                            :
-                                            (
-                                                this.props.network === chainIDs.BinanceTestnet 
-                                                ?
-                                                BinanceTestnetTokens.tokens.map((v) => {
-                                                        return {
-                                                            value: v.address, 
-                                                            label: v.symbol,
-                                                            icon: v.logoURI
-                                                        }
-                                                })
-                                                :
-                                                null
-                                            )
-                                        )
-                                    )
                                     } 
                                     components={{ Option: IconOption }}/>
                                 }
@@ -534,7 +515,7 @@ class NewWill extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className='modal-body__row modal-body__row-direction'>С кошелька <a href={`${this.props.networkProvider}${this.state.signerAddress}`} className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a><i className="br"></i> на сети {this.state.network}
+                        <div className='modal-body__row modal-body__row-direction'>С кошелька <a href={`${this.props.networkProvider}${this.state.signerAddress}`} target="_blank" rel="noreferrer" className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a><i className="br"></i> на сети {this.props.networkName}
                             <img src={this.state.networkPic} alt="networkpic" /></div>
                         <div className="your-wills__wallet modal-body__row">
                             Доверенному кошельку

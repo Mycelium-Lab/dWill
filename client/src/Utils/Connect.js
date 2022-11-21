@@ -3,6 +3,9 @@ import Modal from 'react-bootstrap/Modal';
 import PolygonPic from '../content/poligon.svg'
 import BinancePic from '../content/binance.svg'
 import EthereumPic from '../content/ethereum.svg'
+import AvalanchePic from '../content/avalanche.svg'
+import OptimismPic from '../content/optimism.svg'
+import ArbitrumPic from '../content/arbitrum.svg'
 import btnMetamask from '../content/btn-metamask.svg'
 import btnWallet from '../content/btn-wallet.svg'
 import { ethers } from "ethers";
@@ -28,7 +31,10 @@ class Connect extends Component {
                 event.target.id !== 'change-network' &&
                 event.target.id !==  'networkMumbai' &&
                 event.target.id !==  'networkGoerli' &&
-                event.target.id !==  'networkBinanceTestnet' 
+                event.target.id !==  'networkBinanceTestnet' &&
+                event.target.id !== 'networkAvalanche' &&
+                event.target.id !== 'networkOptimism' &&
+                event.target.id !== 'networkArbitrum'
             ) {
                 this.closeNetworksModal()
             }
@@ -85,81 +91,51 @@ class Connect extends Component {
         }
     }
 
+    async _changeNetwork(chainId, name, symbol, rpc) {
+        try {
+            await window.ethereum.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: ethers.utils.hexValue(chainId) }]
+            })
+                .then(() => window.location.reload())
+        } catch (err) {
+            // This error code indicates that the chain has not been added to MetaMask
+            if (err.code === 4902) {
+                await window.ethereum.request({
+                    method: 'wallet_addEthereumChain',
+                    params: [
+                        {
+                            chainName: name,
+                            chainId: ethers.utils.hexValue(chainId),
+                            nativeCurrency: { name: symbol, decimals: 18, symbol },
+                            rpcUrls: [rpc]
+                        }
+                    ]
+                });
+            }
+        }
+    }
+
     async changeNetwork(chainId) {
         const wallet = localStorage.getItem("wallet")
         if (wallet === 'Metamask') {
             if (chainId === chainIDs.Goerli && chainId !== this.props.network) {
-                try {
-                    await window.ethereum.request({
-                        method: 'wallet_switchEthereumChain',
-                        params: [{ chainId: ethers.utils.hexValue(chainIDs.Goerli) }]
-                    })
-                        .then(() => window.location.reload())
-                } catch (err) {
-                    // This error code indicates that the chain has not been added to MetaMask
-                    if (err.code === 4902) {
-                        await window.ethereum.request({
-                            method: 'wallet_addEthereumChain',
-                            params: [
-                                {
-                                    chainName: 'Goerli',
-                                    chainId: ethers.utils.hexValue(chainIDs.Goerli),
-                                    nativeCurrency: { name: 'ETH', decimals: 18, symbol: 'ETH' },
-                                    rpcUrls: [chainRPCURL.Goerli]
-                                }
-                            ]
-                        });
-                    }
-                }
+                await this._changeNetwork(chainIDs.Goerli, 'Goerli', 'ETH', chainRPCURL.Goerli)
             }
             if (chainId === chainIDs.Mumbai && chainId !== this.props.network) {
-                try {
-                    await window.ethereum.request({
-                        method: 'wallet_switchEthereumChain',
-                        params: [{ chainId: ethers.utils.hexValue(chainIDs.Mumbai) }]
-                    })
-                        .then(() => window.location.reload())
-                } catch (err) {
-                    // This error code indicates that the chain has not been added to MetaMask
-                    if (err.code === 4902) {
-                        await window.ethereum.request({
-                            method: 'wallet_addEthereumChain',
-                            params: [
-                                {
-                                    chainName: 'Mumbai',
-                                    chainId: ethers.utils.hexValue(chainIDs.Mumbai),
-                                    nativeCurrency: { name: 'MATIC', decimals: 18, symbol: 'MATIC' },
-                                    rpcUrls: [chainRPCURL.Mumbai]
-                                }
-                            ]
-                        });
-                    }
-                }
+                await this._changeNetwork(chainIDs.Mumbai, 'Mumbai', 'MATIC', chainRPCURL.Mumbai)
             }
             if (chainId === chainIDs.BinanceTestnet && chainId !== this.props.network) {
-                try {
-                    console.log(ethers.utils.hexlify(chainIDs.BinanceTestnet))
-                    await window.ethereum.request({
-                        method: 'wallet_switchEthereumChain',
-                        params: [{ chainId: ethers.utils.hexValue(chainIDs.BinanceTestnet) }]
-                    })
-                        .then(() => window.location.reload())
-                } catch (err) {
-                    // This error code indicates that the chain has not been added to MetaMask
-                    if (err.code === 4902) {
-                        await window.ethereum.request({
-                            method: 'wallet_addEthereumChain',
-                            params: [
-                                {
-                                    chainName: 'Binance Testnet',
-                                    chainId: ethers.utils.hexValue(chainIDs.BinanceTestnet),
-                                    nativeCurrency: { name: 'BNB', decimals: 18, symbol: 'BNB' },
-                                    rpcUrls: [chainRPCURL.BinanceTestnet]
-                                }
-                            ]
-                        });
-                    }
-                }
+                await this._changeNetwork(chainIDs.BinanceTestnet, 'Binance Testnet', 'BNB', chainRPCURL.BinanceTestnet)
+            }
+            if (chainId === chainIDs.AvalancheMainnet && chainId !== this.props.network) {
+                await this._changeNetwork(chainIDs.AvalancheMainnet, 'Avalanche', 'AVAX', chainRPCURL.AvalancheMainnet)
+            }
+            if (chainId === chainIDs.OptimismMainnet && chainId !== this.props.network) {
+                await this._changeNetwork(chainIDs.OptimismMainnet, 'Optimism', 'ETH', chainRPCURL.OptimismMainnet)
+            }
+            if (chainId === chainIDs.ArbitrumMainnet && chainId !== this.props.network) {
+                await this._changeNetwork(chainIDs.ArbitrumMainnet, 'Arbitrum', 'ETH', chainRPCURL.ArbitrumMainnet)
             }
         } else if (wallet === 'WalletConnect') {
             alert('You have to change network in your wallet')
@@ -181,62 +157,37 @@ class Connect extends Component {
     showNetworksModal = this.showNetworksModal.bind(this)
     closeNetworksModal = this.closeNetworksModal.bind(this)
 
+    _renderNetwork(pic, name) {
+        return (
+            <span>
+                <span>
+                    <img src={pic} alt={name} />
+                </span>
+                <span>{name} Chain</span>
+            </span>
+        ) 
+    }
+
     renderNetwork(id) {
         if (id !== null) {
             if (id === chainIDs.Mumbai) {
-                return (
-                    <span>
-                        <span>
-                            <img src={PolygonPic} alt="Mumbai" />
-                        </span>
-                        <span>Mumbai Chain</span>
-                    </span>
-                )
+                return this._renderNetwork(PolygonPic, 'Mumbai')
             } else if (id === chainIDs.Goerli) {
-                return (
-                    <span>
-                        <span>
-                            <img src={EthereumPic} alt="Goerli" />
-                        </span>
-                        <span>Goerli Chain</span>
-                    </span>
-                )
+                return this._renderNetwork(EthereumPic, 'Goerli')
             } else if (id === chainIDs.BinanceTestnet) {
-                return (
-                    <span>
-                        <span>
-                            <img src={BinancePic} alt="BNBTest Test" />
-                        </span>
-                        <span>BNBTest Chain</span>
-                    </span>
-                )
+                return this._renderNetwork(BinancePic, 'BNBTest Test')
             } else if (id === chainIDs.Polygon) {
-                return (
-                    <span>
-                        <span>
-                            <img src={PolygonPic} alt="Polygon" />
-                        </span>
-                        <span>Polygon Chain</span>
-                    </span>
-                )
+                return this._renderNetwork(PolygonPic, 'Polygon')
             } else if (id === chainIDs.BinanceMainnet) {
-                return (
-                    <span>
-                        <span>
-                            <img src={BinancePic} alt="Binance" />
-                        </span>
-                        <span>BNB Chain</span>
-                    </span>
-                )
+                return this._renderNetwork(BinancePic, 'BNB')
             } else if (id === chainIDs.EthereumMainnet) {
-                return (
-                    <span>
-                        <span>
-                            <img src={EthereumPic} alt="Ethereum" />
-                        </span>
-                        <span>Ethereum Chain</span>
-                    </span>
-                )
+                return this._renderNetwork(EthereumPic, 'Ethereum')
+            } else if (id === chainIDs.AvalancheMainnet) {
+                return this._renderNetwork(AvalanchePic, 'Avalanche')
+            } else if (id === chainIDs.OptimismMainnet) {
+                return this._renderNetwork(OptimismPic, 'Optimism')
+            } else if (id === chainIDs.ArbitrumMainnet) {
+                return this._renderNetwork(ArbitrumPic, 'Arbitrum')
             }
         }
     }
@@ -319,6 +270,15 @@ class Connect extends Component {
                                 }/>
                                 <img id='networkBinanceTestnet' src={BinancePic} alt="Binance" onClick={() => this.changeNetwork(chainIDs.BinanceTestnet)} className={
                                     this.props.network === chainIDs.BinanceTestnet ? "chosen-network" : ""
+                                }/>
+                                <img id='networkAvalanche' src={AvalanchePic} alt="Avalanche" onClick={() => this.changeNetwork(chainIDs.AvalancheMainnet)} className={
+                                    this.props.network === chainIDs.AvalancheMainnet ? "chosen-network" : ""
+                                }/>
+                                <img id='networkOptimism' src={OptimismPic} alt="Optimism" onClick={() => this.changeNetwork(chainIDs.OptimismMainnet)} className={
+                                    this.props.network === chainIDs.OptimismMainnet ? "chosen-network" : ""
+                                }/>
+                                <img id='networkArbitrum' src={ArbitrumPic} alt="Arbitrum" onClick={() => this.changeNetwork(chainIDs.ArbitrumMainnet)} className={
+                                    this.props.network === chainIDs.ArbitrumMainnet ? "chosen-network" : ""
                                 }/>
                             </Modal.Footer>
                         </Modal>
