@@ -184,7 +184,7 @@ ul {
   max-width: 700px;
   width: 100%;
   color: #C1C7CD;
-  top: 0 !important;
+  top: 180px !important;
   max-height: 100%;
   overflow-y: auto;
 }
@@ -2113,7 +2113,26 @@ input::-webkit-inner-spin-button {
   height: 22px;
 }
 
-.your-wills__notifications {}
+.your-wills__notifications textarea {
+  width: 100%;
+  min-height: 140px;
+  resize: none;
+  background-color: #161C22;
+  border-radius: 10px;
+  padding: 10px 15px;
+  border: 0;
+  color: #C1C7CD;
+  margin-bottom: 30px;
+}
+
+.your-wills__notifications textarea::placeholder {
+  color: #3C4146;
+}
+
+.your-wills__notifications textarea:focus-visible {
+  border: 0;
+  outline: 0;
+}
 
 .your-wills__notifications>span {
   font-size: 10px;
@@ -2121,7 +2140,7 @@ input::-webkit-inner-spin-button {
   color: #C1C7CD;
   line-height: 12px;
   margin-top: 20px;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
   display: block;
 }
 
@@ -2129,6 +2148,10 @@ input::-webkit-inner-spin-button {
   .your-wills__check-token {
     width: 100%;
     display: flex;
+  }
+
+  .your-wills__notifications>span {
+    margin-top: 10px;
   }
 }
 
@@ -2593,31 +2616,41 @@ input::-webkit-inner-spin-button {
   height: 55px;
 }
 
+/* цвет сети */
+:root {
+  --color-polygon: #8247E5;
+  --color-ethereum: #7986CB;
+  --color-binance: #F0B90B;
+  --color-polygon-active: #8247E590;
+  --color-ethereum-active: #7986CB90;
+  --color-binance-active: #F0B90B90;
+}
+
 .modal-choose .modal-footer img[alt="Polygon"] {
-  border-color: #8247E5;
+  border-color: var(--color-polygon);
+}
+
+.modal-choose .modal-footer img[alt="Ethereum"] {
+  border-color: var(--color-ethereum);
+}
+
+.modal-choose .modal-footer img[alt="Binance"] {
+  border-color: var(--color-binance);
 }
 
 .modal-choose .modal-footer img[alt="Polygon"].chosen-network,
 .modal-choose .modal-footer img[alt="Polygon"]:hover {
-  box-shadow: 0 0 5px 3px #8247E590;
-}
-
-.modal-choose .modal-footer img[alt="Ethereum"] {
-  border-color: #7986CB;
+  box-shadow: 0 0 5px 3px var(--color-polygon-active);
 }
 
 .modal-choose .modal-footer img[alt="Ethereum"].chosen-network,
 .modal-choose .modal-footer img[alt="Ethereum"]:hover {
-  box-shadow: 0 0 5px 3px #7986cb90;
-}
-
-.modal-choose .modal-footer img[alt="Binance"] {
-  border-color: #F0B90B;
+  box-shadow: 0 0 5px 3px var(--color-ethereum-active);
 }
 
 .modal-choose .modal-footer img[alt="Binance"].chosen-network,
 .modal-choose .modal-footer img[alt="Binance"]:hover {
-  box-shadow: 0 0 5px 3px #F0B90B90;
+  box-shadow: 0 0 5px 3px var(--color-binance-active);
 }
 
 @media (max-width: 767px) {
@@ -2651,7 +2684,7 @@ input::-webkit-inner-spin-button {
   -webkit-justify-content: space-between;
   justify-content: space-between;
   min-height: 38px;
-  outline: 0!important;
+  outline: 0 !important;
   position: relative;
   -webkit-transition: all 100ms;
   transition: all 100ms;
