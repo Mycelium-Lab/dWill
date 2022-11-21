@@ -79,7 +79,7 @@ class NewWill extends Component {
             showConfirm: false,
             showAwait: false,
             showError: false,
-            newWillDone: true,
+            newWillDone: false,
             showEventConfirmed: false,
             isUnlimitedAmount: true,
             errortext: '',
