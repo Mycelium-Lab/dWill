@@ -44,7 +44,8 @@ class Data extends Component {
                             tokenAddress={this.props.tokenAddress} 
                             isEthereumNull={false} 
                             network={this.props.network} 
-                            signer={this.props.signer} 
+                            signer={this.props.signer}
+                            networkName={this.props.networkName}
                             signerAddress={this.props.signerAddress}
                             networkProvider={this.props.networkProvider}
                         />

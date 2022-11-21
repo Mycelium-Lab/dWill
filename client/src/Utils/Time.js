@@ -3,7 +3,11 @@ export function createRightEditTime(base) {
     let month
     let day
     if (base.y === 0 && base.mo === 0 && base.d === 0 && base.h === 23) {
-        day = base.d + 1
+        year = 0
+        month = 0
+        day = 1
+        base.y = year
+        base.mo = month
         base.d = day
     } else if (base.y === 0 && base.mo === 11 && base.d === 30 && base.h === 23) {
         year = 1

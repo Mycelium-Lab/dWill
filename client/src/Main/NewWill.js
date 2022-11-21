@@ -26,6 +26,7 @@ import BinanceTestnetTokens from '../Utils/tokens/binanceTestnet.json'
 import MumbaiTokens from '../Utils/tokens/mumbai.json'
 import GoerliTokens from '../Utils/tokens/goerli.json'
 import UniswapTokens from '../Utils/tokens/uniswap.json'
+import AvalancheTokens from '../Utils/tokens/avalanche.json'
 import { select } from '../Utils/styles/select';
 
 const { Option } = components;
@@ -116,6 +117,67 @@ class NewWill extends Component {
             } else if (this.props.network === chainIDs.ArbitrumMainnet) {
                 networkPic = ArbitrumPic
             }
+            const body = document.getElementsByTagName('body')
+            const App = document.getElementsByClassName('App')
+            const MainText = document.getElementsByClassName('main-text')
+            const HeaderBoxes = document.getElementsByClassName('header_boxes')
+            const NumberOfWills = document.getElementsByClassName('number-of-wills')
+            const _container = document.getElementsByClassName('_container')
+            const blockTwo = document.getElementsByClassName('block-two')
+            const blockThree = document.getElementsByClassName('block-three')
+            const pageData = document.getElementsByClassName('page-data')
+            //for show confirm
+            const modalContent = document.getElementsByClassName('modal-content')
+            const modalConfirm = document.getElementsByClassName('modal-confirm')
+            const modalConfirmText = document.getElementsByClassName('modal-confirm_text')
+            const modalConfirmH2 = document.getElementsByClassName('modal-confirm_h2')
+            const modalConfirmLoader = document.getElementsByClassName('ml-loader')
+            body[0].addEventListener('click', (event) => {
+                if(
+                    this.state.show
+                    &&
+                    (
+                        event.target === App[0]
+                        ||
+                        event.target === MainText[0]
+                        ||
+                        event.target === HeaderBoxes[0]
+                        ||
+                        event.target === NumberOfWills[0]
+                        ||
+                        event.target === _container[0]
+                        ||
+                        event.target === blockTwo[0]
+                        ||
+                        event.target === blockTwo[1]
+                        ||
+                        event.target === blockThree[0]
+                        ||
+                        event.target === pageData[0]
+                    )
+                ) {
+                    this.handleClose()
+                }
+                if (
+                    this.state.showConfirm
+                    &&
+                    event.target !== modalContent[0]
+                    &&
+                    event.target !== modalContent[1]
+                    &&
+                    event.target !== modalConfirm[0]
+                    &&
+                    event.target !== modalConfirmText[0]
+                    &&
+                    event.target !== modalConfirmH2[0]
+                    &&
+                    event.target !== modalConfirmLoader[0]
+                    
+                ) {
+                    console.log(event.target)
+                    this.handleCloseConfirm()
+                }
+            })
             this.setState({ signer, signerAddress, contract, networkPic })
         } catch (error) {
             console.error(error)
@@ -136,7 +198,7 @@ class NewWill extends Component {
         } else if (this.props.network === chainIDs.BinanceTestnet) {
             return BinanceTestnetTokens.tokens
         } else if (this.props.network === chainIDs.AvalancheMainnet) {
-            return UniswapTokens.tokens.filter((v) => v.chainId === chainIDs.AvalancheMainnet)
+            return AvalancheTokens.tokens.filter((v) => v.chainId === chainIDs.AvalancheMainnet)
         } else if (this.props.network === chainIDs.OptimismMainnet) {
             return UniswapTokens.tokens.filter((v) => v.chainId === chainIDs.OptimismMainnet)
         } else if (this.props.network === chainIDs.ArbitrumMainnet) {
@@ -225,6 +287,9 @@ class NewWill extends Component {
                 this.handleShowError('Введите время правильно')
             }
             if (error.message.includes('user rejected transaction')) { }
+            if (error.message.includes('Not enough allowance')) {
+                this.handleShowError('Not enough allowance')
+            }
             this.handleCloseConfirm()
             this.handleCloseAwait()
         }
@@ -422,7 +487,9 @@ class NewWill extends Component {
         heirAddress: '',
         isUnlimitedAmount: false,
     });
-    handleShow = () => this.setState({ show: true });
+    handleShow = () => {
+        this.setState({ show: true })
+    };
 
     handleClose = this.handleClose.bind(this)
     handleShow = this.handleShow.bind(this)
@@ -463,7 +530,7 @@ class NewWill extends Component {
     render() {
         return (
             <><div>
-                <Button variant="primary" className="btn-new-will" onClick={this.props.isEthereumNull === false ? this.handleShow : this.handleShowWalletNotExist}>
+                <Button id="newwill-button" variant="primary" className="btn-new-will" onClick={this.props.isEthereumNull === false ? this.handleShow : this.handleShowWalletNotExist}>
                     New Will
                 </Button>
                 <div className='modal_fade'></div>
@@ -493,7 +560,7 @@ class NewWill extends Component {
                         </p>
                     </Modal.Body>
                 </Modal>
-                <Modal show={this.state.show} className='will-block' style={styles.modal_new_will}>
+                <Modal id="willmodal" show={this.state.show} className='will-block' style={styles.modal_new_will}>
                     <Modal.Header className='modal_new_will'>
                         <Button className='bnt_close' onClick={this.handleClose}>
                             <img src={buttonClosePic} alt="close" />

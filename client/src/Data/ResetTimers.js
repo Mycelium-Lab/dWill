@@ -31,6 +31,47 @@ class ResetTimers extends Component {
             const signerAddress = this.props.signerAddress
             const contract = new ethers.Contract(this.props.contractAddress, TheWill.abi, signer)
             this.setState({ signer, signerAddress, contract })
+            const body = document.getElementsByTagName('body')
+            const App = document.getElementsByClassName('App')
+            const MainText = document.getElementsByClassName('main-text')
+            const HeaderBoxes = document.getElementsByClassName('header_boxes')
+            const NumberOfWills = document.getElementsByClassName('number-of-wills')
+            const _container = document.getElementsByClassName('_container')
+            const blockTwo = document.getElementsByClassName('block-two')
+            const blockThree = document.getElementsByClassName('block-three')
+            const pageData = document.getElementsByClassName('page-data')
+            //for show confirm
+            const modalContent = document.getElementsByClassName('modal-content')
+            const modalConfirm = document.getElementsByClassName('modal-confirm')
+            const modalConfirmText = document.getElementsByClassName('modal-confirm_text')
+            const modalConfirmH2 = document.getElementsByClassName('modal-confirm_h2')
+            const modalConfirmLoader = document.getElementsByClassName('ml-loader')
+            body[0].addEventListener('click', (event) => {
+                if (
+                    this.state.showConfirm
+                    &&
+                    event.target !== modalContent[0]
+                    &&
+                    event.target !== modalContent[1]
+                    &&
+                    event.target !== modalConfirm[0]
+                    &&
+                    event.target !== modalConfirmText[0]
+                    &&
+                    event.target !== modalConfirmH2[0]
+                    &&
+                    event.target !== modalConfirmLoader[0]
+                    &&
+                    event.target.id !== 'reset-timers'
+                    &&
+                    event.target.id !== 'reset-timersh2'
+                    &&
+                    event.target.id !== 'reset-timersh3'
+                ) {
+                    console.log(event.target)
+                    this.handleCloseConfirm()
+                }
+            })
         } catch (error) {
             console.error(error)
         }
@@ -89,9 +130,9 @@ class ResetTimers extends Component {
     render() {
         return (
             <div>
-                <Button variant="primary" className="btn_reset-timers" onClick={this.resetTimers}>
-                    <h2 className='btn_reset-timers-h2'>RESET TIMERS</h2>
-                    <h3 className='btn_reset-timers-h3'>I'm active, and I still have access to my wallet</h3>
+                <Button id='reset-timers' variant="primary" className="btn_reset-timers" onClick={this.resetTimers}>
+                    <h2 id='reset-timersh2' className='btn_reset-timers-h2'>RESET TIMERS</h2>
+                    <h3 id='reset-timersh3' className='btn_reset-timers-h3'>I'm active, and I still have access to my wallet</h3>
                 </Button>
                 <Modal show={this.state.showConfirm} className="modal-confirm">
                     <Modal.Header>

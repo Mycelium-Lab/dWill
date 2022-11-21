@@ -223,6 +223,67 @@ class Wills extends Component {
                     })
                 }
             })
+            const body = document.getElementsByTagName('body')
+            const App = document.getElementsByClassName('App')
+            const MainText = document.getElementsByClassName('main-text')
+            const HeaderBoxes = document.getElementsByClassName('header_boxes')
+            const NumberOfWills = document.getElementsByClassName('number-of-wills')
+            const _container = document.getElementsByClassName('_container')
+            const blockTwo = document.getElementsByClassName('block-two')
+            const blockThree = document.getElementsByClassName('block-three')
+            const pageData = document.getElementsByClassName('page-data')
+            //for show confirm
+            const modalContent = document.getElementsByClassName('modal-content')
+            const modalConfirm = document.getElementsByClassName('modal-confirm')
+            const modalConfirmText = document.getElementsByClassName('modal-confirm_text')
+            const modalConfirmH2 = document.getElementsByClassName('modal-confirm_h2')
+            const modalConfirmLoader = document.getElementsByClassName('ml-loader')
+            body[0].addEventListener('click', (event) => {
+                if(
+                    this.state.showEdit
+                    &&
+                    (
+                        event.target === App[0]
+                        ||
+                        event.target === MainText[0]
+                        ||
+                        event.target === HeaderBoxes[0]
+                        ||
+                        event.target === NumberOfWills[0]
+                        ||
+                        event.target === _container[0]
+                        ||
+                        event.target === blockTwo[0]
+                        ||
+                        event.target === blockTwo[1]
+                        ||
+                        event.target === blockThree[0]
+                        ||
+                        event.target === pageData[0]
+                    )
+                ) {
+                    this.handleCloseEdit()
+                }
+                if (
+                    this.state.showConfirm
+                    &&
+                    event.target !== modalContent[0]
+                    &&
+                    event.target !== modalContent[1]
+                    &&
+                    event.target !== modalConfirm[0]
+                    &&
+                    event.target !== modalConfirmText[0]
+                    &&
+                    event.target !== modalConfirmH2[0]
+                    &&
+                    event.target !== modalConfirmLoader[0]
+                    &&
+                    event.target.id !== 'revoke'
+                ) {
+                    this.handleCloseConfirm()
+                }
+            })
         } catch (error) {
             console.error(error)
         }
@@ -310,6 +371,7 @@ class Wills extends Component {
             this.handleShowConfirm()
             await contract.removeWill(event.target.value)
                 .then(async (tx) => {
+                    this.handleCloseConfirm()
                     this.handleShowAwait('Revoke Will')
                     await tx.wait()
                     this.handleCloseAwait()
@@ -865,7 +927,7 @@ class Wills extends Component {
                                                             <img src={editPic} />
                                                             Edit
                                                         </button>
-                                                        <button type="button" className="btn_green_revoke btn-default" id='' value={v.ID.toString()} onClick={this.cancelWill}>
+                                                        <button type="button" className="btn_green_revoke btn-default" id='revoke' value={v.ID.toString()} onClick={this.cancelWill}>
                                                             <img src={revokePic} />
                                                             Revoke</button>
                                                     </div>
@@ -882,7 +944,7 @@ class Wills extends Component {
                         :
                         <h4>У вас еще нет активных завещаний.</h4>
                 }
-                <Modal className="will-block" show={this.state.showEdit} onHide={this.handleCloseEdit} style={{ height: "" }}>
+                <Modal className="will-block" show={this.state.showEdit} style={{ height: "" }}>
                     <Modal.Header>
                         <Modal.Title>Edit Will</Modal.Title>
                         <hr />

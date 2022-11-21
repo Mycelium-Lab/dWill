@@ -204,6 +204,156 @@
           "chainId": 42,
           "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xd0A1E359811322d97991E03f863a0C30C2cF029C/logo.png"
         },
+        {
+          "name": "Dai Stablecoin",
+          "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+          "symbol": "DAI",
+          "decimals": 18,
+          "chainId": 42161,
+          "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png",
+          "extensions": {
+            "bridgeInfo": {
+              "1": {
+                "tokenAddress": "0x6B175474E89094C44Da98b954EedeAC495271d0F"
+              }
+            }
+          }
+        },
+        {
+          "name": "USDCoin",
+          "address": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
+          "symbol": "USDC",
+          "decimals": 6,
+          "chainId": 42161,
+          "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+          "extensions": {
+            "bridgeInfo": {
+              "1": {
+                "tokenAddress": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+              }
+            }
+          }
+        },
+        {
+          "name": "Tether USD",
+          "address": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+          "symbol": "USDT",
+          "decimals": 6,
+          "chainId": 42161,
+          "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
+          "extensions": {
+            "bridgeInfo": {
+              "1": {
+                "tokenAddress": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
+              }
+            }
+          }
+        },
+        {
+          "name": "Wrapped BTC",
+          "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+          "symbol": "WBTC",
+          "decimals": 8,
+          "chainId": 42161,
+          "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
+          "extensions": {
+            "bridgeInfo": {
+              "1": {
+                "tokenAddress": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"
+              }
+            }
+          }
+        },
+        {
+          "name": "Wrapped Ether",
+          "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+          "symbol": "WETH",
+          "decimals": 18,
+          "chainId": 42161,
+          "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+          "extensions": {
+            "bridgeInfo": {
+              "1": {
+                "tokenAddress": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+              }
+            }
+          }
+        },
+        {
+          "name": "Dai Stablecoin",
+          "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
+          "symbol": "DAI",
+          "decimals": 18,
+          "chainId": 10,
+          "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png",
+          "extensions": {
+            "bridgeInfo": {
+              "1": {
+                "tokenAddress": "0x6B175474E89094C44Da98b954EedeAC495271d0F"
+              }
+            }
+          }
+        },
+        {
+          "name": "USDCoin",
+          "address": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
+          "symbol": "USDC",
+          "decimals": 6,
+          "chainId": 10,
+          "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+          "extensions": {
+            "bridgeInfo": {
+              "1": {
+                "tokenAddress": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+              }
+            }
+          }
+        },
+        {
+          "name": "Tether USD",
+          "address": "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58",
+          "symbol": "USDT",
+          "decimals": 6,
+          "chainId": 10,
+          "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
+          "extensions": {
+            "bridgeInfo": {
+              "1": {
+                "tokenAddress": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
+              }
+            }
+          }
+        },
+        {
+          "name": "Wrapped BTC",
+          "address": "0x68f180fcCe6836688e9084f035309E29Bf0A2095",
+          "symbol": "WBTC",
+          "decimals": 8,
+          "chainId": 10,
+          "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
+          "extensions": {
+            "bridgeInfo": {
+              "1": {
+                "tokenAddress": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"
+              }
+            }
+          }
+        },
+        {
+          "name": "Wrapped Ether",
+          "address": "0x4200000000000000000000000000000000000006",
+          "symbol": "WETH",
+          "decimals": 18,
+          "chainId": 10,
+          "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
+          "extensions": {
+            "bridgeInfo": {
+              "1": {
+                "tokenAddress": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+              }
+            }
+          }
+        },
       {
         "chainId": 1,
         "address": "0x111111111117dC0aa78b770fA6A738034120C302",
@@ -3284,7 +3434,7 @@
         "symbol": "UNI",
         "decimals": 18,
         "chainId": 1,
-        "logoURI": "ipfs://QmXttGpZrECX5qCyXbBQiqgQNytVGeZW5Anewvh2jc4psg",
+        "logoURI": "https://tokens.pancakeswap.finance/images/0xBf5140A22578168FD562DCcF235E5D43A02ce9B1.png",
         "extensions": {
           "bridgeInfo": {
             "10": {
@@ -3459,7 +3609,7 @@
         "symbol": "UNI",
         "decimals": 18,
         "chainId": 3,
-        "logoURI": "ipfs://QmXttGpZrECX5qCyXbBQiqgQNytVGeZW5Anewvh2jc4psg"
+        "logoURI": "https://tokens.pancakeswap.finance/images/0xBf5140A22578168FD562DCcF235E5D43A02ce9B1.png"
       },
       {
         "name": "Wrapped Ether",
@@ -3491,7 +3641,7 @@
         "symbol": "UNI",
         "decimals": 18,
         "chainId": 4,
-        "logoURI": "ipfs://QmXttGpZrECX5qCyXbBQiqgQNytVGeZW5Anewvh2jc4psg"
+        "logoURI": "https://tokens.pancakeswap.finance/images/0xBf5140A22578168FD562DCcF235E5D43A02ce9B1.png"
       },
       {
         "name": "Wrapped Ether",
@@ -3507,7 +3657,7 @@
         "symbol": "UNI",
         "decimals": 18,
         "chainId": 5,
-        "logoURI": "ipfs://QmXttGpZrECX5qCyXbBQiqgQNytVGeZW5Anewvh2jc4psg"
+        "logoURI": "https://tokens.pancakeswap.finance/images/0xBf5140A22578168FD562DCcF235E5D43A02ce9B1.png"
       },
       {
         "name": "Wrapped Ether",
@@ -3558,21 +3708,6 @@
           "bridgeInfo": {
             "1": {
               "tokenAddress": "0xD533a949740bb3306d119CC777fa900bA034cd52"
-            }
-          }
-        }
-      },
-      {
-        "name": "Dai Stablecoin",
-        "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
-        "symbol": "DAI",
-        "decimals": 18,
-        "chainId": 10,
-        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png",
-        "extensions": {
-          "bridgeInfo": {
-            "1": {
-              "tokenAddress": "0x6B175474E89094C44Da98b954EedeAC495271d0F"
             }
           }
         }
@@ -3756,71 +3891,11 @@
         "symbol": "UNI",
         "decimals": 18,
         "chainId": 10,
-        "logoURI": "ipfs://QmXttGpZrECX5qCyXbBQiqgQNytVGeZW5Anewvh2jc4psg",
+        "logoURI": "https://tokens.pancakeswap.finance/images/0xBf5140A22578168FD562DCcF235E5D43A02ce9B1.png",
         "extensions": {
           "bridgeInfo": {
             "1": {
               "tokenAddress": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984"
-            }
-          }
-        }
-      },
-      {
-        "name": "USDCoin",
-        "address": "0x7F5c764cBc14f9669B88837ca1490cCa17c31607",
-        "symbol": "USDC",
-        "decimals": 6,
-        "chainId": 10,
-        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-        "extensions": {
-          "bridgeInfo": {
-            "1": {
-              "tokenAddress": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
-            }
-          }
-        }
-      },
-      {
-        "name": "Tether USD",
-        "address": "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58",
-        "symbol": "USDT",
-        "decimals": 6,
-        "chainId": 10,
-        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
-        "extensions": {
-          "bridgeInfo": {
-            "1": {
-              "tokenAddress": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
-            }
-          }
-        }
-      },
-      {
-        "name": "Wrapped BTC",
-        "address": "0x68f180fcCe6836688e9084f035309E29Bf0A2095",
-        "symbol": "WBTC",
-        "decimals": 8,
-        "chainId": 10,
-        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
-        "extensions": {
-          "bridgeInfo": {
-            "1": {
-              "tokenAddress": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"
-            }
-          }
-        }
-      },
-      {
-        "name": "Wrapped Ether",
-        "address": "0x4200000000000000000000000000000000000006",
-        "symbol": "WETH",
-        "decimals": 18,
-        "chainId": 10,
-        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
-        "extensions": {
-          "bridgeInfo": {
-            "1": {
-              "tokenAddress": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
             }
           }
         }
@@ -3847,7 +3922,7 @@
         "symbol": "UNI",
         "decimals": 18,
         "chainId": 42,
-        "logoURI": "ipfs://QmXttGpZrECX5qCyXbBQiqgQNytVGeZW5Anewvh2jc4psg"
+        "logoURI": "https://tokens.pancakeswap.finance/images/0xBf5140A22578168FD562DCcF235E5D43A02ce9B1.png"
       },
       {
         "chainId": 137,
@@ -6135,7 +6210,7 @@
         "symbol": "UNI",
         "decimals": 18,
         "chainId": 137,
-        "logoURI": "ipfs://QmXttGpZrECX5qCyXbBQiqgQNytVGeZW5Anewvh2jc4psg",
+        "logoURI": "https://tokens.pancakeswap.finance/images/0xBf5140A22578168FD562DCcF235E5D43A02ce9B1.png",
         "extensions": {
           "bridgeInfo": {
             "1": {
@@ -6538,21 +6613,6 @@
           "bridgeInfo": {
             "1": {
               "tokenAddress": "0x41e5560054824eA6B0732E656E3Ad64E20e94E45"
-            }
-          }
-        }
-      },
-      {
-        "name": "Dai Stablecoin",
-        "address": "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1",
-        "symbol": "DAI",
-        "decimals": 18,
-        "chainId": 42161,
-        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png",
-        "extensions": {
-          "bridgeInfo": {
-            "1": {
-              "tokenAddress": "0x6B175474E89094C44Da98b954EedeAC495271d0F"
             }
           }
         }
@@ -7358,71 +7418,11 @@
         "symbol": "UNI",
         "decimals": 18,
         "chainId": 42161,
-        "logoURI": "ipfs://QmXttGpZrECX5qCyXbBQiqgQNytVGeZW5Anewvh2jc4psg",
+        "logoURI": "https://tokens.pancakeswap.finance/images/0xBf5140A22578168FD562DCcF235E5D43A02ce9B1.png",
         "extensions": {
           "bridgeInfo": {
             "1": {
               "tokenAddress": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984"
-            }
-          }
-        }
-      },
-      {
-        "name": "USDCoin",
-        "address": "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8",
-        "symbol": "USDC",
-        "decimals": 6,
-        "chainId": 42161,
-        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
-        "extensions": {
-          "bridgeInfo": {
-            "1": {
-              "tokenAddress": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
-            }
-          }
-        }
-      },
-      {
-        "name": "Tether USD",
-        "address": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
-        "symbol": "USDT",
-        "decimals": 6,
-        "chainId": 42161,
-        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
-        "extensions": {
-          "bridgeInfo": {
-            "1": {
-              "tokenAddress": "0xdAC17F958D2ee523a2206206994597C13D831ec7"
-            }
-          }
-        }
-      },
-      {
-        "name": "Wrapped BTC",
-        "address": "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
-        "symbol": "WBTC",
-        "decimals": 8,
-        "chainId": 42161,
-        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599/logo.png",
-        "extensions": {
-          "bridgeInfo": {
-            "1": {
-              "tokenAddress": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"
-            }
-          }
-        }
-      },
-      {
-        "name": "Wrapped Ether",
-        "address": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
-        "symbol": "WETH",
-        "decimals": 18,
-        "chainId": 42161,
-        "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png",
-        "extensions": {
-          "bridgeInfo": {
-            "1": {
-              "tokenAddress": "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
             }
           }
         }

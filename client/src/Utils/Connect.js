@@ -26,17 +26,50 @@ class Connect extends Component {
 
     componentDidMount() {
         const body = document.getElementsByTagName('body')
+        const modalChooseTitle = document.getElementsByClassName('modal-choose__title')
+        const modalChoose = document.getElementsByClassName('modal-choose')
+        const App = document.getElementsByClassName('App')
+        const MainText = document.getElementsByClassName('main-text')
+        const HeaderBoxes = document.getElementsByClassName('header_boxes')
+        const NumberOfWills = document.getElementsByClassName('number-of-wills')
+        const _container = document.getElementsByClassName('_container')
+        const blockTwo = document.getElementsByClassName('block-two')
+        const blockThree = document.getElementsByClassName('block-three')
         body[0].addEventListener('click', (event) => {
             if (
+                this.state.showNetworks === true &&
                 event.target.id !== 'change-network' &&
                 event.target.id !==  'networkMumbai' &&
                 event.target.id !==  'networkGoerli' &&
                 event.target.id !==  'networkBinanceTestnet' &&
                 event.target.id !== 'networkAvalanche' &&
                 event.target.id !== 'networkOptimism' &&
-                event.target.id !== 'networkArbitrum'
+                event.target.id !== 'networkArbitrum' &&
+                event.target !== modalChooseTitle[0] &&
+                event.target !== modalChoose[0]
             ) {
                 this.closeNetworksModal()
+            }
+            if (
+                this.state.showWallets === true
+                &&
+                (event.target === App[0]
+                ||
+                event.target === MainText[0]
+                ||
+                event.target === HeaderBoxes[0]
+                ||
+                event.target === NumberOfWills[0]
+                ||
+                event.target === _container[0]
+                ||
+                event.target === blockTwo[0]
+                ||
+                event.target === blockTwo[1]
+                ||
+                event.target === blockThree[0])
+            ) {
+                this.closeWalletsModal()
             }
         })
     }
@@ -206,7 +239,7 @@ class Connect extends Component {
             if (!localStorage.getItem('account')) {
                 return (
                     <div>
-                        <button onClick={this.state.showWallets === false ? this.showWalletsModal : this.closeWalletsModal}>Connect Wallet</button>
+                        <button id='connect-button' onClick={this.state.showWallets === false ? this.showWalletsModal : this.closeWalletsModal}>Connect Wallet</button>
                         <Modal className="modal-choose-wallet" show={this.state.showWallets}>
                             <Modal.Header>
                                 <h1>Choose wallet:</h1>
