@@ -9,7 +9,7 @@
 
 @media (max-width: 767px) {
   .App {
-    padding-bottom: 90xp;
+    padding-bottom: 85px;
   }
 }
 
@@ -184,9 +184,14 @@ ul {
   max-width: 700px;
   width: 100%;
   color: #C1C7CD;
-  top: 0 !important;
   max-height: 100%;
+  min-height: 100%;
   overflow-y: auto;
+  position: absolute;
+  left: 50%;
+  top: 180px;
+  /* top: 0 !important; */
+  transform: translateX(-50%);
 }
 
 @media (max-width: 767px) {
@@ -366,12 +371,12 @@ a {
   /* border-radius: 10px; */
 }
 
-.modal.show {
+/* .modal.show {
   position: absolute;
   left: 50%;
   top: 180px;
   transform: translateX(-50%);
-}
+} */
 
 .modal-loading {
   padding: 20px 30px;
@@ -820,6 +825,9 @@ a {
     padding: 0 12px;
     border-radius: 10px;
   } */
+  .btn-header__main {
+    border-radius: 10px;
+  }
 }
 
 .btn-header-connect__footer {
@@ -877,9 +885,11 @@ a {
   /* overflow: visible !important; */
   overflow: auto !important;
   padding: 0 !important;
-  position: fixed;
+  /* position: fixed;
   width: 100%;
+  height: 100%; */
   height: 100%;
+  min-height: 100vh;
 }
 
 .modal_title {
@@ -1767,12 +1777,6 @@ input::-webkit-inner-spin-button {
   align-items: center;
 }
 
-@media (max-width: 767px) {
-  .page-data {
-    padding-bottom: 80px;
-  }
-}
-
 .page-data a {
   color: #4285F4;
 }
@@ -2620,6 +2624,7 @@ input::-webkit-inner-spin-button {
   padding: 15px;
   width: 55px;
   height: 55px;
+  flex:1 0 auto;
 }
 
 /* цвет сети */
