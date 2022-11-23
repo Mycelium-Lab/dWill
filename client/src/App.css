@@ -1,10 +1,12 @@
-.App {
-  /* text-align: center; */
+html {
   background-image: url('./background.jpg');
-  min-height: 100vh;
   background-size: cover;
   padding-top: 55px;
   padding-bottom: 110px;
+}
+
+body {
+  overflow: visible !important;
 }
 
 @media (max-width: 767px) {
@@ -184,13 +186,10 @@ ul {
   max-width: 700px;
   width: 100%;
   color: #C1C7CD;
-  max-height: 100%;
-  min-height: 100%;
   overflow-y: auto;
   position: absolute;
   left: 50%;
   top: 180px;
-  /* top: 0 !important; */
   transform: translateX(-50%);
 }
 
@@ -540,7 +539,6 @@ a {
     padding-bottom: 30px;
   }
 } */
-
 .modal-body {
   display: flex;
   flex-direction: column;
@@ -563,6 +561,10 @@ a {
   align-items: center;
   flex-wrap: wrap;
   gap: 5px; */
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
 }
 
 .modal-body__row .br {
@@ -611,6 +613,11 @@ a {
   gap: 20px;
 }
 
+.will-date .will-date__row {
+  flex-direction: column;
+  align-items: flex-start
+}
+
 .will-date label {
   text-transform: lowercase;
 }
@@ -623,7 +630,13 @@ a {
 
 .will-date__row {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+}
+
+.will-date__row-input {
+  display: flex;
+  align-items: center;
 }
 
 .will-date__row .input-group {
@@ -638,6 +651,8 @@ a {
 
 .will-date__text {
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
 }
 
 .number-of-wills {
@@ -818,10 +833,14 @@ a {
   display: flex;
   align-items: center;
   gap: 20px;
+  position: relative;
+  z-index: 10;
+  cursor: pointer;
 }
 
 
 @media (max-width: 767px) {
+
   /* .btn-header-connect>div {
     min-width: 160px;
     min-height: 50px;
@@ -864,6 +883,10 @@ a {
 }
 
 .btn-header__logout {
+  /* display: none; */
+}
+
+.btn-header__logout.active {
   display: flex;
 }
 
@@ -872,6 +895,7 @@ a {
   border-radius: 0;
   height: auto;
   min-width: auto;
+  display: flex;
 }
 
 .btn-header__logout button img {
@@ -887,7 +911,6 @@ a {
   font-weight: 700;
   width: 159px;
   gap: 5px;
-  /* height: 21px; */
 }
 
 @media (max-width: 767px) {
@@ -902,14 +925,11 @@ a {
 }
 
 .modal-open {
-  /* overflow: visible !important; */
-  overflow: auto !important;
-  padding: 0 !important;
+  overflow: auto;
+  padding: 0;
   /* position: fixed;
   width: 100%;
   height: 100%; */
-  height: 100%;
-  min-height: 100vh;
 }
 
 .modal_title {
@@ -939,6 +959,7 @@ a {
   right: 80px;
   left: auto;
   transform: none;
+  z-index: 100;
 }
 
 .modal-choose__title {
@@ -1151,6 +1172,8 @@ select {
   color: #C1C7CD;
   font-size: 18px;
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
 }
 
 @media (max-width: 767px) {
@@ -1483,7 +1506,7 @@ input::-webkit-inner-spin-button {
   display: flex;
   align-items: center;
   /* justify-content: space-between; */
-  gap: 25px;
+  grid-gap: 20px;
 }
 
 @media (max-width: 767px) {
@@ -1599,7 +1622,7 @@ input::-webkit-inner-spin-button {
 
 .your-wills__footer button {
   /* width: 100%; */
-  width: 100%;
+  width: calc(100% - 30px);
   height: 50px;
   font-size: 18px;
   font-weight: 400;
@@ -1607,6 +1630,10 @@ input::-webkit-inner-spin-button {
   border: 0;
   box-shadow: none;
   /* margin-left: 30px; */
+}
+
+.your-wills__footer .your-wills__info-message {
+  display: inline-block;
 }
 
 @media (max-width: 767px) {
@@ -2169,8 +2196,8 @@ input::-webkit-inner-spin-button {
   font-weight: 400;
   color: #C1C7CD;
   line-height: 12px;
-  margin-top: 20px;
-  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-bottom: 15px;
   display: block;
 }
 
@@ -2207,6 +2234,7 @@ input::-webkit-inner-spin-button {
   right: 50px;
   left: auto;
   transform: translate(0);
+  z-index: 100;
 }
 
 @media (max-width: 767px) {
@@ -2352,6 +2380,7 @@ input::-webkit-inner-spin-button {
     right: 0;
     max-width: 340px;
     margin: auto;
+
   }
 }
 
@@ -2469,6 +2498,8 @@ input::-webkit-inner-spin-button {
   border-radius: 0;
   cursor: pointer;
   margin-left: 5px;
+  position: relative;
+  z-index: 20;
 }
 
 @media (max-width: 767px) {
@@ -2644,7 +2675,7 @@ input::-webkit-inner-spin-button {
   padding: 15px;
   width: 55px;
   height: 55px;
-  flex:1 0 auto;
+  flex: 1 0 auto;
 }
 
 /* цвет сети */
@@ -2753,4 +2784,21 @@ input::-webkit-inner-spin-button {
   -webkit-transition: all 100ms;
   transition: all 100ms;
   box-sizing: border-box;
+}
+
+.your-wills__info-message {
+  margin-left: 15px;
+  min-width: 15px;
+  height: 15px;
+  position: relative;
+  z-index: 10;
+}
+
+.your-wills__info-message img {
+  display: block;
+}
+
+.your-wills__wallet-row {
+  display: flex;
+  align-items: center;
 }
