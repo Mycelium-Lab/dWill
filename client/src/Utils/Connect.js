@@ -220,6 +220,12 @@ class Connect extends Component {
     showNetworksModal = this.showNetworksModal.bind(this)
     closeNetworksModal = this.closeNetworksModal.bind(this)
 
+    showLogoutBtn = () => this.setState({ showLogout: true })
+    closeLogoutBtn = () => this.setState({ showLogout: false })
+
+    showLogoutBtn = () => this.showLogoutBtn.bind(this)
+    closeLogoutBtn = () => this.closeLogoutBtn.bind(this)
+
     _renderNetwork(pic, name) {
         return (
             <span>
