@@ -92,6 +92,7 @@ class App extends Component {
             if (__accounts.length === 0) {
               localStorage.removeItem('account')
               localStorage.removeItem('wallet')
+              localStorage.removeItem('walletconnect')
               this.setState({
                 provider: null,
                 signer: null,
@@ -227,6 +228,13 @@ class App extends Component {
         networkName
       })
     } catch (error) {
+      if (provider === null && signer === null && signerAddress === null) {
+        this.setState({
+          provider,
+          signer,
+          signerAddress
+        })
+      }
       console.error(error)
     }
   }

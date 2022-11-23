@@ -104,11 +104,14 @@ class Connect extends Component {
     async walletConnect() {
         try {
             const provider = new WalletConnectProvider({
-                rpc: { 80001: "https://rpc-mumbai.maticvigil.com" }
+                rpc: {
+                80001: chainRPCURL.Mumbai,
+                97: chainRPCURL.BinanceTestnet,
+                5: chainRPCURL.Goerli,
+                }
             })
-    
+
             await provider.enable();
-    
             const _provider = new ethers.providers.Web3Provider(provider)
             // const accounts = await _provider.send("eth_requestAccounts", []);
             const _signer = _provider.getSigner()
@@ -174,6 +177,32 @@ class Connect extends Component {
             alert('You have to change network in your wallet')
         }
     }
+
+    async logout() {
+        const wallet = localStorage.getItem('wallet')
+        if (wallet === 'WalletConnect') {
+            const provider = new WalletConnectProvider({
+                rpc: {
+                80001: chainRPCURL.Mumbai,
+                97: chainRPCURL.BinanceTestnet,
+                5: chainRPCURL.Goerli,
+                }
+            })
+            await provider.enable();
+            await provider.disconnect()
+
+            localStorage.removeItem('account')
+            localStorage.removeItem('wallet')
+            localStorage.removeItem('walletconnect')
+            this.props.setProperties(null, null, null)
+        } else {
+            localStorage.removeItem('account')
+            localStorage.removeItem('wallet')
+            this.props.setProperties(null, null, null)
+        }
+    }
+
+    logout = this.logout.bind(this)
 
     walletConnect = this.walletConnect.bind(this)
     changeNetwork = this.changeNetwork.bind(this)
@@ -287,6 +316,9 @@ class Connect extends Component {
                                             (change)
                                         </button>
                                 }
+                            </div>
+                            <div>
+                                <button onClick={this.logout}>Logout</button>
                             </div>
                         </div>
 
