@@ -8,6 +8,7 @@ import OptimismPic from '../content/optimism.svg'
 import ArbitrumPic from '../content/arbitrum.svg'
 import btnMetamask from '../content/btn-metamask.svg'
 import btnWallet from '../content/btn-wallet.svg'
+import logoutPic from '../content/logout.svg'
 import { ethers } from "ethers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { chainIDs, chainRPCURL } from '../Utils/Constants.js'
@@ -39,9 +40,9 @@ class Connect extends Component {
             if (
                 this.state.showNetworks === true &&
                 event.target.id !== 'change-network' &&
-                event.target.id !==  'networkMumbai' &&
-                event.target.id !==  'networkGoerli' &&
-                event.target.id !==  'networkBinanceTestnet' &&
+                event.target.id !== 'networkMumbai' &&
+                event.target.id !== 'networkGoerli' &&
+                event.target.id !== 'networkBinanceTestnet' &&
                 event.target.id !== 'networkAvalanche' &&
                 event.target.id !== 'networkOptimism' &&
                 event.target.id !== 'networkArbitrum' &&
@@ -54,20 +55,20 @@ class Connect extends Component {
                 this.state.showWallets === true
                 &&
                 (event.target === App[0]
-                ||
-                event.target === MainText[0]
-                ||
-                event.target === HeaderBoxes[0]
-                ||
-                event.target === NumberOfWills[0]
-                ||
-                event.target === _container[0]
-                ||
-                event.target === blockTwo[0]
-                ||
-                event.target === blockTwo[1]
-                ||
-                event.target === blockThree[0])
+                    ||
+                    event.target === MainText[0]
+                    ||
+                    event.target === HeaderBoxes[0]
+                    ||
+                    event.target === NumberOfWills[0]
+                    ||
+                    event.target === _container[0]
+                    ||
+                    event.target === blockTwo[0]
+                    ||
+                    event.target === blockTwo[1]
+                    ||
+                    event.target === blockThree[0])
             ) {
                 this.closeWalletsModal()
             }
@@ -105,9 +106,9 @@ class Connect extends Component {
         try {
             const provider = new WalletConnectProvider({
                 rpc: {
-                80001: chainRPCURL.Mumbai,
-                97: chainRPCURL.BinanceTestnet,
-                5: chainRPCURL.Goerli,
+                    80001: chainRPCURL.Mumbai,
+                    97: chainRPCURL.BinanceTestnet,
+                    5: chainRPCURL.Goerli,
                 }
             })
 
@@ -183,9 +184,9 @@ class Connect extends Component {
         if (wallet === 'WalletConnect') {
             const provider = new WalletConnectProvider({
                 rpc: {
-                80001: chainRPCURL.Mumbai,
-                97: chainRPCURL.BinanceTestnet,
-                5: chainRPCURL.Goerli,
+                    80001: chainRPCURL.Mumbai,
+                    97: chainRPCURL.BinanceTestnet,
+                    5: chainRPCURL.Goerli,
                 }
             })
             await provider.enable();
@@ -227,7 +228,7 @@ class Connect extends Component {
                 </span>
                 <span>{name} Chain</span>
             </span>
-        ) 
+        )
     }
 
     renderNetwork(id) {
@@ -291,34 +292,36 @@ class Connect extends Component {
                 return (
                     <div>
                         <div className="btn-header__main">
-                            <div>
-                                {
-                                    localStorage.getItem('account').slice(0, 6)
-                                    +
-                                    '...'
-                                    +
-                                    localStorage.getItem('account').slice(
-                                        localStorage.getItem('account').length - 4,
-                                        localStorage.getItem('account').length
-                                    )
-                                }
+                            <div className="">
+                                <div>
+                                    {
+                                        localStorage.getItem('account').slice(0, 6)
+                                        +
+                                        '...'
+                                        +
+                                        localStorage.getItem('account').slice(
+                                            localStorage.getItem('account').length - 4,
+                                            localStorage.getItem('account').length
+                                        )
+                                    }
+                                </div>
+                                <div className="btn-header-connect__footer">
+                                    {
+                                        this.renderNetwork(this.props.network)
+                                    }
+                                    {
+                                        localStorage.getItem('wallet') === 'WalletConnect'
+                                            ?
+                                            null
+                                            :
+                                            <button id='change-network' className="btn-change-token" onClick={this.state.showNetworks === false ? this.showNetworksModal : this.closeNetworksModal}>
+                                                (change)
+                                            </button>
+                                    }
+                                </div>
                             </div>
-                            <div className="btn-header-connect__footer">
-                                {
-                                    this.renderNetwork(this.props.network)
-                                }
-                                {
-                                    localStorage.getItem('wallet') === 'WalletConnect'
-                                        ?
-                                        null
-                                        :
-                                        <button id='change-network' className="btn-change-token" onClick={this.state.showNetworks === false ? this.showNetworksModal : this.closeNetworksModal}>
-                                            (change)
-                                        </button>
-                                }
-                            </div>
-                            <div>
-                                <button onClick={this.logout}>Logout</button>
+                            <div className="btn-header__logout">
+                                <button onClick={this.logout}><img src={logoutPic} alt="logout"></img></button>
                             </div>
                         </div>
 
@@ -329,22 +332,22 @@ class Connect extends Component {
                             <Modal.Footer>
                                 <img id='networkMumbai' src={PolygonPic} alt="Polygon" onClick={() => this.changeNetwork(chainIDs.Mumbai)} className={
                                     this.props.network === chainIDs.Mumbai ? "chosen-network" : ""
-                                }/>
+                                } />
                                 <img id='networkGoerli' src={EthereumPic} alt="Ethereum" onClick={() => this.changeNetwork(chainIDs.Goerli)} className={
                                     this.props.network === chainIDs.Goerli ? "chosen-network" : ""
-                                }/>
+                                } />
                                 <img id='networkBinanceTestnet' src={BinancePic} alt="Binance" onClick={() => this.changeNetwork(chainIDs.BinanceTestnet)} className={
                                     this.props.network === chainIDs.BinanceTestnet ? "chosen-network" : ""
-                                }/>
+                                } />
                                 <img id='networkAvalanche' src={AvalanchePic} alt="Avalanche" onClick={() => this.changeNetwork(chainIDs.AvalancheMainnet)} className={
                                     this.props.network === chainIDs.AvalancheMainnet ? "chosen-network" : ""
-                                }/>
+                                } />
                                 <img id='networkOptimism' src={OptimismPic} alt="Optimism" onClick={() => this.changeNetwork(chainIDs.OptimismMainnet)} className={
                                     this.props.network === chainIDs.OptimismMainnet ? "chosen-network" : ""
-                                }/>
+                                } />
                                 <img id='networkArbitrum' src={ArbitrumPic} alt="Arbitrum" onClick={() => this.changeNetwork(chainIDs.ArbitrumMainnet)} className={
                                     this.props.network === chainIDs.ArbitrumMainnet ? "chosen-network" : ""
-                                }/>
+                                } />
                             </Modal.Footer>
                         </Modal>
                     </div>
