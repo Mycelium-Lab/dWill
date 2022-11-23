@@ -815,6 +815,9 @@ a {
   border: 1px solid #5ED5A8;
   border-radius: 15px;
   padding: 7px 16px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 
@@ -858,6 +861,23 @@ a {
   .main-text .btn-header-connect button {
     min-width: 200px;
   }
+}
+
+.btn-header__logout {
+  display: flex;
+}
+
+.btn-header__logout button {
+  border: 0;
+  border-radius: 0;
+  height: auto;
+  min-width: auto;
+}
+
+.btn-header__logout button img {
+  margin-right: 0;
+  min-width: 22px;
+  height: auto;
 }
 
 .amount-will {
