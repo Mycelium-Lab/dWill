@@ -691,7 +691,7 @@ class NewWill extends Component {
                                 </div>
                                 <a className="your-wills__info-message" href="">
                                     <img src={infoBtn}></img>
-                                </a><br />
+                                </a>
                             </div>
                             <div className="your-wills__notifications" style={this.state.messageOn === true ? { display: 'block' } : { display: 'none' }}>
                                 <span>Сообщение хранится в зашифрованном виде и может быть прочитано получателем
