@@ -84,6 +84,9 @@ class Connect extends Component {
             localStorage.setItem('wallet', 'Metamask');
             this.setState({ selectedAddress: accounts[0] })
             this.props.setProperties(provider, signer, accounts[0])
+            .then(() => {
+                window.location.reload()
+            })
             window.ethereum.on('accountsChanged', async (accounts) => {
                 if (accounts.length === 0) {
                     localStorage.removeItem('account')
@@ -123,6 +126,9 @@ class Connect extends Component {
                 selectedAddress: _address
             })
             this.props.setProperties(_provider, _signer, _address)
+            .then(() => {
+                window.location.reload()
+            })
         } catch (error) {
             console.error(error)
         }
@@ -180,26 +186,30 @@ class Connect extends Component {
     }
 
     async logout() {
-        const wallet = localStorage.getItem('wallet')
-        if (wallet === 'WalletConnect') {
-            const provider = new WalletConnectProvider({
-                rpc: {
-                    80001: chainRPCURL.Mumbai,
-                    97: chainRPCURL.BinanceTestnet,
-                    5: chainRPCURL.Goerli,
-                }
-            })
-            await provider.enable();
-            await provider.disconnect()
-
-            localStorage.removeItem('account')
-            localStorage.removeItem('wallet')
-            localStorage.removeItem('walletconnect')
-            this.props.setProperties(null, null, null)
-        } else {
-            localStorage.removeItem('account')
-            localStorage.removeItem('wallet')
-            this.props.setProperties(null, null, null)
+        try {
+            const wallet = localStorage.getItem('wallet')
+            if (wallet === 'WalletConnect') {
+                const provider = new WalletConnectProvider({
+                    rpc: {
+                        80001: chainRPCURL.Mumbai,
+                        97: chainRPCURL.BinanceTestnet,
+                        5: chainRPCURL.Goerli,
+                    }
+                })
+                await provider.enable();
+                await provider.disconnect()
+    
+                localStorage.removeItem('account')
+                localStorage.removeItem('wallet')
+                localStorage.removeItem('walletconnect')
+                this.props.setProperties(null, null, null)
+            } else {
+                localStorage.removeItem('account')
+                localStorage.removeItem('wallet')
+                this.props.setProperties(null, null, null)
+            }
+        } catch (error) {
+            console.log(error)
         }
     }
 
