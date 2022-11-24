@@ -334,9 +334,17 @@ class NewWill extends Component {
     async onChangeAmount(event) {
         try {
             const { contractAddress, signer, signerAddress, tokensValue, contract } = this.state
-            this.setState({
-                amount: event.target.value
-            })
+            if (tokensValue === '') throw Error('resolver or addr is not configured')
+            if (parseFloat(event.target.value) >= 0) {
+                this.setState({
+                    amount: event.target.value
+                })
+            }
+            if (event.target.value === '') {
+                this.setState({
+                    amount: ''
+                })
+            }
             const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
             const allowance = await _token.allowance(signerAddress, contractAddress)
             const decimals = await _token.decimals()
@@ -370,11 +378,11 @@ class NewWill extends Component {
         } catch (error) {
             console.error(error)
             if (error.message.includes('resolver or addr is not configured')) {
-                this.setState({
-                    amount: '',
-                    isUnlimitedAmount: false
-                })
-                this.handleShowError('Выберите токен')
+                // this.setState({
+                //     amount: '',
+                //     isUnlimitedAmount: false
+                // })
+                // this.handleShowError('Выберите токен')
             }
             setTimeout(() => {
                 this.handleCloseError()
