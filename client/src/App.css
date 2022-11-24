@@ -96,6 +96,7 @@ img[alt="networkpic"] {
 
 
 .header_boxes {
+  position: relative;
   white-space: nowrap;
   /* padding-top: 55px; */
   /* padding-right: 130px; */
@@ -469,6 +470,8 @@ a {
 
 
 
+
+
 .modal-loading__title {
   font-size: 18px;
   font-weight: 400;
@@ -759,7 +762,8 @@ a {
 
 @media (max-width: 767px) {
   .header_boxes {
-    flex-direction: column;
+    flex-direction: row;
+    flex-wrap: wrap;
     align-items: flex-start;
   }
 }
@@ -785,6 +789,7 @@ a {
   .logo-will {
     width: 92px;
     height: 23px;
+    order: 0;
   }
 }
 
@@ -795,6 +800,8 @@ a {
   border-radius: 16px;
   color: #5ED5A8; */
 }
+
+
 
 .btn-header-connect button {
   color: #4281F4;
@@ -815,6 +822,12 @@ a {
     font-size: 14px;
     border-radius: 10px;
   }
+
+  /* .btn-header-connect {
+    position: absolute;
+    right: 0;
+    top: 0;
+  } */
 }
 
 .btn-header-connect img {
@@ -850,6 +863,7 @@ a {
   position: relative;
   z-index: 10;
   cursor: pointer;
+  color: #5ED5A8;
 }
 
 
@@ -864,6 +878,7 @@ a {
   .btn-header__main {
     border-radius: 10px;
   }
+
 }
 
 .btn-header-connect__footer {
@@ -897,7 +912,11 @@ a {
 }
 
 .btn-header__logout {
-  /* display: none; */
+  display: none;
+}
+
+.btn-header__main:hover > .btn-header__logout {
+  display: block;
 }
 
 .btn-header__logout.active {
@@ -925,12 +944,18 @@ a {
   font-weight: 700;
   width: 159px;
   gap: 5px;
+  color: #5ED5A8;
+  margin-left: auto;
+  margin-right: 30px;
 }
 
 @media (max-width: 767px) {
   .amount-will {
     align-items: flex-start;
     font-size: 14px;
+    margin-left: 0;
+    order: 2;
+    margin-top: -20px;
   }
 }
 
@@ -1643,6 +1668,7 @@ input::-webkit-inner-spin-button {
   border-radius: 15px;
   border: 0;
   box-shadow: none;
+  color: #171D22;
   /* margin-left: 30px; */
 }
 
@@ -2540,6 +2566,10 @@ input::-webkit-inner-spin-button {
   .btn-header-connect .btn-change-token {
     font-size: 12px;
   }
+  .btn-header-connect {
+    order: 1;
+    max-width: 65%;
+  }
 }
 
 .ml-loader {
@@ -2825,7 +2855,8 @@ input::-webkit-inner-spin-button {
   min-width: 15px;
   height: 15px;
   position: relative;
-  z-index: 10;
+  /* z-index: 10; */
+  z-index: 0;
 }
 
 .your-wills__info-message img {

@@ -950,7 +950,7 @@ class NewWill extends Component {
                     <Modal.Header>
                         <div className="modal_confirm">
                             <h2 className="modal-loading__title modal-loading__title--error">Error</h2>
-                            <div>{this.state.errortext}</div>
+                            <div className="modal-loading__subtitle">{this.state.errortext}</div>
                             <div className="modal-loading__progress-bar modal-loading__progress-bar--error">
                                 <span></span>
                             </div>
