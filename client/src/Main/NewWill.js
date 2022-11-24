@@ -302,7 +302,7 @@ class NewWill extends Component {
             this.handleShowConfirm()
             await contract.addNewWill(heirAddress, tokensValue, timeUnixWhenWithdraw.toString(), sendTo)
                 .then(async (tx) => {
-                    this.handleShowAwait('New dWill creation')
+                    this.handleShowAwait('New dwill creation')
                     await tx.wait()
                     this.handleCloseAwait()
                     this.handleClose()
@@ -926,7 +926,7 @@ class NewWill extends Component {
                             <img src={closeModalPic}></img>
                         </button>
                         <p className="modal-await_text">Завещание успешно создано!</p>
-                        <p className="modal-await_text">
+                        <p className="modal-await_text modal-await_text__second">
                             <a href={`${this.props.networkProvider}/tx/${this.state.hash}`} target="_blank" rel="noreferrer">
                                 View in blockchain explorer
                             </a>

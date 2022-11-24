@@ -2037,6 +2037,12 @@ input::-webkit-inner-spin-button {
   color: #5ED5A8;
 }
 
+.modal-await_text__second {
+  font-size: 12px;
+  text-align: center;
+  margin-top: 40px;
+}
+
 .btn_reset-timers-h2 {
   width: 142px;
   display: flex;
