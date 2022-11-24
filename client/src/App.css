@@ -9,11 +9,11 @@ body {
   overflow: visible !important;
 }
 
-@media (max-width: 767px) {
+/* @media (max-width: 767px) {
   .App {
     padding-bottom: 85px;
   }
-}
+} */
 
 * {
   box-sizing: border-box;
