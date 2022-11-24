@@ -199,7 +199,7 @@ class ResetTimers extends Component {
                 </Modal>
                 <Modal className="modal-loading modal-loading--process" show={this.state.showAwait}>
                     <Modal.Header>
-                        <div className="className='modal_confirm">
+                        <div className="modal_confirm">
                             <h2 className="modal-loading__title modal-loading__title--processing">Processing...</h2>
                             <p className="modal-loading__subtitle">{this.state.processingText}</p>
                             <div className="modal-loading__progress-bar modal-loading__progress-bar--processing">
@@ -217,7 +217,7 @@ class ResetTimers extends Component {
                     <Modal.Header>
                         <div className="modal_confirm">
                             <h2 className="modal-loading__title modal-loading__title--error">Error</h2>
-                            <div>{this.state.errortext}</div>
+                            <div className="modal-loading__subtitle">{this.state.errortext}</div>
                             <div className="modal-loading__progress-bar modal-loading__progress-bar--error">
                                 <span></span>
                             </div>

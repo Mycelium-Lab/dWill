@@ -21,7 +21,7 @@ import logoWill from './content/logo.svg'
 
 class App extends Component {
 
-  state = { 
+  state = {
     signer: null,
     provider: null,
     signerAddress: null,
@@ -65,7 +65,7 @@ class App extends Component {
               const _signer = provider.getSigner()
               this.setState({
                 signer: _signer,
-                signerAddress:_accounts[0]
+                signerAddress: _accounts[0]
               })
             }
             window.location.reload()
@@ -103,7 +103,7 @@ class App extends Component {
               const _signer = _provider.getSigner()
               this.setState({
                 signer: _signer,
-                signerAddress:__accounts[0]
+                signerAddress: __accounts[0]
               })
             }
             window.location.reload()
@@ -137,22 +137,22 @@ class App extends Component {
         })
       setInterval(() => {
         axios.get('https://docs.google.com/spreadsheets/d/1Aiw5wJGoqmTFcMB595Sv4TX6pDjd0lytaProjyQO7ac/gviz/tq?tqx=out:csv&tq=SELECT *')
-        .then(response => {
-          this.setState({
-            total: this.numberWithSpaces(response.data)
+          .then(response => {
+            this.setState({
+              total: this.numberWithSpaces(response.data)
+            })
           })
-        })
       }, 5000)
       if (providerExist === true) {
         setTimeout(async () => {
           await this.loadBasic()
         }, 100)
       }
-      
+
     } catch (error) {
       // Catch any errors for any of the above operations.
       console.error(error);
-    } 
+    }
   };
 
   numberWithSpaces(x) {
@@ -242,92 +242,92 @@ class App extends Component {
   setProperties = this.setProperties.bind(this)
 
   async loadBasic() {
-      const { signer, signerAddress, contractAddress } = this.state
-      const contract = new ethers.Contract(contractAddress, TheWill.abi, signer)
-      const wills = await contract.getAllWills(signerAddress)
-      const inheritances = await contract.getAllInheritances(signerAddress)
-      contract.on('AddAnHeir', async (ID, owner, heir, token, timeWhenWithdraw, amount) => {
-        if (owner.toLowerCase() === signerAddress.toLowerCase()) {
-          this.setState({
-            willsLength: this.state.willsLength + 1
-          })
-        }
-        setTimeout(async () => {
-          axios.get('https://docs.google.com/spreadsheets/d/1Aiw5wJGoqmTFcMB595Sv4TX6pDjd0lytaProjyQO7ac/gviz/tq?tqx=out:csv&tq=SELECT *')
+    const { signer, signerAddress, contractAddress } = this.state
+    const contract = new ethers.Contract(contractAddress, TheWill.abi, signer)
+    const wills = await contract.getAllWills(signerAddress)
+    const inheritances = await contract.getAllInheritances(signerAddress)
+    contract.on('AddAnHeir', async (ID, owner, heir, token, timeWhenWithdraw, amount) => {
+      if (owner.toLowerCase() === signerAddress.toLowerCase()) {
+        this.setState({
+          willsLength: this.state.willsLength + 1
+        })
+      }
+      setTimeout(async () => {
+        axios.get('https://docs.google.com/spreadsheets/d/1Aiw5wJGoqmTFcMB595Sv4TX6pDjd0lytaProjyQO7ac/gviz/tq?tqx=out:csv&tq=SELECT *')
           .then(response => {
             this.setState({
               total: this.numberWithSpaces(response.data)
             })
           })
-        }, 5000)
-      })
-      this.setState({
-        contract, willsLength: wills.length, inheritancesLength: inheritances.length
-      })
+      }, 5000)
+    })
+    this.setState({
+      contract, willsLength: wills.length, inheritancesLength: inheritances.length
+    })
   }
 
   loadBasic = this.loadBasic.bind(this)
 
-  render(){
-      return(
-        <div className="App">
-          <header className="header _container">
-            <div className='header_boxes'>
-              <a href="/" className="logo-will">
-                <img src={logoWill}/>
-              </a>
-              <div className="number-of-wills">
-                <div className="amount-will">
+  render() {
+    return (
+      <div className="App">
+        <header className="header _container">
+          <div className='header_boxes'>
+            <a href="/" className="logo-will">
+              <img src={logoWill} />
+            </a>
+           
+              <div className="amount-will">
                 <div>
-                      Всего завещано:
-                  </div>
-                  <div>
-                      {this.state.total} USD
-                  </div>
+                  Всего завещано:
                 </div>
-                {
-                  <Connect 
-                  setProperties={this.setProperties} 
+                <div>
+                  {this.state.total} USD
+                </div>
+              </div>
+              {
+                <Connect
+                  setProperties={this.setProperties}
                   network={this.state.network}
                   networkName={this.state.networkName}
                   networkPic={this.state.networkPic}
-                  />
-                }
-            </div>
-            </div>
-          </header>
-
-            <main className="_container">
-              {
-                this.state.signer === null || this.state.willsLength === 0
-                ?  
-                  <Main 
-                  inheritancesLength={this.state.inheritancesLength} 
-                  willsLength={this.state.willsLength}
-                  provider={this.state.provider}
-                  signer={this.state.signer}
-                  signerAddress={this.state.signerAddress}
-                  network={this.state.network}
-                  setProperties={this.setProperties}
-                  tokenAddress={this.state.tokenAddress}
-                  contractAddress={this.state.contractAddress}
-                  networkProvider={this.state.networkProvider}
-                  networkName={this.state.networkName}
-                  />
-                  :
-                  <Data 
-                  provider={this.state.provider}
-                  signer={this.state.signer}
-                  signerAddress={this.state.signerAddress}
-                  network={this.state.network}
-                  tokenAddress={this.state.tokenAddress}
-                  contractAddress={this.state.contractAddress}
-                  networkProvider={this.state.networkProvider}
-                  networkName={this.state.networkName}
-                  />
+                />
               }
-            </main>
-        </div>
+         
+          </div>
+        </header>
+
+        <main className="_container">
+          {
+            this.state.signer === null || this.state.willsLength === 0
+              ?
+              <Main
+                inheritancesLength={this.state.inheritancesLength}
+                willsLength={this.state.willsLength}
+                provider={this.state.provider}
+                signer={this.state.signer}
+                signerAddress={this.state.signerAddress}
+                network={this.state.network}
+                setProperties={this.setProperties}
+                tokenAddress={this.state.tokenAddress}
+                contractAddress={this.state.contractAddress}
+                networkProvider={this.state.networkProvider}
+                networkName={this.state.networkName}
+              />
+              :
+              <Data
+                provider={this.state.provider}
+                signer={this.state.signer}
+                signerAddress={this.state.signerAddress}
+                network={this.state.network}
+                tokenAddress={this.state.tokenAddress}
+                contractAddress={this.state.contractAddress}
+                networkProvider={this.state.networkProvider}
+                networkName={this.state.networkName}
+              />
+          }
+        </main>
+      </div>
     );
   }
 }
