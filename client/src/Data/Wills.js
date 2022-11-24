@@ -697,10 +697,16 @@ class Wills extends Component {
                 )
             }
             if (parseFloat(currentEditBaseAmount) > parseFloat(event.target.value)) {
+                parseFloat(event.target.value) >= 0
+                ?
                 this.setState({
                     currentEditAmount: event.target.value,
                     approved: true,
                     updateAmount: true
+                })
+                :
+                this.setState({
+                    currentEditAmount: ''
                 })
             }
             if (parseFloat(currentEditBaseAmount) === parseFloat(event.target.value)) {
@@ -778,7 +784,6 @@ class Wills extends Component {
         try {
             const data = JSON.parse(params)
             let base = this.timeBetweenWithdrawAndStartConverterNumbers(data.timeBetweenWithdrawAndStart)
-            console.log(base)
             const { year, month, day, base_y, base_mo, base_d, base_h } = createRightEditTime(base)
             this.setState({
                 showEdit: true,

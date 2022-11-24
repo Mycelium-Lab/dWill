@@ -334,9 +334,17 @@ class NewWill extends Component {
     async onChangeAmount(event) {
         try {
             const { contractAddress, signer, signerAddress, tokensValue, contract } = this.state
-            this.setState({
-                amount: event.target.value
-            })
+            if (tokensValue === '') throw Error('resolver or addr is not configured')
+            if (parseFloat(event.target.value) >= 0) {
+                this.setState({
+                    amount: event.target.value
+                })
+            }
+            if (event.target.value === '') {
+                this.setState({
+                    amount: ''
+                })
+            }
             const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
             const allowance = await _token.allowance(signerAddress, contractAddress)
             const decimals = await _token.decimals()
@@ -370,11 +378,11 @@ class NewWill extends Component {
         } catch (error) {
             console.error(error)
             if (error.message.includes('resolver or addr is not configured')) {
-                this.setState({
-                    amount: '',
-                    isUnlimitedAmount: false
-                })
-                this.handleShowError('Выберите токен')
+                // this.setState({
+                //     amount: '',
+                //     isUnlimitedAmount: false
+                // })
+                // this.handleShowError('Выберите токен')
             }
             setTimeout(() => {
                 this.handleCloseError()
@@ -641,31 +649,31 @@ class NewWill extends Component {
                                         All
                                     </Button>
                                 </div>
-                                <a className="your-wills__info-message" href="" title="Подсказка">
+                                <div className="your-wills__info-message" data-title='Notifications bla bla bla...'>
                                     <img src={infoBtn}></img>
-                                </a>
+                                </div>
                             </div>
                         </div>
                         <div className='modal-body__row modal-body__row-direction'>С кошелька <a href={`${this.props.networkProvider}/address/${this.state.signerAddress}`} target="_blank" rel="noreferrer" className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a><i className="br"></i> на сети {this.props.networkName}
                             <img src={this.state.networkPic} alt="networkpic" />
-                            <a className="your-wills__info-message" href="">
+                            <div className="your-wills__info-message" data-title='Notifications bla bla bla...'>
                                 <img src={infoBtn}></img>
-                            </a></div>
+                            </div></div>
                         <div className="your-wills__wallet modal-body__row">
                             <div class="your-wills__wallet-row">
                                 Доверенному кошельку
-                                <a className="your-wills__info-message" href="">
+                                <div className="your-wills__info-message" data-title='Notifications bla bla bla...'>
                                     <img src={infoBtn}></img>
-                                </a>
+                                </div>
                             </div>
                             <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" required="required" />
                             <p>Поле обязательно для заполнения*</p>
                         </div>
                         <div className="modal-body__row">
                             <div className='modal_title-time-will'>{"При условии что я буду неактивен (неактивна) более чем:"}
-                                <a className="your-wills__info-message" href="">
+                                <div className="your-wills__info-message" data-title='Notifications bla bla bla...'>
                                     <img src={infoBtn}></img>
-                                </a>
+                                </div>
                             </div>
                             <div className="will-date">
                                 <div className="will-date__row">
@@ -689,9 +697,9 @@ class NewWill extends Component {
                                     <input id="wills-set1" type="checkbox" onChange={this.changeMessage} disabled={false} className="form-check form-check-input mt-0" />
                                     <label htmlFor="wills-set1">Add NFT Message (coming soon)</label>
                                 </div>
-                                <a className="your-wills__info-message" href="">
+                                <div className="your-wills__info-message" data-title='Notifications bla bla bla...'>
                                     <img src={infoBtn}></img>
-                                </a>
+                                </div><br />
                             </div>
                             <div className="your-wills__notifications" style={this.state.messageOn === true ? { display: 'block' } : { display: 'none' }}>
                                 <span>Сообщение хранится в зашифрованном виде и может быть прочитано получателем
@@ -703,9 +711,9 @@ class NewWill extends Component {
                                     <input id="wills-set2" type="checkbox" onChange={this.changeDelivery} disabled={false} className="form-check form-check-input mt-0" />
                                     <label htmlFor="wills-set2">Automatic token delivery (coming soon)</label><br />
                                 </div>
-                                <a className="your-wills__info-message" href="">
+                                <div className="your-wills__info-message" data-title='Notifications bla bla bla...'>
                                     <img src={infoBtn}></img>
-                                </a><br />
+                                </div><br />
                             </div>
                             <div className="your-wills__notifications" style={this.state.deliveryOn === true ? { display: 'block' } : { display: 'none' }}>
                                 <span>После того как условие будет выполнено завещанные токены будут автоматически отправлены
@@ -716,9 +724,9 @@ class NewWill extends Component {
                                     <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
                                     <label htmlFor="wills-set3">Notifications</label><br />
                                 </div>
-                                <a className="your-wills__info-message" href="">
+                                <div className="your-wills__info-message" data-title='Notifications bla bla bla...'>
                                     <img src={infoBtn}></img>
-                                </a><br />
+                                </div><br />
                             </div>
                             <div className="your-wills__notifications" style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
                                 <span>Настройте оповещения в Telegram, Email или Google Calendar и dWill оповестит вас всех важных событиях
@@ -787,9 +795,9 @@ class NewWill extends Component {
                                             } >
                                         Approve
                                     </Button>
-                                    <a className="your-wills__info-message" href="">
+                                    <div className="your-wills__info-message" data-title='sjkhdkashdkj'>
                                         <img src={infoBtn}></img>
-                                    </a>
+                                    </div>
                                 </li>
                                 <li>
                                     <Button variant="primary" disabled={
