@@ -30,6 +30,7 @@ import GoerliTokens from '../Utils/tokens/goerli.json'
 import UniswapTokens from '../Utils/tokens/uniswap.json'
 import AvalancheTokens from '../Utils/tokens/avalanche.json'
 import { select } from '../Utils/styles/select'
+import { tooltipText } from '../Utils/tooltipText';
 
 const { Option } = components;
 const IconOption = props => (
@@ -657,20 +658,20 @@ class NewWill extends Component {
                                         All
                                     </Button>
                                 </div>
-                                <div className="your-wills__info-message" data-title='Notifications bla bla bla...'>
+                                <div className="your-wills__info-message" data-title={tooltipText.tokens}>
                                     <img src={infoBtn}></img>
                                 </div>
                             </div>
                         </div>
                         <div className='modal-body__row modal-body__row-direction'>С кошелька <a href={`${this.props.networkProvider}/address/${this.state.signerAddress}`} target="_blank" rel="noreferrer" className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a><i className="br"></i> на сети {this.props.networkName}
                             <img src={this.state.networkPic} alt="networkpic" />
-                            <div className="your-wills__info-message" data-title='Notifications bla bla bla...'>
+                            <div className="your-wills__info-message" data-title={tooltipText.network}>
                                 <img src={infoBtn}></img>
                             </div></div>
                         <div className="your-wills__wallet modal-body__row">
                             <div className="your-wills__wallet-row">
                                 Доверенному кошельку
-                                <div className="your-wills__info-message" data-title='Notifications bla bla bla...'>
+                                <div className="your-wills__info-message" data-title={tooltipText.wallet}>
                                     <img src={infoBtn}></img>
                                 </div>
                             </div>
@@ -679,7 +680,7 @@ class NewWill extends Component {
                         </div>
                         <div className="modal-body__row">
                             <div className='modal_title-time-will'>{"При условии что я буду неактивен (неактивна) более чем:"}
-                                <div className="your-wills__info-message" data-title='Notifications bla bla bla...'>
+                                <div className="your-wills__info-message" data-title={tooltipText.time}>
                                     <img src={infoBtn}></img>
                                 </div>
                             </div>
@@ -705,7 +706,7 @@ class NewWill extends Component {
                                     <input id="wills-set1" type="checkbox" onChange={this.changeMessage} disabled={false} className="form-check form-check-input mt-0" />
                                     <label htmlFor="wills-set1">Add NFT Message (coming soon)</label>
                                 </div>
-                                <div className="your-wills__info-message" data-title='Notifications bla bla bla...'>
+                                <div className="your-wills__info-message" data-title={tooltipText.NFTMessage}>
                                     <img src={infoBtn}></img>
                                 </div><br />
                             </div>
@@ -719,7 +720,7 @@ class NewWill extends Component {
                                     <input id="wills-set2" type="checkbox" onChange={this.changeDelivery} disabled={false} className="form-check form-check-input mt-0" />
                                     <label htmlFor="wills-set2">Automatic token delivery (coming soon)</label><br />
                                 </div>
-                                <div className="your-wills__info-message" data-title='Notifications bla bla bla...'>
+                                <div className="your-wills__info-message" data-title={tooltipText.delivery}>
                                     <img src={infoBtn}></img>
                                 </div><br />
                             </div>
@@ -732,7 +733,7 @@ class NewWill extends Component {
                                     <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
                                     <label htmlFor="wills-set3">Notifications</label><br />
                                 </div>
-                                <div className="your-wills__info-message" data-title='Notifications bla bla bla...'>
+                                <div className="your-wills__info-message" data-title={tooltipText.notifications}>
                                     <img src={infoBtn}></img>
                                 </div><br />
                             </div>
@@ -803,7 +804,7 @@ class NewWill extends Component {
                                             } >
                                         Approve
                                     </Button>
-                                    <div className="your-wills__info-message" data-title='Notifications bla bla bla...'>
+                                    <div className="your-wills__info-message" data-title={tooltipText.approve}>
                                         <img src={infoBtn}></img>
                                     </div>
                                 </li>

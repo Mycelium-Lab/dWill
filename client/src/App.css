@@ -2875,6 +2875,7 @@ input::-webkit-inner-spin-button {
   align-items: center;
 }
 
+
 .your-wills__info-message:hover::after {
   content: attr(data-title);
   position: absolute;
@@ -2882,6 +2883,6 @@ input::-webkit-inner-spin-button {
   z-index: 1;
   bottom: 125%;
   left: 50%;
-  margin-left: -60px;
-  background: #1B232A;
+  margin-left: -120px;
+  background: #1B232A; 
 }
