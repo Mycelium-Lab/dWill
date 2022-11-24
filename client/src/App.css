@@ -591,6 +591,7 @@ a {
 @media (max-width: 767px) {
   .modal-body__row .br {
     display: block;
+    width: 100%;
   }
 }
 
@@ -722,10 +723,16 @@ a {
 }
 
 .will-date__row label {
-  font-size: 10px;
+  font-size: 14px;
   font-weight: 400;
   color: #C1C7CD;
   /* text-transform: lowercase; */
+}
+
+@media (max-width: 767px) {
+  .will-date__row label {
+    font-size: 12px;
+  }
 }
 
 
