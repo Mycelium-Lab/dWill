@@ -1,12 +1,14 @@
-import React, { Component } from 'react';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import React, { Component } from 'react'
+import Button from 'react-bootstrap/Button'
+import Modal from 'react-bootstrap/Modal'
 import TheWill from '../Contract/TheWill.json'
 import LoadingPic from '../content/loading.svg'
 import closeModalPic from '../content/close_modal.svg'
 import ConfiPic from '../content/confi.svg'
 import closePic from '../content/button_close.svg'
-import { ethers } from "ethers";
+import linkBtn from '../content/link-btn.png'
+import { ethers } from "ethers"
+
 
 class ResetTimers extends Component {
     constructor(props) {
@@ -179,6 +181,9 @@ class ResetTimers extends Component {
                         </div>
                     </Modal.Header>
                     <Modal.Footer>
+                        <a className="modal-loading__link" href="">
+                            <img src={linkBtn}></img>
+                        </a>
                         <Button variant="danger" onClick={this.handleCloseEventConfirmed} className="btn btn-danger">
                             <img src={closePic} />
                         </Button>
