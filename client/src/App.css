@@ -437,13 +437,15 @@ a {
 
 .modal-loading__progress-bar--error span {
   background-color: #E84142;
-  width: 100%;
+  width: 0;
+  animation: 5s barTime5;
 }
 
 @keyframes barTime5 {
   0% {
     width: 0;
   }
+
   100% {
     width: 100%;
   }
