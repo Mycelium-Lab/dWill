@@ -77,7 +77,8 @@ class Wills extends Component {
             networkPic: EthereumPic,
             processingText: '',
             confirmedText: '',
-            googleCalendarDateText: ''
+            googleCalendarDateText: '',
+            hash: ''
         };
     }
 
@@ -489,12 +490,15 @@ class Wills extends Component {
             promise
                 .then(async (tx) => {
                     this.handleCloseConfirm()
-                    this.handleShowAwait(`Edit Will`)
+                    this.handleShowAwait(`Edit dWill`)
                     await tx.wait()
                         .then(() => {
                             this.handleCloseAwait()
                             this.handleCloseEdit()
-                            this.handleShowEventConfirmed(`Will has been edited`)
+                            this.handleShowEventConfirmed(`dWill has been edited`, tx.hash)
+                            setTimeout(() => {
+                                this.handleCloseEventConfirmed()
+                            }, 5000)
                             this.setState({
                                 updateHeir: false,
                                 updateAmount: false,
@@ -522,6 +526,9 @@ class Wills extends Component {
                         this.handleCloseConfirm()
                         this.handleShowError()
                     }
+                    setTimeout(() => {
+                        this.handleCloseError()
+                    }, 5000)
                     this.handleCloseConfirm()
                 })
         } catch (error) {
@@ -543,7 +550,6 @@ class Wills extends Component {
                     this.setState({
                         errortext: 'Если вы хотите изменить время, введите все входные данные, в противном случае не вводите входные данные'
                     })
-                    this.handleShowError()
                 }
                 if (error.message.includes(`Time when withdraw is lower then now`)) {
                     this.setState({
@@ -574,6 +580,9 @@ class Wills extends Component {
                     })
                     this.handleShowError()
                 }
+                setTimeout(() => {
+                    this.handleCloseError()
+                }, 5000)
             }
             this.handleCloseConfirm()
             this.handleCloseAwait()
@@ -607,12 +616,19 @@ class Wills extends Component {
                             approved: true
                         })
                     })
-                this.handleShowEventConfirmed(`Approved ${currentEditSymbol}`)
+                this.handleShowEventConfirmed(`Approved ${currentEditSymbol}`, tx.hash)
+                setTimeout(() => {
+                    this.handleCloseEventConfirmed()
+                }, 5000)
             })
             .catch(err => {
                 console.error(err)
                 this.handleCloseConfirm()
                 this.handleCloseAwait()
+                this.handleShowError('Something went wrong')
+                setTimeout(() => {
+                    this.handleCloseError()
+                }, 5000)
             })
     }
 
@@ -867,7 +883,7 @@ class Wills extends Component {
     handleShowError = this.handleShowError.bind(this)
     handleCloseError = this.handleCloseError.bind(this)
 
-    handleShowEventConfirmed = (confirmedText) => this.setState({ showEventConfirmed: true, confirmedText })
+    handleShowEventConfirmed = (confirmedText, hash) => this.setState({ showEventConfirmed: true, confirmedText, hash })
     handleCloseEventConfirmed = () => this.setState({ showEventConfirmed: false })
 
     handleShowEventConfirmed = this.handleShowEventConfirmed.bind(this)
@@ -894,7 +910,7 @@ class Wills extends Component {
                                                         <span>
                                                             You bequeathed up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited' : (v.amount / Math.pow(10, v.decimals)).toString()} of your {v.symbol} from {this.state.network} chain to wallet
                                                         </span>
-                                                        <a href={`${this.props.networkProvider}${v.heir}`} target="_blank" rel="noreferrer">
+                                                        <a href={`${this.props.networkProvider}/address/${v.heir}`} target="_blank" rel="noreferrer">
                                                             {` ${v.heir}`}
                                                         </a>
                                                         <span>
@@ -974,7 +990,7 @@ class Wills extends Component {
 
                             </div>
                         </div>
-                        <div className="modal-body__row">С кошелька <a href='#'>{
+                        <div className="modal-body__row">С кошелька <a href={`${this.props.networkProvider}/address/${this.state.signerAddress}`} target="_blank" rel="noreferrer">{
                             this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)
                         }</a> <i className="br"></i> на сети {this.props.networkName} <img src={this.state.networkPic} alt="networkpic" /></div>
                         <div className="your-wills__wallet modal-body__row">
@@ -1033,7 +1049,7 @@ class Wills extends Component {
                                     <span>Настроить оповещения в телеграм и на email</span>
                                 </a>
                                 <div className="your-wills__links">
-                                    <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider + this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer"><img src={btnCalendar}></img>Добавить событие в Google Calendar</a>
+                                    <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider+ '/address/' + this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer"><img src={btnCalendar}></img>Добавить событие в Google Calendar</a>
                                 </div>
                             </div>
                         </div>
@@ -1159,7 +1175,7 @@ class Wills extends Component {
                         </div>
                     </Modal.Header>
                     <Modal.Footer>
-                        <a className="modal-loading__link" href="">
+                        <a className="modal-loading__link" href={`${this.props.networkProvider}/tx/${this.state.hash}`} target="_blank" rel="noreferrer">
                             <img src={linkBtn}></img>
                         </a>
                         <Button variant="danger" onClick={this.handleCloseEventConfirmed} className="btn btn-danger">

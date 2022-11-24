@@ -32,6 +32,7 @@ class Inheritances extends Component {
             processingText: '',
             confirmedText: '',
             showError: false,
+            hash: ''
         };
     }
 
@@ -197,7 +198,10 @@ class Inheritances extends Component {
                     this.handleShowAwait(`Receive Tokens`)
                     await tx.wait()
                     this.handleCloseAwait()
-                    this.handleShowEventConfirmed(`Tokens has been recieved`)
+                    this.handleShowEventConfirmed(`Tokens has been recieved`, tx.hash)
+                    setTimeout(() => {
+                        this.handleCloseEventConfirmed()
+                    }, 5000)
                 })
         } catch (error) {
             console.error(error)
@@ -206,6 +210,9 @@ class Inheritances extends Component {
             if (error.reason.includes('dWill: Time is not over yet')) {
                 this.handleShowError('Time is not over yet')
             }
+            setTimeout(() => {
+                this.handleCloseError()
+            }, 5000)
         }
     }
 
@@ -252,7 +259,7 @@ class Inheritances extends Component {
     handleCloseConfirm = this.handleCloseConfirm.bind(this)
     handleCloseAwait = this.handleCloseAwait.bind(this)
 
-    handleShowEventConfirmed = (confirmedText) => this.setState({ showEventConfirmed: true, confirmedText })
+    handleShowEventConfirmed = (confirmedText, hash) => this.setState({ showEventConfirmed: true, confirmedText, hash})
     handleCloseEventConfirmed = () => this.setState({ showEventConfirmed: false })
 
     handleShowEventConfirmed = this.handleShowEventConfirmed.bind(this)
@@ -292,7 +299,7 @@ class Inheritances extends Component {
                                                                 }
                                                                 can harvest up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited' : (v.amount / Math.pow(10, v.decimals)).toString()} {v.symbol} from wallet
                                                             </span>
-                                                            <a href={`${this.props.networkProvider}${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`} </a> on {this.state.network} chain
+                                                            <a href={`${this.props.networkProvider}/address/${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`} </a> on {this.state.network} chain
                                                         </div>
                                                         <button value={v.ID.toString()} onClick={this.claim}
                                                             style={{
@@ -395,7 +402,7 @@ class Inheritances extends Component {
                         </div>
                     </Modal.Header>
                     <Modal.Footer>
-                        <a className="modal-loading__link" href="">
+                        <a className="modal-loading__link" href={`${this.props.networkProvider}/tx/${this.state.hash}`} target="_blank" rel="noreferrer">
                             <img src={linkBtn}></img>
                         </a>
                         <Button variant="danger" onClick={this.handleCloseEventConfirmed} className="btn btn-danger">

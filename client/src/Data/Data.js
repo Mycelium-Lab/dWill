@@ -17,6 +17,7 @@ class Data extends Component {
                             contractAddress={this.props.contractAddress} 
                             signer={this.props.signer} 
                             signerAddress={this.props.signerAddress}
+                            networkProvider={this.props.networkProvider}
                         />
                     </div>
                      <div>

@@ -89,7 +89,8 @@ class NewWill extends Component {
             networkPic: EthereumPic,
             googleCalendarDateText: '',
             processingText: '',
-            confirmedText: ''
+            confirmedText: '',
+            hash: ''
         };
     }
 
@@ -239,7 +240,10 @@ class NewWill extends Component {
                 await tx.wait()
                     .then(() => {
                         this.handleCloseAwait()
-                        this.handleShowEventConfirmed(`Approved ${symbol}`)
+                        this.handleShowEventConfirmed(`Approved ${symbol}`, tx.hash)
+                        setTimeout(() => {
+                            this.handleCloseEventConfirmed()
+                        }, 5000)
                         this.setState({
                             approved: true
                         })
@@ -250,6 +254,9 @@ class NewWill extends Component {
                 if (err.message.includes('resolver or addr is not ')) {
                     this.handleShowError('Choose token')
                 }
+                setTimeout(() => {
+                    this.handleCloseError()
+                }, 5000)
                 this.handleCloseConfirm()
                 this.handleCloseAwait()
             })
@@ -277,6 +284,9 @@ class NewWill extends Component {
                 (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
             ) { } else {
                 this.handleShowError('Something wrong with time')
+                setTimeout(() => {
+                    this.handleCloseError()
+                }, 5000)
             }
         }
     }
@@ -292,11 +302,14 @@ class NewWill extends Component {
             this.handleShowConfirm()
             await contract.addNewWill(heirAddress, tokensValue, timeUnixWhenWithdraw.toString(), sendTo)
                 .then(async (tx) => {
-                    this.handleShowAwait('New dwill creation')
+                    this.handleShowAwait('New dWill creation')
                     await tx.wait()
                     this.handleCloseAwait()
                     this.handleClose()
-                    this.handleShowDoneNewWill()
+                    this.handleShowDoneNewWill(tx.hash)
+                    setTimeout(() => {
+                        this.handleCloseDoneNewWill()
+                    }, 5000)
                 })
         } catch (error) {
             console.error(error)
@@ -310,6 +323,9 @@ class NewWill extends Component {
             if (error.message.includes('Not enough allowance')) {
                 this.handleShowError('Not enough allowance')
             }
+            setTimeout(() => {
+                this.handleCloseError()
+            }, 5000)
             this.handleCloseConfirm()
             this.handleCloseAwait()
         }
@@ -334,6 +350,9 @@ class NewWill extends Component {
             if (error.message.includes('resolver or addr is not configured')) {
                 this.handleShowError('Choose token')
             }
+            setTimeout(() => {
+                this.handleCloseError()
+            }, 5000)
         }
     }
 
@@ -357,6 +376,9 @@ class NewWill extends Component {
                 })
                 this.handleShowError('Выберите токен')
             }
+            setTimeout(() => {
+                this.handleCloseError()
+            }, 5000)
         }
     }
 
@@ -424,6 +446,9 @@ class NewWill extends Component {
             } else {
                 this.handleShowError()
             }
+            setTimeout(() => {
+                this.handleCloseError()
+            }, 5000)
         }
     }
 
@@ -535,13 +560,13 @@ class NewWill extends Component {
     handleShowWalletNotExist = this.handleShowWalletNotExist.bind(this)
     handleCloseWalletNotExist = this.handleCloseWalletNotExist.bind(this)
 
-    handleShowDoneNewWill = () => this.setState({ newWillDone: true })
+    handleShowDoneNewWill = (hash) => this.setState({ newWillDone: true, hash })
     handleCloseDoneNewWill = () => this.setState({ newWillDone: false })
 
     handleShowDoneNewWill = this.handleShowDoneNewWill.bind(this)
     handleCloseDoneNewWill = this.handleCloseDoneNewWill.bind(this)
 
-    handleShowEventConfirmed = (confirmedText) => this.setState({ showEventConfirmed: true, confirmedText })
+    handleShowEventConfirmed = (confirmedText, hash) => this.setState({ showEventConfirmed: true, confirmedText, hash })
     handleCloseEventConfirmed = () => this.setState({ showEventConfirmed: false })
 
     handleShowEventConfirmed = this.handleShowEventConfirmed.bind(this)
@@ -621,7 +646,7 @@ class NewWill extends Component {
                                 </a>
                             </div>
                         </div>
-                        <div className='modal-body__row modal-body__row-direction'>С кошелька <a href={`${this.props.networkProvider}${this.state.signerAddress}`} target="_blank" rel="noreferrer" className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a><i className="br"></i> на сети {this.props.networkName}
+                        <div className='modal-body__row modal-body__row-direction'>С кошелька <a href={`${this.props.networkProvider}/address/${this.state.signerAddress}`} target="_blank" rel="noreferrer" className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a><i className="br"></i> на сети {this.props.networkName}
                             <img src={this.state.networkPic} alt="networkpic" />
                             <a className="your-wills__info-message" href="">
                                 <img src={infoBtn}></img>
@@ -704,7 +729,7 @@ class NewWill extends Component {
                                     <span>Настроить оповещения в телеграм и на email</span>
                                 </a>
                                 <div className="your-wills__links">
-                                    <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider + this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer"><img src={btnCalendar}></img>Добавить событие в Google Calendar</a>
+                                    <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider + '/address/' + this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer"><img src={btnCalendar}></img>Добавить событие в Google Calendar</a>
                                 </div>
                             </div>
                         </div>
@@ -865,7 +890,7 @@ class NewWill extends Component {
                         </div>
                     </Modal.Header>
                     <Modal.Footer>
-                        <a className="modal-loading__link" href="">
+                        <a className="modal-loading__link" href={`${this.props.networkProvider}/tx/${this.state.hash}`} target="_blank" rel="noreferrer">
                             <img src={linkBtn}></img>
                         </a>
                         <Button variant="danger" onClick={this.handleCloseEventConfirmed} className="btn btn-danger">
@@ -901,6 +926,11 @@ class NewWill extends Component {
                             <img src={closeModalPic}></img>
                         </button>
                         <p className="modal-await_text">Завещание успешно создано!</p>
+                        <p className="modal-await_text">
+                            <a href={`${this.props.networkProvider}/tx/${this.state.hash}`} target="_blank" rel="noreferrer">
+                                View in blockchain explorer
+                            </a>
+                        </p>
                     </Modal.Footer>
                 </Modal>
                 {/* <Modal className="modal-small" show={this.state.showError}>

@@ -24,6 +24,7 @@ class ResetTimers extends Component {
             showError: false,
             processingText: '',
             confirmedText: '',
+            hash: ''
         };
     }
 
@@ -86,17 +87,24 @@ class ResetTimers extends Component {
             .then(async (tx) => {
                 this.handleCloseConfirm()
                 this.handleShowAwait('Reset timers')
-                return tx.wait()
+                await tx.wait()
+                return tx.hash
             })
-            .then(() => {
+            .then((hash) => {
                 this.handleCloseAwait()
-                this.handleShowEventConfirmed('Timers has been reseted')
+                this.handleShowEventConfirmed('Timers has been reseted', hash)
+                setTimeout(() => {
+                    this.handleCloseEventConfirmed()
+                }, 5000)
             })
             .catch((err) => {
                 console.error(err)
                 this.handleCloseConfirm()
                 this.handleCloseAwait()
                 this.handleShowError('Something went wrong')
+                setTimeout(() => {
+                    this.handleCloseError()
+                }, 5000)
             })
     }
 
@@ -117,7 +125,7 @@ class ResetTimers extends Component {
     handleCloseConfirm = this.handleCloseConfirm.bind(this)
     handleCloseAwait = this.handleCloseAwait.bind(this)
 
-    handleShowEventConfirmed = (confirmedText) => this.setState({ showEventConfirmed: true, confirmedText })
+    handleShowEventConfirmed = (confirmedText, hash) => this.setState({ showEventConfirmed: true, confirmedText, hash })
     handleCloseEventConfirmed = () => this.setState({ showEventConfirmed: false })
 
     handleShowEventConfirmed = this.handleShowEventConfirmed.bind(this)
@@ -181,7 +189,7 @@ class ResetTimers extends Component {
                         </div>
                     </Modal.Header>
                     <Modal.Footer>
-                        <a className="modal-loading__link" href="">
+                        <a className="modal-loading__link" href={`${this.props.networkProvider}/tx/${this.state.hash}`} target="_blank" rel="noreferrer">
                             <img src={linkBtn}></img>
                         </a>
                         <Button variant="danger" onClick={this.handleCloseEventConfirmed} className="btn btn-danger">

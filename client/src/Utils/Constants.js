@@ -40,13 +40,13 @@ export const chainRPCURL = {
     OptimismMainnet: 'https://mainnet.optimism.io'
 }
 export const NetworkProviders = {
-    Polygon: 'https://explorer.matic.network/address/',
-    Mumbai: 'https://mumbai.polygonscan.com/address/',
-    BinanceTestnet: 'https://testnet.bscscan.com/address/',
-    BinanceMainnet: 'https://bscscan.com/address/',
-    EthereumMainnet: 'https://etherscan.io/address/',
-    Goerli: 'https://goerli.etherscan.io/address/',
-    AvalancheMainnet: 'https://snowtrace.io/address/',
-    ArbitrumMainnet: 'https://arbiscan.io/address/',
-    OptimismMainnet: 'https://optimistic.etherscan.io/address/'
+    Polygon: 'https://explorer.matic.network',
+    Mumbai: 'https://mumbai.polygonscan.com',
+    BinanceTestnet: 'https://testnet.bscscan.com',
+    BinanceMainnet: 'https://bscscan.com',
+    EthereumMainnet: 'https://etherscan.io',
+    Goerli: 'https://goerli.etherscan.io',
+    AvalancheMainnet: 'https://snowtrace.io',
+    ArbitrumMainnet: 'https://arbiscan.io',
+    OptimismMainnet: 'https://optimistic.etherscan.io'
 }
