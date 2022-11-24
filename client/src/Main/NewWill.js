@@ -356,7 +356,12 @@ class NewWill extends Component {
             )
         } catch (error) {
             if (error.message.includes('resolver or addr is not configured')) {
-                this.handleShowError('Choose token')
+                if (this.state.contractAddress === '') {
+                    this.handleShowError(`dWill not exist on this network`)
+                }
+                if (this.state.tokensValue === '') {
+                    this.handleShowError('Choose token')
+                }
             }
             setTimeout(() => {
                 this.handleCloseError()
@@ -434,6 +439,7 @@ class NewWill extends Component {
     async onChangeTokens(event) {
         try {
             const { contractAddress, signer, signerAddress, amount, contract } = this.state
+            if (event.value === '') throw Error('token not exist here')
             const _token = new ethers.Contract(event.value, ERC20.abi, signer)
             this.setState({
                 tokensValue: event.value
@@ -450,9 +456,11 @@ class NewWill extends Component {
         } catch (error) {
             console.log(error.message)
             if (error.message.includes('resolver or addr is not configured')) {
-                this.handleShowError('Choose token')
-            } else {
-                this.handleShowError()
+                if (this.state.contractAddress === '') {
+                    this.handleShowError('dWill not exist on this network')
+                }
+            } else if (error.message.includes('token not exist here')) {
+                this.handleShowError('Not existed token')
             }
             setTimeout(() => {
                 this.handleCloseError()
@@ -644,7 +652,7 @@ class NewWill extends Component {
                                     <label htmlFor="unlimited">Unlimited</label><br />
                                 </div>
                                 <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
-                                    <input onChange={this.onChangeAmount} value={this.state.amount} min="0" oninput="validity.valid||(value='')" placeholder="Введите сумму" type="number" className="input-group mb-3" />
+                                    <input onChange={this.onChangeAmount} value={this.state.amount} min="0" placeholder="Введите сумму" type="number" className="input-group mb-3" />
                                     <Button variant="outline-success" onClick={this.onSetMaxAmount}>
                                         All
                                     </Button>
@@ -660,7 +668,7 @@ class NewWill extends Component {
                                 <img src={infoBtn}></img>
                             </div></div>
                         <div className="your-wills__wallet modal-body__row">
-                            <div class="your-wills__wallet-row">
+                            <div className="your-wills__wallet-row">
                                 Доверенному кошельку
                                 <div className="your-wills__info-message" data-title='Notifications bla bla bla...'>
                                     <img src={infoBtn}></img>
@@ -795,7 +803,7 @@ class NewWill extends Component {
                                             } >
                                         Approve
                                     </Button>
-                                    <div className="your-wills__info-message" data-title='sjkhdkashdkj'>
+                                    <div className="your-wills__info-message" data-title='Notifications bla bla bla...'>
                                         <img src={infoBtn}></img>
                                     </div>
                                 </li>
