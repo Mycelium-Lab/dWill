@@ -24,6 +24,8 @@ import ArbitrumPic from '../content/arbitrum.svg'
 import btnTelegram from '../content/btnTelegram.svg'
 import btnCalendar from '../content/btnCalendar.svg'
 import btnEmail from '../content/btnEmail.svg'
+import infoBtn from '../content/info-btn.svg'
+import linkBtn from '../content/link-btn.png'
 import { createRightEditTime } from '../Utils/Time';
 
 class Wills extends Component {
@@ -1025,11 +1027,11 @@ class Wills extends Component {
                             <div className="your-wills__notifications" style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
                                 <span>Настройте оповещения в Telegram, Email или Google Calendar и dWill оповестит вас всех важных событиях
                                     связанных с вашими завещаниями и завещаниям предназначенным для вас</span>
-                                <div className="your-wills__links">
-                                    <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer"><img src={btnTelegram}></img></a>
-                                    <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer"><img src={btnEmail}></img></a>
+                                <a href="https://t.me/thewill_bot" rel="noreferrer" className="your-wills__links">
+                                    <img src={btnTelegram}></img>
+                                    <img src={btnEmail}></img>
                                     <span>Настроить оповещения в телеграм и на email</span>
-                                </div>
+                                </a>
                                 <div className="your-wills__links">
                                     <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider + this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer"><img src={btnCalendar}></img>Добавить событие в Google Calendar</a>
                                 </div>
@@ -1157,6 +1159,9 @@ class Wills extends Component {
                         </div>
                     </Modal.Header>
                     <Modal.Footer>
+                        <a className="modal-loading__link" href="">
+                            <img src={linkBtn}></img>
+                        </a>
                         <Button variant="danger" onClick={this.handleCloseEventConfirmed} className="btn btn-danger">
                             <img src={closePic} />
                         </Button>

@@ -3,10 +3,10 @@
 import React, { Component } from 'react';
 import Select, { components } from 'react-select'
 import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import Modal from 'react-bootstrap/Modal'
 import TheWill from '../Contract/TheWill.json'
-import { ethers } from "ethers";
-import { chainIDs, UnlimitedAmount } from '../Utils/Constants';
+import { ethers } from "ethers"
+import { chainIDs, UnlimitedAmount } from '../Utils/Constants'
 import closeModalPic from '../content/close_modal.svg'
 import buttonClosePic from '../content/button_close.svg'
 import PolygonPic from '../content/poligon.svg'
@@ -21,6 +21,7 @@ import btnTelegram from '../content/btnTelegram.svg'
 import btnCalendar from '../content/btnCalendar.svg'
 import btnEmail from '../content/btnEmail.svg'
 import infoBtn from '../content/info-btn.svg'
+import linkBtn from '../content/link-btn.png'
 import ERC20 from '../Contract/ERC20.json'
 import BinanceMainnetTokens from '../Utils/tokens/binanceMainnet.json'
 import BinanceTestnetTokens from '../Utils/tokens/binanceTestnet.json'
@@ -28,7 +29,7 @@ import MumbaiTokens from '../Utils/tokens/mumbai.json'
 import GoerliTokens from '../Utils/tokens/goerli.json'
 import UniswapTokens from '../Utils/tokens/uniswap.json'
 import AvalancheTokens from '../Utils/tokens/avalanche.json'
-import { select } from '../Utils/styles/select';
+import { select } from '../Utils/styles/select'
 
 const { Option } = components;
 const IconOption = props => (
@@ -610,7 +611,7 @@ class NewWill extends Component {
                                     <label htmlFor="unlimited">Unlimited</label><br />
                                 </div>
                                 <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
-                                    <input onChange={this.onChangeAmount} value={this.state.amount} min="0" placeholder="Введите сумму" type="number" className="input-group mb-3" />
+                                    <input onChange={this.onChangeAmount} value={this.state.amount} min="0" oninput="validity.valid||(value='')" placeholder="Введите сумму" type="number" className="input-group mb-3" />
                                     <Button variant="outline-success" onClick={this.onSetMaxAmount}>
                                         All
                                     </Button>
@@ -697,11 +698,11 @@ class NewWill extends Component {
                             <div className="your-wills__notifications" style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
                                 <span>Настройте оповещения в Telegram, Email или Google Calendar и dWill оповестит вас всех важных событиях
                                     связанных с вашими завещаниями и завещаниям предназначенным для вас</span>
-                                <div className="your-wills__links">
-                                    <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer"><img src={btnTelegram}></img></a>
-                                    <a href='https://t.me/thewill_bot' target="_blank" rel="noreferrer"><img src={btnEmail}></img></a>
+                                <a href="https://t.me/thewill_bot" rel="noreferrer" className="your-wills__links">
+                                    <img src={btnTelegram}></img>
+                                    <img src={btnEmail}></img>
                                     <span>Настроить оповещения в телеграм и на email</span>
-                                </div>
+                                </a>
                                 <div className="your-wills__links">
                                     <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider + this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer"><img src={btnCalendar}></img>Добавить событие в Google Calendar</a>
                                 </div>
@@ -864,6 +865,9 @@ class NewWill extends Component {
                         </div>
                     </Modal.Header>
                     <Modal.Footer>
+                        <a className="modal-loading__link" href="">
+                            <img src={linkBtn}></img>
+                        </a>
                         <Button variant="danger" onClick={this.handleCloseEventConfirmed} className="btn btn-danger">
                             <img src={closePic} />
                         </Button>

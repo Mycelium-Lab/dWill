@@ -432,11 +432,21 @@ a {
   background-color: #5ED5A8;
   width: 100%;
   /* animation: 2s barTime infinite; */
+  animation: 5s barTime5;
 }
 
 .modal-loading__progress-bar--error span {
   background-color: #E84142;
   width: 100%;
+}
+
+@keyframes barTime5 {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
 }
 
 @keyframes barTime {
@@ -2115,7 +2125,7 @@ input::-webkit-inner-spin-button {
   }
 }
 
-.your-wills__wallet input + p {
+.your-wills__wallet input+p {
   display: none;
   transition: all 0.3s ease;
   font-size: 10px;
@@ -2124,7 +2134,7 @@ input::-webkit-inner-spin-button {
   margin-top: -5px;
 }
 
-.your-wills__wallet input + p.active {
+.your-wills__wallet input+p.active {
   display: block;
   transition: all 0.3s ease;
 }
@@ -2240,6 +2250,12 @@ input::-webkit-inner-spin-button {
   z-index: 100;
 }
 
+.modal-loading__link {
+  position: absolute;
+  right: 70px;
+  top: 27px;
+}
+
 @media (max-width: 767px) {
   .modal-loading.modal.show {
     top: 50px;
@@ -2249,6 +2265,13 @@ input::-webkit-inner-spin-button {
     transform: translate(-50%, -50%);
     width: 340px;
     height: 70px;
+  }
+
+  .modal-loading__link {
+    right: 39px;
+    top: 9px;
+    width: 12px;
+    height: 12px;
   }
 }
 
