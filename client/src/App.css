@@ -591,6 +591,7 @@ a {
 @media (max-width: 767px) {
   .modal-body__row .br {
     display: block;
+    width: 100%;
   }
 }
 
