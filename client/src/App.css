@@ -192,6 +192,8 @@ ul {
   left: 50%;
   top: 180px;
   transform: translateX(-50%);
+  font-size: 18px;
+  font-weight: 600;
 }
 
 @media (max-width: 767px) {
@@ -204,6 +206,8 @@ ul {
     max-width: 340px;
     width: 100%;
     padding: 20px 14px 30px 14px !important;
+    font-size: 14px;
+    font-weight: 600;
   }
 }
 
@@ -572,6 +576,14 @@ a {
   color: #4285F4;
 }
 
+27
+40
+43
+21
+51
+40
+
+
 .modal-body__row-direction {
   /* position: relative;
   display: flex;
@@ -588,10 +600,18 @@ a {
   display: none;
 }
 
+.modal-body__row .will-date__row label {
+  font-size: 10px;
+  font-weight: 400;
+}
+
 @media (max-width: 767px) {
   .modal-body__row .br {
     display: block;
     width: 100%;
+  }
+  .modal-body__row-direction {
+    font-size: 14px;
   }
 }
 
@@ -724,7 +744,7 @@ a {
 
 .will-date__row label {
   font-size: 14px;
-  font-weight: 400;
+  font-weight: 600;
   color: #C1C7CD;
   /* text-transform: lowercase; */
 }
@@ -922,7 +942,7 @@ a {
   display: none;
 }
 
-.btn-header__main:hover > .btn-header__logout {
+.btn-header__main:hover>.btn-header__logout {
   display: block;
 }
 
@@ -1036,7 +1056,9 @@ a {
     max-width: 340px;
     padding: 15px 22px 25px 22px;
   }
-
+  .modal-footer {
+    font-size: 14px;
+  }
   .modal-choose .modal-footer img {
     width: 67px;
     height: 67px;
@@ -1225,6 +1247,7 @@ select {
 @media (max-width: 767px) {
   .modal_title-time-will {
     font-size: 14px;
+    margin-top: 10px;
   }
 }
 
@@ -1560,6 +1583,7 @@ input::-webkit-inner-spin-button {
     flex-wrap: wrap;
     gap: 15px;
     justify-content: flex-start;
+    font-size: 14px;
   }
 }
 
@@ -1686,6 +1710,7 @@ input::-webkit-inner-spin-button {
 @media (max-width: 767px) {
   .your-wills__footer button {
     height: 40px;
+    font-size: 14px;
   }
 
   .your-wills__footer li {
@@ -2161,6 +2186,11 @@ input::-webkit-inner-spin-button {
 }
 
 @media (max-width: 767px) {
+  .your-wills__wallet {
+    margin-top: 10px;
+    font-size: 14px;
+  }
+
   .your-wills__wallet input {
     height: 30px;
   }
@@ -2573,6 +2603,7 @@ input::-webkit-inner-spin-button {
   .btn-header-connect .btn-change-token {
     font-size: 12px;
   }
+
   .btn-header-connect {
     order: 1;
     max-width: 65%;

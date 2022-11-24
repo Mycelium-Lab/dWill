@@ -646,7 +646,7 @@ class NewWill extends Component {
                                 </a>
                             </div>
                         </div>
-                        <div className='modal-body__row modal-body__row-direction'>С кошелька <a href={`${this.props.networkProvider}/address/${this.state.signerAddress}`} target="_blank" rel="noreferrer" className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a><i className="br"></i> на сети {this.props.networkName}
+                        <div className='modal-body__row modal-body__row-direction'>с кошелька <a href={`${this.props.networkProvider}/address/${this.state.signerAddress}`} target="_blank" rel="noreferrer" className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a><i className="br"></i> на сети {this.props.networkName}
                             <img src={this.state.networkPic} alt="networkpic" />
                             <a className="your-wills__info-message" href="">
                                 <img src={infoBtn}></img>
