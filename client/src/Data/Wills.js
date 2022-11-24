@@ -35,7 +35,7 @@ class Wills extends Component {
             signer: null,
             signerAddress: '',
             tokenAddress: '',
-            amount: '0',
+            amount: '',
             showConfirm: false,
             showAwait: false,
             showEdit: false,
@@ -109,23 +109,23 @@ class Wills extends Component {
             let networkPic
             if (this.props.network === chainIDs.Mumbai) {
                 networkPic = PolygonPic
-              } else if (this.props.network === chainIDs.Goerli) {
+            } else if (this.props.network === chainIDs.Goerli) {
                 networkPic = EthereumPic
-              } else if (this.props.network === chainIDs.Polygon) {
+            } else if (this.props.network === chainIDs.Polygon) {
                 networkPic = PolygonPic
-              } else if (this.props.network === chainIDs.BinanceTestnet) {
+            } else if (this.props.network === chainIDs.BinanceTestnet) {
                 networkPic = BinancePic
-              } else if (this.props.network === chainIDs.BinanceMainnet) {
+            } else if (this.props.network === chainIDs.BinanceMainnet) {
                 networkPic = BinancePic
-              } else if (this.props.network === chainIDs.EthereumMainnet) {
+            } else if (this.props.network === chainIDs.EthereumMainnet) {
                 networkPic = EthereumPic
-              } else if (this.props.network === chainIDs.AvalancheMainnet) {
+            } else if (this.props.network === chainIDs.AvalancheMainnet) {
                 networkPic = AvalanchePic
-              } else if (this.props.network === chainIDs.OptimismMainnet) {
+            } else if (this.props.network === chainIDs.OptimismMainnet) {
                 networkPic = OptimismPic
-              } else if (this.props.network === chainIDs.ArbitrumMainnet) {
+            } else if (this.props.network === chainIDs.ArbitrumMainnet) {
                 networkPic = ArbitrumPic
-              }
+            }
             this.setState({ signer, signerAddress, contract, wills: _wills, networkPic })
             contract.on('AddAnHeir', async (ID, owner, heir, token, timeWhenWithdraw, amount) => {
                 console.log(owner.toLowerCase() === signerAddress.toLowerCase())
@@ -242,7 +242,7 @@ class Wills extends Component {
             const modalConfirmH2 = document.getElementsByClassName('modal-confirm_h2')
             const modalConfirmLoader = document.getElementsByClassName('ml-loader')
             body[0].addEventListener('click', (event) => {
-                if(
+                if (
                     this.state.showEdit
                     &&
                     (
@@ -840,7 +840,7 @@ class Wills extends Component {
             //max amount uint256
             isUnlimitedAmount = isUnlimitedAmount === true ? false : true
             this.setState({
-                currentEditAmount: isUnlimitedAmount === true ? UnlimitedAmount : '0',
+                currentEditAmount: isUnlimitedAmount === true ? UnlimitedAmount : '',
                 isUnlimitedAmount,
                 updateAmount: isUnlimitedAmount !== isUnlimitedAmountBase
             }, async () => {
@@ -986,27 +986,41 @@ class Wills extends Component {
                                     </div>
                                     <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
                                         <input onChange={this.onChangeAmount} value={this.state.currentEditAmount}
-                                            type="number" className="input-group mb-3" />
+                                            type="number" min="0" oninput="validity.valid||(value='')" className="input-group mb-3" placeholder="Введите сумму" />
                                         <Button variant="outline-success" onClick={this.onSetMaxAmount}>
                                             All
                                         </Button>
                                     </div>
+                                    <a className="your-wills__info-message" href="" title="Подсказка">
+                                        <img src={infoBtn}></img>
+                                    </a>
                                 </div>
 
                             </div>
                         </div>
-                        <div className="modal-body__row">С кошелька <a href={`${this.props.networkProvider}/address/${this.state.signerAddress}`} target="_blank" rel="noreferrer">{
+                        <div className="modal-body__row modal-body__row-direction">С кошелька <a href={`${this.props.networkProvider}/address/${this.state.signerAddress}`} target="_blank" rel="noreferrer">{
                             this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)
-                        }</a> <i className="br"></i> на сети {this.props.networkName} <img src={this.state.networkPic} alt="networkpic" /></div>
+                        }</a> <i className="br"></i> на сети {this.props.networkName} <img src={this.state.networkPic} alt="networkpic" />
+                            <a className="your-wills__info-message" href="">
+                                <img src={infoBtn}></img>
+                            </a></div>
                         <div className="your-wills__wallet modal-body__row">
-                            Доверенному кошельку
+                            <div class="your-wills__wallet-row">
+                                Доверенному кошельку
+                                <a className="your-wills__info-message" href="">
+                                    <img src={infoBtn}></img>
+                                </a>
+                            </div>
                             <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" />
                         </div>
                         <div className="modal-body__row">
                             <div className="will-date__text">
-                                При условии что я буду неактивен(неактивна), начиная с момента создания наследства ({
+                                При условии что я буду неактивен (неактивна), начиная с момента создания наследства ({
                                     this.timeConverter((parseInt(this.state.currentEditTimeWhenWithdraw) - parseInt(this.state.currentEditTimeBetweenWithdrawAndStart)).toString())
                                 }) более чем:
+                                <a className="your-wills__info-message" href="">
+                                    <img src={infoBtn}></img>
+                                </a>
                             </div>
                             <div className="will-date">
                                 <div className="will-date__row">
@@ -1025,8 +1039,13 @@ class Wills extends Component {
                         </div>
                         <div className="your-wills__settings">
                             <div className="will-date__row will-date__row--checkbox">
-                                <input id="wills-set1" type="checkbox" onChange={this.changeMessage} disabled={false} className="form-check form-check-input mt-0" />
-                                <label htmlFor="wills-set1">Add NFT Message (coming soon)</label><br />
+                                <div className="will-date__row-input">
+                                    <input id="wills-set1" type="checkbox" onChange={this.changeMessage} disabled={false} className="form-check form-check-input mt-0" />
+                                    <label htmlFor="wills-set1">Add NFT Message (coming soon)</label><br />
+                                </div>
+                                <a className="your-wills__info-message" href="">
+                                    <img src={infoBtn}></img>
+                                </a>
                             </div>
                             <div className="your-wills__notifications" style={this.state.messageOn === true ? { display: 'block' } : { display: 'none' }}>
                                 <span>Сообщение хранится в зашифрованном виде и может быть прочитано получателем
@@ -1034,16 +1053,26 @@ class Wills extends Component {
                                 <textarea placeholder="NFT message"></textarea>
                             </div>
                             <div className="will-date__row will-date__row--checkbox">
-                                <input id="wills-set2" type="checkbox" onChange={this.changeDelivery} disabled={false} className="form-check form-check-input mt-0" />
-                                <label htmlFor="wills-set2">Automatic token delivery (coming soon)</label><br />
+                                <div className="will-date__row-input">
+                                    <input id="wills-set2" type="checkbox" onChange={this.changeDelivery} disabled={false} className="form-check form-check-input mt-0" />
+                                    <label htmlFor="wills-set2">Automatic token delivery (coming soon)</label><br />
+                                </div>
+                                <a className="your-wills__info-message" href="">
+                                    <img src={infoBtn}></img>
+                                </a>
                             </div>
                             <div className="your-wills__notifications" style={this.state.deliveryOn === true ? { display: 'block' } : { display: 'none' }}>
                                 <span>После того как условие будет выполнено завещанные токены будут автоматически отправлены
                                     на доверенный кошелек (10 USDT)</span>
                             </div>
                             <div className="will-date__row will-date__row--checkbox">
-                                <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
-                                <label htmlFor="wills-set3">Notifications</label><br />
+                                <div className="will-date__row-input">
+                                    <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
+                                    <label htmlFor="wills-set3">Notifications</label><br />
+                                </div>
+                                <a className="your-wills__info-message" href="">
+                                    <img src={infoBtn}></img>
+                                </a>
                             </div>
                             <div className="your-wills__notifications" style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
                                 <span>Настройте оповещения в Telegram, Email или Google Calendar и dWill оповестит вас всех важных событиях
@@ -1054,7 +1083,7 @@ class Wills extends Component {
                                     <span>Настроить оповещения в телеграм и на email</span>
                                 </a>
                                 <div className="your-wills__links">
-                                    <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider+ '/address/' + this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer"><img src={btnCalendar}></img>Добавить событие в Google Calendar</a>
+                                    <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider + '/address/' + this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer"><img src={btnCalendar}></img>Добавить событие в Google Calendar</a>
                                 </div>
                             </div>
                         </div>
@@ -1098,6 +1127,9 @@ class Wills extends Component {
                                     } >
                                         Approve
                                     </Button>
+                                    <a className="your-wills__info-message" href="">
+                                        <img src={infoBtn}></img>
+                                    </a>
                                 </li>
                                 <li>
                                     <Button variant="primary" disabled={
