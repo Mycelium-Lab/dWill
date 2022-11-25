@@ -288,7 +288,7 @@ class Connect extends Component {
                         <button id='connect-button' onClick={this.state.showWallets === false ? this.showWalletsModal : this.closeWalletsModal}>Connect Wallet</button>
                         <Modal className="modal-choose-wallet" show={this.state.showWallets}>
                             <Modal.Header>
-                                <h1>Choose wallet:</h1>
+                                <h1>Choose wallet</h1>
                             </Modal.Header>
                             <Modal.Body>
                                 <button onClick={() => this.connectToMetamask()}><img src={btnMetamask}></img></button>
@@ -308,8 +308,8 @@ class Connect extends Component {
                 return (
                     <div>
                         <div className="btn-header__main">
-                            <div className="">
-                                <div>
+                            <div>
+                                <div className="btn-header__wallet">
                                     {
                                         localStorage.getItem('account').slice(0, 6)
                                         +
