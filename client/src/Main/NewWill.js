@@ -30,6 +30,7 @@ import GoerliTokens from '../Utils/tokens/goerli.json'
 import UniswapTokens from '../Utils/tokens/uniswap.json'
 import AvalancheTokens from '../Utils/tokens/avalanche.json'
 import { select } from '../Utils/styles/select'
+import { tooltipText } from '../Utils/tooltipText';
 
 const { Option } = components;
 const IconOption = props => (
@@ -229,37 +230,42 @@ class NewWill extends Component {
     }
 
     async approve() {
-        const { contractAddress, signer, amount, tokensValue, isUnlimitedAmount } = this.state
-        const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
-        this.handleShowConfirm()
-        let toSend = isUnlimitedAmount === true ? amount : BigInt(amount * Math.pow(10, await _token.decimals())).toString()
-        const symbol = await _token.symbol()
-        await _token.increaseAllowance(contractAddress, toSend)
-            .then(async (tx) => {
-                this.handleShowAwait(`Approve ${symbol}`)
-                await tx.wait()
-                    .then(() => {
-                        this.handleCloseAwait()
-                        this.handleShowEventConfirmed(`Approved ${symbol}`, tx.hash)
-                        setTimeout(() => {
-                            this.handleCloseEventConfirmed()
-                        }, 5000)
-                        this.setState({
-                            approved: true
+        try {
+            const { contractAddress, signer, amount, tokensValue, isUnlimitedAmount } = this.state
+            const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
+            this.handleShowConfirm()
+            let toSend = isUnlimitedAmount === true ? amount : BigInt(amount * Math.pow(10, await _token.decimals())).toString()
+            const symbol = await _token.symbol()
+            await _token.increaseAllowance(contractAddress, toSend)
+                .then(async (tx) => {
+                    this.handleShowAwait(`Approve ${symbol}`)
+                    await tx.wait()
+                        .then(() => {
+                            this.handleCloseAwait()
+                            this.handleShowEventConfirmed(`Approved ${symbol}`, tx.hash)
+                            setTimeout(() => {
+                                this.handleCloseEventConfirmed()
+                            }, 5000)
+                            this.setState({
+                                approved: true
+                            })
                         })
-                    })
-            })
-            .catch(err => {
-                console.log(err)
-                if (err.message.includes('resolver or addr is not ')) {
-                    this.handleShowError('Choose token')
-                }
-                setTimeout(() => {
-                    this.handleCloseError()
-                }, 5000)
-                this.handleCloseConfirm()
-                this.handleCloseAwait()
-            })
+                })
+                .catch(err => {
+                    console.log(err)
+                    if (err.message.includes('resolver or addr is not') || err.reason.includes('resolver or addr is not')) {
+                        console.log('err')
+                        this.handleShowError('Choose token')
+                    }
+                    setTimeout(() => {
+                        this.handleCloseError()
+                    }, 5000)
+                    this.handleCloseConfirm()
+                    this.handleCloseAwait()
+                })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     createTime() {
@@ -302,7 +308,7 @@ class NewWill extends Component {
             this.handleShowConfirm()
             await contract.addNewWill(heirAddress, tokensValue, timeUnixWhenWithdraw.toString(), sendTo)
                 .then(async (tx) => {
-                    this.handleShowAwait('New dwill creation')
+                    this.handleShowAwait('New dWill creation')
                     await tx.wait()
                     this.handleCloseAwait()
                     this.handleClose()
@@ -334,9 +340,17 @@ class NewWill extends Component {
     async onChangeAmount(event) {
         try {
             const { contractAddress, signer, signerAddress, tokensValue, contract } = this.state
-            this.setState({
-                amount: event.target.value
-            })
+            if (tokensValue === '') throw Error('resolver or addr is not configured')
+            if (parseFloat(event.target.value) >= 0) {
+                this.setState({
+                    amount: event.target.value
+                })
+            }
+            if (event.target.value === '') {
+                this.setState({
+                    amount: ''
+                })
+            }
             const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
             const allowance = await _token.allowance(signerAddress, contractAddress)
             const decimals = await _token.decimals()
@@ -348,7 +362,12 @@ class NewWill extends Component {
             )
         } catch (error) {
             if (error.message.includes('resolver or addr is not configured')) {
-                this.handleShowError('Choose token')
+                if (this.state.contractAddress === '') {
+                    this.handleShowError(`dWill not exist on this network`)
+                }
+                if (this.state.tokensValue === '') {
+                    this.handleShowError('Choose token')
+                }
             }
             setTimeout(() => {
                 this.handleCloseError()
@@ -370,11 +389,11 @@ class NewWill extends Component {
         } catch (error) {
             console.error(error)
             if (error.message.includes('resolver or addr is not configured')) {
-                this.setState({
-                    amount: '',
-                    isUnlimitedAmount: false
-                })
-                this.handleShowError('Выберите токен')
+                // this.setState({
+                //     amount: '',
+                //     isUnlimitedAmount: false
+                // })
+                // this.handleShowError('Выберите токен')
             }
             setTimeout(() => {
                 this.handleCloseError()
@@ -426,6 +445,7 @@ class NewWill extends Component {
     async onChangeTokens(event) {
         try {
             const { contractAddress, signer, signerAddress, amount, contract } = this.state
+            if (event.value === '') throw Error('token not exist here')
             const _token = new ethers.Contract(event.value, ERC20.abi, signer)
             this.setState({
                 tokensValue: event.value
@@ -442,9 +462,11 @@ class NewWill extends Component {
         } catch (error) {
             console.log(error.message)
             if (error.message.includes('resolver or addr is not configured')) {
-                this.handleShowError('Choose token')
-            } else {
-                this.handleShowError()
+                if (this.state.contractAddress === '') {
+                    this.handleShowError('dWill not exist on this network')
+                }
+            } else if (error.message.includes('token not exist here')) {
+                this.handleShowError('Not existed token')
             }
             setTimeout(() => {
                 this.handleCloseError()
@@ -638,36 +660,37 @@ class NewWill extends Component {
                                     <label htmlFor="unlimited">unlimited</label><br />
                                 </div>
                                 <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
-                                    <input onChange={this.onChangeAmount} value={this.state.amount} min="0" oninput="validity.valid||(value='')" placeholder="Введите сумму" type="number" className="input-group mb-3" />
+                                    <input onChange={this.onChangeAmount} value={this.state.amount} min="0" placeholder="Введите сумму" type="number" className="input-group mb-3" />
                                     <Button variant="outline-success" onClick={this.onSetMaxAmount}>
                                         All
                                     </Button>
                                 </div>
-                                <a className="your-wills__info-message" href="" title="Подсказка">
+                                <div className="your-wills__info-message" data-title={tooltipText.tokens}>
                                     <img src={infoBtn}></img>
-                                </a>
+                                </div>
                             </div>
                         </div>
                         <div className='modal-body__row modal-body__row-direction'>с кошелька <a href={`${this.props.networkProvider}/address/${this.state.signerAddress}`} target="_blank" rel="noreferrer" className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a> на сети <i className="br"></i> {this.props.networkName}
                             <img src={this.state.networkPic} alt="networkpic" />
-                            <a className="your-wills__info-message" href="">
+                            <div className="your-wills__info-message" data-title={tooltipText.network}>
                                 <img src={infoBtn}></img>
-                            </a></div>
+                            </div></div>
                         <div className="your-wills__wallet modal-body__row">
-                            <div class="your-wills__wallet-row">
+                            <div className="your-wills__wallet-row">
                                 Доверенному кошельку
-                                <a className="your-wills__info-message" href="">
+                                <div className="your-wills__info-message" data-title={tooltipText.wallet}>
                                     <img src={infoBtn}></img>
-                                </a>
+                                </div>
                             </div>
                             <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" required="required" />
                             <p>Поле обязательно для заполнения*</p>
                         </div>
                         <div className="modal-body__row">
+
                             <div className='modal_title-time-will'>{"При условии что я буду неактивен более чем:"}
-                                <a className="your-wills__info-message" href="">
+                                <div className="your-wills__info-message" data-title={tooltipText.time}>
                                     <img src={infoBtn}></img>
-                                </a>
+                                </div>
                             </div>
                             <div className="will-date">
                                 <div className="will-date__row">
@@ -691,9 +714,9 @@ class NewWill extends Component {
                                     <input id="wills-set1" type="checkbox" onChange={this.changeMessage} disabled={false} className="form-check form-check-input mt-0" />
                                     <label htmlFor="wills-set1">Add NFT Message (coming soon)</label>
                                 </div>
-                                <a className="your-wills__info-message" href="">
+                                <div className="your-wills__info-message" data-title={tooltipText.NFTMessage}>
                                     <img src={infoBtn}></img>
-                                </a>
+                                </div><br />
                             </div>
                             <div className="your-wills__notifications" style={this.state.messageOn === true ? { display: 'block' } : { display: 'none' }}>
                                 <span>Сообщение хранится в зашифрованном виде и может быть прочитано получателем
@@ -705,9 +728,9 @@ class NewWill extends Component {
                                     <input id="wills-set2" type="checkbox" onChange={this.changeDelivery} disabled={false} className="form-check form-check-input mt-0" />
                                     <label htmlFor="wills-set2">Automatic token delivery (coming soon)</label><br />
                                 </div>
-                                <a className="your-wills__info-message" href="">
+                                <div className="your-wills__info-message" data-title={tooltipText.delivery}>
                                     <img src={infoBtn}></img>
-                                </a><br />
+                                </div><br />
                             </div>
                             <div className="your-wills__notifications" style={this.state.deliveryOn === true ? { display: 'block' } : { display: 'none' }}>
                                 <span>После того как условие будет выполнено завещанные токены будут автоматически отправлены
@@ -718,9 +741,9 @@ class NewWill extends Component {
                                     <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
                                     <label htmlFor="wills-set3">Notifications</label><br />
                                 </div>
-                                <a className="your-wills__info-message" href="">
+                                <div className="your-wills__info-message" data-title={tooltipText.notifications}>
                                     <img src={infoBtn}></img>
-                                </a><br />
+                                </div><br />
                             </div>
                             <div className="your-wills__notifications" style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
                                 <span>Настройте оповещения в Telegram, Email или Google Calendar и dWill оповестит вас всех важных событиях
@@ -747,6 +770,8 @@ class NewWill extends Component {
                                         ||
                                         (this.state.amount === '')
                                         ||
+                                        (this.state.tokensValue === '')
+                                        ||
                                         (this.state.heirAddress === '')
                                         ||
                                         (this.state.year === '' || this.state.month === '' || this.state.day === '')
@@ -763,6 +788,8 @@ class NewWill extends Component {
                                             ||
                                             (this.state.heirAddress !== '')
                                             ||
+                                            (this.state.tokensValue === '')
+                                            ||
                                             (this.state.year !== '' || this.state.month !== '' || this.state.day !== '')
                                             ||
                                             (this.state.year !== 0 && this.state.month !== 0 && this.state.day !== 0)
@@ -777,6 +804,8 @@ class NewWill extends Component {
                                                             ||
                                                             (this.state.amount === '')
                                                             ||
+                                                            (this.state.tokensValue === '')
+                                                            ||
                                                             (this.state.heirAddress === '')
                                                             ||
                                                             (this.state.year === '' || this.state.month === '' || this.state.day === '')
@@ -789,9 +818,9 @@ class NewWill extends Component {
                                             } >
                                         Approve
                                     </Button>
-                                    <a className="your-wills__info-message" href="">
+                                    <div className="your-wills__info-message" data-title={tooltipText.approve}>
                                         <img src={infoBtn}></img>
-                                    </a>
+                                    </div>
                                 </li>
                                 <li>
                                     <Button variant="primary" disabled={
@@ -802,6 +831,8 @@ class NewWill extends Component {
                                         (this.state.amount === '')
                                         ||
                                         (this.state.heirAddress === '')
+                                        ||
+                                        (this.state.tokensValue === '')
                                         ||
                                         (this.state.year === '' || this.state.month === '' || this.state.day === '')
                                         ||
@@ -816,6 +847,8 @@ class NewWill extends Component {
                                             (this.state.amount === '')
                                             ||
                                             (this.state.heirAddress === '')
+                                            ||
+                                            (this.state.tokensValue === '')
                                             ||
                                             (this.state.year === '' || this.state.month === '' || this.state.day === '')
                                             ||
@@ -832,6 +865,8 @@ class NewWill extends Component {
                                                             (this.state.amount === '')
                                                             ||
                                                             (this.state.heirAddress === '')
+                                                            ||
+                                                            (this.state.tokensValue === '')
                                                             ||
                                                             (this.state.year === '' || this.state.month === '' || this.state.day === '')
                                                             ||

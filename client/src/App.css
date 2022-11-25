@@ -2987,8 +2987,20 @@ input::-webkit-inner-spin-button {
   align-items: center;
 }
 
+
 @media (max-width: 767px) {
   .your-wills__info-message {
     margin-left: 10px;
   }
+
+.your-wills__info-message:hover::after {
+  content: attr(data-title);
+  position: absolute;
+  position: absolute;
+  z-index: 1;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -120px;
+  background: #1B232A; 
+
 }
