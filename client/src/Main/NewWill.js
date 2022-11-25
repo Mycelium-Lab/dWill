@@ -230,37 +230,42 @@ class NewWill extends Component {
     }
 
     async approve() {
-        const { contractAddress, signer, amount, tokensValue, isUnlimitedAmount } = this.state
-        const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
-        this.handleShowConfirm()
-        let toSend = isUnlimitedAmount === true ? amount : BigInt(amount * Math.pow(10, await _token.decimals())).toString()
-        const symbol = await _token.symbol()
-        await _token.increaseAllowance(contractAddress, toSend)
-            .then(async (tx) => {
-                this.handleShowAwait(`Approve ${symbol}`)
-                await tx.wait()
-                    .then(() => {
-                        this.handleCloseAwait()
-                        this.handleShowEventConfirmed(`Approved ${symbol}`, tx.hash)
-                        setTimeout(() => {
-                            this.handleCloseEventConfirmed()
-                        }, 5000)
-                        this.setState({
-                            approved: true
+        try {
+            const { contractAddress, signer, amount, tokensValue, isUnlimitedAmount } = this.state
+            const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
+            this.handleShowConfirm()
+            let toSend = isUnlimitedAmount === true ? amount : BigInt(amount * Math.pow(10, await _token.decimals())).toString()
+            const symbol = await _token.symbol()
+            await _token.increaseAllowance(contractAddress, toSend)
+                .then(async (tx) => {
+                    this.handleShowAwait(`Approve ${symbol}`)
+                    await tx.wait()
+                        .then(() => {
+                            this.handleCloseAwait()
+                            this.handleShowEventConfirmed(`Approved ${symbol}`, tx.hash)
+                            setTimeout(() => {
+                                this.handleCloseEventConfirmed()
+                            }, 5000)
+                            this.setState({
+                                approved: true
+                            })
                         })
-                    })
-            })
-            .catch(err => {
-                console.log(err)
-                if (err.message.includes('resolver or addr is not ')) {
-                    this.handleShowError('Choose token')
-                }
-                setTimeout(() => {
-                    this.handleCloseError()
-                }, 5000)
-                this.handleCloseConfirm()
-                this.handleCloseAwait()
-            })
+                })
+                .catch(err => {
+                    console.log(err)
+                    if (err.message.includes('resolver or addr is not') || err.reason.includes('resolver or addr is not')) {
+                        console.log('err')
+                        this.handleShowError('Choose token')
+                    }
+                    setTimeout(() => {
+                        this.handleCloseError()
+                    }, 5000)
+                    this.handleCloseConfirm()
+                    this.handleCloseAwait()
+                })
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     createTime() {
@@ -762,6 +767,8 @@ class NewWill extends Component {
                                         ||
                                         (this.state.amount === '')
                                         ||
+                                        (this.state.tokensValue === '')
+                                        ||
                                         (this.state.heirAddress === '')
                                         ||
                                         (this.state.year === '' || this.state.month === '' || this.state.day === '')
@@ -778,6 +785,8 @@ class NewWill extends Component {
                                             ||
                                             (this.state.heirAddress !== '')
                                             ||
+                                            (this.state.tokensValue === '')
+                                            ||
                                             (this.state.year !== '' || this.state.month !== '' || this.state.day !== '')
                                             ||
                                             (this.state.year !== 0 && this.state.month !== 0 && this.state.day !== 0)
@@ -791,6 +800,8 @@ class NewWill extends Component {
                                                             (this.state.amount === '0')
                                                             ||
                                                             (this.state.amount === '')
+                                                            ||
+                                                            (this.state.tokensValue === '')
                                                             ||
                                                             (this.state.heirAddress === '')
                                                             ||
@@ -818,6 +829,8 @@ class NewWill extends Component {
                                         ||
                                         (this.state.heirAddress === '')
                                         ||
+                                        (this.state.tokensValue === '')
+                                        ||
                                         (this.state.year === '' || this.state.month === '' || this.state.day === '')
                                         ||
                                         (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
@@ -831,6 +844,8 @@ class NewWill extends Component {
                                             (this.state.amount === '')
                                             ||
                                             (this.state.heirAddress === '')
+                                            ||
+                                            (this.state.tokensValue === '')
                                             ||
                                             (this.state.year === '' || this.state.month === '' || this.state.day === '')
                                             ||
@@ -847,6 +862,8 @@ class NewWill extends Component {
                                                             (this.state.amount === '')
                                                             ||
                                                             (this.state.heirAddress === '')
+                                                            ||
+                                                            (this.state.tokensValue === '')
                                                             ||
                                                             (this.state.year === '' || this.state.month === '' || this.state.day === '')
                                                             ||
