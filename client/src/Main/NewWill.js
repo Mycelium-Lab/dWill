@@ -308,7 +308,7 @@ class NewWill extends Component {
             this.handleShowConfirm()
             await contract.addNewWill(heirAddress, tokensValue, timeUnixWhenWithdraw.toString(), sendTo)
                 .then(async (tx) => {
-                    this.handleShowAwait('New dwill creation')
+                    this.handleShowAwait('New dWill creation')
                     await tx.wait()
                     this.handleCloseAwait()
                     this.handleClose()
