@@ -902,7 +902,13 @@ class Wills extends Component {
                                     return (
                                         <div key={v.ID} className="your-wills">
                                             <div className='your-wills_text'>
-                                                <h3 className='wills_list_h3'>Your wills</h3>
+                                                <div className="your_inheritances_ul-text__head">
+                                                    <h3 className='wills_list_h3'>Your wills</h3>
+                                                    <a class="your-wills__info-message" href="" title="Подсказка">
+                                                        <img src={infoBtn}></img>
+                                                    </a>
+                                                </div>
+
                                                 <hr />
                                                 {/* <span>id: {v.ID.toString()} </span> */}
                                                 <div className="page-data__block-container">
@@ -913,7 +919,7 @@ class Wills extends Component {
                                                         <a href={`${this.props.networkProvider}/address/${v.heir}`} target="_blank" rel="noreferrer">
                                                             {` ${v.heir}`}
                                                         </a>
-                                                        <span>
+                                                        <span className="your-wills_text-info__footer">
                                                             <p>
                                                                 Inheritance can be harvest if the period of inactivity is longer than
                                                             </p>
@@ -971,13 +977,13 @@ class Wills extends Component {
                         <div className="modal-body__row">
                             <div className="your-wills__header">
                                 <div>
-                                    Я завещаю мои
+                                    Я завещаю свои
                                 </div>
                                 <div className="your-wills__current-token">{this.state.currentEditSymbol}</div>
                                 <div className="your-wills__check-token">
                                     <div className="your-wills__checkbox">
                                         <input id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
-                                        <label htmlFor="unlimited">Unlimited</label><br />
+                                        <label htmlFor="unlimited">unlimited</label><br />
                                     </div>
                                     <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
                                         <input onChange={this.onChangeAmount} value={this.state.currentEditAmount}
@@ -1010,7 +1016,7 @@ class Wills extends Component {
                         </div>
                         <div className="modal-body__row">
                             <div className="will-date__text">
-                                При условии что я буду неактивен (неактивна), начиная с момента создания наследства ({
+                                При условии что я буду неактивен, начиная с момента создания наследства ({
                                     this.timeConverter((parseInt(this.state.currentEditTimeWhenWithdraw) - parseInt(this.state.currentEditTimeBetweenWithdrawAndStart)).toString())
                                 }) более чем:
                                 <a className="your-wills__info-message" href="">

@@ -5,6 +5,12 @@ html {
   padding-bottom: 110px;
 }
 
+@media (max-width: 767px) {
+  html {
+    padding-bottom: 100px;
+  }
+}
+
 body {
   overflow: visible !important;
 }
@@ -34,7 +40,7 @@ hr {
   border: 1px solid #3E474F;
   /* width: 600px; */
   width: 100%;
-  margin-bottom: 23px;
+  margin-bottom: 20px;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -93,6 +99,13 @@ img[alt="networkpic"] {
   object-fit: contain;
   margin-left: 5px;
 }
+
+@media (max-width: 767px) {
+  .header {
+    margin-bottom: 70px;
+  }
+}
+
 
 
 .header_boxes {
@@ -193,7 +206,7 @@ ul {
   top: 180px;
   transform: translateX(-50%);
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 @media (max-width: 767px) {
@@ -207,7 +220,6 @@ ul {
     width: 100%;
     padding: 20px 14px 30px 14px !important;
     font-size: 14px;
-    font-weight: 600;
   }
 }
 
@@ -216,7 +228,7 @@ ul {
   width: 350px;
   height: 50px;
   margin: auto;
-  margin-top: 44px;
+  /* margin-top: 70px; */
   /* padding: 15px 136px; */
   box-shadow: 3px -2px 10px rgba(94, 213, 168, 0.4);
   border-radius: 15px;
@@ -233,7 +245,8 @@ ul {
   .btn-new-will {
     width: 200px;
     height: 40px;
-    margin-top: 30px;
+    margin-top: 0;
+    font-size: 14px;
   }
 }
 
@@ -276,8 +289,8 @@ ul {
   .block-three {
     font-size: 14px;
     line-height: 17px;
-    margin-top: 35px;
-    margin-bottom: 30px;
+    margin-top: 0;
+    margin-bottom: 50px;
   }
 }
 
@@ -288,6 +301,7 @@ ul {
   font-family: 'SF UI Text';
   font-style: normal;
   font-size: 20px;
+  font-weight: 600px;
   /* margin-bottom: 20px; */
 }
 
@@ -295,8 +309,10 @@ ul {
   .block-two {
     font-size: 14px;
     line-height: 17px;
-    margin-bottom: 15px;
+    margin-bottom: 30px;
     max-width: 241px;
+    display: flex;
+    flex-direction: column;
   }
 
   .block-two:nth-child(4) {
@@ -319,8 +335,8 @@ ul {
 @media (max-width: 767px) {
   .block-one {
     font-size: 18px;
-    margin-top: 10px;
-    margin-bottom: 20px;
+    margin-top: 30px;
+    margin-bottom: 30px;
     line-height: 21px;
   }
 }
@@ -371,7 +387,8 @@ a {
 
 .modal {
   background-color: #1B232A;
-  box-shadow: 2px 4px 8px 2px rgba(0, 0, 0, 0.25);
+  /* box-shadow: 2px 4px 8px 2px rgba(0, 0, 0, 0.25); */
+  box-shadow: -4px -6px 17px 1px rgba(22, 28, 34, 0.5);
   /* border-radius: 10px; */
 }
 
@@ -576,14 +593,6 @@ a {
   color: #4285F4;
 }
 
-27
-40
-43
-21
-51
-40
-
-
 .modal-body__row-direction {
   /* position: relative;
   display: flex;
@@ -594,6 +603,14 @@ a {
   flex-wrap: wrap;
   align-items: center;
   gap: 5px;
+}
+
+.modal-body__row-direction>img {
+  width: 19px;
+  height: 19px;
+  border: 1px solid #3E474F;
+  border-radius: 50%;
+  padding: 4px;
 }
 
 .modal-body__row .br {
@@ -610,6 +627,7 @@ a {
     display: block;
     width: 100%;
   }
+
   .modal-body__row-direction {
     font-size: 14px;
   }
@@ -658,6 +676,10 @@ a {
 
 .will-date label {
   text-transform: lowercase;
+}
+
+.will-date input {
+  font-weight: 700;
 }
 
 @media (max-width: 767px) {
@@ -776,7 +798,7 @@ a {
 
 @media (max-width: 767px) {
   .main-text {
-    margin-top: 82px;
+    margin-top: 70px;
   }
 }
 
@@ -817,6 +839,7 @@ a {
     width: 92px;
     height: 23px;
     order: 0;
+    margin-bottom: 0;
   }
 }
 
@@ -976,13 +999,18 @@ a {
   margin-right: 30px;
 }
 
+.amount-will div:nth-child(2) {
+  color: #C1C7CD;
+}
+
 @media (max-width: 767px) {
   .amount-will {
     align-items: flex-start;
-    font-size: 14px;
+    font-size: 8px;
     margin-left: 0;
     order: 2;
-    margin-top: -20px;
+    margin-top: -30px;
+    gap: 2px;
   }
 }
 
@@ -1003,7 +1031,7 @@ a {
   justify-content: center;
   align-items: center;
   color: #5ED5A8;
-  margin-top: 22px;
+  /* margin-top: 22px; */
   margin-bottom: 26px;
   font-size: 18px;
 }
@@ -1042,8 +1070,17 @@ a {
   justify-content: center;
 }
 
+.modal_new_will .modal-footer {
+  position: relative;
+}
 
 
+@media (max-width: 767px) {
+  .modal_title {
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+}
 
 
 .modal-choose .modal-footer img:hover,
@@ -1056,9 +1093,12 @@ a {
     max-width: 340px;
     padding: 15px 22px 25px 22px;
   }
+
   .modal-footer {
     font-size: 14px;
+
   }
+
   .modal-choose .modal-footer img {
     width: 67px;
     height: 67px;
@@ -1414,7 +1454,12 @@ input::-webkit-inner-spin-button {
 
 @media (max-width: 767px) {
   .btn_reset-timers {
-    margin-top: 50px;
+    margin-top: 0;
+  }
+
+  .bnt_close {
+    width: 14px;
+    height: 14px;
   }
 }
 
@@ -1427,7 +1472,7 @@ input::-webkit-inner-spin-button {
 
 @media (max-width: 767px) {
   .your_inheritances {
-    margin-top: 40px;
+    margin-top: 50px;
   }
 }
 
@@ -1449,8 +1494,10 @@ input::-webkit-inner-spin-button {
 
 @media (max-width: 767px) {
   .wills-description-block {
-    padding: 10px 20px;
-    padding-bottom: 20px;
+    padding-top: 16px;
+    padding-right: 20px;
+    padding-bottom: 23px;
+    padding-left: 20px;
     text-align: center;
   }
 
@@ -1493,7 +1540,7 @@ input::-webkit-inner-spin-button {
   justify-content: space-between;
   font-family: 'SF UI Text';
   font-style: normal;
-  font-weight: 600;
+  font-weight: 400;
   font-size: 14px;
   /* padding-bottom: 30px; */
   line-height: 17px;
@@ -1527,8 +1574,6 @@ input::-webkit-inner-spin-button {
 
 .your-wills__checkbox label {
   position: relative;
-  font-size: 18px;
-  font-weight: 600;
 }
 
 @media (max-width: 767px) {
@@ -1578,12 +1623,16 @@ input::-webkit-inner-spin-button {
   grid-gap: 20px;
 }
 
+.your-wills__header .your-wills__info-message {
+  margin-left: 0;
+}
+
 @media (max-width: 767px) {
   .your-wills__header {
     flex-wrap: wrap;
     gap: 15px;
     justify-content: flex-start;
-    font-size: 14px;
+    /* font-size: 14px; */
   }
 }
 
@@ -1652,23 +1701,18 @@ input::-webkit-inner-spin-button {
   /* width: 600px; */
   width: 100%;
   font-weight: 400;
-  font-size: 18px;
+  font-size: 14px;
   line-height: 21px;
   text-align: center;
   letter-spacing: 0.0264em;
   color: #5ED5A8;
-  padding-bottom: 17px;
+  /* padding-bottom: 17px; */
   margin: 0 auto;
+  margin: 0;
+  width: auto;
 }
 
-@media (max-width: 767px) {
-
-  .your_inheritances-h3,
-  .wills_list_h3 {
-    padding-bottom: 10px;
-    font-size: 14px;
-  }
-}
+@media (max-width: 767px) {}
 
 .your-wills__footer {
   list-style-type: number;
@@ -1802,11 +1846,22 @@ input::-webkit-inner-spin-button {
   /* max-width: 322px; */
   word-break: break-word;
   font-style: normal;
-  font-weight: 600;
+  font-weight: 400;
   font-size: 14px;
   line-height: 17px;
   letter-spacing: 0.0264em;
   /* padding-bottom: 27px; */
+}
+
+.your_inheritances_ul-text a {
+  font-weight: 600;
+}
+
+.your_inheritances_ul-text__head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 25px;
 }
 
 .input-group-year {
@@ -1830,6 +1885,10 @@ input::-webkit-inner-spin-button {
 @media (max-width: 767px) {
   .input-group {
     width: 50px;
+  }
+
+  .your_inheritances_ul-text__head {
+    padding-bottom: 10px;
   }
 }
 
@@ -1912,11 +1971,17 @@ input::-webkit-inner-spin-button {
 }
 
 .btn_data-js {
-  margin-top: 25px;
+  margin-top: 70px;
 }
 
 .btn_data-js>div {
   display: flex;
+}
+
+@media (max-width: 767px) {
+  .btn_data-js {
+    margin-top: 50px;
+  }
 }
 
 /* .modal_checkbox-add-nft {
@@ -2128,6 +2193,13 @@ input::-webkit-inner-spin-button {
 @media (max-width: 767px) {
   .btn_reset-timers-h3 {
     font-size: 12px;
+    margin-top: 10px;
+  }
+
+  .btn_reset-timers {
+    padding: 17px 28px;
+    max-width: 100%;
+    width: 100%;
   }
 }
 
@@ -2164,6 +2236,10 @@ input::-webkit-inner-spin-button {
   .your-wills__btns {
     flex-direction: row;
     justify-content: center;
+  }
+
+  .your-wills_text-info__footer {
+    font-size: 12px;
   }
 }
 
@@ -2608,6 +2684,11 @@ input::-webkit-inner-spin-button {
     order: 1;
     max-width: 65%;
   }
+
+  .btn-header__wallet {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
 }
 
 .ml-loader {
@@ -2904,4 +2985,10 @@ input::-webkit-inner-spin-button {
 .your-wills__wallet-row {
   display: flex;
   align-items: center;
+}
+
+@media (max-width: 767px) {
+  .your-wills__info-message {
+    margin-left: 10px;
+  }
 }

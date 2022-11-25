@@ -5,6 +5,7 @@ import TheWill from '../Contract/TheWill.json'
 import closePic from '../content/button_close.svg'
 import receivePic from '../content/receive.svg'
 import linkBtn from '../content/link-btn.png'
+import infoBtn from '../content/info-btn.svg'
 import { ethers } from "ethers"
 import ERC20 from '../Contract/ERC20.json'
 import { chainIDs, TheWillAddress, UnlimitedAmount } from '../Utils/Constants'
@@ -259,7 +260,7 @@ class Inheritances extends Component {
     handleCloseConfirm = this.handleCloseConfirm.bind(this)
     handleCloseAwait = this.handleCloseAwait.bind(this)
 
-    handleShowEventConfirmed = (confirmedText, hash) => this.setState({ showEventConfirmed: true, confirmedText, hash})
+    handleShowEventConfirmed = (confirmedText, hash) => this.setState({ showEventConfirmed: true, confirmedText, hash })
     handleCloseEventConfirmed = () => this.setState({ showEventConfirmed: false })
 
     handleShowEventConfirmed = this.handleShowEventConfirmed.bind(this)
@@ -284,7 +285,12 @@ class Inheritances extends Component {
                                         return (
                                             <li key={v.ID} style={{ "marginBottom": '10px' }}>
                                                 <div className='your_inheritances_ul-text'>
-                                                    <h3 className='your_inheritances-h3'>Your inheritances</h3>
+                                                    <div className="your_inheritances_ul-text__head">
+                                                        <h3 className='your_inheritances-h3'>Your inheritances</h3>
+                                                        <a className="your-wills__info-message" href="" title="Подсказка">
+                                                            <img src={infoBtn}></img>
+                                                        </a>
+                                                    </div>
                                                     <hr />
                                                     <div className="wills-description-block__header">
                                                         <div className="wills-description-block__col">

@@ -617,7 +617,7 @@ class NewWill extends Component {
                         <div className="modal-body__row">
                             <div className="your-wills__header">
                                 <div>
-                                    Я завещаю мои
+                                    Я завещаю свои
                                 </div>
                                 {
                                     <Select placeholder="Select" styles={select} name="tokens" onChange={this.onChangeTokens} options={
@@ -631,9 +631,11 @@ class NewWill extends Component {
                                     }
                                         components={{ Option: IconOption }} />
                                 }
+                                <br></br>
+                                <span>в количестве</span>
                                 <div className="your-wills__checkbox">
                                     <input id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
-                                    <label htmlFor="unlimited">Unlimited</label><br />
+                                    <label htmlFor="unlimited">unlimited</label><br />
                                 </div>
                                 <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
                                     <input onChange={this.onChangeAmount} value={this.state.amount} min="0" oninput="validity.valid||(value='')" placeholder="Введите сумму" type="number" className="input-group mb-3" />
@@ -646,7 +648,7 @@ class NewWill extends Component {
                                 </a>
                             </div>
                         </div>
-                        <div className='modal-body__row modal-body__row-direction'>с кошелька <a href={`${this.props.networkProvider}/address/${this.state.signerAddress}`} target="_blank" rel="noreferrer" className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a><i className="br"></i> на сети {this.props.networkName}
+                        <div className='modal-body__row modal-body__row-direction'>с кошелька <a href={`${this.props.networkProvider}/address/${this.state.signerAddress}`} target="_blank" rel="noreferrer" className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a> на сети <i className="br"></i> {this.props.networkName}
                             <img src={this.state.networkPic} alt="networkpic" />
                             <a className="your-wills__info-message" href="">
                                 <img src={infoBtn}></img>
@@ -662,7 +664,7 @@ class NewWill extends Component {
                             <p>Поле обязательно для заполнения*</p>
                         </div>
                         <div className="modal-body__row">
-                            <div className='modal_title-time-will'>{"При условии что я буду неактивен (неактивна) более чем:"}
+                            <div className='modal_title-time-will'>{"При условии что я буду неактивен более чем:"}
                                 <a className="your-wills__info-message" href="">
                                     <img src={infoBtn}></img>
                                 </a>
