@@ -1007,7 +1007,7 @@ class Wills extends Component {
                         </div>
                         <div className="modal-body__row modal-body__row-direction">с кошелька <a href={`${this.props.networkProvider}/address/${this.state.signerAddress}`} target="_blank" rel="noreferrer">{
                             this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)
-                        }</a> <i className="br"></i> на сети {this.props.networkName} <img src={this.state.networkPic} alt="networkpic" />
+                        }</a>  на сети <i className="br"></i>{this.props.networkName} <img src={this.state.networkPic} alt="networkpic" />
                             <div className="your-wills__info-message" data-title={tooltipText.network}>
                                 <img src={infoBtn}></img>
                             </div></div>
@@ -1041,6 +1041,9 @@ class Wills extends Component {
                                 <div className="will-date__row">
                                     <input type="number" onChange={this.onChangeDay} value={this.state.day} className="input-group input-group-days" />
                                     <label >Дней</label><br />
+                                </div>
+                                <div className="your-wills__info-message" data-title={tooltipText.tokens}>
+                                    <img src={infoBtn}></img>
                                 </div>
                             </div>
                         </div>
