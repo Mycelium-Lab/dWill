@@ -379,7 +379,7 @@ class Wills extends Component {
                     this.handleShowAwait('Revoke Will')
                     await tx.wait()
                     this.handleCloseAwait()
-                    this.handleShowEventConfirmed(`Will has been revoked`)
+                    this.handleShowEventConfirmed(`Will has been revoked`, tx.hash)
                 })
         } catch (error) {
             console.error(error)
