@@ -2992,6 +2992,7 @@ input::-webkit-inner-spin-button {
   .your-wills__info-message {
     margin-left: 10px;
   }
+}
 
 .your-wills__info-message:hover::after {
   content: attr(data-title);
