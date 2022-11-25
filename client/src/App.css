@@ -195,8 +195,10 @@ ul {
 .will-block {
   display: flex;
   flex-direction: column;
-  padding: 20px 50px !important;
-  padding-bottom: 70px !important;
+  padding-top: 22px !important;
+  padding-bottom: 62px !important;
+  padding-left: 50px !important;
+  padding-right: 50px !important;
   max-width: 700px;
   width: 100%;
   color: #C1C7CD;
@@ -218,7 +220,10 @@ ul {
     padding-bottom: 30px;
     max-width: 340px;
     width: 100%;
-    padding: 20px 14px 30px 14px !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+    padding-top: 14px !important;
+    padding-bottom: 27px !important;
     font-size: 14px;
   }
 }
@@ -510,7 +515,7 @@ a {
 @media (max-width: 767px) {
   .modal-loading__title {
     font-size: 14px;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
   }
 }
 
@@ -585,7 +590,7 @@ a {
 
 @media (max-width: 767px) {
   .modal-body {
-    gap: 16px;
+    gap: 20px;
   }
 }
 
@@ -630,6 +635,7 @@ a {
 
   .modal-body__row-direction {
     font-size: 14px;
+    gap: 2px 5px;
   }
 }
 
@@ -644,6 +650,7 @@ a {
 @media (max-width: 767px) {
   .modal-title {
     font-size: 14px;
+    margin-bottom: 10px;
   }
 }
 
@@ -669,6 +676,11 @@ a {
   gap: 20px;
 }
 
+.will-date .your-wills__info-message {
+  margin-top: 10px;
+  margin-left: 0;
+}
+
 .will-date .will-date__row {
   flex-direction: column;
   align-items: flex-start
@@ -685,6 +697,9 @@ a {
 @media (max-width: 767px) {
   .will-date {
     gap: 15px;
+  }
+  .will-date .your-wills__info-message {
+    margin-top: 7px;
   }
 }
 
@@ -731,6 +746,9 @@ a {
     justify-content: space-between;
     width: 100%;
   }
+  .will-date__text {
+    margin-bottom: 10px;
+  }
 }
 
 .will-date__row--checkbox label {
@@ -745,6 +763,13 @@ a {
   gap: 13px;
   margin-bottom: 40px;
   margin-top: 10px;
+}
+
+@media (max-width: 767px) {
+  .your-wills__settings {
+    margin-bottom: 30px;
+    margin-top: 13px;
+  }
 }
 
 .will-date__row--checkbox label::before {
@@ -918,17 +943,10 @@ a {
 
 
 @media (max-width: 767px) {
-
-  /* .btn-header-connect>div {
-    min-width: 160px;
-    min-height: 50px;
-    padding: 0 12px;
-    border-radius: 10px;
-  } */
   .btn-header__main {
     border-radius: 10px;
+    padding: 6px 13px;
   }
-
 }
 
 .btn-header-connect__footer {
@@ -1069,11 +1087,10 @@ a {
   gap: 20px;
   justify-content: center;
 }
-
-.modal_new_will .modal-footer {
+/* 
+.modal-content .modal-footer {
   position: relative;
-}
-
+} */
 
 @media (max-width: 767px) {
   .modal_title {
@@ -1081,7 +1098,6 @@ a {
     margin-bottom: 10px;
   }
 }
-
 
 .modal-choose .modal-footer img:hover,
 .modal-choose .modal-footer img:active {
@@ -1129,8 +1145,6 @@ a {
   width: 15px;
   height: 15px;
 }
-
-
 
 .form-select__wrapper {
   position: relative;
@@ -1287,7 +1301,8 @@ select {
 @media (max-width: 767px) {
   .modal_title-time-will {
     font-size: 14px;
-    margin-top: 10px;
+    /* margin-top: 10px; */
+    margin-bottom: 10px;
   }
 }
 
@@ -1630,7 +1645,7 @@ input::-webkit-inner-spin-button {
 @media (max-width: 767px) {
   .your-wills__header {
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 10px;
     justify-content: flex-start;
     /* font-size: 14px; */
   }
@@ -2263,7 +2278,7 @@ input::-webkit-inner-spin-button {
 
 @media (max-width: 767px) {
   .your-wills__wallet {
-    margin-top: 10px;
+    margin-top: 0;
     font-size: 14px;
   }
 
@@ -2365,10 +2380,16 @@ input::-webkit-inner-spin-button {
   .your-wills__check-token {
     width: 100%;
     display: flex;
+    gap: 10px;
   }
 
   .your-wills__notifications>span {
     margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .your-wills__notifications textarea {
+    margin-bottom: 10px;
   }
 }
 
@@ -2411,7 +2432,7 @@ input::-webkit-inner-spin-button {
     bottom: auto;
     transform: translate(-50%, -50%);
     width: 340px;
-    height: 70px;
+    height: 80px;
   }
 
   .modal-loading__link {
@@ -3002,6 +3023,6 @@ input::-webkit-inner-spin-button {
   bottom: 125%;
   left: 50%;
   margin-left: -120px;
-  background: #1B232A; 
+  background: #1B232A;
 
 }

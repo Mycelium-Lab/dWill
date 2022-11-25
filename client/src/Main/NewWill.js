@@ -688,9 +688,7 @@ class NewWill extends Component {
                         <div className="modal-body__row">
 
                             <div className='modal_title-time-will'>{"При условии что я буду неактивен более чем:"}
-                                <div className="your-wills__info-message" data-title={tooltipText.time}>
-                                    <img src={infoBtn}></img>
-                                </div>
+
                             </div>
                             <div className="will-date">
                                 <div className="will-date__row">
@@ -704,6 +702,9 @@ class NewWill extends Component {
                                 <div className="will-date__row">
                                     <input type="number" onChange={this.onChangeDay} value={this.state.day} className="input-group input-group-days" />
                                     <label >Дней</label><br />
+                                </div>
+                                <div className="your-wills__info-message" data-title={tooltipText.time}>
+                                    <img src={infoBtn}></img>
                                 </div>
                             </div>
 
@@ -881,9 +882,9 @@ class NewWill extends Component {
 
                                 </li>
                             </ul>
-                            <Button className="btn-close-modal" onClick={this.handleCloseEdit}>
+                            {/* <Button className="btn-close-modal" onClick={this.handleCloseEdit}>
 
-                            </Button>
+                            </Button> */}
                         </div>
                     </Modal.Footer>
 
