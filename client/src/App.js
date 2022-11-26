@@ -273,10 +273,10 @@ class App extends Component {
       <div className="App">
         <header className="header _container">
           <div className='header_boxes'>
-            <a href="/" className="logo-will">
-              <img src={logoWill} />
-            </a>
-           
+            <div className="header_boxes-col">
+              <a href="/" className="logo-will">
+                <span>dWILL</span>
+              </a>
               <div className="amount-will">
                 <div>
                   Всего завещано:
@@ -285,15 +285,17 @@ class App extends Component {
                   {this.state.total} USD
                 </div>
               </div>
-              {
-                <Connect
-                  setProperties={this.setProperties}
-                  network={this.state.network}
-                  networkName={this.state.networkName}
-                  networkPic={this.state.networkPic}
-                />
-              }
-         
+            </div>
+
+            {
+              <Connect
+                setProperties={this.setProperties}
+                network={this.state.network}
+                networkName={this.state.networkName}
+                networkPic={this.state.networkPic}
+              />
+            }
+
           </div>
         </header>
 

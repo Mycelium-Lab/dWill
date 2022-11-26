@@ -275,6 +275,9 @@ class Inheritances extends Component {
     render() {
         return (
             <div className='your_inheritances wills-description-block'>
+                <a className="your-wills__info-message"  title="">
+                    <img src={infoBtn}></img>
+                </a>
                 {
                     this.state.inheritances.length > 0
                         ?
@@ -287,14 +290,12 @@ class Inheritances extends Component {
                                                 <div className='your_inheritances_ul-text'>
                                                     <div className="your_inheritances_ul-text__head">
                                                         <h3 className='your_inheritances-h3'>Your inheritances</h3>
-                                                        <a className="your-wills__info-message" href="" title="Подсказка">
-                                                            <img src={infoBtn}></img>
-                                                        </a>
+
                                                     </div>
-                                                    <hr />
+                                                    {/* <hr /> */}
                                                     <div className="wills-description-block__header">
                                                         <div className="wills-description-block__col">
-                                                            <span>id: {v.ID.toString()} </span>
+                                                            <span className="wills-description-block__id">dWill #{v.ID.toString()} </span>
                                                             <span>
                                                                 {
                                                                     this.remainingTime(v.timeWhenWithdraw) === 'Nothing.'
@@ -305,7 +306,7 @@ class Inheritances extends Component {
                                                                 }
                                                                 can harvest up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited' : (v.amount / Math.pow(10, v.decimals)).toString()} {v.symbol} from wallet
                                                             </span>
-                                                            <a href={`${this.props.networkProvider}/address/${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`} </a> on {this.state.network} chain
+                                                            <a href={`${this.props.networkProvider}/address/${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`}</a> on {this.state.network} chain
                                                         </div>
                                                         <button value={v.ID.toString()} onClick={this.claim}
                                                             style={{

@@ -338,7 +338,7 @@ class Wills extends Component {
             let yDisplay = y > 0 ? y + (y === 1 ? " year, " : " years, ") : " 0 years,";
             let moDisplay = mo > 0 ? mo + (mo === 1 ? " month, " : " months, ") : " 0 months,";
             let dDisplay = d > 0 ? d + (d === 1 ? " day, " : " days, ") : " 0 days, ";
-            let hDisplay = h > 0 ? h + (h === 1 ? " hour " : " hours ") : " 0 hours";
+            let hDisplay = h > 0 ? h + (h === 1 ? " hour" : " hours") : " 0 hours";
             return yDisplay + moDisplay + dDisplay + hDisplay;
         }
     }
@@ -379,7 +379,7 @@ class Wills extends Component {
                     this.handleShowAwait('Revoke Will')
                     await tx.wait()
                     this.handleCloseAwait()
-                    this.handleShowEventConfirmed(`Will has been revoked`, tx.hash)
+                    this.handleShowEventConfirmed(`dWill has been revoked`, tx.hash)
                 })
         } catch (error) {
             console.error(error)
@@ -699,16 +699,16 @@ class Wills extends Component {
             }
             if (parseFloat(currentEditBaseAmount) > parseFloat(event.target.value)) {
                 parseFloat(event.target.value) >= 0
-                ?
-                this.setState({
-                    currentEditAmount: event.target.value,
-                    approved: true,
-                    updateAmount: true
-                })
-                :
-                this.setState({
-                    currentEditAmount: ''
-                })
+                    ?
+                    this.setState({
+                        currentEditAmount: event.target.value,
+                        approved: true,
+                        updateAmount: true
+                    })
+                    :
+                    this.setState({
+                        currentEditAmount: ''
+                    })
             }
             if (parseFloat(currentEditBaseAmount) === parseFloat(event.target.value)) {
                 this.setState({
@@ -909,13 +909,12 @@ class Wills extends Component {
                                         <div key={v.ID} className="your-wills">
                                             <div className='your-wills_text'>
                                                 <div className="your_inheritances_ul-text__head">
-                                                    <h3 className='wills_list_h3'>Your wills</h3>
-                                                    <a class="your-wills__info-message" href="" title="Подсказка">
+                                                    <h3 className='wills_list_h3'>Your dWills</h3>
+                                                    <a class="your-wills__info-message"  title="">
                                                         <img src={infoBtn}></img>
                                                     </a>
                                                 </div>
 
-                                                <hr />
                                                 {/* <span>id: {v.ID.toString()} </span> */}
                                                 <div className="page-data__block-container">
                                                     <div className='your-wills_text-info'>
@@ -932,7 +931,7 @@ class Wills extends Component {
                                                             <p className='your-wills_date'>{this.timeBetweenWithdrawAndStartConverter(v.timeBetweenWithdrawAndStart)}</p>
 
                                                             <p className='your-wills_remain'>
-                                                                ( Remain: {this.remainingTime(v.timeWhenWithdraw.toString())})
+                                                                (Remain: {this.remainingTime(v.timeWhenWithdraw.toString())})
                                                             </p>
                                                         </span>
                                                     </div>
