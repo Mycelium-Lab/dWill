@@ -275,7 +275,7 @@ class Inheritances extends Component {
     render() {
         return (
             <div className='your_inheritances wills-description-block'>
-                <a className="your-wills__info-message"  title="">
+                <a className="your-wills__info-message" title="">
                     <img src={infoBtn}></img>
                 </a>
                 {
@@ -304,9 +304,9 @@ class Inheritances extends Component {
                                                                         :
                                                                         `After ${this.remainingTime(v.timeWhenWithdraw)} you `
                                                                 }
-                                                                can harvest up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited' : (v.amount / Math.pow(10, v.decimals)).toString()} {v.symbol} from wallet
+                                                                can harvest up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited' : (v.amount / Math.pow(10, v.decimals)).toString()} <span className="wills-description-block__symbol">{v.symbol}</span> from wallet
                                                             </span>
-                                                            <a href={`${this.props.networkProvider}/address/${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`}</a> on {this.state.network} chain
+                                                            <a href={`${this.props.networkProvider}/address/${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`}</a> on <span className="wills-description-block__symbol">{this.state.network}</span> chain
                                                         </div>
                                                         <button value={v.ID.toString()} onClick={this.claim}
                                                             style={{
