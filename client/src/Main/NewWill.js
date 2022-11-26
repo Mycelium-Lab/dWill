@@ -598,7 +598,7 @@ class NewWill extends Component {
         return (
             <><div>
                 <Button id="newwill-button" variant="primary" className="btn-new-will" onClick={this.props.isEthereumNull === false ? this.handleShow : this.handleShowWalletNotExist}>
-                    New Will
+                    New dWill
                 </Button>
                 <div className='modal_fade'></div>
                 <Modal show={this.state.showWalletNotExist} onHide={this.handleCloseWalletNotExist} className='modal_content' style={{
@@ -632,7 +632,7 @@ class NewWill extends Component {
                         <Button className='bnt_close' onClick={this.handleClose}>
                             <img src={buttonClosePic} alt="close" />
                         </Button>
-                        <Modal.Title className='modal_title'>New Will</Modal.Title>
+                        <Modal.Title className='modal_title'>New dWill</Modal.Title>
                         <hr />
                     </Modal.Header>
                     <Modal.Body>
@@ -877,7 +877,7 @@ class NewWill extends Component {
                                                             ? '#3E474F' : '#5ED5A8'
                                                 }}
                                         className='button_make-new-will'>
-                                        <span className="button_number-span">Make new will </span>
+                                        <span className="button_number-span">Make new dWill </span>
                                     </Button>
 
                                 </li>
