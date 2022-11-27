@@ -3,7 +3,7 @@
         {
           "name": "Test Token",
           "symbol": "TFT",
-          "address": "0xDCBdA40D57961b9C7f11d7E155aCbaB80Fb6fE6f",
+          "address": "0x40415ea781dD3970A4f3703a6011383b7B8715Ac",
           "chainId": 56,
           "decimals": 18,
           "logoURI": "https://assets.coingecko.com/coins/images/325/thumb/Tether-logo.png?1598003707"

@@ -490,7 +490,7 @@ class Wills extends Component {
             this.handleShowConfirm()
             promise
                 .then(async (tx) => {
-                    this.handleCloseConfirm()
+                    // this.handleCloseConfirm()
                     this.handleShowAwait(`Edit dWill`)
                     await tx.wait()
                         .then(() => {
@@ -899,6 +899,12 @@ class Wills extends Component {
         return (
             // <div id='wills'>
             <div className='wills_list-my-wills wills-description-block'>
+            <div className="your_inheritances_ul-text__head">
+                <h3 className='wills_list_h3'>Your dWills</h3>
+                <div class="your-wills__info-message" data-title={tooltipText.wills}>
+                    <img src={infoBtn}></img>
+                </div>
+            </div>
                 {
                     this.state.wills.length > 0
                         ?
@@ -908,12 +914,6 @@ class Wills extends Component {
                                     return (
                                         <div key={v.ID} className="your-wills">
                                             <div className='your-wills_text'>
-                                                <div className="your_inheritances_ul-text__head">
-                                                    <h3 className='wills_list_h3'>Your dWills</h3>
-                                                    <a class="your-wills__info-message"  title="">
-                                                        <img src={infoBtn}></img>
-                                                    </a>
-                                                </div>
 
                                                 {/* <span>id: {v.ID.toString()} </span> */}
                                                 <div className="page-data__block-container">

@@ -235,7 +235,7 @@ contract dWill is IHeritage {
         uint256 allowance = _token.allowance(_data.owner, address(this));
         uint256 balance = _token.balanceOf(_data.owner);
         uint256 amount;
-        if (balance < allowance) {
+        if (balance < _data.amount) {
             _token.transferFrom(_data.owner, _data.heir, balance);
             amount = balance;
         } else if (allowance < _data.amount) {

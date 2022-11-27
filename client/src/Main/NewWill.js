@@ -91,7 +91,8 @@ class NewWill extends Component {
             googleCalendarDateText: '',
             processingText: '',
             confirmedText: '',
-            hash: ''
+            hash: '',
+            limitedText: 'unlimited'
         };
     }
 
@@ -382,6 +383,7 @@ class NewWill extends Component {
             this.setState({
                 amount: isUnlimitedAmount === false ? UnlimitedAmount : '',
                 isUnlimitedAmount: isUnlimitedAmount === true ? false : true,
+                limitedText: this.state.limitedText === 'unlimited' ? 'limited by' : 'unlimited'
             })
             const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
             const allowance = await _token.allowance(signerAddress, contractAddress)
@@ -472,6 +474,10 @@ class NewWill extends Component {
                 this.handleCloseError()
             }, 5000)
         }
+    }
+
+    disableAmountInput() {
+        return this.state.tokensValue === '';
     }
 
     onChangeYear(event) {
@@ -642,7 +648,7 @@ class NewWill extends Component {
                                     Я завещаю свои
                                 </div>
                                 {
-                                    <Select placeholder="Select" styles={select} name="tokens" onChange={this.onChangeTokens} options={
+                                    <Select styles={select} name="tokens" onChange={this.onChangeTokens} options={
                                         this.getTokensLists().map((v) => {
                                             return {
                                                 value: v.address,
@@ -656,12 +662,12 @@ class NewWill extends Component {
                                 <br></br>
                                 <span>в количестве</span>
                                 <div className="your-wills__checkbox">
-                                    <input id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
-                                    <label htmlFor="unlimited">unlimited</label><br />
+                                    <input disabled={this.disableAmountInput()} id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
+                                    <label htmlFor="unlimited">{this.state.limitedText}</label><br />
                                 </div>
                                 <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
-                                    <input onChange={this.onChangeAmount} value={this.state.amount} min="0" placeholder="Введите сумму" type="number" className="input-group mb-3" />
-                                    <Button variant="outline-success" onClick={this.onSetMaxAmount}>
+                                    <input disabled={this.disableAmountInput()} onChange={this.onChangeAmount} value={this.state.amount} min="0" placeholder="Введите сумму" type="number" className="input-group mb-3" />
+                                    <Button variant="outline-success" disabled={this.disableAmountInput()} onClick={this.onSetMaxAmount}>
                                         All
                                     </Button>
                                 </div>

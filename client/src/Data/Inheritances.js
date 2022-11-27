@@ -9,6 +9,7 @@ import infoBtn from '../content/info-btn.svg'
 import { ethers } from "ethers"
 import ERC20 from '../Contract/ERC20.json'
 import { chainIDs, TheWillAddress, UnlimitedAmount } from '../Utils/Constants'
+import { tooltipText } from '../Utils/tooltipText'
 
 class Inheritances extends Component {
     constructor(props) {
@@ -275,9 +276,12 @@ class Inheritances extends Component {
     render() {
         return (
             <div className='your_inheritances wills-description-block'>
-                <a className="your-wills__info-message" title="">
+                <div className="your_inheritances_ul-text__head">
+                    <h3 className='your_inheritances-h3'>Your inheritances</h3>
+                    <div class="your-wills__info-message" data-title={tooltipText.inheritances}>
                     <img src={infoBtn}></img>
-                </a>
+                </div>
+                </div>
                 {
                     this.state.inheritances.length > 0
                         ?
@@ -288,10 +292,6 @@ class Inheritances extends Component {
                                         return (
                                             <li key={v.ID} style={{ "marginBottom": '10px' }}>
                                                 <div className='your_inheritances_ul-text'>
-                                                    <div className="your_inheritances_ul-text__head">
-                                                        <h3 className='your_inheritances-h3'>Your inheritances</h3>
-
-                                                    </div>
                                                     {/* <hr /> */}
                                                     <div className="wills-description-block__header">
                                                         <div className="wills-description-block__col">

@@ -74,4 +74,28 @@ describe("TheWillUpdate", function () {
         assert(balanceAfterWithdrawOwner > 0, `We sent only not all balance w/o error`)
     })
 
+    it('should check withdraw if there is 2 wills to one acc', async () => {
+        let timeNow = (await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp;
+        let timeWhenWithdraw = timeNow + secondsInADay * 2
+        const currentHalfBalanceOwner = BigInt(await token.balanceOf(signer.address) / 2)
+        const currentBalanceHeir = await token.balanceOf(acc2.address)
+        assert(currentBalanceHeir == 0, `Heir dont have tokens yet`)
+        //add all balance allowance
+        await token.increaseAllowance(heritage.address, currentHalfBalanceOwner.toString())
+        await token.increaseAllowance(heritage.address, currentHalfBalanceOwner.toString())
+        await heritage.addNewWill(
+            acc2.address, token.address, timeWhenWithdraw, currentHalfBalanceOwner.toString()
+        )
+        await heritage.addNewWill(
+            acc2.address, token.address, timeWhenWithdraw, currentHalfBalanceOwner.toString()
+        )
+		await network.provider.send("evm_increaseTime", [secondsInADay * 3])
+        await heritage.connect(acc2).withdraw(0)
+        const balanceAfterWithdrawHeir = await token.balanceOf(acc2.address)
+        assert(balanceAfterWithdrawHeir.toString() === currentHalfBalanceOwner.toString(), 'return only data amount')
+        await heritage.connect(acc2).withdraw(1)
+        const balanceAfterWithdrawHeir2 = await token.balanceOf(acc2.address)
+        assert(balanceAfterWithdrawHeir2.toString() === (currentHalfBalanceOwner + currentHalfBalanceOwner).toString(), 'return only data amount')
+    })
+
 })

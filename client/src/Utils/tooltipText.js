@@ -6,5 +6,7 @@ export const tooltipText = {
     NFTMessage: 'NFT Message bla bla bla',
     delivery: 'Token delivery bla bla bla',
     notifications: 'Notifications bla bla bla',
-    approve: 'Approve bla bla bla'
+    approve: 'Approve bla bla bla',
+    wills: 'Wills bla bla bla',
+    inheritances: 'Inheritances bla bla bla'
 }
