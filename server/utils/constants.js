@@ -1,10 +1,10 @@
 const contractAddresses = {
-    Mumbai: '0x495dDEa3BC165114D6855C1B09113B9BF053b793',
+    Mumbai: '0xDCBdA40D57961b9C7f11d7E155aCbaB80Fb6fE6f',
     Polygon: '',
-    BinanceTestnet: '0xc1396050fb3042b33dB5535AA4711916b52Ac61d',
+    BinanceTestnet: '0xC9AdC87b5a612F08dC04802Ca1a0C97d06365e20',
     BinanceMainnet: '',
     EthereumMainnet: '',
-    Goerli: '0x044D55DE6E02edc857F68E3D3434c43F23460D2C'
+    Goerli: '0x1a53400d37D773C7A531605C268185D6e8CCaE61'
 }
 
 const NetworkExplorers = {
