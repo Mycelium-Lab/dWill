@@ -376,7 +376,7 @@ class Wills extends Component {
             await contract.removeWill(event.target.value)
                 .then(async (tx) => {
                     this.handleCloseConfirm()
-                    this.handleShowAwait('Revoke Will')
+                    this.handleShowAwait('Revoke dWill')
                     await tx.wait()
                     this.handleCloseAwait()
                     this.handleShowEventConfirmed(`dWill has been revoked`, tx.hash)
@@ -934,7 +934,7 @@ class Wills extends Component {
                                                             <p className='your-wills_date'>{this.timeBetweenWithdrawAndStartConverter(v.timeBetweenWithdrawAndStart)}</p>
 
                                                             <p className='your-wills_remain'>
-                                                                (Remain: {this.remainingTime(v.timeWhenWithdraw.toString())})
+                                                                (remain: {this.remainingTime(v.timeWhenWithdraw.toString())})
                                                             </p>
                                                         </span>
                                                     </div>
@@ -978,7 +978,7 @@ class Wills extends Component {
                 }
                 <Modal className="will-block" show={this.state.showEdit} style={{ height: "" }}>
                     <Modal.Header>
-                        <Modal.Title>Edit Will</Modal.Title>
+                        <Modal.Title>Edit dWill</Modal.Title>
                         <hr />
                     </Modal.Header>
                     <Modal.Body>
@@ -1052,7 +1052,7 @@ class Wills extends Component {
                         <div className="your-wills__settings">
                             <div className="will-date__row will-date__row--checkbox">
                                 <div className="will-date__row-input">
-                                    <input id="wills-set1" type="checkbox" onChange={this.changeMessage} disabled={false} className="form-check form-check-input mt-0" />
+                                    <input id="wills-set1" type="checkbox" onChange={this.changeMessage} disabled={true} className="form-check form-check-input mt-0" />
                                     <label htmlFor="wills-set1">Add NFT Message (coming soon)</label><br />
                                 </div>
                                 <div className="your-wills__info-message" data-title={tooltipText.NFTMessage}>
@@ -1066,7 +1066,7 @@ class Wills extends Component {
                             </div>
                             <div className="will-date__row will-date__row--checkbox">
                                 <div className="will-date__row-input">
-                                    <input id="wills-set2" type="checkbox" onChange={this.changeDelivery} disabled={false} className="form-check form-check-input mt-0" />
+                                    <input id="wills-set2" type="checkbox" onChange={this.changeDelivery} disabled={true} className="form-check form-check-input mt-0" />
                                     <label htmlFor="wills-set2">Automatic token delivery (coming soon)</label><br />
                                 </div>
                                 <div className="your-wills__info-message" data-title={tooltipText.NFTMessage}>
