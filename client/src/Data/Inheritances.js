@@ -290,7 +290,7 @@ class Inheritances extends Component {
                                 {
                                     this.state.inheritances.map((v) => {
                                         return (
-                                            <li key={v.ID} style={{ "marginBottom": '10px' }}>
+                                            <li key={v.ID} style={{  }}>
                                                 <div className='your_inheritances_ul-text'>
                                                     {/* <hr /> */}
                                                     <div className="wills-description-block__header">
