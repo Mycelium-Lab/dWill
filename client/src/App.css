@@ -1609,8 +1609,24 @@ input::-webkit-inner-spin-button {
   justify-content: space-between;
   gap: 20px;
   padding: 26px 5px;
-  border-top: 1px solid #3E474F;
+
+}
+
+.your-wills {
+  /* border-top: 1px solid #3E474F; */
   border-bottom: 1px solid #3E474F;
+}
+
+.your-wills:first-child {
+  border-top: 1px solid #3E474F;
+}
+
+.your_inheritances_ul li {
+  border-bottom: 1px solid #3E474F;
+}
+
+.your_inheritances_ul li:first-child {
+  border-top: 1px solid #3E474F;
 }
 
 .wills-description-block__col a {
@@ -1836,7 +1852,7 @@ input::-webkit-inner-spin-button {
 .your_inheritances_ul {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  /* gap: 20px; */
 }
 
 .your_inheritances-h3,
@@ -2159,7 +2175,8 @@ input::-webkit-inner-spin-button {
 #wills-list_ul-btn {
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  /* gap: 40px; */
+  gap: 0;
 }
 
 .modal-confirm.show {
