@@ -1,10 +1,11 @@
 // process.env.NTBA_FIX_319 = 1
 
-const TelegramBot = require("node-telegram-bot-api");
-const User = require('../db/User.js')
-require('dotenv').config()
+import TelegramBot from "node-telegram-bot-api";
+import User from '../db/User.js'
+import dotenv from 'dotenv'
+dotenv.config()
 
-const bot = new TelegramBot(process.env.TGBOT, {polling:true})
+export const bot = new TelegramBot(process.env.TGBOT, {polling:true})
 
 const keyboardOptions = {
     reply_markup: JSON.stringify({
@@ -161,7 +162,7 @@ bot.onText(/Add email for notifications/, async (msg) => {
 
 bot.on("polling_error", console.log);
 
-async function sendMessage(userID, msg) {
+export async function sendMessage(userID, msg) {
     try {
         await bot.sendMessage(userID, msg)
         .then(() => {
@@ -173,9 +174,4 @@ async function sendMessage(userID, msg) {
     } catch (error) {
         console.error(error)
     }
-}
-
-module.exports = {
-    bot,
-    sendMessage
 }

@@ -1,4 +1,4 @@
-const { google } = require('googleapis')
+import { google } from 'googleapis'
 
 //TABLE ID
 const ID = "1Aiw5wJGoqmTFcMB595Sv4TX6pDjd0lytaProjyQO7ac"
@@ -19,7 +19,7 @@ async function authentication() {
     return sheets
 }
 
-async function update(amount) {
+export async function update(amount) {
     authentication()
         .then(async (sheets) => {
             const response = await sheets.spreadsheets.values.get({
@@ -44,8 +44,4 @@ async function update(amount) {
         .catch((e) => {
             console.log(e)
         })
-}
-
-module.exports = {
-    update,
 }

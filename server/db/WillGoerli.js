@@ -1,6 +1,4 @@
-const mongoose = require('mongoose')
-
-const {Schema, model} = require('mongoose')
+import mongoose, {Schema, model} from 'mongoose'
 
 const schema = new Schema({
     ID:{
@@ -13,4 +11,4 @@ const schema = new Schema({
     }
 })
 
-module.exports = model('WillGoerli', schema)
+export default model('WillGoerli', schema)

@@ -1,19 +1,19 @@
 // process.env.NTBA_FIX_319 = 1
-const mongoose = require('mongoose')
-const ethers = require('ethers')
-const nodemailer = require('nodemailer')
-const cron = require('node-cron')
-require('dotenv').config()
-
-const { bot, sendMessage } = require('./bot/bot');
-const User = require('./db/User.js')
-const WillMumbai = require('./db/WillMumbai.js')
-const WillGoerli= require('./db/WillGoerli.js')
-const WillBinanceTest = require('./db/WillBinanceTest.js')
-const WillAbi = require('../artifacts/contracts/dWill.sol/dWill.json')
-const ERC20 = require('../artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json')
-const { update } = require('./sheets')
-const { contractAddresses, NetworkExplorers } = require('./utils/constants')
+import mongoose from 'mongoose'
+import ethers from 'ethers'
+import nodemailer from 'nodemailer'
+import cron from 'node-cron'
+import dotenv from 'dotenv'
+dotenv.config()
+import { bot, sendMessage } from './bot/bot.js';
+import User from './db/User.js'
+import WillMumbai from './db/WillMumbai.js'
+import WillGoerli from './db/WillGoerli.js'
+import WillBinanceTest from './db/WillBinanceTest.js'
+import WillAbi from '../artifacts/contracts/dWill.sol/dWill.json' assert { type: "json" }
+import ERC20 from '../artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json' assert { type: "json" }
+import { contractAddresses, NetworkExplorers, UnlimitedAmount } from './utils/constants.js'
+import { addAmountToPool } from './service/addAmountToPool.js'
 
 const providerMumbai = new ethers.providers.JsonRpcProvider(process.env.MUMBAI_RPC)
 const providerGoerli = new ethers.providers.JsonRpcProvider(process.env.GOERLI_RPC)
@@ -24,8 +24,6 @@ const signerBinanceTestnet = new ethers.Wallet(process.env.PRIVATE_KEY, provider
 const contractMumbai = new ethers.Contract(contractAddresses.Mumbai, WillAbi.abi, signerMumbai)
 const contractGoerli = new ethers.Contract(contractAddresses.Goerli, WillAbi.abi, signerGoerli)
 const contractBinanceTestnet = new ethers.Contract(contractAddresses.BinanceTestnet, WillAbi.abi, signerBinanceTestnet)
-
-const UnlimitedAmount = '11579208923731619542357098500868790785326998466564056403945758400791312963993'
 
 const transporter = nodemailer.createTransport({
     host: 'localhost',
@@ -111,24 +109,17 @@ contractBinanceTestnet.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn,
 async function addAnHeir(ID,owner,heir,token,timeWhenWithdraw,amount, network, explorer, signer) {
     try {
         let _token = new ethers.Contract(token, ERC20.abi, signer);
-        //добавить распознование токенов и определение цены
-        if (amount.toString() !== UnlimitedAmount) {
-            await update(Math.floor(amount / Math.pow(10, 18) * 1))
-        } else {
-            const _balance = await _token.balanceOf(owner)
-            await update(Math.floor(_balance / Math.pow(10, 18) * 1))
-        }
+        const _tokenSymbol = await _token.symbol()
+        const _tokenDecimals = await _token.decimals()
+        const _balance = await _token.balanceOf(owner)
+        await addAmountToPool(_tokenSymbol, amount,_balance,_tokenDecimals)
         const user = await User.findOne({address: heir})
         const _owner = await User.findOne({address: owner})
-        let _tokenSymbol;
-        let _tokenDecimals;
         let heritageAmountInNormalView;
         let _remainingTime;
         let cutOwnerAddress;
         let cutHeirAddress;
         if (user !== null || _owner !== null) {
-            _tokenSymbol = await _token.symbol()
-            _tokenDecimals = await _token.decimals()
             heritageAmountInNormalView = amount.toString() === UnlimitedAmount ? 'Unlimited' : amount / Math.pow(10, _tokenDecimals)
             _remainingTime = remainingTime(timeWhenWithdraw)
             cutOwnerAddress = owner.slice(0, 6) + '...' + owner.slice(owner.length - 4, owner.length);
