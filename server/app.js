@@ -28,10 +28,10 @@ const contractBinanceTestnet = new ethers.Contract(contractAddresses.BinanceTest
 const UnlimitedAmount = '11579208923731619542357098500868790785326998466564056403945758400791312963993'
 
 const transporter = nodemailer.createTransport({
-    service: 'hotmail',
-    auth: {
-        user: process.env.EMAILUSER,
-        pass: process.env.EMAILPASS
+    host: 'localhost',
+    port: 25,
+    tls: {
+      rejectUnauthorized: false
     }
 })
 
