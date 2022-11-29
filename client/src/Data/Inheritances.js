@@ -141,7 +141,7 @@ class Inheritances extends Component {
             })
             contract.on('UpdateAnHeir', async (ID, owner, heir) => {
                 let __inheritances = this.state.inheritances
-                __inheritances = __inheritances.filter(v => v.ID !== ID.toString())
+                __inheritances = __inheritances.filter(v => v.ID.toString() !== ID.toString())
                 if (heir.toLowerCase() === signerAddress.toLowerCase()) {
                     const inheritance = await contract.inheritanceData(ID.toString())
                     const token = new ethers.Contract(inheritance.token, ERC20.abi, signer)

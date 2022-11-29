@@ -9,7 +9,9 @@ const hre = require("hardhat");
 async function main() {
     const signer = await hre.ethers.getSigner()
     const Will = await hre.ethers.getContractFactory("dWill");
-    const will = Will.attach("0x6c3a175f8efd553C2694E179499bD643F4C5A63d")
+    const will = Will.attach("0xd7D3CFc5e1AFF85AF3e4227Fd3c485DdeD9dB660")
+    //0xE8D562606F35CB14dA3E8faB1174F9B5AE8319c4
+    //0xa36481Ae3b6313B99b0B3aD8f749cD187CEcB514
     await will.addNewWill(
         '0xA841a2a238Fa48D1C409D95E64c3F08d8Dd5DdA7',
         '0x40415ea781dD3970A4f3703a6011383b7B8715Ac',
