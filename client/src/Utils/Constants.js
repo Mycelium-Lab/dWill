@@ -9,12 +9,12 @@ export const TokenAddresses = {
 }
 export const TheWillAddress = '0xc9100D772b0Ddb8D435b54cee1Fe050cf7e5789B'
 export const TheWillAddresses = {
-    Mumbai: '0x9ea5b4c017f3E0D2564B69FEe7C56C1d853EaaB1',
+    Mumbai: '0xd7D3CFc5e1AFF85AF3e4227Fd3c485DdeD9dB660',
     Polygon: '',
-    BinanceTestnet: '0xDD5259328dBd630F3F2346af3Cc55CEf5364AFD1',
+    BinanceTestnet: '0x8107B2A46618d294abC6E3726B6d21c2A9b88F4A',
     BinanceMainnet: '',
     EthereumMainnet: '',
-    Goerli: '0x532282e40A19B2A4c94c0c395694e886673C0890'
+    Goerli: '0x194C4A6BE4A2aec6d0f235d8F2e4dF4A1f7DcC9E'
 }
 export const UnlimitedAmount = '11579208923731619542357098500868790785326998466564056403945758400791312963993'
 export const chainIDs = {
