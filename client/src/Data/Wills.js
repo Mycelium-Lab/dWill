@@ -910,12 +910,12 @@ class Wills extends Component {
         return (
             // <div id='wills'>
             <div className='wills_list-my-wills wills-description-block'>
-            <div className="your_inheritances_ul-text__head">
-                <h3 className='wills_list_h3'>Your dWills</h3>
-                <div className="your-wills__info-message" data-title={tooltipText.wills}>
-                    <img src={infoBtn}></img>
+                <div className="your_inheritances_ul-text__head">
+                    <h3 className='wills_list_h3'>Your dWills</h3>
+                    <div className="your-wills__info-message" data-title={tooltipText.wills}>
+                        <img src={infoBtn}></img>
+                    </div>
                 </div>
-            </div>
                 {
                     this.state.wills.length > 0
                         ?
@@ -985,224 +985,227 @@ class Wills extends Component {
                         <h4>У вас еще нет активных завещаний.</h4>
                 }
                 <Modal className="will-block" show={this.state.showEdit} style={{ height: "" }}>
-                    <Modal.Header>
-                        <Modal.Title>Edit dWill</Modal.Title>
-                        <hr />
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div className="modal-body__row">
-                            <div className="your-wills__header">
-                                <div>
-                                    Я завещаю свои
-                                </div>
-                                <div className="your-wills__current-token">{this.state.currentEditSymbol}</div>
-                                <div className="your-wills__check-token">
-                                    <div className="your-wills__checkbox">
-                                        <input id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
-                                        <label htmlFor="unlimited">unlimited</label><br />
+                    <div className="will-block__wrapper">
+                        <Modal.Header>
+                            <Modal.Title>Edit dWill</Modal.Title>
+                            <hr />
+                        </Modal.Header>
+                        <Modal.Body>
+                            <div className="modal-body__row">
+                                <div className="your-wills__header">
+                                    <div>
+                                        Я завещаю свои
                                     </div>
-                                    <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
-                                        <input onChange={this.onChangeAmount} value={this.state.currentEditAmount}
-                                            type="number" min="0" className="input-group mb-3" placeholder="Введите сумму" />
-                                        <Button variant="outline-success" onClick={this.onSetMaxAmount}>
-                                            All
-                                        </Button>
+                                    <div className="your-wills__current-token">{this.state.currentEditSymbol}</div>
+                                    <div className="your-wills__check-token">
+                                        <span>в количестве</span>
+                                        <div className="your-wills__checkbox">
+                                            <input id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
+                                            <label htmlFor="unlimited">unlimited</label><br />
+                                        </div>
+                                        <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
+                                            <input onChange={this.onChangeAmount} value={this.state.currentEditAmount}
+                                                type="number" min="0" className="input-group mb-3" placeholder="Введите сумму" />
+                                            <Button variant="outline-success" onClick={this.onSetMaxAmount}>
+                                                All
+                                            </Button>
+                                        </div>
+                                        <div className="your-wills__info-message" data-title={tooltipText.tokens}>
+                                            <img src={infoBtn}></img>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div className="modal-body__row modal-body__row-direction">с кошелька <a href={`${this.props.networkProvider}/address/${this.state.signerAddress}`} target="_blank" rel="noreferrer">{
+                                this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)
+                            }</a>  на сети <i className="br"></i>{this.props.networkName} <img src={this.state.networkPic} alt="networkpic" />
+                                <div className="your-wills__info-message" data-title={tooltipText.network}>
+                                    <img src={infoBtn}></img>
+                                </div></div>
+                            <div className="your-wills__wallet modal-body__row">
+                                <div className="your-wills__wallet-row">
+                                    Доверенному кошельку
+                                    <div className="your-wills__info-message" data-title={tooltipText.wallet}>
+                                        <img src={infoBtn}></img>
+                                    </div>
+                                </div>
+                                <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" />
+                                <p style={{ display: this.state.isAddress ? 'none' : 'block' }}>Неправильный формат адреса</p>
+                            </div>
+                            <div className="modal-body__row">
+                                <div className="will-date__text">
+                                    При условии что я буду неактивен, начиная с момента создания наследства ({
+                                        this.timeConverter((parseInt(this.state.currentEditTimeWhenWithdraw) - parseInt(this.state.currentEditTimeBetweenWithdrawAndStart)).toString())
+                                    }) более чем:
+                                    <div className="your-wills__info-message" data-title={tooltipText.time}>
+                                        <img src={infoBtn}></img>
+                                    </div>
+                                </div>
+                                <div className="will-date">
+                                    <div className="will-date__row">
+                                        <input type="number" onChange={this.onChangeYear} value={this.state.year} className="input-group input-group-year" />
+                                        <label >Лет</label><br />
+                                    </div>
+                                    <div className="will-date__row">
+                                        <input type="number" onChange={this.onChangeMonth} value={this.state.month} className="input-group input-group-month" />
+                                        <label >Месяцев</label><br />
+                                    </div>
+                                    <div className="will-date__row">
+                                        <input type="number" onChange={this.onChangeDay} value={this.state.day} className="input-group input-group-days" />
+                                        <label >Дней</label><br />
                                     </div>
                                     <div className="your-wills__info-message" data-title={tooltipText.tokens}>
                                         <img src={infoBtn}></img>
                                     </div>
                                 </div>
-
                             </div>
-                        </div>
-                        <div className="modal-body__row modal-body__row-direction">с кошелька <a href={`${this.props.networkProvider}/address/${this.state.signerAddress}`} target="_blank" rel="noreferrer">{
-                            this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)
-                        }</a>  на сети <i className="br"></i>{this.props.networkName} <img src={this.state.networkPic} alt="networkpic" />
-                            <div className="your-wills__info-message" data-title={tooltipText.network}>
-                                <img src={infoBtn}></img>
-                            </div></div>
-                        <div className="your-wills__wallet modal-body__row">
-                            <div className="your-wills__wallet-row">
-                                Доверенному кошельку
-                                <div className="your-wills__info-message" data-title={tooltipText.wallet}>
-                                    <img src={infoBtn}></img>
-                                </div>
-                            </div>
-                            <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" />
-                            <p style={{display: this.state.isAddress ? 'none' : 'block'}}>Неправильный формат адреса</p>
-                        </div>
-                        <div className="modal-body__row">
-                            <div className="will-date__text">
-                                При условии что я буду неактивен, начиная с момента создания наследства ({
-                                    this.timeConverter((parseInt(this.state.currentEditTimeWhenWithdraw) - parseInt(this.state.currentEditTimeBetweenWithdrawAndStart)).toString())
-                                }) более чем:
-                                <div className="your-wills__info-message" data-title={tooltipText.time}>
-                                    <img src={infoBtn}></img>
-                                </div>
-                            </div>
-                            <div className="will-date">
-                                <div className="will-date__row">
-                                    <input type="number" onChange={this.onChangeYear} value={this.state.year} className="input-group input-group-year" />
-                                    <label >Лет</label><br />
-                                </div>
-                                <div className="will-date__row">
-                                    <input type="number" onChange={this.onChangeMonth} value={this.state.month} className="input-group input-group-month" />
-                                    <label >Месяцев</label><br />
-                                </div>
-                                <div className="will-date__row">
-                                    <input type="number" onChange={this.onChangeDay} value={this.state.day} className="input-group input-group-days" />
-                                    <label >Дней</label><br />
-                                </div>
-                                <div className="your-wills__info-message" data-title={tooltipText.tokens}>
-                                    <img src={infoBtn}></img>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="your-wills__settings">
-                            <div className="will-date__row will-date__row--checkbox">
-                                <div className="will-date__row-input">
-                                    <input id="wills-set1" type="checkbox" onChange={this.changeMessage} disabled={true} className="form-check form-check-input mt-0" />
-                                    <label htmlFor="wills-set1">Add NFT Message (coming soon)</label><br />
-                                </div>
-                                <div className="your-wills__info-message" data-title={tooltipText.NFTMessage}>
-                                    <img src={infoBtn}></img>
-                                </div>
-                            </div>
-                            <div className="your-wills__notifications" style={this.state.messageOn === true ? { display: 'block' } : { display: 'none' }}>
-                                <span>Сообщение хранится в зашифрованном виде и может быть прочитано получателем
-                                    только в момент получения завещания</span>
-                                <textarea placeholder="NFT message"></textarea>
-                            </div>
-                            <div className="will-date__row will-date__row--checkbox">
-                                <div className="will-date__row-input">
-                                    <input id="wills-set2" type="checkbox" onChange={this.changeDelivery} disabled={true} className="form-check form-check-input mt-0" />
-                                    <label htmlFor="wills-set2">Automatic token delivery (coming soon)</label><br />
-                                </div>
-                                <div className="your-wills__info-message" data-title={tooltipText.NFTMessage}>
-                                    <img src={infoBtn}></img>
-                                </div>
-                            </div>
-                            <div className="your-wills__notifications" style={this.state.deliveryOn === true ? { display: 'block' } : { display: 'none' }}>
-                                <span>После того как условие будет выполнено завещанные токены будут автоматически отправлены
-                                    на доверенный кошелек (10 USDT)</span>
-                            </div>
-                            <div className="will-date__row will-date__row--checkbox">
-                                <div className="will-date__row-input">
-                                    <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
-                                    <label htmlFor="wills-set3">Notifications</label><br />
-                                </div>
-                                <div className="your-wills__info-message" data-title={tooltipText.notifications}>
-                                    <img src={infoBtn}></img>
-                                </div>
-                            </div>
-                            <div className="your-wills__notifications" style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
-                                <span>Настройте оповещения в Telegram, Email или Google Calendar и dWill оповестит вас всех важных событиях
-                                    связанных с вашими завещаниями и завещаниям предназначенным для вас</span>
-                                <a href="https://t.me/thewill_bot" rel="noreferrer" className="your-wills__links">
-                                    <img src={btnTelegram}></img>
-                                    <img src={btnEmail}></img>
-                                    <span>Настроить оповещения в телеграм и на email</span>
-                                </a>
-                                <div className="your-wills__links">
-                                    <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider + '/address/' + this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer"><img src={btnCalendar}></img>Добавить событие в Google Calendar</a>
-                                </div>
-                            </div>
-                        </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <div>
-                            <ul className="your-wills__footer">
-                                <li>
-                                    <Button variant="primary" disabled={
-                                        (this.state.approved === true)
-                                        ||
-                                        (this.state.currentEditAmount === '0')
-                                        ||
-                                        (this.state.currentEditAmount === '')
-                                        ||
-                                        (this.state.isAddress === false)
-                                        ||
-                                        (this.state.currentEditHeirAddress === '')
-                                        ||
-                                        (this.state.year === '' || this.state.month === '' || this.state.day === '')
-                                        ||
-                                        (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
-                                        ||
-                                        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
-                                    } onClick={this.state.approved === false ? this.approve : null} style={
-                                        {
-                                            "background":
-                                                this.state.approved === true
-                                                    ||
-                                                    (this.state.currentEditAmount === '0')
-                                                    ||
-                                                    (this.state.currentEditAmount === '')
-                                                    ||
-                                                    (this.state.isAddress === false)
-                                                    ||
-                                                    (this.state.currentEditHeirAddress === '')
-                                                    ||
-                                                    (this.state.year === '' || this.state.month === '' || this.state.day === '')
-                                                    ||
-                                                    (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
-                                                    ||
-                                                    (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
-                                                    ? '#3E474F' : '#5ED5A8'
-                                        }
-                                    } >
-                                        Approve
-                                    </Button>
-                                    <div className="your-wills__info-message" data-title={tooltipText.approve}>
+                            <div className="your-wills__settings">
+                                <div className="will-date__row will-date__row--checkbox">
+                                    <div className="will-date__row-input">
+                                        <input id="wills-set1" type="checkbox" onChange={this.changeMessage} disabled={true} className="form-check form-check-input mt-0" />
+                                        <label htmlFor="wills-set1">Add NFT Message (coming soon)</label><br />
+                                    </div>
+                                    <div className="your-wills__info-message" data-title={tooltipText.NFTMessage}>
                                         <img src={infoBtn}></img>
                                     </div>
-                                </li>
-                                <li>
-                                    <Button variant="primary" disabled={
-                                        (this.state.approved === false)
-                                        ||
-                                        (this.state.currentEditAmount === '0')
-                                        ||
-                                        (this.state.currentEditAmount === '')
-                                        ||
-                                        (this.state.currentEditHeirAddress === '')
-                                        ||
-                                        (this.state.isAddress === false)
-                                        ||
-                                        (this.state.year === '' || this.state.month === '' || this.state.day === '')
-                                        ||
-                                        (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
-                                        ||
-                                        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
-                                    } onClick={this.state.approved === true ? this.edit : null} style={
-                                        {
-                                            "background":
-                                                (this.state.approved === false)
-                                                    ||
-                                                    (this.state.currentEditAmount === '0')
-                                                    ||
-                                                    (this.state.currentEditAmount === '')
-                                                    ||
-                                                    (this.state.isAddress === false)
-                                                    ||
-                                                    (this.state.currentEditHeirAddress === '')
-                                                    ||
-                                                    (this.state.year === '' || this.state.month === '' || this.state.day === '')
-                                                    ||
-                                                    (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
-                                                    ||
-                                                    (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
-                                                    ? '#3E474F' : '#5ED5A8'
-                                        }
-                                    } >
-                                        Edit
-                                    </Button>
-                                </li>
-                            </ul>
-                            <Button className="btn-close-modal" onClick={this.handleCloseEdit}>
-                                <img src={closePic} />
-                            </Button>
-                        </div>
-                    </Modal.Footer>
+                                </div>
+                                <div className="your-wills__notifications" style={this.state.messageOn === true ? { display: 'block' } : { display: 'none' }}>
+                                    <span>Сообщение хранится в зашифрованном виде и может быть прочитано получателем
+                                        только в момент получения завещания</span>
+                                    <textarea placeholder="NFT message"></textarea>
+                                </div>
+                                <div className="will-date__row will-date__row--checkbox">
+                                    <div className="will-date__row-input">
+                                        <input id="wills-set2" type="checkbox" onChange={this.changeDelivery} disabled={true} className="form-check form-check-input mt-0" />
+                                        <label htmlFor="wills-set2">Automatic token delivery (coming soon)</label><br />
+                                    </div>
+                                    <div className="your-wills__info-message" data-title={tooltipText.NFTMessage}>
+                                        <img src={infoBtn}></img>
+                                    </div>
+                                </div>
+                                <div className="your-wills__notifications" style={this.state.deliveryOn === true ? { display: 'block' } : { display: 'none' }}>
+                                    <span>После того как условие будет выполнено завещанные токены будут автоматически отправлены
+                                        на доверенный кошелек (10 USDT)</span>
+                                </div>
+                                <div className="will-date__row will-date__row--checkbox">
+                                    <div className="will-date__row-input">
+                                        <input id="wills-set3" type="checkbox" onChange={this.changeNotifications} disabled={false} className="form-check form-check-input mt-0" />
+                                        <label htmlFor="wills-set3">Notifications</label><br />
+                                    </div>
+                                    <div className="your-wills__info-message" data-title={tooltipText.notifications}>
+                                        <img src={infoBtn}></img>
+                                    </div>
+                                </div>
+                                <div className="your-wills__notifications" style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
+                                    <span>Настройте оповещения в Telegram, Email или Google Calendar и dWill оповестит вас всех важных событиях
+                                        связанных с вашими завещаниями и завещаниям предназначенным для вас</span>
+                                    <a href="https://t.me/thewill_bot" rel="noreferrer" className="your-wills__links">
+                                        <img src={btnTelegram}></img>
+                                        <img src={btnEmail}></img>
+                                        <span>Настроить оповещения в телеграм и на email</span>
+                                    </a>
+                                    <div className="your-wills__links">
+                                        <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider + '/address/' + this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer"><img src={btnCalendar}></img>Добавить событие в Google Calendar</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <div>
+                                <ul className="your-wills__footer">
+                                    <li>
+                                        <Button variant="primary" disabled={
+                                            (this.state.approved === true)
+                                            ||
+                                            (this.state.currentEditAmount === '0')
+                                            ||
+                                            (this.state.currentEditAmount === '')
+                                            ||
+                                            (this.state.isAddress === false)
+                                            ||
+                                            (this.state.currentEditHeirAddress === '')
+                                            ||
+                                            (this.state.year === '' || this.state.month === '' || this.state.day === '')
+                                            ||
+                                            (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
+                                            ||
+                                            (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                        } onClick={this.state.approved === false ? this.approve : null} style={
+                                            {
+                                                "background":
+                                                    this.state.approved === true
+                                                        ||
+                                                        (this.state.currentEditAmount === '0')
+                                                        ||
+                                                        (this.state.currentEditAmount === '')
+                                                        ||
+                                                        (this.state.isAddress === false)
+                                                        ||
+                                                        (this.state.currentEditHeirAddress === '')
+                                                        ||
+                                                        (this.state.year === '' || this.state.month === '' || this.state.day === '')
+                                                        ||
+                                                        (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
+                                                        ||
+                                                        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                                        ? '#3E474F' : '#5ED5A8'
+                                            }
+                                        } >
+                                            Approve
+                                        </Button>
+                                        <div className="your-wills__info-message" data-title={tooltipText.approve}>
+                                            <img src={infoBtn}></img>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <Button variant="primary" disabled={
+                                            (this.state.approved === false)
+                                            ||
+                                            (this.state.currentEditAmount === '0')
+                                            ||
+                                            (this.state.currentEditAmount === '')
+                                            ||
+                                            (this.state.currentEditHeirAddress === '')
+                                            ||
+                                            (this.state.isAddress === false)
+                                            ||
+                                            (this.state.year === '' || this.state.month === '' || this.state.day === '')
+                                            ||
+                                            (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
+                                            ||
+                                            (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                        } onClick={this.state.approved === true ? this.edit : null} style={
+                                            {
+                                                "background":
+                                                    (this.state.approved === false)
+                                                        ||
+                                                        (this.state.currentEditAmount === '0')
+                                                        ||
+                                                        (this.state.currentEditAmount === '')
+                                                        ||
+                                                        (this.state.isAddress === false)
+                                                        ||
+                                                        (this.state.currentEditHeirAddress === '')
+                                                        ||
+                                                        (this.state.year === '' || this.state.month === '' || this.state.day === '')
+                                                        ||
+                                                        (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
+                                                        ||
+                                                        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                                        ? '#3E474F' : '#5ED5A8'
+                                            }
+                                        } >
+                                            Edit
+                                        </Button>
+                                    </li>
+                                </ul>
+                                <Button className="btn-close-modal" onClick={this.handleCloseEdit}>
+                                    <img src={closePic} />
+                                </Button>
+                            </div>
+                        </Modal.Footer>
+                    </div>
                 </Modal>
                 <Modal show={this.state.showConfirm} className="modal-confirm">
                     <Modal.Header>

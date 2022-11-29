@@ -13,7 +13,7 @@ html {
 }
 
 body {
-  overflow: visible !important;
+  /* overflow: visible !important; */
 }
 
 /* @media (max-width: 767px) {
@@ -224,6 +224,7 @@ ul {
   left: 0;
   background-color: transparent;
   background: rgba(0, 0, 0, 0.4);
+  z-index: 10;
 }
 
 .will-block__wrapper {
@@ -240,7 +241,7 @@ ul {
   /* position: absolute; */
   position: fixed;
   left: 50%;
-  top: 170px;
+  /* top: 170px; */
   transform: translate(-50%, -50%);
   font-size: 18px;
   font-weight: 400;
@@ -248,7 +249,13 @@ ul {
   z-index: 10;
   background-color: #1B232A;
   box-shadow: 0px 4px 20px 2px rgba(0, 0, 0, 0.25);
+  height: auto;
+}
 
+@media (max-height: 1080px) {
+  .will-block__wrapper {
+    height: calc(100% - 100px);
+  }
 }
 
 @media (max-width: 767px) {
@@ -799,7 +806,7 @@ a {
   display: block;
 }
 
-.will-date__text > * {
+.will-date__text>* {
   display: inline-block;
 }
 
@@ -887,9 +894,9 @@ a {
   z-index: -1;
 }
 
-.form-check-input[disabled] + label {
+.form-check-input[disabled]+label {
   color: rgb(62, 71, 79);
-} 
+}
 
 .main-text {
   display: flex;
@@ -1036,6 +1043,7 @@ a {
   gap: 20px;
   position: relative;
   z-index: 10;
+  /* z-index: -1; */
   cursor: pointer;
   color: #5ED5A8;
 }
@@ -2444,7 +2452,7 @@ input::-webkit-inner-spin-button {
   font-size: 12px;
 }
 
-.your-wills_text-info__footer > * {
+.your-wills_text-info__footer>* {
   display: inline-block;
 }
 
@@ -2575,6 +2583,7 @@ input::-webkit-inner-spin-button {
   .your-wills__check-token {
     width: 100%;
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
   }
 
@@ -3204,6 +3213,17 @@ input::-webkit-inner-spin-button {
   .your-wills__info-message {
     margin-left: 10px;
   }
+}
+
+.your-wills__count {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.your-wills__count>* {
+  /* display: inline-block */
 }
 
 .your-wills__info-message:hover::after {

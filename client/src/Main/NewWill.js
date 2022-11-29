@@ -384,7 +384,7 @@ class NewWill extends Component {
             this.setState({
                 amount: isUnlimitedAmount === false ? UnlimitedAmount : '',
                 isUnlimitedAmount: isUnlimitedAmount === true ? false : true,
-                limitedText: isUnlimitedAmount === true ? 'limited by' : 'unlimited' 
+                limitedText: isUnlimitedAmount === true ? 'limited by' : 'unlimited'
             })
             const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
             const allowance = await _token.allowance(signerAddress, contractAddress)
@@ -663,29 +663,30 @@ class NewWill extends Component {
                                         }
                                             components={{ Option: IconOption }} />
                                     }
-                                    <br></br>
+                                    {/* <br></br> */}
                                     {
-                                        this.state.tokensValue === '' 
-                                        ?
-                                        null
-                                        :
-                                        <div>
-                                            <span>в количестве</span>
-                                            <div className="your-wills__checkbox">
-                                                <input disabled={this.disableAmountInput()} id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
-                                                <label htmlFor="unlimited">{this.state.limitedText}</label><br />
+                                        this.state.tokensValue === ''
+                                            ?
+                                            null
+                                            :
+                                            <div className="your-wills__count">
+                                                <span>в количестве</span>
+                                                <div className="your-wills__checkbox">
+                                                    <input disabled={this.disableAmountInput()} id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
+                                                    <label htmlFor="unlimited">{this.state.limitedText}</label><br />
+                                                </div>
+                                                <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
+                                                    <input disabled={this.disableAmountInput()} onChange={this.onChangeAmount} value={this.state.amount} min="0" placeholder="Введите сумму" type="number" className="input-group mb-3" />
+                                                    <Button variant="outline-success" disabled={this.disableAmountInput()} onClick={this.onSetMaxAmount}>
+                                                        All
+                                                    </Button>
+                                                </div>
+                                                <div className="your-wills__info-message" data-title={tooltipText.tokens}>
+                                                    <img src={infoBtn}></img>
+                                                </div>
                                             </div>
-                                            <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
-                                                <input disabled={this.disableAmountInput()} onChange={this.onChangeAmount} value={this.state.amount} min="0" placeholder="Введите сумму" type="number" className="input-group mb-3" />
-                                                <Button variant="outline-success" disabled={this.disableAmountInput()} onClick={this.onSetMaxAmount}>
-                                                    All
-                                                </Button>
-                                            </div>
-                                        </div>
                                     }
-                                    <div className="your-wills__info-message" data-title={tooltipText.tokens}>
-                                        <img src={infoBtn}></img>
-                                    </div>
+
                                 </div>
                             </div>
                             <div className='modal-body__row modal-body__row-direction'>с кошелька <a href={`${this.props.networkProvider}/address/${this.state.signerAddress}`} target="_blank" rel="noreferrer" className='modal_wallet_link'>{this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)}</a> на сети <i className="br"></i> {this.props.networkName}
@@ -701,7 +702,7 @@ class NewWill extends Component {
                                     </div>
                                 </div>
                                 <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" required="required" />
-                                <p style={{display: this.state.isAddress ? 'none' : 'block'}}>Неправильный формат адреса</p>
+                                <p style={{ display: this.state.isAddress ? 'none' : 'block' }}>Неправильный формат адреса</p>
                             </div>
                             <div className="modal-body__row">
 
