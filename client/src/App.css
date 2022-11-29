@@ -1154,6 +1154,10 @@ a {
   height: 100%; */
 }
 
+body.modal-open.small-modal {
+  overflow: visible !important;
+}
+
 .modal_title {
   display: flex;
   justify-content: center;
@@ -2614,7 +2618,7 @@ input::-webkit-inner-spin-button {
 .modal-loading.modal.show {
   position: fixed;
   width: 500px;
-  height: 100px;
+  min-height: 100px;
   top: 50px;
   right: 50px;
   left: auto;
