@@ -250,6 +250,7 @@ class Wills extends Component {
             const modalConfirmH2 = document.getElementsByClassName('modal-confirm_h2')
             const modalConfirmLoader = document.getElementsByClassName('ml-loader')
             body[0].addEventListener('click', (event) => {
+                const exist = document.getElementsByClassName('fade will-block modal show')
                 if (
                     this.state.showEdit
                     &&
@@ -271,6 +272,8 @@ class Wills extends Component {
                         event.target === blockThree[0]
                         ||
                         event.target === pageData[0]
+                        ||
+                        event.target === exist[0]
                     )
                 ) {
                     this.handleCloseEdit()
@@ -341,12 +344,17 @@ class Wills extends Component {
             let mo = Math.floor((seconds % 31536000) / 2628000);
             let d = Math.floor(((seconds % 31536000) % 2628000) / 86400);
             let h = Math.floor((seconds % (3600 * 24)) / 3600);
-
-            let yDisplay = y > 0 ? y + (y === 1 ? " year, " : " years, ") : " 0 years,";
-            let moDisplay = mo > 0 ? mo + (mo === 1 ? " month, " : " months, ") : " 0 months,";
-            let dDisplay = d > 0 ? d + (d === 1 ? " day, " : " days, ") : " 0 days, ";
-            let hDisplay = h > 0 ? h + (h === 1 ? " hour" : " hours") : " 0 hours";
-            return yDisplay + moDisplay + dDisplay + hDisplay;
+            const zeroYearText = " 0 years,"
+            const zeroMonthText = " 0 months,"
+            const zeroDayText = " 0 days, "
+            const zeroHourText = " 0 hours"
+            let yDisplay = y > 0 ? y + (y === 1 ? " year, " : " years, ") : zeroYearText ;
+            let moDisplay = mo > 0 ? mo + (mo === 1 ? " month, " : " months, ") : zeroMonthText ;
+            let dDisplay = d > 0 ? d + (d === 1 ? " day, " : " days, ") : zeroDayText ;
+            let hDisplay = h > 0 ? h + (h === 1 ? " hour " : " hours ") : zeroHourText ;
+            const toReturn = yDisplay + moDisplay + dDisplay + hDisplay + ' '
+            const toReturnZero = zeroYearText + zeroMonthText + zeroDayText + zeroHourText + ' '
+            return toReturn === toReturnZero ? ' less than an hour ' : toReturn;
         }
     }
 
@@ -529,6 +537,12 @@ class Wills extends Component {
                             this.handleCloseConfirm()
                             this.handleShowError()
                         }
+                    }
+                    if (error.message.includes('cannot estimate gas; transaction may fail or may require manual gas limit')) {
+                        this.setState({
+                            errortext: 'Something went wrong. Maybe you have already bequeathed all your tokens or you are trying to bequeath all tokens to one address when there is already some amount for another.'
+                        })
+                        this.handleShowError()
                     }
                     if (this.state.currentEditAmount === '0') {
                         this.setState({
@@ -829,6 +843,40 @@ class Wills extends Component {
         }
     };
 
+    checkIfNotChanged(checkApprove) {
+        const notChanged = 
+        (this.state.approved === checkApprove)
+        ||
+        (this.state.currentEditAmount === '0')
+        ||
+        (this.state.currentEditAmount === '')
+        ||
+        (this.state.isAddress === false)
+        ||
+        (this.state.currentEditHeirAddress === '')
+        ||
+        (this.state.year === '' || this.state.month === '' || this.state.day === '')
+        ||
+        (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
+        ||
+        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+        ||
+        (
+            this.state.currentEditAmount.toString() === this.state.currentEditBaseAmount.toString()
+            &&
+            this.state.currentEditHeirAddress.toString() === this.state.currentEditBaseHeirAddress.toString()
+            &&
+            this.state.year.toString() === this.state.baseYear.toString()
+            &&
+            this.state.month.toString() === this.state.baseMonth.toString()
+            &&
+            this.state.day.toString() === this.state.baseDay.toString()
+        )
+        return notChanged
+    }
+
+    checkIfNotChanged = this.checkIfNotChanged.bind(this)
+
     changeNotifications() {
         this.setState({
             notificationsOn: this.state.notificationsOn === true ? false : true
@@ -892,9 +940,17 @@ class Wills extends Component {
     handleShowEdit = this.handleShowEdit.bind(this)
 
     handleShowConfirm = () => this.setState({ showConfirm: true })
-    handleShowAwait = (processingText) => this.setState({ showConfirm: false, showAwait: true, processingText })
+    handleShowAwait = (processingText) => {
+        const body = document.getElementsByTagName('body')
+        body[0].classList.add('small-modal')
+        this.setState({ showConfirm: false, showAwait: true, processingText })
+    }
     handleCloseConfirm = () => this.setState({ showConfirm: false })
-    handleCloseAwait = () => this.setState({ showAwait: false })
+    handleCloseAwait = () => {
+        const body = document.getElementsByTagName('body')
+        body[0].classList.remove('small-modal')
+        this.setState({ showAwait: false })
+    }
     handleShowConfirm = this.handleShowConfirm.bind(this)
     handleShowAwait = this.handleShowAwait.bind(this)
     handleCloseConfirm = this.handleCloseConfirm.bind(this)
@@ -903,14 +959,30 @@ class Wills extends Component {
     timeConverter = this.timeConverter.bind(this)
     remainingTime = this.remainingTime.bind(this)
 
-    handleShowError = () => this.setState({ showError: true })
-    handleCloseError = () => this.setState({ showError: false })
+    handleShowError = () => {
+        const body = document.getElementsByTagName('body')
+        body[0].classList.add('small-modal')
+        this.setState({ showError: true })
+    }
+    handleCloseError = () => {
+        const body = document.getElementsByTagName('body')
+        body[0].classList.remove('small-modal')
+        this.setState({ showError: false })
+    }
 
     handleShowError = this.handleShowError.bind(this)
     handleCloseError = this.handleCloseError.bind(this)
 
-    handleShowEventConfirmed = (confirmedText, hash) => this.setState({ showEventConfirmed: true, confirmedText, hash })
-    handleCloseEventConfirmed = () => this.setState({ showEventConfirmed: false })
+    handleShowEventConfirmed = (confirmedText, hash) => {
+        const body = document.getElementsByTagName('body')
+        body[0].classList.add('small-modal')
+        this.setState({ showEventConfirmed: true, confirmedText, hash })
+    }
+    handleCloseEventConfirmed = () => {
+        const body = document.getElementsByTagName('body')
+        body[0].classList.remove('small-modal')
+        this.setState({ showEventConfirmed: false })
+    }
 
     handleShowEventConfirmed = this.handleShowEventConfirmed.bind(this)
     handleCloseEventConfirmed = this.handleCloseEventConfirmed.bind(this)
@@ -937,6 +1009,7 @@ class Wills extends Component {
 
                                                 {/* <span>id: {v.ID.toString()} </span> */}
                                                 <div className="page-data__block-container">
+                                                    <span className="wills-description-block__id">dWill #{v.ID.toString()} </span>
                                                     <div className='your-wills_text-info'>
                                                         <span>
                                                             You bequeathed {v.amount.toString() === ethers.constants.MaxUint256.toString() ? 'all' : (v.amount / Math.pow(10, v.decimals)).toString()} your <span className='your-wills_remain'>{v.symbol}</span> from <span className='your-wills_remain'>{this.props.networkName}</span> chain to wallet
@@ -945,14 +1018,23 @@ class Wills extends Component {
                                                             {` ${v.heir}`}
                                                         </a>
                                                         <span className="your-wills_text-info__footer">
-                                                            <p>
-                                                                Inheritance can be harvest if the period of inactivity is longer than <span> </span>
-                                                            </p>
-                                                            <p className='your-wills_date'>{this.timeBetweenWithdrawAndStartConverter(v.timeBetweenWithdrawAndStart)}</p>
-                                                            <span> </span>
-                                                            <p className='your-wills_remain'>
-                                                                {`(remain: ${this.remainingTime(v.timeWhenWithdraw.toString())})`}
-                                                            </p>
+                                                            {
+                                                                this.remainingTime(v.timeWhenWithdraw.toString()) === 'Nothing.'
+                                                                ?
+                                                                <p>
+                                                                    Inheritance can be harvest.
+                                                                </p>
+                                                                :
+                                                                <div>
+                                                                    <p>
+                                                                        Inheritance can be harvest if the period of inactivity is longer than
+                                                                    </p>
+                                                                    <span className='your-wills_date'>{this.timeBetweenWithdrawAndStartConverter(v.timeBetweenWithdrawAndStart)}</span>
+                                                                    <span className='your-wills_remain'>
+                                                                        {`(remain: ${this.remainingTime(v.timeWhenWithdraw.toString())})`}
+                                                                    </span>
+                                                                </div>
+                                                            }
                                                         </span>
                                                     </div>
                                                     <div className="your-wills__btns">
@@ -1125,39 +1207,11 @@ class Wills extends Component {
                                 <ul className="your-wills__footer">
                                     <li>
                                         <Button variant="primary" disabled={
-                                            (this.state.approved === true)
-                                            ||
-                                            (this.state.currentEditAmount === '0')
-                                            ||
-                                            (this.state.currentEditAmount === '')
-                                            ||
-                                            (this.state.isAddress === false)
-                                            ||
-                                            (this.state.currentEditHeirAddress === '')
-                                            ||
-                                            (this.state.year === '' || this.state.month === '' || this.state.day === '')
-                                            ||
-                                            (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
-                                            ||
-                                            (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                            this.checkIfNotChanged(true)
                                         } onClick={this.state.approved === false ? this.approve : null} style={
                                             {
                                                 "background":
-                                                    this.state.approved === true
-                                                        ||
-                                                        (this.state.currentEditAmount === '0')
-                                                        ||
-                                                        (this.state.currentEditAmount === '')
-                                                        ||
-                                                        (this.state.isAddress === false)
-                                                        ||
-                                                        (this.state.currentEditHeirAddress === '')
-                                                        ||
-                                                        (this.state.year === '' || this.state.month === '' || this.state.day === '')
-                                                        ||
-                                                        (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
-                                                        ||
-                                                        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                                        this.checkIfNotChanged(true)
                                                         ? '#3E474F' : '#5ED5A8'
                                             }
                                         } >
@@ -1169,39 +1223,11 @@ class Wills extends Component {
                                     </li>
                                     <li>
                                         <Button variant="primary" disabled={
-                                            (this.state.approved === false)
-                                            ||
-                                            (this.state.currentEditAmount === '0')
-                                            ||
-                                            (this.state.currentEditAmount === '')
-                                            ||
-                                            (this.state.currentEditHeirAddress === '')
-                                            ||
-                                            (this.state.isAddress === false)
-                                            ||
-                                            (this.state.year === '' || this.state.month === '' || this.state.day === '')
-                                            ||
-                                            (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
-                                            ||
-                                            (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                            this.checkIfNotChanged(false)
                                         } onClick={this.state.approved === true ? this.edit : null} style={
                                             {
                                                 "background":
-                                                    (this.state.approved === false)
-                                                        ||
-                                                        (this.state.currentEditAmount === '0')
-                                                        ||
-                                                        (this.state.currentEditAmount === '')
-                                                        ||
-                                                        (this.state.isAddress === false)
-                                                        ||
-                                                        (this.state.currentEditHeirAddress === '')
-                                                        ||
-                                                        (this.state.year === '' || this.state.month === '' || this.state.day === '')
-                                                        ||
-                                                        (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
-                                                        ||
-                                                        (isNaN(parseInt(this.state.year)) || isNaN(parseInt(this.state.month)) || isNaN(parseInt(this.state.day)))
+                                                        this.checkIfNotChanged(false)
                                                         ? '#3E474F' : '#5ED5A8'
                                             }
                                         } >

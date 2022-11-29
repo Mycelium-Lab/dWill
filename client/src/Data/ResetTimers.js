@@ -147,8 +147,16 @@ class ResetTimers extends Component {
     handleShowEventConfirmed = this.handleShowEventConfirmed.bind(this)
     handleCloseEventConfirmed = this.handleCloseEventConfirmed.bind(this)
 
-    handleShowError = (errortext) => this.setState({ showError: true, errortext })
-    handleCloseError = () => this.setState({ showError: false })
+    handleShowError = (errortext) => {
+        const body = document.getElementsByTagName('body')
+        body[0].classList.add('small-modal')
+        this.setState({ showError: true, errortext })
+    }
+    handleCloseError = () => {
+        const body = document.getElementsByTagName('body')
+        body[0].classList.remove('small-modal')
+        this.setState({ showError: false })
+    }
 
     handleShowError = this.handleShowError.bind(this)
     handleCloseError = this.handleCloseError.bind(this)
