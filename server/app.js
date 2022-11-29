@@ -12,7 +12,7 @@ import WillGoerli from './db/WillGoerli.js'
 import WillBinanceTest from './db/WillBinanceTest.js'
 import WillAbi from '../artifacts/contracts/dWill.sol/dWill.json' assert { type: "json" }
 import ERC20 from '../artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json' assert { type: "json" }
-import { contractAddresses, NetworkExplorers, UnlimitedAmount } from './utils/constants.js'
+import { contractAddresses, NetworkExplorers } from './utils/constants.js'
 import { addAmountToPool } from './service/addAmountToPool.js'
 
 const providerMumbai = new ethers.providers.JsonRpcProvider(process.env.MUMBAI_RPC)
@@ -120,7 +120,7 @@ async function addAnHeir(ID,owner,heir,token,timeWhenWithdraw,amount, network, e
         let cutOwnerAddress;
         let cutHeirAddress;
         if (user !== null || _owner !== null) {
-            heritageAmountInNormalView = amount.toString() === UnlimitedAmount ? 'Unlimited' : amount / Math.pow(10, _tokenDecimals)
+            heritageAmountInNormalView = amount.toString() === ethers.constants.MaxUint256.toString() ? 'Unlimited' : amount / Math.pow(10, _tokenDecimals)
             _remainingTime = remainingTime(timeWhenWithdraw)
             cutOwnerAddress = owner.slice(0, 6) + '...' + owner.slice(owner.length - 4, owner.length);
             cutHeirAddress = heir.slice(0, 6) + '...' + heir.slice(heir.length - 4, heir.length);
@@ -413,7 +413,7 @@ async function remainTimeCron(contract, network, explorer, Will, signer) {
                     const _token = new ethers.Contract(wills[j].token, ERC20.abi, signer)
                     const _tokenSymbol = await _token.symbol()
                     const _tokenDecimals = await _token.decimals()
-                    heritageAmountInNormalView = wills[j].amount.toString() === UnlimitedAmount ? 'Unlimited' : wills[j].amount / Math.pow(10, _tokenDecimals)
+                    const heritageAmountInNormalView = wills[j].amount.toString() === ethers.constants.MaxUint256.toString() ? 'Unlimited' : wills[j].amount / Math.pow(10, _tokenDecimals)
                     const cutHeirAddress = wills[j].heir.slice(0, 6) + '...' + wills[j].heir.slice(wills[j].heir.length - 4, wills[j].heir.length);
                     if (users[i].tgID.length > 0) {
                         if (remaining.includes('Nothing')) {

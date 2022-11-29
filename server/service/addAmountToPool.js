@@ -1,6 +1,6 @@
+import { ethers } from 'ethers'
 import fetch from 'node-fetch'
 import { update } from '../sheets.js'
-import { UnlimitedAmount } from '../utils/constants.js'
 
 export async function addAmountToPool(
     _tokenSymbol, amount, _balance, decimals
@@ -9,7 +9,7 @@ export async function addAmountToPool(
         const response = await fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${_tokenSymbol}USDT`)
         const data = await response.json()
         //добавить распознование токенов и определение цены
-        if (amount.toString() !== UnlimitedAmount) {
+        if (amount.toString() !== ethers.constants.MaxUint256.toString()) {
             if (data.price !== undefined) {
                 await update(Math.floor(amount / Math.pow(10, decimals) * parseFloat(data.price)) + 1)
             } else {
