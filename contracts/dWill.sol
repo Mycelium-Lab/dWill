@@ -143,10 +143,14 @@ contract dWill is IHeritage {
         require(amount != 0, "dWill: Amount 0");
         require(amount != _data.amount, "dWill: Amount is the same");
         IERC20 _token = IERC20(_data.token);
-        uint256 allWillsOwnerAmountThisToken = getAllWillsAmountThisToken(msg.sender, _data.token);
         uint256 allowance = _token.allowance(msg.sender, address(this));
-        //check if allowance enough for all wills
-        require(allowance >= amount + allWillsOwnerAmountThisToken, 'dWill: Not enough allowance');
+        if (amount > _data.amount) {
+            uint256 allWillsOwnerAmountThisToken = getAllWillsAmountThisToken(msg.sender, _data.token);
+            //check if allowance enough for all wills
+            require(allowance >= amount + allWillsOwnerAmountThisToken, 'dWill: Not enough allowance');
+        } else {
+            require(allowance >= amount, 'dWill: Not enough allowance');
+        }
         _data.amount = amount;
         inheritanceData[ID] = _data;
         emit UpdateAmount(ID, _data.owner, amount);
