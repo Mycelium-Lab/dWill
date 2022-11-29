@@ -117,16 +117,32 @@ class ResetTimers extends Component {
     handleShow = this.handleShow.bind(this)
 
     handleShowConfirm = () => this.setState({ showConfirm: true })
-    handleShowAwait = (processingText) => this.setState({ showConfirm: false, showAwait: true, processingText })
+    handleShowAwait = (processingText) => {
+        const body = document.getElementsByTagName('body')
+        body[0].classList.add('small-modal')
+        this.setState({ showConfirm: false, showAwait: true, processingText })
+    }
     handleCloseConfirm = () => this.setState({ showConfirm: false })
-    handleCloseAwait = () => this.setState({ showAwait: false })
+    handleCloseAwait = () => {
+        const body = document.getElementsByTagName('body')
+        body[0].classList.remove('small-modal')
+        this.setState({ showAwait: false })
+    }
     handleShowConfirm = this.handleShowConfirm.bind(this)
     handleShowAwait = this.handleShowAwait.bind(this)
     handleCloseConfirm = this.handleCloseConfirm.bind(this)
     handleCloseAwait = this.handleCloseAwait.bind(this)
 
-    handleShowEventConfirmed = (confirmedText, hash) => this.setState({ showEventConfirmed: true, confirmedText, hash })
-    handleCloseEventConfirmed = () => this.setState({ showEventConfirmed: false })
+    handleShowEventConfirmed = (confirmedText, hash) => {
+        const body = document.getElementsByTagName('body')
+        body[0].classList.add('small-modal')
+        this.setState({ showEventConfirmed: true, confirmedText, hash })
+    }
+    handleCloseEventConfirmed = () => {
+        const body = document.getElementsByTagName('body')
+        body[0].classList.remove('small-modal')
+        this.setState({ showEventConfirmed: false })
+    }
 
     handleShowEventConfirmed = this.handleShowEventConfirmed.bind(this)
     handleCloseEventConfirmed = this.handleCloseEventConfirmed.bind(this)

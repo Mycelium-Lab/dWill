@@ -432,14 +432,14 @@ class Wills extends Component {
                 _updatedTime = Math.floor(whenCreated.getTime() / 1000)
             }
             if (updateAmount === true && isUnlimitedAmount) {
-                currentEditAmount = UnlimitedAmount
+                currentEditAmount = ethers.constants.MaxUint256.toString()
             }
             if (updateHeir === true && updateAmount === true && (year !== baseYear || month !== baseMonth || day !== baseDay)) {
                 promise = contract.update(
                     currentEditID,
                     _updatedTime,
                     currentEditHeirAddress,
-                    currentEditAmount === UnlimitedAmount ? currentEditAmount : (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString(),
+                    currentEditAmount === ethers.constants.MaxUint256.toString() ? currentEditAmount : (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString(),
                     true, //update time
                     true, //update heir
                     true  //update amount
@@ -450,7 +450,7 @@ class Wills extends Component {
                     currentEditID,
                     _updatedTime,
                     currentEditHeirAddress,
-                    currentEditAmount === UnlimitedAmount ? currentEditAmount : (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString(),
+                    currentEditAmount === ethers.constants.MaxUint256.toString() ? currentEditAmount : (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString(),
                     false,
                     true,
                     true
@@ -461,7 +461,7 @@ class Wills extends Component {
                     currentEditID,
                     _updatedTime,
                     currentEditHeirAddress,
-                    currentEditAmount === UnlimitedAmount ? currentEditAmount : (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString(),
+                    currentEditAmount === ethers.constants.MaxUint256.toString() ? currentEditAmount : (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString(),
                     true, //update time
                     true, //update heir
                     false  //update amount
@@ -478,7 +478,7 @@ class Wills extends Component {
                     currentEditID,
                     _updatedTime,
                     currentEditHeirAddress,
-                    currentEditAmount === UnlimitedAmount ? currentEditAmount : (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString(),
+                    currentEditAmount === ethers.constants.MaxUint256.toString() ? currentEditAmount : (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString(),
                     true, //update time
                     false, //update heir
                     true  //update amount
@@ -487,7 +487,7 @@ class Wills extends Component {
             if (updateHeir === false && updateAmount === true && year === baseYear && month === baseMonth && day === baseDay) {
                 promise = contract.updateAmount(
                     currentEditID,
-                    currentEditAmount === UnlimitedAmount ? currentEditAmount : (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString()
+                    currentEditAmount === ethers.constants.MaxUint256.toString() ? currentEditAmount : (BigInt(currentEditAmount * Math.pow(10, currentEditDecimals))).toString()
                 )
             }
             if (updateHeir === false && updateAmount === false && (year !== baseYear || month !== baseMonth || day !== baseDay)) {
@@ -607,17 +607,8 @@ class Wills extends Component {
     async approve() {
         const { contractAddress, signer, currentEditToken, currentEditBaseAmount, currentEditSymbol, isUnlimitedAmount, currentEditAmount } = this.state
         const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
-        const amountToApprove = isUnlimitedAmount === true ? currentEditAmount : (
-            BigInt(
-                (
-                    parseFloat(currentEditAmount) - parseFloat(currentEditBaseAmount)
-                )
-                *
-                Math.pow(10, await _token.decimals())
-            )
-        ).toString()
         this.handleShowConfirm()
-        await _token.increaseAllowance(contractAddress, amountToApprove)
+        await _token.approve(contractAddress, ethers.constants.MaxUint256)
             .then(async (tx) => {
                 this.handleShowAwait(`Approve ${currentEditSymbol}`)
                 await tx.wait()
@@ -698,15 +689,21 @@ class Wills extends Component {
                 const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
                 const allowance = (await _token.allowance(signerAddress, contractAddress)).toString()
                 const allWillsAmountThisToken = await contract.getAllWillsAmountThisToken(signerAddress, _token.address)
-                this.changeApproved(
-                    BigInt(allowance),
-                    BigInt(
-                        (parseFloat(event.target.value) - parseFloat(currentEditBaseAmount))
-                        *
-                        Math.pow(10, await _token.decimals())
-                    ) + BigInt(allWillsAmountThisToken),
-                    currentEditDecimals
-                )
+                if (allowance.toString() === ethers.constants.MaxUint256.toString()) {
+                    this.setState({
+                        approved: true
+                    })
+                } else {
+                    this.changeApproved(
+                        BigInt(allowance),
+                        BigInt(
+                            (parseFloat(event.target.value) - parseFloat(currentEditBaseAmount))
+                            *
+                            Math.pow(10, await _token.decimals())
+                        ) + BigInt(allWillsAmountThisToken),
+                        currentEditDecimals
+                    )
+                }
             }
             if (parseFloat(currentEditBaseAmount) > parseFloat(event.target.value)) {
                 parseFloat(event.target.value) >= 0
@@ -770,7 +767,13 @@ class Wills extends Component {
                 this.setState({
                     currentEditAmount: Math.floor((balance / Math.pow(10, await _token.decimals()))).toString()
                 }, () => {
-                    this.changeApproved(BigInt(allowance), BigInt(allWillsAmountThisToken) + BigInt(balance))
+                    if (allowance.toString() === ethers.constants.MaxUint256.toString()) {
+                        this.setState({
+                            approved: true
+                        })
+                    } else {
+                        this.changeApproved(BigInt(allowance), BigInt(allWillsAmountThisToken) + BigInt(balance))
+                    }
                 })
             })
     }
@@ -806,10 +809,10 @@ class Wills extends Component {
                 currentEditTimeBetweenWithdrawAndStart: data.timeBetweenWithdrawAndStart,
                 currentEditToken: data.token,
                 currentEditSymbol: data.symbol,
-                isUnlimitedAmount: data.amount === UnlimitedAmount,
-                isUnlimitedAmountBase: data.amount === UnlimitedAmount,
-                currentEditAmount: data.amount === UnlimitedAmount ? 0 : data.amount / Math.pow(10, data.decimals),
-                currentEditBaseAmount: data.amount === UnlimitedAmount ? 0 : data.amount / Math.pow(10, data.decimals),
+                isUnlimitedAmount: data.amount === ethers.constants.MaxUint256.toString(),
+                isUnlimitedAmountBase: data.amount === ethers.constants.MaxUint256.toString(),
+                currentEditAmount: data.amount === ethers.constants.MaxUint256.toString() ? 0 : data.amount / Math.pow(10, data.decimals),
+                currentEditBaseAmount: data.amount === ethers.constants.MaxUint256.toString() ? 0 : data.amount / Math.pow(10, data.decimals),
                 currentEditDecimals: data.decimals,
                 baseYear: base_y,
                 baseMonth: base_mo,
@@ -852,14 +855,20 @@ class Wills extends Component {
             //max amount uint256
             isUnlimitedAmount = isUnlimitedAmount === true ? false : true
             this.setState({
-                currentEditAmount: isUnlimitedAmount === true ? UnlimitedAmount : '',
+                currentEditAmount: isUnlimitedAmount === true ? ethers.constants.MaxUint256.toString() : '',
                 isUnlimitedAmount,
                 updateAmount: isUnlimitedAmount !== isUnlimitedAmountBase
             }, async () => {
                 const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
                 const allowance = await _token.allowance(signerAddress, contractAddress)
                 const allWillsAmountThisToken = await contract.getAllWillsAmountThisToken(signerAddress, _token.address)
-                this.changeApproved(BigInt(allowance), BigInt(allWillsAmountThisToken) + BigInt(this.state.currentEditAmount))
+                if (allowance.toString() === ethers.constants.MaxUint256.toString()) {
+                    this.setState({
+                        approved: true
+                    })
+                } else {
+                    this.changeApproved(BigInt(allowance), BigInt(allWillsAmountThisToken) + BigInt(this.state.currentEditAmount))
+                }
             })
         } catch (error) {
             console.error(error)
@@ -930,7 +939,7 @@ class Wills extends Component {
                                                 <div className="page-data__block-container">
                                                     <div className='your-wills_text-info'>
                                                         <span>
-                                                            You bequeathed {v.amount.toString() === UnlimitedAmount ? 'all' : (v.amount / Math.pow(10, v.decimals)).toString()} your <span className='your-wills_remain'>{v.symbol}</span> from <span className='your-wills_remain'>{this.props.networkName}</span> chain to wallet
+                                                            You bequeathed {v.amount.toString() === ethers.constants.MaxUint256.toString() ? 'all' : (v.amount / Math.pow(10, v.decimals)).toString()} your <span className='your-wills_remain'>{v.symbol}</span> from <span className='your-wills_remain'>{this.props.networkName}</span> chain to wallet
                                                         </span>
                                                         <a href={`${this.props.networkProvider}/address/${v.heir}`} target="_blank" rel="noreferrer">
                                                             {` ${v.heir}`}

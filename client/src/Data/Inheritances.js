@@ -314,7 +314,7 @@ class Inheritances extends Component {
                                                                             <span>you </span>
                                                                         </span>
                                                                 }
-                                                                can harvest {v.amount.toString() === UnlimitedAmount ? <span className="wills-description-block__symbol">all</span> : (v.amount / Math.pow(10, v.decimals)).toString()} <span className="wills-description-block__symbol">{v.symbol}</span> from wallet
+                                                                can harvest {v.amount.toString() === ethers.constants.MaxUint256.toString() ? <span className="wills-description-block__symbol">all</span> : (v.amount / Math.pow(10, v.decimals)).toString()} <span className="wills-description-block__symbol">{v.symbol}</span> from wallet
                                                             </span>
                                                             <a href={`${this.props.networkProvider}/address/${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`}</a> on <span className="wills-description-block__symbol">{this.state.network}</span> chain
                                                         </div>
