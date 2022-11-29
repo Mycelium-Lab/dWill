@@ -8,13 +8,13 @@ const hre = require("hardhat");
 
 async function main() {
   const dWill = await hre.ethers.getContractFactory("dWill");
-  const Token = await hre.ethers.getContractFactory("TokenForTests");
+  // const Token = await hre.ethers.getContractFactory("TokenForTests");
   const _dWill = await dWill.deploy()
-  const tokenForTests = await Token.deploy("TokenForTests", "TFT")
+  // const tokenForTests = await Token.deploy("TokenForTests", "TFT")
   await _dWill.deployed()
-  await tokenForTests.deployed()
+  // await tokenForTests.deployed()
   console.log(`dWill: ${_dWill.address}`)
-  console.log(`Token: ${tokenForTests.address}`)
+  // console.log(`Token: ${tokenForTests.address}`)
 }
 
 // We recommend this pattern to be able to use async/await everywhere

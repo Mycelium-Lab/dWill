@@ -100,7 +100,6 @@ contract dWill is IHeritage {
     function updateWillTimeWhenWithdraw(uint256 ID, uint256 newTime) public {
         InheritanceData memory _data = inheritanceData[ID];
         require(_data.owner == msg.sender, "dWill: You not owner");
-        require(block.timestamp <= _data.timeWhenWithdraw, "dWill: Time is over yet");
         require(newTime > block.timestamp, "dWill: Time when withdraw is lower then now");
         require(_data.done == false, "dWill: Already withdrawn");
         //get time when created
@@ -120,7 +119,6 @@ contract dWill is IHeritage {
         require(_data.owner == msg.sender, "dWill: You not owner");
         require(_data.heir != _heir, "dWill: Same heir");
         require(_data.heir != address(0), "dWill: Heir is address(0)");
-        require(block.timestamp <= _data.timeWhenWithdraw, "dWill: Time is over yet");
         require(_data.done == false, "dWill: Already withdrawn");
         uint256[] memory _inheritancesHeir = inheritancesHeir[_data.heir];
         for (uint256 i; i < _inheritancesHeir.length; i++) {
@@ -141,7 +139,6 @@ contract dWill is IHeritage {
     function updateAmount(uint256 ID, uint256 amount) public {
         InheritanceData memory _data = inheritanceData[ID];
         require(_data.owner == msg.sender, "dWill: You not owner");
-        require(block.timestamp <= _data.timeWhenWithdraw, "dWill: Time is over yet");
         require(_data.done == false, "dWill: Already withdrawn");
         require(amount != 0, "dWill: Amount 0");
         require(amount != _data.amount, "dWill: Amount is the same");

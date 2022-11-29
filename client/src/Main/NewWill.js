@@ -92,7 +92,8 @@ class NewWill extends Component {
             processingText: '',
             confirmedText: '',
             hash: '',
-            limitedText: 'unlimited'
+            limitedText: 'unlimited',
+            isAddress: false
         };
     }
 
@@ -383,7 +384,7 @@ class NewWill extends Component {
             this.setState({
                 amount: isUnlimitedAmount === false ? UnlimitedAmount : '',
                 isUnlimitedAmount: isUnlimitedAmount === true ? false : true,
-                limitedText: this.state.limitedText === 'unlimited' ? 'limited by' : 'unlimited'
+                limitedText: isUnlimitedAmount === true ? 'limited by' : 'unlimited' 
             })
             const _token = new ethers.Contract(tokensValue, ERC20.abi, signer)
             const allowance = await _token.allowance(signerAddress, contractAddress)
@@ -506,8 +507,10 @@ class NewWill extends Component {
 
     onChangeHeirAddress(event) {
         this.setState({
-            heirAddress: event.target.value
+            heirAddress: event.target.value,
+            isAddress: ethers.utils.isAddress(event.target.value)
         }, () => {
+            console.log(this.state.isAddress)
             this.setState({
                 heirAddressShort: this.state.heirAddress.slice(0, 6) + '...' + this.state.heirAddress.slice(this.state.heirAddress.length - 4, this.state.heirAddress.length)
             })
@@ -661,17 +664,25 @@ class NewWill extends Component {
                                             components={{ Option: IconOption }} />
                                     }
                                     <br></br>
-                                    <span>в количестве</span>
-                                    <div className="your-wills__checkbox">
-                                        <input disabled={this.disableAmountInput()} id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
-                                        <label htmlFor="unlimited">{this.state.limitedText}</label><br />
-                                    </div>
-                                    <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
-                                        <input disabled={this.disableAmountInput()} onChange={this.onChangeAmount} value={this.state.amount} min="0" placeholder="Введите сумму" type="number" className="input-group mb-3" />
-                                        <Button variant="outline-success" disabled={this.disableAmountInput()} onClick={this.onSetMaxAmount}>
-                                            All
-                                        </Button>
-                                    </div>
+                                    {
+                                        this.state.tokensValue === '' 
+                                        ?
+                                        null
+                                        :
+                                        <div>
+                                            <span>в количестве</span>
+                                            <div className="your-wills__checkbox">
+                                                <input disabled={this.disableAmountInput()} id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
+                                                <label htmlFor="unlimited">{this.state.limitedText}</label><br />
+                                            </div>
+                                            <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
+                                                <input disabled={this.disableAmountInput()} onChange={this.onChangeAmount} value={this.state.amount} min="0" placeholder="Введите сумму" type="number" className="input-group mb-3" />
+                                                <Button variant="outline-success" disabled={this.disableAmountInput()} onClick={this.onSetMaxAmount}>
+                                                    All
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    }
                                     <div className="your-wills__info-message" data-title={tooltipText.tokens}>
                                         <img src={infoBtn}></img>
                                     </div>
@@ -690,7 +701,7 @@ class NewWill extends Component {
                                     </div>
                                 </div>
                                 <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" required="required" />
-                                <p>Поле обязательно для заполнения*</p>
+                                <p style={{display: this.state.isAddress ? 'none' : 'block'}}>Неправильный формат адреса</p>
                             </div>
                             <div className="modal-body__row">
 
@@ -774,6 +785,8 @@ class NewWill extends Component {
                                         <Button variant="primary" disabled={
                                             (this.state.approved === true)
                                             ||
+                                            (this.state.isAddress === false)
+                                            ||
                                             (this.state.amount === '0')
                                             ||
                                             (this.state.amount === '')
@@ -796,6 +809,8 @@ class NewWill extends Component {
                                                 ||
                                                 (this.state.heirAddress !== '')
                                                 ||
+                                                (this.state.isAddress === true)
+                                                ||
                                                 (this.state.tokensValue === '')
                                                 ||
                                                 (this.state.year !== '' || this.state.month !== '' || this.state.day !== '')
@@ -815,6 +830,8 @@ class NewWill extends Component {
                                                                 (this.state.tokensValue === '')
                                                                 ||
                                                                 (this.state.heirAddress === '')
+                                                                ||
+                                                                (this.state.isAddress === false)
                                                                 ||
                                                                 (this.state.year === '' || this.state.month === '' || this.state.day === '')
                                                                 ||
@@ -840,6 +857,8 @@ class NewWill extends Component {
                                             ||
                                             (this.state.heirAddress === '')
                                             ||
+                                            (this.state.isAddress === false)
+                                            ||
                                             (this.state.tokensValue === '')
                                             ||
                                             (this.state.year === '' || this.state.month === '' || this.state.day === '')
@@ -856,6 +875,8 @@ class NewWill extends Component {
                                                 ||
                                                 (this.state.heirAddress === '')
                                                 ||
+                                                (this.state.isAddress === false)
+                                                ||
                                                 (this.state.tokensValue === '')
                                                 ||
                                                 (this.state.year === '' || this.state.month === '' || this.state.day === '')
@@ -871,6 +892,8 @@ class NewWill extends Component {
                                                                 (this.state.amount === '0')
                                                                 ||
                                                                 (this.state.amount === '')
+                                                                ||
+                                                                (this.state.isAddress === false)
                                                                 ||
                                                                 (this.state.heirAddress === '')
                                                                 ||

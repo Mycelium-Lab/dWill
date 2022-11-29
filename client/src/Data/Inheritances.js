@@ -120,17 +120,23 @@ class Inheritances extends Component {
                     this.setState({ inheritances: __inheritances })
                 }
             })
-            contract.on('UpdateWillTimeWhenWithdraw', (ID, owner, heir, newTime) => {
-                if (heir.toLowerCase() === signerAddress.toLowerCase()) {
-                    let __inheritances = this.state.inheritances
-                    for (let i = 0; i < __inheritances.length; i++) {
-                        if (__inheritances[i].ID === ID.toString()) {
-                            __inheritances[i].timeWhenWithdraw = newTime.toString()
+            contract.on('UpdateWillTimeWhenWithdraw', async (ID, owner, heir, newTime) => {
+                try {
+                    if (heir.toLowerCase() === signerAddress.toLowerCase()) {
+                        let __inheritances = this.state.inheritances
+                        for (let i = 0; i < __inheritances.length; i++) {
+                            if (__inheritances[i].ID === ID.toString()) {
+                                const __will = await contract.inheritanceData(ID.toString())
+                                __inheritances[i].timeWhenWithdraw = newTime.toString()
+                                __inheritances[i].timeBetweenWithdrawAndStart = __will.timeBetweenWithdrawAndStart
+                            }
                         }
+                        this.setState({
+                            inheritances: __inheritances
+                        })
                     }
-                    this.setState({
-                        inheritances: __inheritances
-                    })
+                } catch (error) {
+                    console.log(error)
                 }
             })
             contract.on('UpdateAnHeir', async (ID, owner, heir) => {
@@ -278,7 +284,7 @@ class Inheritances extends Component {
             <div className='your_inheritances wills-description-block'>
                 <div className="your_inheritances_ul-text__head">
                     <h3 className='your_inheritances-h3'>Your inheritances</h3>
-                    <div class="your-wills__info-message" data-title={tooltipText.inheritances}>
+                    <div className="your-wills__info-message" data-title={tooltipText.inheritances}>
                     <img src={infoBtn}></img>
                 </div>
                 </div>
@@ -302,9 +308,13 @@ class Inheritances extends Component {
                                                                         ?
                                                                         'You '
                                                                         :
-                                                                        `After ${this.remainingTime(v.timeWhenWithdraw)} you `
+                                                                        <span>
+                                                                            <span>After </span>
+                                                                            <span className='your-wills_remain'>{this.remainingTime(v.timeWhenWithdraw)}</span>
+                                                                            <span>you </span>
+                                                                        </span>
                                                                 }
-                                                                can harvest up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited' : (v.amount / Math.pow(10, v.decimals)).toString()} <span className="wills-description-block__symbol">{v.symbol}</span> from wallet
+                                                                can harvest {v.amount.toString() === UnlimitedAmount ? <span className="wills-description-block__symbol">all</span> : (v.amount / Math.pow(10, v.decimals)).toString()} <span className="wills-description-block__symbol">{v.symbol}</span> from wallet
                                                             </span>
                                                             <a href={`${this.props.networkProvider}/address/${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`}</a> on <span className="wills-description-block__symbol">{this.state.network}</span> chain
                                                         </div>
