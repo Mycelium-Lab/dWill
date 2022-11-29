@@ -79,7 +79,8 @@ class Wills extends Component {
             processingText: '',
             confirmedText: '',
             googleCalendarDateText: '',
-            hash: ''
+            hash: '',
+            isAddress: true
         };
     }
 
@@ -173,17 +174,23 @@ class Wills extends Component {
                     this.setState({ wills: __wills })
                 }
             })
-            contract.on('UpdateWillTimeWhenWithdraw', (ID, owner, heir, newTime) => {
-                if (owner.toLowerCase() === signerAddress.toLowerCase()) {
-                    let __wills = this.state.wills
-                    for (let i = 0; i < __wills.length; i++) {
-                        if (__wills[i].ID === ID.toString()) {
-                            __wills[i].timeWhenWithdraw = newTime.toString()
+            contract.on('UpdateWillTimeWhenWithdraw', async (ID, owner, heir, newTime) => {
+                try {
+                    if (owner.toLowerCase() === signerAddress.toLowerCase()) {
+                        let __wills = this.state.wills
+                        for (let i = 0; i < __wills.length; i++) {
+                            if (__wills[i].ID === ID.toString()) {
+                                const __will = await contract.inheritanceData(ID.toString())
+                                __wills[i].timeWhenWithdraw = newTime.toString()
+                                __wills[i].timeBetweenWithdrawAndStart = __will.timeBetweenWithdrawAndStart
+                            }
                         }
+                        this.setState({
+                            wills: __wills
+                        })
                     }
-                    this.setState({
-                        wills: __wills
-                    })
+                } catch (error) {
+                    console.log(error)
                 }
             })
             contract.on('UpdateAnHeir', (ID, owner, heir) => {
@@ -667,7 +674,8 @@ class Wills extends Component {
         }
         this.setState({
             currentEditHeirAddress: event.target.value,
-            updateHeir
+            updateHeir,
+            isAddress: ethers.utils.isAddress(event.target.value)
         })
     }
 
@@ -904,7 +912,7 @@ class Wills extends Component {
             <div className='wills_list-my-wills wills-description-block'>
             <div className="your_inheritances_ul-text__head">
                 <h3 className='wills_list_h3'>Your dWills</h3>
-                <div class="your-wills__info-message" data-title={tooltipText.wills}>
+                <div className="your-wills__info-message" data-title={tooltipText.wills}>
                     <img src={infoBtn}></img>
                 </div>
             </div>
@@ -922,19 +930,19 @@ class Wills extends Component {
                                                 <div className="page-data__block-container">
                                                     <div className='your-wills_text-info'>
                                                         <span>
-                                                            You bequeathed up to {v.amount.toString() === UnlimitedAmount ? 'Unlimited' : (v.amount / Math.pow(10, v.decimals)).toString()} of your {v.symbol} from {this.state.network} chain to wallet
+                                                            You bequeathed {v.amount.toString() === UnlimitedAmount ? 'all' : (v.amount / Math.pow(10, v.decimals)).toString()} your <span className='your-wills_remain'>{v.symbol}</span> from <span className='your-wills_remain'>{this.props.networkName}</span> chain to wallet
                                                         </span>
                                                         <a href={`${this.props.networkProvider}/address/${v.heir}`} target="_blank" rel="noreferrer">
                                                             {` ${v.heir}`}
                                                         </a>
                                                         <span className="your-wills_text-info__footer">
                                                             <p>
-                                                                Inheritance can be harvest if the period of inactivity is longer than
+                                                                Inheritance can be harvest if the period of inactivity is longer than <span> </span>
                                                             </p>
                                                             <p className='your-wills_date'>{this.timeBetweenWithdrawAndStartConverter(v.timeBetweenWithdrawAndStart)}</p>
-
+                                                            <span> </span>
                                                             <p className='your-wills_remain'>
-                                                                (remain: {this.remainingTime(v.timeWhenWithdraw.toString())})
+                                                                {`(remain: ${this.remainingTime(v.timeWhenWithdraw.toString())})`}
                                                             </p>
                                                         </span>
                                                     </div>
@@ -1021,6 +1029,7 @@ class Wills extends Component {
                                 </div>
                             </div>
                             <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" />
+                            <p style={{display: this.state.isAddress ? 'none' : 'block'}}>Неправильный формат адреса</p>
                         </div>
                         <div className="modal-body__row">
                             <div className="will-date__text">
@@ -1111,6 +1120,8 @@ class Wills extends Component {
                                         ||
                                         (this.state.currentEditAmount === '')
                                         ||
+                                        (this.state.isAddress === false)
+                                        ||
                                         (this.state.currentEditHeirAddress === '')
                                         ||
                                         (this.state.year === '' || this.state.month === '' || this.state.day === '')
@@ -1126,6 +1137,8 @@ class Wills extends Component {
                                                     (this.state.currentEditAmount === '0')
                                                     ||
                                                     (this.state.currentEditAmount === '')
+                                                    ||
+                                                    (this.state.isAddress === false)
                                                     ||
                                                     (this.state.currentEditHeirAddress === '')
                                                     ||
@@ -1153,6 +1166,8 @@ class Wills extends Component {
                                         ||
                                         (this.state.currentEditHeirAddress === '')
                                         ||
+                                        (this.state.isAddress === false)
+                                        ||
                                         (this.state.year === '' || this.state.month === '' || this.state.day === '')
                                         ||
                                         (this.state.year === 0 && this.state.month === 0 && this.state.day === 0)
@@ -1166,6 +1181,8 @@ class Wills extends Component {
                                                     (this.state.currentEditAmount === '0')
                                                     ||
                                                     (this.state.currentEditAmount === '')
+                                                    ||
+                                                    (this.state.isAddress === false)
                                                     ||
                                                     (this.state.currentEditHeirAddress === '')
                                                     ||

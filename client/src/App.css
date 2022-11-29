@@ -2485,7 +2485,6 @@ input::-webkit-inner-spin-button {
 }
 
 .your-wills__wallet input+p {
-  display: none;
   transition: all 0.3s ease;
   font-size: 10px;
   font-weight: 400;
@@ -2494,7 +2493,6 @@ input::-webkit-inner-spin-button {
 }
 
 .your-wills__wallet input+p.active {
-  display: block;
   transition: all 0.3s ease;
 }
 

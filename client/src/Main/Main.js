@@ -43,9 +43,9 @@ class Main extends Component {
 </p>
                 <p className="block-three">
                 {
-                    (this.props.willsLength === 0) && (this.state.signer !== null) 
+                    (this.props.willsLength === 0) && (this.props.signer !== null) 
                     ? 
-                    'У вас еще нет активных завещаний.'
+                    `У вас еще нет активных завещаний на сети ${this.props.networkName}.`
                     : 
                     'Чтобы создать свое первое завещание или управлять созданными подключите свой кошелек Ethereum'
                 }
@@ -75,7 +75,10 @@ class Main extends Component {
                     />
                 }
                 {
-                    this.props.inheritancesLength === 0 ? '' : <Inheritances 
+                    (this.props.inheritancesLength === 0 || this.props.signer === null) 
+                    ? 
+                    '' 
+                    : <Inheritances 
                         contractAddress={this.props.contractAddress} 
                         network={this.props.network} 
                         signer={this.props.signer} 
