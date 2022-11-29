@@ -9,10 +9,10 @@ const hre = require("hardhat");
 async function main() {
     const signer = await hre.ethers.getSigner()
     const Will = await hre.ethers.getContractFactory("dWill");
-    const will = Will.attach("0x495dDEa3BC165114D6855C1B09113B9BF053b793")
+    const will = Will.attach("0x6c3a175f8efd553C2694E179499bD643F4C5A63d")
     await will.addNewWill(
-        '0x10908891384Fa8e889816B2cD709257C9b1D2A0f',
-        '0x913DC5872e5C902a2ee4e85C1f89Be3DAe0f5FbC',
+        '0xA841a2a238Fa48D1C409D95E64c3F08d8Dd5DdA7',
+        '0x40415ea781dD3970A4f3703a6011383b7B8715Ac',
         `${Math.floor((new Date).getTime() / 1000) + 120}`,
         '1000000000000000000'
     ).then(() => console.log(`done`))

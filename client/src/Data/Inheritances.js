@@ -203,10 +203,10 @@ class Inheritances extends Component {
             this.handleShowConfirm()
             await contract.withdraw(event.target.value)
                 .then(async (tx) => {
-                    this.handleShowAwait(`Receive Tokens`)
+                    this.handleShowAwait(`Receive tokens`)
                     await tx.wait()
                     this.handleCloseAwait()
-                    this.handleShowEventConfirmed(`Tokens has been recieved`, tx.hash)
+                    this.handleShowEventConfirmed(`Tokens has been received`, tx.hash)
                     setTimeout(() => {
                         this.handleCloseEventConfirmed()
                     }, 5000)
@@ -217,6 +217,8 @@ class Inheritances extends Component {
             this.handleCloseAwait()
             if (error.reason.includes('dWill: Time is not over yet')) {
                 this.handleShowError('Time is not over yet')
+            } else {
+                this.handleShowError('Something went wrong')
             }
             setTimeout(() => {
                 this.handleCloseError()
@@ -235,12 +237,17 @@ class Inheritances extends Component {
             let mo = Math.floor((seconds % 31536000) / 2628000);
             let d = Math.floor(((seconds % 31536000) % 2628000) / 86400);
             let h = Math.floor((seconds % (3600 * 24)) / 3600);
-
-            let yDisplay = y > 0 ? y + (y === 1 ? " year, " : " years, ") : " 0 years,";
-            let moDisplay = mo > 0 ? mo + (mo === 1 ? " month, " : " months, ") : " 0 months,";
-            let dDisplay = d > 0 ? d + (d === 1 ? " day, " : " days, ") : " 0 days, ";
-            let hDisplay = h > 0 ? h + (h === 1 ? " hour " : " hours ") : " 0 hours";
-            return yDisplay + moDisplay + dDisplay + hDisplay;
+            const zeroYearText = " 0 years,"
+            const zeroMonthText = " 0 months,"
+            const zeroDayText = " 0 days, "
+            const zeroHourText = " 0 hours"
+            let yDisplay = y > 0 ? y + (y === 1 ? " year, " : " years, ") : zeroYearText ;
+            let moDisplay = mo > 0 ? mo + (mo === 1 ? " month, " : " months, ") : zeroMonthText ;
+            let dDisplay = d > 0 ? d + (d === 1 ? " day, " : " days, ") : zeroDayText ;
+            let hDisplay = h > 0 ? h + (h === 1 ? " hour " : " hours ") : zeroHourText ;
+            const toReturn = yDisplay + moDisplay + dDisplay + hDisplay + ' '
+            const toReturnZero = zeroYearText + zeroMonthText + zeroDayText + zeroHourText + ' '
+            return toReturn === toReturnZero ? ' less than an hour ' : toReturn;
         }
     }
 
@@ -259,22 +266,46 @@ class Inheritances extends Component {
     claim = this.claim.bind(this)
 
     handleShowConfirm = () => this.setState({ showConfirm: true })
-    handleShowAwait = (processingText) => this.setState({ showConfirm: false, showAwait: true, processingText })
-    handleCloseConfirm = () => this.setState({ showConfirm: false })
+    handleShowAwait = (processingText) => {
+        const body = document.getElementsByTagName('body')
+        body[0].classList.add('small-modal')
+        this.setState({ showConfirm: false, showAwait: true, processingText })
+    }
+    handleCloseConfirm = () => {
+        const body = document.getElementsByTagName('body')
+        body[0].classList.remove('small-modal')
+        this.setState({ showConfirm: false })
+    }
     handleCloseAwait = () => this.setState({ showAwait: false })
     handleShowConfirm = this.handleShowConfirm.bind(this)
     handleShowAwait = this.handleShowAwait.bind(this)
     handleCloseConfirm = this.handleCloseConfirm.bind(this)
     handleCloseAwait = this.handleCloseAwait.bind(this)
 
-    handleShowEventConfirmed = (confirmedText, hash) => this.setState({ showEventConfirmed: true, confirmedText, hash })
-    handleCloseEventConfirmed = () => this.setState({ showEventConfirmed: false })
+    handleShowEventConfirmed = (confirmedText, hash) => {
+        const body = document.getElementsByTagName('body')
+        body[0].classList.add('small-modal')
+        this.setState({ showEventConfirmed: true, confirmedText, hash })
+    }
+    handleCloseEventConfirmed = () => {
+        const body = document.getElementsByTagName('body')
+        body[0].classList.remove('small-modal')
+        this.setState({ showEventConfirmed: false })
+    }
 
     handleShowEventConfirmed = this.handleShowEventConfirmed.bind(this)
     handleCloseEventConfirmed = this.handleCloseEventConfirmed.bind(this)
 
-    handleShowError = (errortext) => this.setState({ showError: true, errortext })
-    handleCloseError = () => this.setState({ showError: false })
+    handleShowError = (errortext) => {
+        const body = document.getElementsByTagName('body')
+        body[0].classList.add('small-modal')
+        this.setState({ showError: true, errortext })
+    }
+    handleCloseError = () => {
+        const body = document.getElementsByTagName('body')
+        body[0].classList.remove('small-modal')
+        this.setState({ showError: false })
+    }
 
     handleShowError = this.handleShowError.bind(this)
     handleCloseError = this.handleCloseError.bind(this)
