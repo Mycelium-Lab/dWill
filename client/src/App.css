@@ -275,6 +275,7 @@ ul {
     /* top: 135px; */
     top: 50%;
     transform: translate(-50%, -50%);
+    height: auto;
   }
 }
 
@@ -1830,7 +1831,7 @@ input::-webkit-inner-spin-button {
 }
 
 .your-wills__check-token .your-wills__info-message {
-  margin-left: -20px;
+  margin-left: -5px;
 }
 
 @media (max-width: 767px) {
@@ -2515,7 +2516,8 @@ input::-webkit-inner-spin-button {
 
 .your-wills__check-token {
   display: flex;
-  gap: 30px;
+  /* gap: 30px; */
+  gap: 15px;
   align-items: center;
   flex: 1 0 auto;
 }
