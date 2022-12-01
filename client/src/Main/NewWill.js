@@ -753,7 +753,7 @@ class NewWill extends Component {
                                         <img src={infoBtn}></img>
                                     </div>
                                 </div>
-                                <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" required="required" />
+                                <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" required="required" placeholder="0x0000000000000000000000000000000000000000" />
                                 <p style={{ display: this.state.isAddress ? 'none' : 'block' }}>Неправильный формат адреса</p>
                             </div>
                             <div className="modal-body__row">
@@ -820,7 +820,7 @@ class NewWill extends Component {
                                 <div className="your-wills__notifications" style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
                                     <span>Настройте оповещения в Telegram, Email или Google Calendar и dWill оповестит вас всех важных событиях
                                         связанных с вашими завещаниями и завещаниям предназначенным для вас</span>
-                                    <a href="https://t.me/thewill_bot" rel="noreferrer" className="your-wills__links">
+                                    <a href="https://t.me/thewill_bot" rel="noreferrer" className="your-wills__links" target="_blank">
                                         <img src={btnTelegram}></img>
                                         <img src={btnEmail}></img>
                                         <span>Настроить оповещения в телеграм и на email</span>

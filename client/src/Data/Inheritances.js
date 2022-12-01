@@ -240,7 +240,7 @@ class Inheritances extends Component {
             const zeroYearText = " 0 years,"
             const zeroMonthText = " 0 months,"
             const zeroDayText = " 0 days, "
-            const zeroHourText = " 0 hours"
+            const zeroHourText = " 0 hours "
             let yDisplay = y > 0 ? y + (y === 1 ? " year, " : " years, ") : zeroYearText ;
             let moDisplay = mo > 0 ? mo + (mo === 1 ? " month, " : " months, ") : zeroMonthText ;
             let dDisplay = d > 0 ? d + (d === 1 ? " day, " : " days, ") : zeroDayText ;
@@ -366,7 +366,7 @@ class Inheritances extends Component {
                             </ul>
                         </div>
                         :
-                        <h4>У вас еще нет активных завещаний.</h4>
+                        <h4>У вас еще нет активных завещаний</h4>
                 }
                 {/* <Modal show={this.state.showConfirm}>
                     <Modal.Header>

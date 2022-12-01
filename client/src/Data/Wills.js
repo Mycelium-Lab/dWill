@@ -347,7 +347,7 @@ class Wills extends Component {
             const zeroYearText = " 0 years,"
             const zeroMonthText = " 0 months,"
             const zeroDayText = " 0 days, "
-            const zeroHourText = " 0 hours"
+            const zeroHourText = " 0 hours "
             let yDisplay = y > 0 ? y + (y === 1 ? " year, " : " years, ") : zeroYearText ;
             let moDisplay = mo > 0 ? mo + (mo === 1 ? " month, " : " months, ") : zeroMonthText ;
             let dDisplay = d > 0 ? d + (d === 1 ? " day, " : " days, ") : zeroDayText ;
@@ -1030,9 +1030,7 @@ class Wills extends Component {
                                                                         Inheritance can be harvest if the period of inactivity is longer than
                                                                     </p>
                                                                     <span className='your-wills_date'>{this.timeBetweenWithdrawAndStartConverter(v.timeBetweenWithdrawAndStart)}</span>
-                                                                    <span className='your-wills_remain'>
-                                                                        {`(remain: ${this.remainingTime(v.timeWhenWithdraw.toString())})`}
-                                                                    </span>
+                                                                    <span className='your-wills_remain'>{`(remain: ${this.remainingTime(v.timeWhenWithdraw.toString())})`}</span>
                                                                 </div>
                                                             }
                                                         </span>
@@ -1073,7 +1071,7 @@ class Wills extends Component {
                             }
                         </div>
                         :
-                        <h4>У вас еще нет активных завещаний.</h4>
+                        <h4>У вас еще нет активных завещаний</h4>
                 }
                 <Modal className="will-block" show={this.state.showEdit} style={{ height: "" }}>
                     <div className="will-block__wrapper">
@@ -1121,7 +1119,7 @@ class Wills extends Component {
                                         <img src={infoBtn}></img>
                                     </div>
                                 </div>
-                                <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" />
+                                <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" placeholder="0x0000000000000000000000000000000000000000" />
                                 <p style={{ display: this.state.isAddress ? 'none' : 'block' }}>Неправильный формат адреса</p>
                             </div>
                             <div className="modal-body__row">
@@ -1191,7 +1189,7 @@ class Wills extends Component {
                                 <div className="your-wills__notifications" style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
                                     <span>Настройте оповещения в Telegram, Email или Google Calendar и dWill оповестит вас всех важных событиях
                                         связанных с вашими завещаниями и завещаниям предназначенным для вас</span>
-                                    <a href="https://t.me/thewill_bot" rel="noreferrer" className="your-wills__links">
+                                    <a href="https://t.me/thewill_bot" rel="noreferrer" className="your-wills__links" target="_blank">
                                         <img src={btnTelegram}></img>
                                         <img src={btnEmail}></img>
                                         <span>Настроить оповещения в телеграм и на email</span>
