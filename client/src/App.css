@@ -3193,6 +3193,35 @@ input::-webkit-inner-spin-button {
   }
 }
 
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  max-width: 100%;
+  background-color: #191F24;
+
+}
+
+.footer__wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 130px;
+}
+
+footer a {
+  color: #C1C7CD;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.footer__social {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
 .css-1s2u09g-control {
   -webkit-align-items: center;
   -webkit-box-align: center;

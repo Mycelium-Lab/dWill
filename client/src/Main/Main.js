@@ -29,35 +29,35 @@ class Main extends Component {
     disconnect = this.disconnect.bind(this)
 
     render() {
-        return(
+        return (
             <div className='main-text'>
                 <h1 className="block-one__title">Hello!</h1>
                 <h3 className="block-one">dWill - the first fully decentralized way to bequeath your cryptocurrency.</h3>
                 <p className="block-two">With dWill, you can bequeath any ERC-20 tokens from your cryptocurrency wallet to the trusted wallets of your family and friends (or, for example, to your reserve wallet)</p>
                 <p className="block-two">Thanks to smart contract technology, dWill works completely in a decentralized way, reliably and autonomously. No one (no one at all, not even the project team) will have access to the funds you bequeathed.&nbsp;<a href='https://memepedia.ru/wp-content/uploads/2021/04/qblulgcbrwk-%E2%80%94-kopija.jpg' target="_blank" rel="noreferrer">Read more about how it works.</a>
-</p>
+                </p>
                 {
-                    (this.props.inheritancesLength === 0 || this.props.signer === null) 
-                    ? 
-                    '' 
-                    : <Inheritances 
-                        contractAddress={this.props.contractAddress} 
-                        network={this.props.network} 
-                        signer={this.props.signer} 
-                        signerAddress={this.props.signerAddress} 
-                        networkProvider={this.props.networkProvider}
-                        networkName={this.props.networkName}
-                        networkPic={this.props.networkPic}
-                    />
+                    (this.props.inheritancesLength === 0 || this.props.signer === null)
+                        ?
+                        ''
+                        : <Inheritances
+                            contractAddress={this.props.contractAddress}
+                            network={this.props.network}
+                            signer={this.props.signer}
+                            signerAddress={this.props.signerAddress}
+                            networkProvider={this.props.networkProvider}
+                            networkName={this.props.networkName}
+                            networkPic={this.props.networkPic}
+                        />
                 }
                 <p className="block-three">
-                {
-                    (this.props.willsLength === 0) && (this.props.signer !== null) 
-                    ? 
-                    `You don't have active dWills on the ${this.props.networkName} network yet.`
-                    : 
-                    'To create your first dWill or manage created, please connect your Ethereum wallet'
-                }
+                    {
+                        (this.props.willsLength === 0) && (this.props.signer !== null)
+                            ?
+                            `You don't have active dWills on the ${this.props.networkName} network yet.`
+                            :
+                            'To create your first dWill or manage created, please connect your Ethereum wallet'
+                    }
                 </p>
                 {/* {
                     this.props.signerAddress 
@@ -67,21 +67,21 @@ class Main extends Component {
                     null
                 } */}
                 {
-                    this.props.signer === null 
-                    ? 
-                    <Connect setProperties={this.props.setProperties} network={this.props.network}/> 
-                    : 
-                    <NewWill 
-                    contractAddress={this.props.contractAddress} 
-                    tokenAddress={this.props.tokenAddress} 
-                    isEthereumNull={false} 
-                    network={this.props.network} 
-                    signer={this.props.signer} 
-                    signerAddress={this.props.signerAddress}
-                    networkProvider={this.props.networkProvider}
-                    networkName={this.props.networkName}
-                    networkPic={this.props.networkPic}
-                    />
+                    this.props.signer === null
+                        ?
+                        <Connect setProperties={this.props.setProperties} network={this.props.network} />
+                        :
+                        <NewWill
+                            contractAddress={this.props.contractAddress}
+                            tokenAddress={this.props.tokenAddress}
+                            isEthereumNull={false}
+                            network={this.props.network}
+                            signer={this.props.signer}
+                            signerAddress={this.props.signerAddress}
+                            networkProvider={this.props.networkProvider}
+                            networkName={this.props.networkName}
+                            networkPic={this.props.networkPic}
+                        />
                 }
             </div>
         )

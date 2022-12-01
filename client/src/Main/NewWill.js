@@ -796,7 +796,7 @@ class NewWill extends Component {
                                 </div>
                                 <div className="will-date__row will-date__row--checkbox">
                                     <div className="will-date__row-input">
-                                        <input id="wills-set2" type="checkbox" onChange={this.changeDelivery} disabled={true}  className="form-check form-check-input mt-0" />
+                                        <input id="wills-set2" type="checkbox" onChange={this.changeDelivery} disabled={true} className="form-check form-check-input mt-0" />
                                         <label htmlFor="wills-set2">Automatic token delivery (coming soon)</label><br />
                                     </div>
                                     <div className="your-wills__info-message" data-title={tooltipText.delivery}>
@@ -818,7 +818,7 @@ class NewWill extends Component {
                                 <div className="your-wills__notifications" style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
 
                                     <span>Set up alerts in Telegram, Email or Google Calendar and dWill will notify you of all important events
-                                            related to your dWills and dWills intended for you.
+                                        related to your dWills and dWills intended for you.
                                     </span>
                                     <a href="https://t.me/thewill_bot" rel="noreferrer" className="your-wills__links" target="_blank">
                                         <img src={btnTelegram}></img>
