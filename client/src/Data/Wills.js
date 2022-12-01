@@ -345,16 +345,16 @@ class Wills extends Component {
             let mo = Math.floor((seconds % 31536000) / 2628000);
             let d = Math.floor(((seconds % 31536000) % 2628000) / 86400);
             let h = Math.floor((seconds % (3600 * 24)) / 3600);
-            const zeroYearText = " 0 years,"
-            const zeroMonthText = " 0 months,"
+            const zeroYearText = " 0 years, "
+            const zeroMonthText = " 0 months, "
             const zeroDayText = " 0 days, "
             const zeroHourText = " 0 hours"
             let yDisplay = y > 0 ? y + (y === 1 ? " year, " : " years, ") : zeroYearText ;
             let moDisplay = mo > 0 ? mo + (mo === 1 ? " month, " : " months, ") : zeroMonthText ;
             let dDisplay = d > 0 ? d + (d === 1 ? " day, " : " days, ") : zeroDayText ;
-            let hDisplay = h > 0 ? h + (h === 1 ? " hour " : " hours ") : zeroHourText ;
-            const toReturn = yDisplay + moDisplay + dDisplay + hDisplay + ' '
-            const toReturnZero = zeroYearText + zeroMonthText + zeroDayText + zeroHourText + ' '
+            let hDisplay = h > 0 ? h + (h === 1 ? " hour" : " hours") : zeroHourText ;
+            const toReturn = yDisplay + moDisplay + dDisplay + hDisplay
+            const toReturnZero = zeroYearText + zeroMonthText + zeroDayText + zeroHourText
             return toReturn === toReturnZero ? ' less than an hour ' : toReturn;
         }
     }
@@ -808,7 +808,8 @@ class Wills extends Component {
 
     handleCloseEdit = () => this.setState({
         showEdit: false, currentEditID: '',
-        currentEditHeirAddress: '', currentEditTimeWhenWithdraw: ''
+        currentEditHeirAddress: '', currentEditTimeWhenWithdraw: '',
+        notificationsOn: false
     });
     handleShowEdit = async (params) => {
         try {
@@ -1075,7 +1076,7 @@ class Wills extends Component {
                             }
                         </div>
                         :
-                        <h4>У вас еще нет активных завещаний.</h4>
+                        <h4>You don't have active dWills yet.</h4>
                 }
                 <Modal className="will-block" show={this.state.showEdit} style={{ height: "" }}>
                     <div className="will-block__wrapper">
@@ -1087,11 +1088,11 @@ class Wills extends Component {
                             <div className="modal-body__row">
                                 <div className="your-wills__header">
                                     <div>
-                                        Я завещаю свои
+                                    I bequeath my
                                     </div>
                                     <div className="your-wills__current-token">{this.state.currentEditSymbol}</div>
                                     <div className="your-wills__check-token">
-                                        <span>в количестве</span>
+                                        <span>in the amount</span>
                                         <div className="your-wills__checkbox">
                                             <input id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
                                             <label htmlFor="unlimited">{this.state.limitedText}</label><br />
@@ -1110,27 +1111,27 @@ class Wills extends Component {
 
                                 </div>
                             </div>
-                            <div className="modal-body__row modal-body__row-direction">с кошелька <a href={`${this.props.networkProvider}/address/${this.state.signerAddress}`} target="_blank" rel="noreferrer">{
+                            <div className="modal-body__row modal-body__row-direction">From the wallet <a href={`${this.props.networkProvider}/address/${this.state.signerAddress}`} target="_blank" rel="noreferrer">{
                                 this.state.signerAddress.slice(0, 6) + '...' + this.state.signerAddress.slice(this.state.signerAddress.length - 4, this.state.signerAddress.length)
-                            }</a>  на сети <i className="br"></i>{this.props.networkName} <img src={this.state.networkPic} alt="networkpic" />
+                            }</a>on the <i className="br"></i>{this.props.networkName} network<img src={this.state.networkPic} alt="networkpic" />
                                 <div className="your-wills__info-message" data-title={tooltipText.network}>
                                     <img src={infoBtn}></img>
                                 </div></div>
                             <div className="your-wills__wallet modal-body__row">
                                 <div className="your-wills__wallet-row">
-                                    Доверенному кошельку
+                                    To trusted wallet
                                     <div className="your-wills__info-message" data-title={tooltipText.wallet}>
                                         <img src={infoBtn}></img>
                                     </div>
                                 </div>
                                 <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" />
-                                <p style={{ display: this.state.isAddress ? 'none' : 'block' }}>Неправильный формат адреса</p>
+                                <p style={{ display: this.state.isAddress ? 'none' : 'block' }}>Incorrect wallet address format</p>
                             </div>
                             <div className="modal-body__row">
                                 <div className="will-date__text">
-                                    При условии что я буду неактивен, начиная с момента создания наследства ({
+                                Provided that I will be inactive, starting from the moment of dWill creation ({
                                         this.timeConverter((parseInt(this.state.currentEditTimeWhenWithdraw) - parseInt(this.state.currentEditTimeBetweenWithdrawAndStart)).toString())
-                                    }) более чем:
+                                    }) more than:
                                     <div className="your-wills__info-message" data-title={tooltipText.time}>
                                         <img src={infoBtn}></img>
                                     </div>
@@ -1138,15 +1139,15 @@ class Wills extends Component {
                                 <div className="will-date">
                                     <div className="will-date__row">
                                         <input type="number" onChange={this.onChangeYear} value={this.state.year} className="input-group input-group-year" />
-                                        <label >Лет</label><br />
+                                        <label >Years</label><br />
                                     </div>
                                     <div className="will-date__row">
                                         <input type="number" onChange={this.onChangeMonth} value={this.state.month} className="input-group input-group-month" />
-                                        <label >Месяцев</label><br />
+                                        <label >Months</label><br />
                                     </div>
                                     <div className="will-date__row">
                                         <input type="number" onChange={this.onChangeDay} value={this.state.day} className="input-group input-group-days" />
-                                        <label >Дней</label><br />
+                                        <label >Days</label><br />
                                     </div>
                                     <div className="your-wills__info-message" data-title={tooltipText.tokens}>
                                         <img src={infoBtn}></img>
@@ -1164,8 +1165,7 @@ class Wills extends Component {
                                     </div>
                                 </div>
                                 <div className="your-wills__notifications" style={this.state.messageOn === true ? { display: 'block' } : { display: 'none' }}>
-                                    <span>Сообщение хранится в зашифрованном виде и может быть прочитано получателем
-                                        только в момент получения завещания</span>
+                                    <span>The message is stored encrypted and can only be read by the recipient when the will is received.</span>
                                     <textarea placeholder="NFT message"></textarea>
                                 </div>
                                 <div className="will-date__row will-date__row--checkbox">
@@ -1178,8 +1178,7 @@ class Wills extends Component {
                                     </div>
                                 </div>
                                 <div className="your-wills__notifications" style={this.state.deliveryOn === true ? { display: 'block' } : { display: 'none' }}>
-                                    <span>После того как условие будет выполнено завещанные токены будут автоматически отправлены
-                                        на доверенный кошелек (10 USDT)</span>
+                                    <span>Once the condition is met, the bequeathed tokens will be automatically sent to the trusted wallet (10 USDT).</span>
                                 </div>
                                 <div className="will-date__row will-date__row--checkbox">
                                     <div className="will-date__row-input">
@@ -1191,12 +1190,12 @@ class Wills extends Component {
                                     </div>
                                 </div>
                                 <div className="your-wills__notifications" style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
-                                    <span>Настройте оповещения в Telegram, Email или Google Calendar и dWill оповестит вас всех важных событиях
-                                        связанных с вашими завещаниями и завещаниям предназначенным для вас</span>
+                                    <span>Set up alerts in Telegram, Email or Google Calendar and dWill will notify you of all important events
+                                            related to your dWills and dWills intended for you.</span>
                                     <a href="https://t.me/thewill_bot" rel="noreferrer" className="your-wills__links">
                                         <img src={btnTelegram}></img>
                                         <img src={btnEmail}></img>
-                                        <span>Настроить оповещения в телеграм и на email</span>
+                                        <span>Setting up notifications in Telegram and email</span>
                                     </a>
                                     <div className="your-wills__links">
                                         <a href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${'dWill notification. dWill time expired.'}&dates=${this.state.googleCalendarDateText}/${this.state.googleCalendarDateText}&details=${`<div><b>ℹ️ dWill notification:</b></div><br/><div>The time to unlock the dWill has expired.</div><br/<div>Heir: <a href="${this.props.networkProvider + '/address/' + this.state.heirAddress}">${this.state.heirAddressShort}</a></div><br/><br/><div>You can see more info on our website.</div><br/><a href="https://dwill.app"><b>dWill.app</b></a>`}&trp=false&sprop=&sprop=name:`} target="_blank" rel="noreferrer"><img src={btnCalendar}></img>Добавить событие в Google Calendar</a>

@@ -455,7 +455,7 @@ class Inheritances extends Component {
                             </ul>
                         </div>
                         :
-                        <h4>У вас еще нет активных завещаний.</h4>
+                        <h4>You don't have active inheritances yet.</h4>
                 }
                 {/* <Modal show={this.state.showConfirm}>
                     <Modal.Header>
