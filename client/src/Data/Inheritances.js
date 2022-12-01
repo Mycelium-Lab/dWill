@@ -3,7 +3,9 @@ import Button from 'react-bootstrap/Button'
 import Modal from 'react-bootstrap/Modal'
 import TheWill from '../Contract/TheWill.json'
 import closePic from '../content/button_close.svg'
+import closeModalPic from '../content/close_modal.svg'
 import receivePic from '../content/receive.svg'
+import ConfiPic from '../content/confi.svg'
 import linkBtn from '../content/link-btn.png'
 import infoBtn from '../content/info-btn.svg'
 import { ethers } from "ethers"
@@ -17,9 +19,11 @@ class Inheritances extends Component {
         this.state = {
             signer: null,
             signerAddress: '',
-            tokenAddress: '',
             network: '',
             approved: false,
+            tokenAddress: '',
+            tokenSymbol: '',
+            tokenDecimals: '',
             tokensValue: '',
             contractAddress: props.contractAddress,
             year: '',
@@ -34,7 +38,8 @@ class Inheritances extends Component {
             processingText: '',
             confirmedText: '',
             showError: false,
-            hash: ''
+            hash: '',
+            showReceiveConfirmed: false
         };
     }
 
@@ -192,6 +197,40 @@ class Inheritances extends Component {
                 })
             })
             this.setState({ signer, signerAddress, contract, inheritances: _inheritances, network: networkName })
+            const body = document.getElementsByTagName('body')
+            const modal = document.getElementsByClassName('fade modal-await modal show')
+            const modalContent = document.getElementsByClassName('modal-content')
+            const modalFooter = document.getElementsByClassName('modal-footer')
+            const modalImage = document.getElementById('modal-done-image')
+            const modalText = document.getElementsByClassName('modal-await_text')
+            const text = document.getElementsByClassName('modal-await_text modal-await_text__second')
+            body[0].addEventListener('click', (event) => {
+                const addTokenButton = document.getElementById('add-token')
+                const blockExplorerButton = document.getElementById('block-explorer')
+                if (
+                    this.state.showReceiveConfirmed === true
+                    &&
+                    (
+                        event.target !== modal[0]
+                        &&
+                        event.target !== modalContent[0]
+                        &&
+                        event.target !== addTokenButton
+                        &&
+                        event.target !== blockExplorerButton
+                        &&
+                        event.target !== modalImage
+                        &&
+                        event.target !== modalFooter[0]
+                        &&
+                        event.target !== modalText[0]
+                        &&
+                        event.target !== text[0]
+                    )
+                ) {
+                    this.handleCloseReceiveConfirmed()
+                }
+            })
         } catch (error) {
             console.error(error)
         }
@@ -201,15 +240,16 @@ class Inheritances extends Component {
         const contract = this.state.contract
         try {
             this.handleShowConfirm()
+            const will = await contract.inheritanceData(event.target.value)
             await contract.withdraw(event.target.value)
                 .then(async (tx) => {
                     this.handleShowAwait(`Receive tokens`)
                     await tx.wait()
                     this.handleCloseAwait()
-                    this.handleShowEventConfirmed(`Tokens has been received`, tx.hash)
-                    setTimeout(() => {
-                        this.handleCloseEventConfirmed()
-                    }, 5000)
+                    const token = new ethers.Contract(will.token, ERC20.abi, this.props.signer)
+                    const _symbol = await token.symbol()
+                    const _decimals = await token.decimals()
+                    this.handleShowReceiveConfirmed(will.token, _symbol, _decimals, tx.hash)
                 })
         } catch (error) {
             console.error(error)
@@ -261,6 +301,36 @@ class Inheritances extends Component {
         }
     }
 
+    addTokenToWallet() {
+        try {
+            if (localStorage.getItem('wallet') === 'Metamask') {
+                window.ethereum.request({
+                    method: 'wallet_watchAsset',
+                    params: {
+                        type: 'ERC20', // Initially only supports ERC20, but eventually more!
+                        options: {
+                            address: this.state.tokenAddress, // The address that the token is at.
+                            symbol: this.state.tokenSymbol, // A ticker symbol or shorthand, up to 5 chars.
+                            decimals: this.state.tokenDecimals // The number of decimals in the token
+                        },
+                    },
+                })
+            } else {
+                this.handleShowError('WalletConnect does not support this function')
+                setTimeout(() => {
+                    this.handleCloseError()
+                }, 10000)
+            }
+        } catch (error) {
+            this.handleShowError('Something went wrong')
+            setTimeout(() => {
+                this.handleCloseError()
+            }, 10000)
+        }
+    }
+
+    addTokenToWallet = this.addTokenToWallet.bind(this)
+
     remainingTime = this.remainingTime.bind(this)
     checkIfTimeIsEnd = this.checkIfTimeIsEnd.bind(this)
     claim = this.claim.bind(this)
@@ -295,6 +365,25 @@ class Inheritances extends Component {
 
     handleShowEventConfirmed = this.handleShowEventConfirmed.bind(this)
     handleCloseEventConfirmed = this.handleCloseEventConfirmed.bind(this)
+
+    handleShowReceiveConfirmed = (tokenAddress, tokenSymbol, tokenDecimals, hash) => this.setState({
+        showReceiveConfirmed : true,
+        tokenAddress,
+        tokenSymbol,
+        tokenDecimals,
+        hash
+    })
+    handleCloseReceiveConfirmed = () => {
+        this.setState({
+        showReceiveConfirmed : false,
+        tokenAddress: '',
+        tokenSymbol: '',
+        tokenDecimals: '',
+        hash: ''
+    })}
+
+    handleShowReceiveConfirmed = this.handleShowReceiveConfirmed.bind(this)
+    handleCloseReceiveConfirmed = this.handleCloseReceiveConfirmed.bind(this)
 
     handleShowError = (errortext) => {
         const body = document.getElementsByTagName('body')
@@ -345,7 +434,7 @@ class Inheritances extends Component {
                                                                             <span>you </span>
                                                                         </span>
                                                                 }
-                                                                can harvest {v.amount.toString() === ethers.constants.MaxUint256.toString() ? <span className="wills-description-block__symbol">all</span> : (v.amount / Math.pow(10, v.decimals)).toString()} <span className="wills-description-block__symbol">{v.symbol}</span> from wallet
+                                                                can harvest {v.amount.toString() === ethers.constants.MaxUint256.toString() ? <span className="wills-description-block__symbol">all</span> : <span className="wills-description-block__symbol">{(v.amount / Math.pow(10, v.decimals)).toString()}</span>} <span className="wills-description-block__symbol">{v.symbol}</span> from wallet
                                                             </span>
                                                             <a href={`${this.props.networkProvider}/address/${v.owner}`} target="_blank" rel="noreferrer">{` ${v.owner}`}</a> on <span className="wills-description-block__symbol">{this.state.network}</span> chain
                                                         </div>
@@ -366,7 +455,7 @@ class Inheritances extends Component {
                             </ul>
                         </div>
                         :
-                        <h4>У вас еще нет активных завещаний</h4>
+                        <h4>You don't have active inheritances yet.</h4>
                 }
                 {/* <Modal show={this.state.showConfirm}>
                     <Modal.Header>
@@ -488,6 +577,29 @@ class Inheritances extends Component {
                         <Button variant="danger" className="btn btn-danger" onClick={this.handleCloseError}>
                             <img src={closePic} alt="close" />
                         </Button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal show={this.state.showReceiveConfirmed} className="modal-await">
+                    {/* <Modal.Header>
+                        <Button variant="danger" onClick={this.handleCloseDoneNewWill} className="btn btn-danger">
+                            <img src={closeModalPic} />
+                        </Button>
+                    </Modal.Header> */}
+                    <img id="modal-done-image" src={ConfiPic} alt="confi" />
+                    <Modal.Footer>
+                        <button className="btn-close-modal btn btn-primary" onClick={this.handleCloseReceiveConfirmed}>
+                            <img src={closeModalPic}></img>
+                        </button>
+                        <p className="modal-await_text">Завещание успешно получено!</p>
+                        <p className="modal-await_text modal-await_text__second">
+                            <span id='add-token' onClick={this.addTokenToWallet}>
+                                Add token to wallet
+                            </span>
+                            <br/>
+                            <a id='block-explorer' href={`${this.props.networkProvider}/tx/${this.state.hash}`} target="_blank" rel="noreferrer">
+                                View in blockchain explorer
+                            </a>
+                        </p>
                     </Modal.Footer>
                 </Modal>
             </div>

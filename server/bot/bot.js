@@ -55,7 +55,7 @@ Bot features:
 
 bot.onText(/Add wallet address for tracking/, async (msg) => {
     let userID = msg.from.id
-    const addressPrompt = await bot.sendMessage(userID, 'Write the address', {
+    const addressPrompt = await bot.sendMessage(userID, 'Your address', {
         reply_markup: {
             force_reply: true,
         },
@@ -68,7 +68,7 @@ bot.onText(/Add wallet address for tracking/, async (msg) => {
             &&
             !_msg.text.includes('start')
         ) {
-            await bot.sendMessage(userID, 'Invalid format', keyboardOptions)
+            await bot.sendMessage(userID, 'Incorrect wallet address format', keyboardOptions)
         } else if (
             !_msg.text.includes('Add')
             &&
@@ -85,7 +85,7 @@ bot.onText(/Add wallet address for tracking/, async (msg) => {
                                 if (!err) {
                                     await bot.sendMessage(userID, 'Your wallet address has been updated. You will now receive alerts related to dWills of that wallet address', keyboardOptions)
                                 } else {
-                                    await bot.sendMessage(userID, 'An error has occurred', keyboardOptionsWithoutEmail)
+                                    await bot.sendMessage(userID, 'Something went wrong', keyboardOptionsWithoutEmail)
                                 }
                             })
                         } else {
@@ -117,7 +117,7 @@ bot.onText(/Add wallet address for tracking/, async (msg) => {
 
 bot.onText(/Add email for notifications/, async (msg) => {
     let userID = msg.from.id
-    const emailPrompt = await bot.sendMessage(userID, 'Write the email', {
+    const emailPrompt = await bot.sendMessage(userID, 'Your email', {
         reply_markup: {
             force_reply: true,
         },

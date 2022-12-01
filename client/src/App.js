@@ -279,7 +279,7 @@ class App extends Component {
               </a>
               <div className="amount-will">
                 <div>
-                  Всего завещано:
+                  Total bequeathed via dWill:
                 </div>
                 <div>
                   {this.state.total} USD
