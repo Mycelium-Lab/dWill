@@ -65,7 +65,7 @@ function remainingTime(timeWhenWithdraw) {
         let yDisplay = y > 0 ? y + (y === 1 ? " year, " : " years, ") : " 0 years,";
         let moDisplay = mo > 0 ? mo + (mo === 1 ? " month, " : " months, ") : " 0 months,";
         let dDisplay = d > 0 ? d + (d === 1 ? " day, " : " days, ") : " 0 days, ";
-        let hDisplay = h > 0 ? h + (h === 1 ? " hour " : " hours ") : " 0 hours";
+        let hDisplay = h > 0 ? h + (h === 1 ? " hour " : " hours ") : " 0 hours ";
         return yDisplay + moDisplay + dDisplay + hDisplay;
     }
 }
