@@ -464,7 +464,7 @@ a {
 } */
 
 .modal-loading {
-  padding: 20px 30px;
+  padding: 20px;
   border-radius: 10px;
 }
 
@@ -474,7 +474,8 @@ a {
 
 @media (max-width: 767px) {
   .modal-loading {
-    padding: 10px 25px;
+    padding: 10px;
+    padding-bottom: 25px;
   }
 
   .modal-header hr {
@@ -484,8 +485,8 @@ a {
 
 .modal-loading .btn-danger {
   position: absolute;
-  right: 30px;
-  top: 25px;
+  right: 20px;
+  top: 20px;
   background-color: transparent;
   padding: 0;
   margin: 0;
@@ -532,7 +533,7 @@ a {
 .modal-loading__progress-bar--error span {
   background-color: #E84142;
   width: 0;
-  animation: 5s barTime5;
+  animation: 10s barTime5;
 }
 
 @keyframes barTime5 {
@@ -708,6 +709,7 @@ a {
   .modal-body__row-direction {
     font-size: 14px;
     gap: 2px 5px;
+    margin-bottom: 0;
   }
 
 
@@ -742,6 +744,7 @@ a {
   .btn-close-modal {
     width: 14px;
     height: 14px;
+    top: 14px;
   }
 }
 
@@ -1696,7 +1699,7 @@ input::-webkit-inner-spin-button {
 
 @media (max-width: 767px) {
   .wills-description-block {
-    padding-top: 16px;
+    padding-top: 20px;
     padding-right: 20px;
     padding-bottom: 23px;
     padding-left: 20px;
@@ -1705,6 +1708,11 @@ input::-webkit-inner-spin-button {
 
   .wills-description-block__header {
     flex-direction: column;
+  }
+
+  .wills-description-block__header,
+  .page-data__block-container {
+    padding: 20px 5px;
   }
 }
 
@@ -1721,6 +1729,10 @@ input::-webkit-inner-spin-button {
   color: #C1C7CD;
   margin-top: 62px;
   margin-bottom: 84 px; */
+}
+
+.wills_list-my-wills h4 {
+  font-weight: 400;
 }
 
 @media (max-width: 767px) {
@@ -2098,7 +2110,7 @@ input::-webkit-inner-spin-button {
   }
 
   .your_inheritances_ul-text__head {
-    padding-bottom: 16px;
+    padding-bottom: 20px;
     margin-bottom: 0;
   }
 }
@@ -2187,6 +2199,7 @@ input::-webkit-inner-spin-button {
 @media (max-width: 767px) {
   .page-data__block-container {
     flex-direction: column;
+    gap: 20px;
   }
 }
 
@@ -2486,6 +2499,11 @@ input::-webkit-inner-spin-button {
   height: 40px;
 }
 
+.your-wills__wallet input::placeholder {
+  font-size: 10px;
+  color: #3E474F;
+}
+
 @media (max-width: 767px) {
   .your-wills__wallet {
     margin-top: 0;
@@ -2630,24 +2648,24 @@ input::-webkit-inner-spin-button {
 
 .modal-loading__link {
   position: absolute;
-  right: 70px;
-  top: 27px;
+  right: 60px;
+  top: 23px;
 }
 
 @media (max-width: 767px) {
   .modal-loading.modal.show {
-    top: 50px;
+    top: 15px;
     left: 50%;
     right: auto;
     bottom: auto;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     width: 340px;
-    height: 80px;
+    min-height: 80px;
   }
 
   .modal-loading__link {
     right: 39px;
-    top: 9px;
+    top: 12px;
     width: 12px;
     height: 12px;
   }
@@ -3235,7 +3253,6 @@ input::-webkit-inner-spin-button {
 .your-wills__info-message:hover::after {
   content: attr(data-title);
   position: absolute;
-  position: absolute;
   z-index: 1;
   bottom: 125%;
   left: 50%;
@@ -3244,4 +3261,12 @@ input::-webkit-inner-spin-button {
   padding: 10px;
   border-radius: 10px;
   box-shadow: 2px 0px 19px 3px #161C22;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@media (max-width: 767px) {
+  .your-wills__info-message:hover::after {
+    font-size: 12px;
+  }
 }

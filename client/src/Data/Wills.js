@@ -348,7 +348,7 @@ class Wills extends Component {
             const zeroYearText = " 0 years, "
             const zeroMonthText = " 0 months, "
             const zeroDayText = " 0 days, "
-            const zeroHourText = " 0 hours"
+            const zeroHourText = " 0 hours "
             let yDisplay = y > 0 ? y + (y === 1 ? " year, " : " years, ") : zeroYearText ;
             let moDisplay = mo > 0 ? mo + (mo === 1 ? " month, " : " months, ") : zeroMonthText ;
             let dDisplay = d > 0 ? d + (d === 1 ? " day, " : " days, ") : zeroDayText ;
@@ -1035,9 +1035,7 @@ class Wills extends Component {
                                                                         Inheritance can be harvest if the period of inactivity is longer than
                                                                     </p>
                                                                     <span className='your-wills_date'>{this.timeBetweenWithdrawAndStartConverter(v.timeBetweenWithdrawAndStart)}</span>
-                                                                    <span className='your-wills_remain'>
-                                                                        {`(remain: ${this.remainingTime(v.timeWhenWithdraw.toString())})`}
-                                                                    </span>
+                                                                    <span className='your-wills_remain'>{`(remain: ${this.remainingTime(v.timeWhenWithdraw.toString())})`}</span>
                                                                 </div>
                                                             }
                                                         </span>
@@ -1192,7 +1190,7 @@ class Wills extends Component {
                                 <div className="your-wills__notifications" style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
                                     <span>Set up alerts in Telegram, Email or Google Calendar and dWill will notify you of all important events
                                             related to your dWills and dWills intended for you.</span>
-                                    <a href="https://t.me/thewill_bot" rel="noreferrer" className="your-wills__links">
+                                    <a href="https://t.me/thewill_bot" rel="noreferrer" className="your-wills__links" target="_blank">
                                         <img src={btnTelegram}></img>
                                         <img src={btnEmail}></img>
                                         <span>Setting up notifications in Telegram and email</span>

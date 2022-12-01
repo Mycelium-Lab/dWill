@@ -816,10 +816,11 @@ class NewWill extends Component {
                                     </div><br />
                                 </div>
                                 <div className="your-wills__notifications" style={this.state.notificationsOn === true ? { display: 'block' } : { display: 'none' }}>
+
                                     <span>Set up alerts in Telegram, Email or Google Calendar and dWill will notify you of all important events
                                             related to your dWills and dWills intended for you.
                                     </span>
-                                    <a href="https://t.me/thewill_bot" rel="noreferrer" className="your-wills__links">
+                                    <a href="https://t.me/thewill_bot" rel="noreferrer" className="your-wills__links" target="_blank">
                                         <img src={btnTelegram}></img>
                                         <img src={btnEmail}></img>
                                         <span>Setting up notifications in Telegram and email</span>
