@@ -136,4 +136,24 @@ const {
         assert(_updatedHeritage.amount.toString() == ethers.utils.parseEther(tokenAmountPerOne.toString()).toString(), 'Amount updated')
     })
 
+    it('should update amount to unlimited', async () => {
+        //create allowance to contract
+        await token.increaseAllowance(heritage.address, ethers.constants.MaxUint256)
+        heir = acc2
+        await heritage.addNewWill(heir.address, token.address, timeWhenWithdraw, ethers.utils.parseEther(tokenAmountPerOne.toString()));
+        //new amount
+        tokenAmountPerOne = tokenAmountPerOne + 1
+        await heritage.update(
+            ID,                  //ID
+            0,   //newTime
+            heir.address,       //_heir
+            ethers.constants.MaxUint256,  //amount
+            false,               //_updateTime
+            false,               //_updateHeir
+            true                //_updateAmount
+        )
+        const _updatedHeritage = await heritage.inheritanceData(ID)
+        assert(_updatedHeritage.amount.toString() === ethers.constants.MaxUint256.toString(), 'Amount updated')
+    })
+
 })

@@ -93,7 +93,7 @@ class NewWill extends Component {
             confirmedText: '',
             hash: '',
             limitedText: 'unlimited',
-            isAddress: false
+            isAddress: true
         };
     }
 
@@ -533,9 +533,8 @@ class NewWill extends Component {
     onChangeHeirAddress(event) {
         this.setState({
             heirAddress: event.target.value,
-            isAddress: ethers.utils.isAddress(event.target.value)
+            isAddress: event.target.value === '' ? true : ethers.utils.isAddress(event.target.value)
         }, () => {
-            console.log(this.state.isAddress)
             this.setState({
                 heirAddressShort: this.state.heirAddress.slice(0, 6) + '...' + this.state.heirAddress.slice(this.state.heirAddress.length - 4, this.state.heirAddress.length)
             })
@@ -580,7 +579,6 @@ class NewWill extends Component {
 
     handleClose = () => this.setState({
         show: false,
-        amount: '0',
         approved: false,
         year: 2,
         month: 0,
@@ -589,7 +587,9 @@ class NewWill extends Component {
         isUnlimitedAmount: true,
         amount: ethers.constants.MaxUint256.toString(),
         tokensValue: '',
-        limitedText: 'unlimited'
+        limitedText: 'unlimited',
+        isAddress: true,
+        notificationsOn: false
     });
     handleShow = () => {
         this.setState({ show: true })
@@ -753,7 +753,7 @@ class NewWill extends Component {
                                         <img src={infoBtn}></img>
                                     </div>
                                 </div>
-                                <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" required="required" />
+                                <input placeholder={ethers.constants.AddressZero} onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" required="required" />
                                 <p style={{ display: this.state.isAddress ? 'none' : 'block' }}>Неправильный формат адреса</p>
                             </div>
                             <div className="modal-body__row">

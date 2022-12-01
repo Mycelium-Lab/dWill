@@ -80,6 +80,7 @@ class Wills extends Component {
             confirmedText: '',
             googleCalendarDateText: '',
             hash: '',
+            limitedText: 'unlimited',
             isAddress: true
         };
     }
@@ -823,10 +824,11 @@ class Wills extends Component {
                 currentEditTimeBetweenWithdrawAndStart: data.timeBetweenWithdrawAndStart,
                 currentEditToken: data.token,
                 currentEditSymbol: data.symbol,
+                limitedText: data.amount === ethers.constants.MaxUint256.toString() ? 'unlimited' : 'limited by',
                 isUnlimitedAmount: data.amount === ethers.constants.MaxUint256.toString(),
                 isUnlimitedAmountBase: data.amount === ethers.constants.MaxUint256.toString(),
-                currentEditAmount: data.amount === ethers.constants.MaxUint256.toString() ? 0 : data.amount / Math.pow(10, data.decimals),
-                currentEditBaseAmount: data.amount === ethers.constants.MaxUint256.toString() ? 0 : data.amount / Math.pow(10, data.decimals),
+                currentEditAmount: data.amount === ethers.constants.MaxUint256.toString() ? ethers.constants.MaxUint256.toString() : data.amount / Math.pow(10, data.decimals),
+                currentEditBaseAmount: data.amount === ethers.constants.MaxUint256.toString() ? ethers.constants.MaxUint256.toString() : data.amount / Math.pow(10, data.decimals),
                 currentEditDecimals: data.decimals,
                 baseYear: base_y,
                 baseMonth: base_mo,
@@ -905,8 +907,10 @@ class Wills extends Component {
             this.setState({
                 currentEditAmount: isUnlimitedAmount === true ? ethers.constants.MaxUint256.toString() : '',
                 isUnlimitedAmount,
-                updateAmount: isUnlimitedAmount !== isUnlimitedAmountBase
+                updateAmount: isUnlimitedAmount !== isUnlimitedAmountBase,
+                limitedText: isUnlimitedAmount === true ? 'unlimited' : 'limited by'
             }, async () => {
+                console.log(this.state.currentEditAmount, this.state.currentEditBaseAmount)
                 const _token = new ethers.Contract(currentEditToken, ERC20.abi, signer)
                 const allowance = await _token.allowance(signerAddress, contractAddress)
                 const allWillsAmountThisToken = await contract.getAllWillsAmountThisToken(signerAddress, _token.address)
@@ -1012,7 +1016,7 @@ class Wills extends Component {
                                                     <span className="wills-description-block__id">dWill #{v.ID.toString()} </span>
                                                     <div className='your-wills_text-info'>
                                                         <span>
-                                                            You bequeathed {v.amount.toString() === ethers.constants.MaxUint256.toString() ? 'all' : (v.amount / Math.pow(10, v.decimals)).toString()} your <span className='your-wills_remain'>{v.symbol}</span> from <span className='your-wills_remain'>{this.props.networkName}</span> chain to wallet
+                                                            You bequeathed {v.amount.toString() === ethers.constants.MaxUint256.toString() ? <span className='your-wills_remain'>all</span> : <span className='your-wills_remain'>{(v.amount / Math.pow(10, v.decimals)).toString()}</span>} your <span className='your-wills_remain'>{v.symbol}</span> from <span className='your-wills_remain'>{this.props.networkName}</span> chain to wallet
                                                         </span>
                                                         <a href={`${this.props.networkProvider}/address/${v.heir}`} target="_blank" rel="noreferrer">
                                                             {` ${v.heir}`}
@@ -1065,8 +1069,6 @@ class Wills extends Component {
                                                 </div>
 
                                             </div>
-
-
                                         </div>
                                     )
                                 })
@@ -1092,7 +1094,7 @@ class Wills extends Component {
                                         <span>в количестве</span>
                                         <div className="your-wills__checkbox">
                                             <input id="unlimited" type="checkbox" onChange={this.onChangeUnlimitedAmount} checked={this.state.isUnlimitedAmount} className="form-check-input mt-0" />
-                                            <label htmlFor="unlimited">unlimited</label><br />
+                                            <label htmlFor="unlimited">{this.state.limitedText}</label><br />
                                         </div>
                                         <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
                                             <input onChange={this.onChangeAmount} value={this.state.currentEditAmount}

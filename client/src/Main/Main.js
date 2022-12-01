@@ -31,23 +31,32 @@ class Main extends Component {
     render() {
         return(
             <div className='main-text'>
-                <h1 className="block-one__title">Привет!</h1>
-                <h3 className="block-one">dWill - Первый полностью децентрализованный способ
-завещать свою криптовалюту.</h3>
-                <p className="block-two">С dWill вы можете завещать любые ERC-20 токены со своего криптовалютного кошелька
-на доверенные кошельки своих родных и близких
-(или например на свой резервный кошелек)</p>
-                <p className="block-two">Благодаря технологии смарт-контрактов dWill работает полностью децентрализованно,
-надежно и автономно. Ни у кого (вообще ни у кого, даже у команды проекта)
-не будет доступа к средствам, которые вы завещали.&nbsp;<a href='https://memepedia.ru/wp-content/uploads/2021/04/qblulgcbrwk-%E2%80%94-kopija.jpg' target="_blank" rel="noreferrer">Подробнее о том, как это работает.</a>
+                <h1 className="block-one__title">Hello!</h1>
+                <h3 className="block-one">dWill - the first fully decentralized way to bequeath your cryptocurrency.</h3>
+                <p className="block-two">With dWill, you can bequeath any ERC-20 tokens from your cryptocurrency wallet to the trusted wallets of your family and friends (or, for example, to your reserve wallet)</p>
+                <p className="block-two">Thanks to smart contract technology, dWill works completely in a decentralized way, reliably and autonomously. No one (no one at all, not even the project team) will have access to the funds you bequeathed.&nbsp;<a href='https://memepedia.ru/wp-content/uploads/2021/04/qblulgcbrwk-%E2%80%94-kopija.jpg' target="_blank" rel="noreferrer">Read more about how it works.</a>
 </p>
+                {
+                    (this.props.inheritancesLength === 0 || this.props.signer === null) 
+                    ? 
+                    '' 
+                    : <Inheritances 
+                        contractAddress={this.props.contractAddress} 
+                        network={this.props.network} 
+                        signer={this.props.signer} 
+                        signerAddress={this.props.signerAddress} 
+                        networkProvider={this.props.networkProvider}
+                        networkName={this.props.networkName}
+                        networkPic={this.props.networkPic}
+                    />
+                }
                 <p className="block-three">
                 {
                     (this.props.willsLength === 0) && (this.props.signer !== null) 
                     ? 
-                    `У вас еще нет активных завещаний на сети ${this.props.networkName}.`
+                    `You don't have active dWills on the ${this.props.networkName} network yet.`
                     : 
-                    'Чтобы создать свое первое завещание или управлять созданными подключите свой кошелек Ethereum'
+                    'To create your first dWill or manage created, please connect your Ethereum wallet'
                 }
                 </p>
                 {/* {
@@ -72,20 +81,6 @@ class Main extends Component {
                     networkProvider={this.props.networkProvider}
                     networkName={this.props.networkName}
                     networkPic={this.props.networkPic}
-                    />
-                }
-                {
-                    (this.props.inheritancesLength === 0 || this.props.signer === null) 
-                    ? 
-                    '' 
-                    : <Inheritances 
-                        contractAddress={this.props.contractAddress} 
-                        network={this.props.network} 
-                        signer={this.props.signer} 
-                        signerAddress={this.props.signerAddress} 
-                        networkProvider={this.props.networkProvider}
-                        networkName={this.props.networkName}
-                        networkPic={this.props.networkPic}
                     />
                 }
             </div>

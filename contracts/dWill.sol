@@ -147,7 +147,7 @@ contract dWill is IHeritage {
         if (amount > _data.amount) {
             uint256 allWillsOwnerAmountThisToken = getAllWillsAmountThisToken(msg.sender, _data.token);
             //check if allowance enough for all wills
-            require(allowance >= amount + allWillsOwnerAmountThisToken, 'dWill: Not enough allowance');
+            require(allowance >= allWillsOwnerAmountThisToken - _data.amount + amount, 'dWill: Not enough allowance');
         } else {
             require(allowance >= amount, 'dWill: Not enough allowance');
         }
