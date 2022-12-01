@@ -104,7 +104,7 @@ class ResetTimers extends Component {
                 this.handleShowError('Something went wrong')
                 setTimeout(() => {
                     this.handleCloseError()
-                }, 5000)
+                }, 10000)
             })
     }
 

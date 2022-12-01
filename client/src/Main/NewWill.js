@@ -263,7 +263,7 @@ class NewWill extends Component {
                     }
                     setTimeout(() => {
                         this.handleCloseError()
-                    }, 5000)
+                    }, 10000)
                     this.handleCloseConfirm()
                     this.handleCloseAwait()
                 })
@@ -296,7 +296,7 @@ class NewWill extends Component {
                 this.handleShowError('Something wrong with time')
                 setTimeout(() => {
                     this.handleCloseError()
-                }, 5000)
+                }, 10000)
             }
         }
     }
@@ -319,7 +319,7 @@ class NewWill extends Component {
                     this.handleShowDoneNewWill(tx.hash)
                     setTimeout(() => {
                         this.handleCloseDoneNewWill()
-                    }, 5000)
+                    }, 10000)
                 })
         } catch (error) {
             console.error(error)
@@ -340,7 +340,7 @@ class NewWill extends Component {
             }
             setTimeout(() => {
                 this.handleCloseError()
-            }, 5000)
+            }, 10000)
             this.handleCloseConfirm()
             this.handleCloseAwait()
         }
@@ -386,7 +386,7 @@ class NewWill extends Component {
             }
             setTimeout(() => {
                 this.handleCloseError()
-            }, 5000)
+            }, 10000)
         }
     }
 
@@ -419,7 +419,7 @@ class NewWill extends Component {
             }
             setTimeout(() => {
                 this.handleCloseError()
-            }, 5000)
+            }, 10000)
         }
     }
 
@@ -498,7 +498,7 @@ class NewWill extends Component {
             }
             setTimeout(() => {
                 this.handleCloseError()
-            }, 5000)
+            }, 10000)
         }
     }
 

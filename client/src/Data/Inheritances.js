@@ -262,7 +262,7 @@ class Inheritances extends Component {
             }
             setTimeout(() => {
                 this.handleCloseError()
-            }, 5000)
+            }, 10000)
         }
     }
 

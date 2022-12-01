@@ -554,7 +554,7 @@ class Wills extends Component {
                     }
                     setTimeout(() => {
                         this.handleCloseError()
-                    }, 5000)
+                    }, 10000)
                     this.handleCloseConfirm()
                 })
         } catch (error) {
@@ -608,7 +608,7 @@ class Wills extends Component {
                 }
                 setTimeout(() => {
                     this.handleCloseError()
-                }, 5000)
+                }, 10000)
             }
             this.handleCloseConfirm()
             this.handleCloseAwait()
@@ -645,7 +645,7 @@ class Wills extends Component {
                 this.handleShowError('Something went wrong')
                 setTimeout(() => {
                     this.handleCloseError()
-                }, 5000)
+                }, 10000)
             })
     }
 
