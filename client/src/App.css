@@ -1,8 +1,17 @@
 html {
-  background-image: url('./background.jpg');
-  background-size: cover;
+  /* background-image: url('./background.jpg');
+  background-size: cover; */
   padding-top: 55px;
   padding-bottom: 110px;
+}
+
+#cnv {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
 }
 
 @media (max-width: 767px) {
