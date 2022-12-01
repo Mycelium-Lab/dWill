@@ -1122,7 +1122,7 @@ class Wills extends Component {
                                         <img src={infoBtn}></img>
                                     </div>
                                 </div>
-                                <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" />
+                                <input onChange={this.onChangeHeirAddress} value={this.state.currentEditHeirAddress} className="input-group mb-3" placeholder={ethers.constants.AddressZero}/>
                                 <p style={{ display: this.state.isAddress ? 'none' : 'block' }}>Incorrect wallet address format</p>
                             </div>
                             <div className="modal-body__row">
