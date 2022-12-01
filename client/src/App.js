@@ -11,6 +11,9 @@ import EthereumPic from './content/ethereum.svg'
 import AvalanchePic from './content/avalanche.svg'
 import OptimismPic from './content/optimism.svg'
 import ArbitrumPic from './content/arbitrum.svg'
+import discordLogo from './content/DiscordLogo.svg'
+import twitterLogo from './content/TwitterLogo.svg'
+import telegramLogo from './content/TelegramLogo.svg'
 import Connect from './Utils/Connect';
 import TheWill from './Contract/TheWill.json'
 import { chainIDs, chainRPCURL, NetworkProviders, TheWillAddresses, TokenAddresses } from './Utils/Constants';
@@ -367,6 +370,24 @@ class App extends Component {
               />
           }
         </main>
+        <footer className="footer">
+          <div class="footer__wrapper _container">
+            <div className="footer__social">
+              <a href="" target="_blank">
+                <img src={discordLogo}></img>
+              </a>
+              <a href="" target="_blank">
+                <img src={twitterLogo}></img>
+              </a>
+              <a href="" target="_blank">
+                <img src={telegramLogo}></img>
+              </a>
+            </div>
+            <a className="footer__copy">
+              support@dwill.app
+            </a>
+          </div>
+        </footer>
       </div>
     );
   }
