@@ -147,11 +147,6 @@ class App extends Component {
             })
           })
       }, 5000)
-      if (providerExist === true) {
-        setTimeout(async () => {
-          await this.loadBasic()
-        }, 100)
-      }
 
     } catch (error) {
       // Catch any errors for any of the above operations.
@@ -271,6 +266,8 @@ class App extends Component {
         networkProvider,
         networkPic: networkPicture,
         networkName
+      }, async () => {
+        await this.loadBasic()
       })
     } catch (error) {
       if (provider === null && signer === null && signerAddress === null) {
