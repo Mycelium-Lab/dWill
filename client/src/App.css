@@ -3312,3 +3312,11 @@ footer a {
     font-size: 12px;
   }
 }
+
+#space{
+  position:fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  z-index: -2;
+}

@@ -21,6 +21,7 @@ import Data from './Data/Data';
 import Main from './Main/Main';
 
 import logoWill from './content/logo.svg'
+import { renderStars } from "./Utils/stars";
 
 class App extends Component {
 
@@ -157,42 +158,46 @@ class App extends Component {
       console.error(error);
     }
 
-    function canvas() {
-      const cnv = document.querySelector('#cnv');
-      //Get context and screen size;
-      var ctx = cnv.getContext("2d");
-      var W = window.innerWidth;
-      var H = window.innerHeight;
+    
 
-      //Set Canvas and Background Color;
-      cnv.width = W;
-      cnv.height = H;
-      ctx.fillStyle = "#112";
-      ctx.fillRect(0, 0, W, H);
+    renderStars()
 
-      //Glow effect;
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = "white";
+    // function canvas() {
+    //   const cnv = document.querySelector('#cnv');
+    //   //Get context and screen size;
+    //   var ctx = cnv.getContext("2d");
+    //   var W = window.innerWidth;
+    //   var H = window.innerHeight;
 
-      function animate() {
-        //Random position and size of stars;
-        let x = W * Math.random();
-        let y = H * Math.random();
-        let r = 2.5 * Math.random();
+    //   //Set Canvas and Background Color;
+    //   cnv.width = W;
+    //   cnv.height = H;
+    //   ctx.fillStyle = "#112";
+    //   ctx.fillRect(0, 0, W, H);
 
-        //Draw the stars;
-        ctx.beginPath();
-        ctx.fillStyle = "white";
-        ctx.arc(x, y, r, 0, Math.PI * 2);
-        ctx.fill();
+    //   //Glow effect;
+    //   ctx.shadowBlur = 10;
+    //   ctx.shadowColor = "white";
 
-        //Using setTimeout instead of window.requestAnimationFrame for slower speed... window.requestAnimationFrame is approximately equal to setTimeout(func, 17);
-        setTimeout(animate, 100);
-      }
-      animate();
+    //   function animate() {
+    //     //Random position and size of stars;
+    //     let x = W * Math.random();
+    //     let y = H * Math.random();
+    //     let r = 2.5 * Math.random();
 
-    }
-    canvas();
+    //     //Draw the stars;
+    //     ctx.beginPath();
+    //     ctx.fillStyle = "white";
+    //     ctx.arc(x, y, r, 0, Math.PI * 2);
+    //     ctx.fill();
+
+    //     //Using setTimeout instead of window.requestAnimationFrame for slower speed... window.requestAnimationFrame is approximately equal to setTimeout(func, 17);
+    //     setTimeout(animate, 100);
+    //   }
+    //   animate();
+
+    // }
+    // canvas();
   };
 
   numberWithSpaces(x) {
@@ -311,7 +316,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <canvas id="cnv"></canvas>
+          <canvas id="space"></canvas>
         <header className="header _container">
           <div className='header_boxes'>
             <div className="header_boxes-col">
