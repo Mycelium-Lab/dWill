@@ -856,6 +856,7 @@ a {
 .will-date__row--checkbox label {
   padding-left: 30px;
   position: relative;
+  z-index: -1;
 }
 
 .your-wills__settings {
@@ -1965,8 +1966,9 @@ input::-webkit-inner-spin-button {
 
 .your-wills__footer li {
   padding-left: 20px;
-  position: relative;
+  /* position: relative; */
   margin-left: 20px;
+  /* z-index: -1; */
 }
 
 .your-wills__footer button {
@@ -3260,9 +3262,9 @@ footer a {
   margin-left: 10px;
   min-width: 15px;
   height: 15px;
-  position: relative;
+  /* position: relative; */
   /* z-index: 10; */
-  z-index: 0;
+  z-index: 1;
 }
 
 .your-wills__info-message img {
@@ -3293,7 +3295,7 @@ footer a {
 }
 
 .your-wills__info-message:hover::after {
-  content: attr(data-title);
+  /* content: attr(data-title);
   position: absolute;
   z-index: 1;
   bottom: 125%;
@@ -3304,7 +3306,29 @@ footer a {
   border-radius: 10px;
   box-shadow: 2px 0px 19px 3px #161C22;
   font-size: 14px;
+  font-weight: 600; */
+}
+
+.your-wills__info-message:hover::after{
+  content: attr(data-title);
+  position: absolute;
+  z-index: 1;
+  /* bottom: 125%; */
+  left: 50%;
+  transform: translateX(-50%);
+  /* margin-left: -120px; */
+  background: #1B232A;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 2px 0px 19px 3px #161C22;
+  font-size: 14px;
   font-weight: 600;
+  /* top: 0; */
+  /* bottom: auto; */
+  z-index: 10000000000;
+  /* width: 100%; */
+  /* margin-left: 0; */
+  box-sizing: border-box;
 }
 
 @media (max-width: 767px) {
@@ -3313,8 +3337,8 @@ footer a {
   }
 }
 
-#space{
-  position:fixed;
+#space {
+  position: fixed;
   left: 0;
   top: 0;
   width: 100%;
