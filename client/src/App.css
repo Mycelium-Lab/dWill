@@ -856,7 +856,8 @@ a {
 .will-date__row--checkbox label {
   padding-left: 30px;
   position: relative;
-  z-index: -1;
+  /* z-index: -1; */
+  z-index: 10;
 }
 
 .your-wills__settings {
@@ -909,7 +910,8 @@ a {
 .form-check-input {
   position: absolute;
   opacity: 0;
-  z-index: -1;
+  /* z-index: -1; */
+  z-index: 10;
 }
 
 .form-check-input[disabled]+label {
@@ -2407,12 +2409,17 @@ input::-webkit-inner-spin-button {
   font-size: 18px;
   line-height: 21px;
   color: #5ED5A8;
+  /* text-decoration: underline; */
 }
 
 .modal-await_text__second {
   font-size: 12px;
   text-align: center;
   margin-top: 40px;
+}
+
+.modal-await_text__second  span {
+  text-decoration: underline;
 }
 
 .btn_reset-timers-h2 {
