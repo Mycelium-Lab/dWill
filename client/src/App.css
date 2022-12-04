@@ -362,7 +362,8 @@ ul {
     font-size: 14px;
     line-height: 17px;
     margin-top: 0;
-    margin-bottom: 50px;
+    /* margin-bottom: 50px; */
+    margin-bottom: 19px;
     padding-bottom: 0;
     max-width: 320px;
   }
@@ -488,6 +489,7 @@ a {
 @media (max-width: 767px) {
   .modal-loading {
     padding: 10px;
+    padding: 10px 12px;
     padding-bottom: 25px;
   }
 
@@ -759,6 +761,10 @@ a {
     height: 14px;
     top: 14px;
   }
+
+  .modal-await .btn-close-modal {
+    right: 14px;
+  }
 }
 
 .will-date {
@@ -929,6 +935,11 @@ a {
   margin-top: 108px;
   margin-top: 57px;
   /* padding-bottom: 108px; */
+}
+
+.main-text h3,
+.main-text p {
+  text-shadow: 2px 2px rgba(0,0,0,0.5);
 }
 
 @media (max-width: 767px) {
@@ -1659,6 +1670,7 @@ input::-webkit-inner-spin-button {
   background: #1B232A;
   box-shadow: 2px 0px 19px 3px #161c22;
   color: #C1C7CD;
+  margin-bottom: 19px;
 }
 
 .wills-description-block .your-wills__info-message {
@@ -1952,7 +1964,8 @@ input::-webkit-inner-spin-button {
 
 @media (max-width: 767px) {}
 
-.your-wills__footer {
+ul.your-wills__footer {
+  list-style: number;
   list-style-type: number;
   display: flex;
   flex-direction: column;
@@ -2594,6 +2607,11 @@ input::-webkit-inner-spin-button {
   height: 22px;
 }
 
+.your-wills__links img {
+  width: 22px;
+  height: 22px;
+}
+
 .your-wills__notifications textarea {
   width: 100%;
   min-height: 140px;
@@ -3212,27 +3230,49 @@ footer {
   left: 0;
   width: 100%;
   max-width: 100%;
-  background-color: #191F24;
-  opacity: 0.7;
+  background-color: #020A1350;
 }
 
 .footer__wrapper {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 70px;
+  min-height: 65px;
 }
 
 footer a {
   color: #C1C7CD;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 400;
+
+}
+
+.footer__social a {
+  width: 25px;
+  height: 25px;
 }
 
 .footer__social {
   display: flex;
   align-items: center;
   gap: 25px;
+}
+
+.footer__social-document {
+  margin-left: 25px;
+}
+
+@media (max-width: 767px) {
+  footer a {
+    font-size: 12px;
+  }
+  .footer__social a {
+    width: 24px;
+    height: 24px;
+  }
+  .footer__wrapper {
+    min-height: 50px;
+  }
 }
 
 .css-1s2u09g-control {
@@ -3341,6 +3381,15 @@ footer a {
 @media (max-width: 767px) {
   .your-wills__info-message:hover::after {
     font-size: 12px;
+    max-width: 300px;
+    width: 100%;
+  }
+
+  .your_inheritances_ul-text__head .your-wills__info-message:hover::after {
+    right: 0;
+    left: auto;
+    transform: translateX(0);
+    min-width: 100px;
   }
 }
 
@@ -3348,6 +3397,13 @@ footer a {
   position: fixed;
   left: 0;
   top: 0;
+  right: 0;
+  bottom: 0;
   width: 100%;
+  min-height: 100%;
   z-index: -2;
+}
+
+.css-1ruxqpb-menu{
+  min-width: 100px;
 }
