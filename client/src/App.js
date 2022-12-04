@@ -14,6 +14,7 @@ import ArbitrumPic from './content/arbitrum.svg'
 import discordLogo from './content/DiscordLogo.svg'
 import twitterLogo from './content/TwitterLogo.svg'
 import telegramLogo from './content/TelegramLogo.svg'
+import documentLogo from './content/document.svg'
 import Connect from './Utils/Connect';
 import TheWill from './Contract/TheWill.json'
 import { chainIDs, chainRPCURL, NetworkProviders, TheWillAddresses, TokenAddresses } from './Utils/Constants';
@@ -153,7 +154,7 @@ class App extends Component {
       console.error(error);
     }
 
-    
+
 
     renderStars()
 
@@ -313,7 +314,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-          <canvas id="space"></canvas>
+        <canvas id="space"></canvas>
         <header className="header _container">
           <div className='header_boxes'>
             <div className="header_boxes-col">
@@ -322,7 +323,7 @@ class App extends Component {
               </a>
               <div className="amount-will">
                 <div>
-                  Total bequeathed via dWill:
+                  Total bequeathed:
                 </div>
                 <div>
                   {this.state.total} USD
@@ -383,6 +384,9 @@ class App extends Component {
               </a>
               <a href="" target="_blank">
                 <img src={telegramLogo}></img>
+              </a>
+              <a href="" target="_blank" className="footer__social-document">
+                <img src={documentLogo}></img>
               </a>
             </div>
             <a className="footer__copy">
