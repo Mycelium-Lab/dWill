@@ -89,10 +89,14 @@ class App extends Component {
               80001: chainRPCURL.Mumbai,
               97: chainRPCURL.BinanceTestnet,
               5: chainRPCURL.Goerli,
+              42161: chainRPCURL.ArbitrumMainnet,
+              43114: chainRPCURL.AvalancheMainnet,
+              10: chainRPCURL.OptimismMainnet
             }
           })
           await provider.enable();
           const _provider = new ethers.providers.Web3Provider(provider)
+          console.log(provider.chainId)
           provider.on('accountsChanged', async (__accounts) => {
             if (__accounts.length === 0) {
               localStorage.removeItem('account')
