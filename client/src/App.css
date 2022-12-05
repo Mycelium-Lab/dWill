@@ -3258,7 +3258,11 @@ footer a {
 
 .footer__social a {
   width: 25px;
-  height: 25px;
+  /* height: 25px; */
+}
+
+.footer__social img {
+  display: block;
 }
 
 .footer__social {
@@ -3273,14 +3277,20 @@ footer a {
 
 @media (max-width: 767px) {
   footer a {
-    font-size: 12px;
+    font-size: 14px;
+  }
+  .footer__social {
+    gap: 15px;
   }
   .footer__social a {
     width: 24px;
-    height: 24px;
+    /* height: 24px; */
   }
   .footer__wrapper {
     min-height: 50px;
+  }
+  .footer__social-document {
+    margin-right: 15px;
   }
 }
 
