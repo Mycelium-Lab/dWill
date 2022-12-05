@@ -1098,6 +1098,12 @@ a {
   display: inline-flex;
 }
 
+.btn-header-connect__footer > span {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
 @media (max-width: 767px) {
   .btn-header-connect__footer {
     font-size: 12px;
@@ -1118,11 +1124,13 @@ a {
   }
 }
 
-.btn-header__logout {
+.btn-header__logout,
+.btn-change-token {
   display: none;
 }
 
-.btn-header__main:hover>.btn-header__logout {
+.btn-header__main:hover>.btn-header__logout,
+.btn-header__main:hover>.btn-change-token {
   display: block;
 }
 
@@ -3396,6 +3404,13 @@ footer a {
   /* width: 100%; */
   /* margin-left: 0; */
   box-sizing: border-box;
+}
+
+.your_inheritances_ul-text__head .your-wills__info-message:hover::after {
+  right: 0;
+  left: auto;
+  transform: translateX(0);
+  min-width: 100px;
 }
 
 @media (max-width: 767px) {
