@@ -48,7 +48,8 @@ class Connect extends Component {
                 event.target.id !== 'networkOptimism' &&
                 event.target.id !== 'networkArbitrum' &&
                 event.target !== modalChooseTitle[0] &&
-                event.target !== modalChoose[0]
+                event.target !== modalChoose[0] &&
+                event.target.id !== 'change-network-img'
             ) {
                 this.closeNetworksModal()
             }
@@ -280,8 +281,14 @@ class Connect extends Component {
     showWalletsModal = () => this.setState({ showWallets: true })
     closeWalletsModal = () => this.setState({ showWallets: false })
 
-    showNetworksModal = () => this.setState({ showNetworks: true })
-    closeNetworksModal = () => this.setState({ showNetworks: false })
+    showNetworksModal = () => {
+        console.log('open')
+        this.setState({ showNetworks: true })
+    }
+    closeNetworksModal = () => {
+        console.log('close')
+        this.setState({ showNetworks: false })
+    }
 
     showWalletsModal = this.showWalletsModal.bind(this)
     closeWalletsModal = this.closeWalletsModal.bind(this)
@@ -389,7 +396,7 @@ class Connect extends Component {
                             {
                                     <button id='change-network' className="btn-change-token" onClick={this.state.showNetworks === false ? this.showNetworksModal : this.closeNetworksModal}>
                                         {/* (change) */}
-                                        <img src={chengeNetwork}></img>
+                                        <img id='change-network-img' src={chengeNetwork}></img>
                                     </button>
                             }
                             <div className="btn-header__logout">
