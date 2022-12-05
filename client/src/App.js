@@ -96,7 +96,6 @@ class App extends Component {
           })
           await provider.enable();
           const _provider = new ethers.providers.Web3Provider(provider)
-          console.log(provider.chainId)
           provider.on('accountsChanged', async (__accounts) => {
             if (__accounts.length === 0) {
               localStorage.removeItem('account')

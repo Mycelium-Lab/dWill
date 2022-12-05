@@ -282,11 +282,9 @@ class Connect extends Component {
     closeWalletsModal = () => this.setState({ showWallets: false })
 
     showNetworksModal = () => {
-        console.log('open')
         this.setState({ showNetworks: true })
     }
     closeNetworksModal = () => {
-        console.log('close')
         this.setState({ showNetworks: false })
     }
 
