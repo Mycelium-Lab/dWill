@@ -380,6 +380,9 @@ class App extends Component {
         <footer className="footer">
           <div class="footer__wrapper _container">
             <div className="footer__social">
+              <a href="" target="_blank" className="footer__social-document">
+                <img src={documentLogo}></img>
+              </a>
               <a href="" target="_blank">
                 <img src={discordLogo}></img>
               </a>
@@ -389,9 +392,7 @@ class App extends Component {
               <a href="" target="_blank">
                 <img src={telegramLogo}></img>
               </a>
-              <a href="" target="_blank" className="footer__social-document">
-                <img src={documentLogo}></img>
-              </a>
+
             </div>
             <a className="footer__copy">
               support@dwill.app

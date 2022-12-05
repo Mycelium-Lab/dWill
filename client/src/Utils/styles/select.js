@@ -38,7 +38,7 @@ export const select = {
         color: '#4285F4',
         // backgroundColor: '#161C22',
         border: 'none',
-        borderRadius: '10px'
+        borderRadius: '10px',
         // fontSize: '18px'
     }),
     loadingIndicator: (provided, state) => ({
@@ -63,6 +63,7 @@ export const select = {
         backgroundColor: '#161C22',
         border: 'none',
         borderRadius: '10px',
+        zIndex: '999999999999999',
 
         // fontSize: '18px'
     }),
@@ -74,6 +75,8 @@ export const select = {
         borderRadius: '10px',
         width: '100%',
         // fontSize: '18px'
+        zIndex: '999999999999999',
+
     }),
     menuPortal: (provided, state) => ({
         ...provided,
@@ -101,6 +104,7 @@ export const select = {
         alignItems: 'center',
         gap: '10px',
         // fontSize: '18px'
+        zIndex: '999999999999999',
     }),
     valueContainer: (provided, state) => ({
         ...provided,

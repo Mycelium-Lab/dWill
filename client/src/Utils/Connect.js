@@ -9,6 +9,7 @@ import ArbitrumPic from '../content/arbitrum.svg'
 import btnMetamask from '../content/btn-metamask.svg'
 import btnWallet from '../content/btn-wallet.svg'
 import logoutPic from '../content/logout.svg'
+import chengeNetwork from '../content/chenge-network.svg'
 import { ethers } from "ethers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { chainIDs, chainRPCURL } from '../Utils/Constants.js'
@@ -84,9 +85,9 @@ class Connect extends Component {
             localStorage.setItem('wallet', 'Metamask');
             this.setState({ selectedAddress: accounts[0] })
             this.props.setProperties(provider, signer, accounts[0])
-            .then(() => {
-                window.location.reload()
-            })
+                .then(() => {
+                    window.location.reload()
+                })
             window.ethereum.on('accountsChanged', async (accounts) => {
                 if (accounts.length === 0) {
                     localStorage.removeItem('account')
@@ -129,9 +130,9 @@ class Connect extends Component {
                 selectedAddress: _address
             })
             this.props.setProperties(_provider, _signer, _address)
-            .then(() => {
-                window.location.reload()
-            })
+                .then(() => {
+                    window.location.reload()
+                })
         } catch (error) {
             console.error(error)
         }
@@ -256,7 +257,7 @@ class Connect extends Component {
                 })
                 await provider.enable();
                 await provider.disconnect()
-    
+
                 localStorage.removeItem('account')
                 localStorage.removeItem('wallet')
                 localStorage.removeItem('walletconnect')
@@ -383,13 +384,14 @@ class Connect extends Component {
                                     {
                                         this.renderNetwork(this.props.network)
                                     }
-                                    {
-                                        <button id='change-network' className="btn-change-token" onClick={this.state.showNetworks === false ? this.showNetworksModal : this.closeNetworksModal}>
-                                            (change)
-                                        </button>
-                                    }
                                 </div>
                             </div>
+                            {
+                                    <button id='change-network' className="btn-change-token" onClick={this.state.showNetworks === false ? this.showNetworksModal : this.closeNetworksModal}>
+                                        {/* (change) */}
+                                        <img src={chengeNetwork}></img>
+                                    </button>
+                            }
                             <div className="btn-header__logout">
                                 <button onClick={this.logout}><img src={logoutPic} alt="logout"></img></button>
                             </div>

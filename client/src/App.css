@@ -3,6 +3,7 @@ html {
   background-size: cover; */
   padding-top: 55px;
   padding-bottom: 110px;
+  background-color: #000;
 }
 
 #cnv {
@@ -1047,7 +1048,7 @@ a {
   min-width: 17px;
   height: 17px;
   object-fit: cover;
-  margin-right: 7px;
+  /* margin-right: 7px; */
   object-fit: contain;
 }
 
@@ -1071,7 +1072,7 @@ a {
   padding: 7px 16px;
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 15px;
   position: relative;
   z-index: 10;
   /* z-index: -1; */
@@ -2948,17 +2949,25 @@ ul.your-wills__footer {
   font-size: 14px;
   color: #4281F4;
   min-width: auto;
+  /* width: 24px; */
   height: auto;
+  /* height: 24px; */
   /* font-size: 18px; */
   font-weight: 400;
   border: 0;
   background-color: transparent;
   border-radius: 0;
   cursor: pointer;
-  margin-left: 5px;
+  /* margin-left: 5px; */
   position: relative;
   z-index: 20;
-  border-bottom: 1px solid #4281F4;
+  /* border-bottom: 1px solid #4281F4; */
+}
+
+.btn-header-connect .btn-change-token img {
+  width: 24px;
+  height: 24px;
+  display: block;
 }
 
 @media (max-width: 767px) {
@@ -3259,7 +3268,7 @@ footer a {
 }
 
 .footer__social-document {
-  margin-left: 25px;
+  margin-right: 25px;
 }
 
 @media (max-width: 767px) {
