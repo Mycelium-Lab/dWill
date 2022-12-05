@@ -1097,7 +1097,7 @@ class Wills extends Component {
                                         </div>
                                         <div style={{ display: this.state.isUnlimitedAmount === false ? 'block' : 'none' }} className="your-wills__max mt-0">
                                             <input onChange={this.onChangeAmount} value={this.state.currentEditAmount}
-                                                type="number" min="0" className="input-group mb-3" placeholder="Введите сумму" />
+                                                type="number" min="0" className="input-group mb-3" placeholder="Enter the amount" />
                                             <Button variant="outline-success" onClick={this.onSetMaxAmount}>
                                                 All
                                             </Button>

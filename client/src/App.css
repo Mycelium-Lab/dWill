@@ -3368,6 +3368,7 @@ footer a {
 .your-wills__info-message:hover::after{
   content: attr(data-title);
   position: absolute;
+  white-space: pre-wrap;
   z-index: 1;
   /* bottom: 125%; */
   left: 50%;

@@ -1,5 +1,21 @@
 export function renderStars() {
         //based on an Example by @curran
+    function detectMob() {
+        const toMatch = [
+            /Android/i,
+            /webOS/i,
+            /iPhone/i,
+            /iPad/i,
+            /iPod/i,
+            /BlackBerry/i,
+            /Windows Phone/i
+        ];
+        
+        return toMatch.some((toMatchItem) => {
+            return navigator.userAgent.match(toMatchItem);
+        });
+    }
+    const isMobile = detectMob()
     window.requestAnimationFrame = (function(){return  window.requestAnimationFrame})();
     var canvas = document.getElementById("space");
     var c = canvas.getContext("2d");
@@ -44,7 +60,7 @@ export function renderStars() {
     function moveStars(){
         for(i = 0; i < numStars; i++){
             star = stars[i];
-            star.z--;
+            star.z = star.z - (isMobile ? 0.2 : 0.75);
             
             if(star.z <= 0){
                 star.z = canvas.width;

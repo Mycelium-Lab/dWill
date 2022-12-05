@@ -733,7 +733,7 @@ class NewWill extends Component {
                                                         All
                                                     </Button>
                                                 </div>
-                                                <div className="your-wills__info-message" data-title={tooltipText.tokens}>
+                                                <div className="your-wills__info-message"  data-title={tooltipText.tokens}>
                                                     <img src={infoBtn}></img>
                                                 </div>
                                             </div>
