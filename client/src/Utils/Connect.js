@@ -112,6 +112,9 @@ class Connect extends Component {
                     80001: chainRPCURL.Mumbai,
                     97: chainRPCURL.BinanceTestnet,
                     5: chainRPCURL.Goerli,
+                    42161: chainRPCURL.ArbitrumMainnet,
+                    43114: chainRPCURL.AvalancheMainnet,
+                    10: chainRPCURL.OptimismMainnet
                 }
             })
 
@@ -159,6 +162,30 @@ class Connect extends Component {
         }
     }
 
+    async _changeNetworkWalletConnect(provider, chainId, name, symbol, rpc) {
+        try {
+            await provider.request({
+                method: 'wallet_switchEthereumChain',
+                params: [{ chainId: ethers.utils.hexValue(chainId) }]
+            })
+                .then(() => window.location.reload())
+        } catch (error) {
+            if (error.message.includes('Try adding the chain using wallet_addEthereumChain first')) {
+                await provider.request({
+                    method: 'wallet_addEthereumChain',
+                    params: [
+                        {
+                            chainName: name,
+                            chainId: ethers.utils.hexValue(chainId),
+                            nativeCurrency: { name: symbol, decimals: 18, symbol },
+                            rpcUrls: [rpc]
+                        }
+                    ]
+                });
+            }
+        }
+    }
+
     async changeNetwork(chainId) {
         const wallet = localStorage.getItem("wallet")
         if (wallet === 'Metamask') {
@@ -181,7 +208,35 @@ class Connect extends Component {
                 await this._changeNetwork(chainIDs.ArbitrumMainnet, 'Arbitrum', 'ETH', chainRPCURL.ArbitrumMainnet)
             }
         } else if (wallet === 'WalletConnect') {
-            alert('You have to change network in your wallet')
+            const provider = new WalletConnectProvider({
+                rpc: {
+                    80001: chainRPCURL.Mumbai,
+                    97: chainRPCURL.BinanceTestnet,
+                    5: chainRPCURL.Goerli,
+                    42161: chainRPCURL.ArbitrumMainnet,
+                    43114: chainRPCURL.AvalancheMainnet,
+                    10: chainRPCURL.OptimismMainnet
+                }
+            })
+            await provider.enable();
+            if (chainId === chainIDs.Goerli && chainId !== this.props.network) {
+                await this._changeNetworkWalletConnect(provider, chainIDs.Goerli, 'Goerli', 'ETH', chainRPCURL.Goerli)
+            }
+            if (chainId === chainIDs.Mumbai && chainId !== this.props.network) {
+                await this._changeNetworkWalletConnect(provider, chainIDs.Mumbai, 'Mumbai', 'MATIC', chainRPCURL.Mumbai)
+            }
+            if (chainId === chainIDs.BinanceTestnet && chainId !== this.props.network) {
+                await this._changeNetworkWalletConnect(provider, chainIDs.BinanceTestnet, 'Binance Testnet', 'BNB', chainRPCURL.BinanceTestnet)
+            }
+            if (chainId === chainIDs.AvalancheMainnet && chainId !== this.props.network) {
+                await this._changeNetworkWalletConnect(provider, chainIDs.AvalancheMainnet, 'Avalanche', 'AVAX', chainRPCURL.AvalancheMainnet)
+            }
+            if (chainId === chainIDs.OptimismMainnet && chainId !== this.props.network) {
+                await this._changeNetworkWalletConnect(provider, chainIDs.OptimismMainnet, 'Optimism', 'ETH', chainRPCURL.OptimismMainnet)
+            }
+            if (chainId === chainIDs.ArbitrumMainnet && chainId !== this.props.network) {
+                await this._changeNetworkWalletConnect(provider, chainIDs.ArbitrumMainnet, 'Arbitrum', 'ETH', chainRPCURL.ArbitrumMainnet)
+            }
         }
     }
 
@@ -194,6 +249,9 @@ class Connect extends Component {
                         80001: chainRPCURL.Mumbai,
                         97: chainRPCURL.BinanceTestnet,
                         5: chainRPCURL.Goerli,
+                        42161: chainRPCURL.ArbitrumMainnet,
+                        43114: chainRPCURL.AvalancheMainnet,
+                        10: chainRPCURL.OptimismMainnet
                     }
                 })
                 await provider.enable();
@@ -326,13 +384,9 @@ class Connect extends Component {
                                         this.renderNetwork(this.props.network)
                                     }
                                     {
-                                        localStorage.getItem('wallet') === 'WalletConnect'
-                                            ?
-                                            null
-                                            :
-                                            <button id='change-network' className="btn-change-token" onClick={this.state.showNetworks === false ? this.showNetworksModal : this.closeNetworksModal}>
-                                                (change)
-                                            </button>
+                                        <button id='change-network' className="btn-change-token" onClick={this.state.showNetworks === false ? this.showNetworksModal : this.closeNetworksModal}>
+                                            (change)
+                                        </button>
                                     }
                                 </div>
                             </div>
