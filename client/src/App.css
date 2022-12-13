@@ -3442,3 +3442,7 @@ footer a {
 .css-1ruxqpb-menu{
   min-width: 100px;
 }
+
+.footer__copy {
+  text-decoration: none;
+}
