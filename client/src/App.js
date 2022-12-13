@@ -393,7 +393,7 @@ class App extends Component {
               </a>
 
             </div>
-            <a className="footer__copy">
+            <a href="mailto:support@dwill.app" target="_blank" className="footer__copy">
               support@dwill.app
             </a>
           </div>
