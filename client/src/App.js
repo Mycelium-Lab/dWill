@@ -382,13 +382,13 @@ class App extends Component {
               <a href="" target="_blank" className="footer__social-document">
                 <img src={documentLogo}></img>
               </a>
-              <a href="" target="_blank">
+              <a href="https://discord.gg/Sa5yvPhS9S" target="_blank">
                 <img src={discordLogo}></img>
               </a>
-              <a href="" target="_blank">
+              <a href="https://twitter.com/dWillApp" target="_blank">
                 <img src={twitterLogo}></img>
               </a>
-              <a href="" target="_blank">
+              <a href="https://t.me/+FYNh4fJq5UJjZDY0" target="_blank">
                 <img src={telegramLogo}></img>
               </a>
 
