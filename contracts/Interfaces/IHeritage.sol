@@ -1,8 +1,7 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
 /// @title Interface for Inheritance
-/// @author Egor A. Goncharov
 interface IHeritage {
 
     struct InheritanceData {

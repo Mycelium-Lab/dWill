@@ -89,6 +89,9 @@ class App extends Component {
               80001: chainRPCURL.Mumbai,
               97: chainRPCURL.BinanceTestnet,
               5: chainRPCURL.Goerli,
+              137: chainRPCURL.Polygon,
+              56: chainRPCURL.BinanceMainnet,
+              1: chainRPCURL.EthereumMainnet,
               42161: chainRPCURL.ArbitrumMainnet,
               43114: chainRPCURL.AvalancheMainnet,
               10: chainRPCURL.OptimismMainnet
@@ -245,17 +248,17 @@ class App extends Component {
         networkPicture = EthereumPic
         networkName = 'Ethereum'
       } else if (network === chainIDs.AvalancheMainnet) {
-        contractAddress = ''
+        contractAddress = TheWillAddresses.AvalancheMainnet
         networkProvider = NetworkProviders.AvalancheMainnet
         networkPicture = AvalanchePic
         networkName = 'Avalance'
       } else if (network === chainIDs.OptimismMainnet) {
-        contractAddress = ''
+        contractAddress = TheWillAddresses.OptimismMainnet
         networkProvider = NetworkProviders.OptimismMainnet
         networkPicture = OptimismPic
         networkName = 'Optimism'
       } else if (network === chainIDs.ArbitrumMainnet) {
-        contractAddress = ''
+        contractAddress = TheWillAddresses.ArbitrumMainnet
         networkProvider = NetworkProviders.ArbitrumMainnet
         networkPicture = ArbitrumPic
         networkName = 'Arbitrum'
