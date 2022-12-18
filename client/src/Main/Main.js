@@ -4,14 +4,12 @@ import Connect from '../Utils/Connect';
 
 import Inheritances from '../Data/Inheritances';
 import NewWill from './NewWill';
-import { TheWillAddress } from '../Utils/Constants';
 
 class Main extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            signer: null,
-            contractAddress: TheWillAddress
+            signer: null
         }
     }
 

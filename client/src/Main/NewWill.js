@@ -29,6 +29,7 @@ import MumbaiTokens from '../Utils/tokens/mumbai.json'
 import GoerliTokens from '../Utils/tokens/goerli.json'
 import UniswapTokens from '../Utils/tokens/uniswap.json'
 import AvalancheTokens from '../Utils/tokens/avalanche.json'
+import OptimismTokens from '../Utils/tokens/optimism.json'
 import { select } from '../Utils/styles/select'
 import { tooltipText } from '../Utils/tooltipText';
 
@@ -227,7 +228,7 @@ class NewWill extends Component {
         } else if (this.props.network === chainIDs.AvalancheMainnet) {
             return AvalancheTokens.tokens.filter((v) => v.chainId === chainIDs.AvalancheMainnet)
         } else if (this.props.network === chainIDs.OptimismMainnet) {
-            return UniswapTokens.tokens.filter((v) => v.chainId === chainIDs.OptimismMainnet)
+            return OptimismTokens.tokens.filter((v) => v.chainId === chainIDs.OptimismMainnet)
         } else if (this.props.network === chainIDs.ArbitrumMainnet) {
             return UniswapTokens.tokens.filter((v) => v.chainId === chainIDs.ArbitrumMainnet)
         }

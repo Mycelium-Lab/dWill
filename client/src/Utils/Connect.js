@@ -114,6 +114,9 @@ class Connect extends Component {
                     80001: chainRPCURL.Mumbai,
                     97: chainRPCURL.BinanceTestnet,
                     5: chainRPCURL.Goerli,
+                    137: chainRPCURL.Polygon,
+                    56: chainRPCURL.BinanceMainnet,
+                    1: chainRPCURL.EthereumMainnet,
                     42161: chainRPCURL.ArbitrumMainnet,
                     43114: chainRPCURL.AvalancheMainnet,
                     10: chainRPCURL.OptimismMainnet
@@ -200,6 +203,15 @@ class Connect extends Component {
             if (chainId === chainIDs.BinanceTestnet && chainId !== this.props.network) {
                 await this._changeNetwork(chainIDs.BinanceTestnet, 'Binance Testnet', 'BNB', chainRPCURL.BinanceTestnet)
             }
+            if (chainId === chainIDs.EthereumMainnet && chainId !== this.props.network) {
+                await this._changeNetwork(chainIDs.EthereumMainnet, 'Ethereum', 'ETH', chainRPCURL.EthereumMainnet)
+            }
+            if (chainId === chainIDs.Polygon && chainId !== this.props.network) {
+                await this._changeNetwork(chainIDs.Polygon, 'Polygon', 'MATIC', chainRPCURL.Polygon)
+            }
+            if (chainId === chainIDs.BinanceMainnet && chainId !== this.props.network) {
+                await this._changeNetwork(chainIDs.BinanceMainnet, 'BNB', 'BNB', chainRPCURL.BinanceMainnet)
+            }
             if (chainId === chainIDs.AvalancheMainnet && chainId !== this.props.network) {
                 await this._changeNetwork(chainIDs.AvalancheMainnet, 'Avalanche', 'AVAX', chainRPCURL.AvalancheMainnet)
             }
@@ -215,10 +227,13 @@ class Connect extends Component {
                     80001: chainRPCURL.Mumbai,
                     97: chainRPCURL.BinanceTestnet,
                     5: chainRPCURL.Goerli,
+                    137: chainRPCURL.Polygon,
+                    56: chainRPCURL.BinanceMainnet,
+                    1: chainRPCURL.EthereumMainnet,
                     42161: chainRPCURL.ArbitrumMainnet,
                     43114: chainRPCURL.AvalancheMainnet,
                     10: chainRPCURL.OptimismMainnet
-                }
+                  }
             })
             await provider.enable();
             if (chainId === chainIDs.Goerli && chainId !== this.props.network) {
@@ -229,6 +244,15 @@ class Connect extends Component {
             }
             if (chainId === chainIDs.BinanceTestnet && chainId !== this.props.network) {
                 await this._changeNetworkWalletConnect(provider, chainIDs.BinanceTestnet, 'Binance Testnet', 'BNB', chainRPCURL.BinanceTestnet)
+            }
+            if (chainId === chainIDs.EthereumMainnet && chainId !== this.props.network) {
+                await this._changeNetworkWalletConnect(provider, chainIDs.EthereumMainnet, 'Ethereum', 'ETH', chainRPCURL.EthereumMainnet)
+            }
+            if (chainId === chainIDs.Polygon && chainId !== this.props.network) {
+                await this._changeNetworkWalletConnect(provider, chainIDs.Polygon, 'Polygon', 'MATIC', chainRPCURL.Polygon)
+            }
+            if (chainId === chainIDs.BinanceMainnet && chainId !== this.props.network) {
+                await this._changeNetworkWalletConnect(provider, chainIDs.BinanceMainnet, 'BNB', 'BNB', chainRPCURL.BinanceMainnet)
             }
             if (chainId === chainIDs.AvalancheMainnet && chainId !== this.props.network) {
                 await this._changeNetworkWalletConnect(provider, chainIDs.AvalancheMainnet, 'Avalanche', 'AVAX', chainRPCURL.AvalancheMainnet)
@@ -251,10 +275,13 @@ class Connect extends Component {
                         80001: chainRPCURL.Mumbai,
                         97: chainRPCURL.BinanceTestnet,
                         5: chainRPCURL.Goerli,
+                        137: chainRPCURL.Polygon,
+                        56: chainRPCURL.BinanceMainnet,
+                        1: chainRPCURL.EthereumMainnet,
                         42161: chainRPCURL.ArbitrumMainnet,
                         43114: chainRPCURL.AvalancheMainnet,
                         10: chainRPCURL.OptimismMainnet
-                    }
+                      }
                 })
                 await provider.enable();
                 await provider.disconnect()
@@ -407,14 +434,14 @@ class Connect extends Component {
                                 <h1 className="modal-choose__title">Choose network</h1>
                             </Modal.Header>
                             <Modal.Footer>
-                                <img id='networkMumbai' src={PolygonPic} alt="Polygon" onClick={() => this.changeNetwork(chainIDs.Mumbai)} className={
-                                    this.props.network === chainIDs.Mumbai ? "chosen-network" : ""
+                                <img id='networkMumbai' src={PolygonPic} alt="Polygon" onClick={() => this.changeNetwork(chainIDs.Polygon)} className={
+                                    this.props.network === chainIDs.Polygon ? "chosen-network" : ""
                                 } />
-                                <img id='networkGoerli' src={EthereumPic} alt="Ethereum" onClick={() => this.changeNetwork(chainIDs.Goerli)} className={
-                                    this.props.network === chainIDs.Goerli ? "chosen-network" : ""
+                                <img id='networkGoerli' src={EthereumPic} alt="Ethereum" onClick={() => this.changeNetwork(chainIDs.EthereumMainnet)} className={
+                                    this.props.network === chainIDs.EthereumMainnet ? "chosen-network" : ""
                                 } />
-                                <img id='networkBinanceTestnet' src={BinancePic} alt="Binance" onClick={() => this.changeNetwork(chainIDs.BinanceTestnet)} className={
-                                    this.props.network === chainIDs.BinanceTestnet ? "chosen-network" : ""
+                                <img id='networkBinanceTestnet' src={BinancePic} alt="Binance" onClick={() => this.changeNetwork(chainIDs.BinanceMainnet)} className={
+                                    this.props.network === chainIDs.BinanceMainnet ? "chosen-network" : ""
                                 } />
                                 <img id='networkAvalanche' src={AvalanchePic} alt="Avalanche" onClick={() => this.changeNetwork(chainIDs.AvalancheMainnet)} className={
                                     this.props.network === chainIDs.AvalancheMainnet ? "chosen-network" : ""

@@ -22,7 +22,37 @@ module.exports = {
       url: "	https://data-seed-prebsc-1-s1.binance.org:8545",
       chainId: 97,
       accounts: [process.env.PRIVATE_KEY]
-    }
+    },
+    polygon: {
+      url: process.env.POLYGONRPC,
+      accounts: [process.env.PRIVATE_KEY],
+      chainId: 137
+    },
+    avalanche: {
+      url: "https://api.avax.network/ext/bc/C/rpc",
+      accounts: [process.env.PRIVATE_KEY],
+      chainId: 43114
+    },
+    bnb: {
+      url: "https://bsc-dataseed.binance.org",
+      accounts: [process.env.PRIVATE_KEY],
+      chainId: 56
+    },
+    ethereum: {
+      url: process.env.ETHEREUMRPC,
+      accounts: [process.env.PRIVATE_KEY],
+      chainId: 1
+    },
+    arbitrum: {
+      url: process.env.ARBITRUMRPC,
+      accounts: [process.env.PRIVATE_KEY],
+      chainId: 42161
+    },
+    optimism: {
+      url: process.env.OPTIMISMRPC,
+      accounts: [process.env.PRIVATE_KEY],
+      chainId: 10
+    },
   },
   solidity: "0.8.17"
 };

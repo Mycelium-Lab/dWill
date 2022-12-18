@@ -1,11 +1,10 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
 import './Interfaces/IHeritage.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 
 ///@title Inheritance
-///@author Egor A. Goncharov
 ///@notice Allows you to transfer ERC-20 tokens to inheritance
 contract dWill is IHeritage {
 

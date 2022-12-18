@@ -70,6 +70,14 @@
             "decimals": 18,
             "chainId": 43114,
             "logoURI": "https://assets.coingecko.com/coins/images/1364/small/Mark_Maker.png?1585191826"
+          },
+          {
+            "address": "0x5947bb275c521040051d82396192181b413227a3",
+            "name": "Chainlink",
+            "symbol": "LINK",
+            "decimals": 18,
+            "chainId": 43114,
+            "logoURI": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x514910771AF9Ca656af840dff83E8264EcF986CA/logo.png"
           }
     ]
 }
