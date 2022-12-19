@@ -32,7 +32,7 @@ class Main extends Component {
                 {/* <h1 className="block-one__title">Hello!</h1> */}
                 <h3 className="block-one">dWill - the first fully decentralized way to bequeath your cryptocurrency.</h3>
                 <p className="block-two">With dWill, you can bequeath any ERC-20 tokens from your cryptocurrency wallet to the trusted wallets of your family and friends (or, for example, to your reserve wallet)</p>
-                <p className="block-two">Thanks to smart contract technology, dWill works completely in a decentralized way, reliably and autonomously. No one (no one at all, not even the project team) will have access to the funds you bequeathed.&nbsp;<a href='https://memepedia.ru/wp-content/uploads/2021/04/qblulgcbrwk-%E2%80%94-kopija.jpg' target="_blank" rel="noreferrer">Read more about how it works.</a>
+                <p className="block-two">Thanks to smart contract technology, dWill works completely in a decentralized way, reliably and autonomously. No one (no one at all, not even the project team) will have access to the funds you bequeathed.&nbsp;<a href='#' target="_blank" rel="noreferrer">Read more about how it works.</a>
                 </p>
                 {
                     (this.props.inheritancesLength === 0 || this.props.signer === null)
