@@ -21,15 +21,15 @@ import WillBNB from './db/WillBNB.js'
 import WillOptimism from './db/WillOptimism.js'
 import WillAvalanche from './db/WillAvalanche.js'
 
-const providerMumbai = new ethers.providers.JsonRpcProvider(process.env.MUMBAI_RPC)
-const providerGoerli = new ethers.providers.JsonRpcProvider(process.env.GOERLI_RPC)
-const providerBinanceTestnet = new ethers.providers.JsonRpcProvider(process.env.BINANCETEST_RPC)
-const signerMumbai = new ethers.Wallet(process.env.PRIVATE_KEY, providerMumbai);
-const signerGoerli = new ethers.Wallet(process.env.PRIVATE_KEY, providerGoerli);
-const signerBinanceTestnet = new ethers.Wallet(process.env.PRIVATE_KEY, providerBinanceTestnet);
-const contractMumbai = new ethers.Contract(contractAddresses.Mumbai, WillAbi.abi, signerMumbai)
-const contractGoerli = new ethers.Contract(contractAddresses.Goerli, WillAbi.abi, signerGoerli)
-const contractBinanceTestnet = new ethers.Contract(contractAddresses.BinanceTestnet, WillAbi.abi, signerBinanceTestnet)
+// const providerMumbai = new ethers.providers.JsonRpcProvider(process.env.MUMBAI_RPC)
+// const providerGoerli = new ethers.providers.JsonRpcProvider(process.env.GOERLI_RPC)
+// const providerBinanceTestnet = new ethers.providers.JsonRpcProvider(process.env.BINANCETEST_RPC)
+// const signerMumbai = new ethers.Wallet(process.env.PRIVATE_KEY, providerMumbai);
+// const signerGoerli = new ethers.Wallet(process.env.PRIVATE_KEY, providerGoerli);
+// const signerBinanceTestnet = new ethers.Wallet(process.env.PRIVATE_KEY, providerBinanceTestnet);
+// const contractMumbai = new ethers.Contract(contractAddresses.Mumbai, WillAbi.abi, signerMumbai)
+// const contractGoerli = new ethers.Contract(contractAddresses.Goerli, WillAbi.abi, signerGoerli)
+// const contractBinanceTestnet = new ethers.Contract(contractAddresses.BinanceTestnet, WillAbi.abi, signerBinanceTestnet)
 
 const providerPolygon = new ethers.providers.JsonRpcProvider(process.env.POLYGONRPC)
 const signerPolygon = new ethers.Wallet(process.env.PRIVATE_KEY, providerPolygon);
