@@ -14,6 +14,12 @@ import WillAbi from '../artifacts/contracts/dWill.sol/dWill.json' assert { type:
 import ERC20 from '../artifacts/@openzeppelin/contracts/token/ERC20/ERC20.sol/ERC20.json' assert { type: "json" }
 import { contractAddresses, NetworkExplorers } from './utils/constants.js'
 import { addAmountToPool } from './service/addAmountToPool.js'
+import WillArbitrum from './db/WillArbitrum.js'
+import WillPolygon from './db/WillPolygon.js'
+import WillEthereum from './db/WillEthereum.js'
+import WillBNB from './db/WillBNB.js'
+import WillOptimism from './db/WillOptimism.js'
+import WillAvalanche from './db/WillAvalanche.js'
 
 const providerMumbai = new ethers.providers.JsonRpcProvider(process.env.MUMBAI_RPC)
 const providerGoerli = new ethers.providers.JsonRpcProvider(process.env.GOERLI_RPC)
@@ -24,6 +30,31 @@ const signerBinanceTestnet = new ethers.Wallet(process.env.PRIVATE_KEY, provider
 const contractMumbai = new ethers.Contract(contractAddresses.Mumbai, WillAbi.abi, signerMumbai)
 const contractGoerli = new ethers.Contract(contractAddresses.Goerli, WillAbi.abi, signerGoerli)
 const contractBinanceTestnet = new ethers.Contract(contractAddresses.BinanceTestnet, WillAbi.abi, signerBinanceTestnet)
+
+const providerPolygon = new ethers.providers.JsonRpcProvider(process.env.POLYGONRPC)
+const signerPolygon = new ethers.Wallet(process.env.PRIVATE_KEY, providerPolygon);
+const contractPolygon = new ethers.Contract(contractAddresses.Polygon, WillAbi.abi, signerPolygon)
+
+const providerEthereum = new ethers.providers.JsonRpcProvider(process.env.ETHEREUMRPC)
+const signerEthereum = new ethers.Wallet(process.env.PRIVATE_KEY, providerEthereum);
+const contractEthereum = new ethers.Contract(contractAddresses.EthereumMainnet, WillAbi.abi, signerEthereum)
+
+const providerBinanceMainnet = new ethers.providers.JsonRpcProvider(process.env.BINANCEMAINRPC)
+const signerBinanceMainnet = new ethers.Wallet(process.env.PRIVATE_KEY, providerBinanceMainnet);
+const contractBinanceMainnet = new ethers.Contract(contractAddresses.BinanceMainnet, WillAbi.abi, signerBinanceMainnet)
+
+const providerArbitrum = new ethers.providers.JsonRpcProvider(process.env.ARBITRUMRPC)
+const signerArbitrum = new ethers.Wallet(process.env.PRIVATE_KEY, providerArbitrum);
+const contractArbitrum = new ethers.Contract(contractAddresses.ArbitrumMainnet, WillAbi.abi, signerArbitrum)
+
+const providerOptimism = new ethers.providers.JsonRpcProvider(process.env.OPTIMISMRPC)
+const signerOptimism = new ethers.Wallet(process.env.PRIVATE_KEY, providerOptimism);
+const contractOptimism = new ethers.Contract(contractAddresses.OptimismMainnet, WillAbi.abi, signerOptimism)
+
+const providerAvalanche = new ethers.providers.JsonRpcProvider(process.env.AVALANCHERPC)
+const signerAvalanche = new ethers.Wallet(process.env.PRIVATE_KEY, providerAvalanche);
+const contractAvalanche = new ethers.Contract(contractAddresses.AvalancheMainnet, WillAbi.abi, signerAvalanche)
+
 
 const transporter = nodemailer.createTransport({
     host: 'localhost',
@@ -70,40 +101,100 @@ function remainingTime(timeWhenWithdraw) {
     }
 }
 
-contractMumbai.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
-    await addAnHeir(ID,owner,heir,token,timeWhenWithdraw,amount, 'Mumbai Chain', NetworkExplorers.Mumbai, signerMumbai)
+// contractMumbai.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
+//     await addAnHeir(ID,owner,heir,token,timeWhenWithdraw,amount, 'Mumbai Chain', NetworkExplorers.Mumbai, signerMumbai)
+// })
+
+// contractGoerli.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
+//     await addAnHeir(ID,owner,heir,token,timeWhenWithdraw,amount, 'Goerli Chain', NetworkExplorers.Goerli, signerGoerli)
+// })
+
+// contractBinanceTestnet.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
+//     await addAnHeir(ID,owner,heir,token,timeWhenWithdraw,amount, 'BinanceTest Chain', NetworkExplorers.BinanceTestnet, signerBinanceTestnet)
+// })
+
+// contractMumbai.on('RemoveWill', async (ID, owner, heir) => {
+//     await removeWill(ID, owner, heir, 'Mumbai Chain', NetworkExplorers.Mumbai)
+// })
+
+// contractGoerli.on('RemoveWill', async (ID, owner, heir) => {
+//     await removeWill(ID, owner, heir, 'Goerli Chain', NetworkExplorers.Goerli)
+// })
+
+// contractBinanceTestnet.on('RemoveWill', async (ID, owner, heir) => {
+//     await removeWill(ID, owner, heir, 'BinanceTest Chain', NetworkExplorers.BinanceTestnet)
+// })
+
+// contractMumbai.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
+//     await withdraw(ID, owner, 'Mumbai Chain')
+// })
+
+// contractGoerli.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
+//     await withdraw(ID, owner, 'Goerli Chain')
+// })
+
+// contractBinanceTestnet.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
+//     await withdraw(ID, owner, 'BinanceTest Chain')
+// })
+
+contractPolygon.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
+    await addAnHeir(ID,owner,heir,token,timeWhenWithdraw,amount, 'Polygon Chain', NetworkExplorers.Polygon, signerPolygon)
+})
+contractPolygon.on('RemoveWill', async (ID, owner, heir) => {
+    await removeWill(ID, owner, heir, 'Polygon Chain', NetworkExplorers.Polygon)
+})
+contractPolygon.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
+    await withdraw(ID, owner, 'Polygon Chain')
 })
 
-contractGoerli.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
-    await addAnHeir(ID,owner,heir,token,timeWhenWithdraw,amount, 'Goerli Chain', NetworkExplorers.Goerli, signerGoerli)
+contractEthereum.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
+    await addAnHeir(ID,owner,heir,token,timeWhenWithdraw,amount, 'Ethereum Chain', NetworkExplorers.EthereumMainnet, signerEthereum)
+})
+contractEthereum.on('RemoveWill', async (ID, owner, heir) => {
+    await removeWill(ID, owner, heir, 'Ethereum Chain', NetworkExplorers.EthereumMainnet)
+})
+contractEthereum.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
+    await withdraw(ID, owner, 'Ethereum Chain')
 })
 
-contractBinanceTestnet.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
-    await addAnHeir(ID,owner,heir,token,timeWhenWithdraw,amount, 'BinanceTest Chain', NetworkExplorers.BinanceTestnet, signerBinanceTestnet)
+contractBinanceMainnet.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
+    await addAnHeir(ID,owner,heir,token,timeWhenWithdraw,amount, 'BNB Chain', NetworkExplorers.BinanceMainnet, signerBinanceMainnet)
+})
+contractBinanceMainnet.on('RemoveWill', async (ID, owner, heir) => {
+    await removeWill(ID, owner, heir, 'BNB Chain', NetworkExplorers.BinanceMainnet)
+})
+contractBinanceMainnet.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
+    await withdraw(ID, owner, 'BNB Chain')
 })
 
-contractMumbai.on('RemoveWill', async (ID, owner, heir) => {
-    await removeWill(ID, owner, heir, 'Mumbai Chain', NetworkExplorers.Mumbai)
+contractArbitrum.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
+    await addAnHeir(ID,owner,heir,token,timeWhenWithdraw,amount, 'Arbitrum Chain', NetworkExplorers.ArbitrumMainnet, signerArbitrum)
+})
+contractArbitrum.on('RemoveWill', async (ID, owner, heir) => {
+    await removeWill(ID, owner, heir, 'Arbitrum Chain', NetworkExplorers.ArbitrumMainnet)
+})
+contractArbitrum.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
+    await withdraw(ID, owner, 'Arbitrum Chain')
 })
 
-contractGoerli.on('RemoveWill', async (ID, owner, heir) => {
-    await removeWill(ID, owner, heir, 'Goerli Chain', NetworkExplorers.Goerli)
+contractOptimism.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
+    await addAnHeir(ID,owner,heir,token,timeWhenWithdraw,amount, 'Optimism Chain', NetworkExplorers.OptimismMainnet, signerOptimism)
+})
+contractOptimism.on('RemoveWill', async (ID, owner, heir) => {
+    await removeWill(ID, owner, heir, 'Optimism Chain', NetworkExplorers.OptimismMainnet)
+})
+contractOptimism.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
+    await withdraw(ID, owner, 'Optimism Chain')
 })
 
-contractBinanceTestnet.on('RemoveWill', async (ID, owner, heir) => {
-    await removeWill(ID, owner, heir, 'BinanceTest Chain', NetworkExplorers.BinanceTestnet)
+contractAvalanche.on('AddAnHeir', async (ID,owner,heir,token,timeWhenWithdraw,amount) => {
+    await addAnHeir(ID,owner,heir,token,timeWhenWithdraw,amount, 'Avalanche Chain', NetworkExplorers.AvalancheMainnet, signerAvalanche)
 })
-
-contractMumbai.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
-    await withdraw(ID, owner, 'Mumbai Chain')
+contractAvalanche.on('RemoveWill', async (ID, owner, heir) => {
+    await removeWill(ID, owner, heir, 'Avalanche Chain', NetworkExplorers.AvalancheMainnet)
 })
-
-contractGoerli.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
-    await withdraw(ID, owner, 'Goerli Chain')
-})
-
-contractBinanceTestnet.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
-    await withdraw(ID, owner, 'BinanceTest Chain')
+contractAvalanche.on('Withdraw', async (ID, owner, heir, timeWhenWithdrawn, amount) => {
+    await withdraw(ID, owner, 'Avalanche Chain')
 })
 
 async function addAnHeir(ID,owner,heir,token,timeWhenWithdraw,amount, network, explorer, signer) {
@@ -370,20 +461,56 @@ async function withdraw(ID, owner, network) {
 }
 
 // //Running a job at Europe/Moscow timezone
-cron.schedule("10 10 10 * * *", async () => {
-    await remainTimeCron(contractMumbai, 'Mumbai Chain', NetworkExplorers.Mumbai, WillMumbai, signerMumbai)
+// cron.schedule("10 10 10 * * *", async () => {
+//     await remainTimeCron(contractMumbai, 'Mumbai Chain', NetworkExplorers.Mumbai, WillMumbai, signerMumbai)
+// }, {
+//     timezone: 'Europe/Moscow'
+// })
+
+// cron.schedule("13 13 13 * * *", async () => {
+//     await remainTimeCron(contractGoerli, 'Goerli Chain', NetworkExplorers.Goerli, WillGoerli, signerGoerli)
+// }, {
+//     timezone: 'Europe/Moscow'
+// })
+
+// cron.schedule("16 16 16 * * *", async () => {
+//     await remainTimeCron(contractBinanceTestnet, 'BinanceTest Chain', NetworkExplorers.BinanceTestnet, WillBinanceTest, signerBinanceTestnet)
+// }, {
+//     timezone: 'Europe/Moscow'
+// })
+
+cron.schedule("6 6 6 * * *", async () => {
+    await remainTimeCron(contractPolygon, 'Polygon Chain', NetworkExplorers.Polygon, WillPolygon, signerPolygon)
 }, {
     timezone: 'Europe/Moscow'
 })
 
-cron.schedule("13 13 13 * * *", async () => {
-    await remainTimeCron(contractGoerli, 'Goerli Chain', NetworkExplorers.Goerli, WillGoerli, signerGoerli)
+cron.schedule("8 8 8 * * *", async () => {
+    await remainTimeCron(contractEthereum, 'Ethereum Chain', NetworkExplorers.EthereumMainnet, WillEthereum, signerEthereum)
+}, {
+    timezone: 'Europe/Moscow'
+})
+
+cron.schedule("10 10 10 * * *", async () => {
+    await remainTimeCron(contractBinanceMainnet, 'BNB Chain', NetworkExplorers.BinanceMainnet, WillBNB, signerBinanceMainnet)
+}, {
+    timezone: 'Europe/Moscow'
+})
+
+cron.schedule("12 12 12 * * *", async () => {
+    await remainTimeCron(contractArbitrum, 'Arbitrum Chain', NetworkExplorers.ArbitrumMainnet, WillArbitrum, signerArbitrum)
+}, {
+    timezone: 'Europe/Moscow'
+})
+
+cron.schedule("14 14 14 * * *", async () => {
+    await remainTimeCron(contractOptimism, 'Optimism Chain', NetworkExplorers.OptimismMainnet, WillOptimism, signerOptimism)
 }, {
     timezone: 'Europe/Moscow'
 })
 
 cron.schedule("16 16 16 * * *", async () => {
-    await remainTimeCron(contractBinanceTestnet, 'BinanceTest Chain', NetworkExplorers.BinanceTestnet, WillBinanceTest, signerBinanceTestnet)
+    await remainTimeCron(contractAvalanche, 'Avalanche Chain', NetworkExplorers.AvalancheMainnet, WillAvalanche, signerAvalanche)
 }, {
     timezone: 'Europe/Moscow'
 })
