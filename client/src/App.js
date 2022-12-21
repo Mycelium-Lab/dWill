@@ -382,7 +382,7 @@ class App extends Component {
         <footer className="footer">
           <div class="footer__wrapper _container">
             <div className="footer__social">
-              <a href="" target="_blank" className="footer__social-document">
+              <a href="https://dwill.slite.page/p/yFyU0Vhz-TJakC/dWIll" target="_blank" className="footer__social-document">
                 <img src={documentLogo}></img>
               </a>
               <a href="https://discord.gg/Sa5yvPhS9S" target="_blank">
