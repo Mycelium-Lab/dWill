@@ -319,6 +319,9 @@ class NewWill extends Component {
                     this.handleClose()
                     this.handleShowDoneNewWill(tx.hash)
                     setTimeout(() => {
+                        window.location = '/'
+                    }, 2000)
+                    setTimeout(() => {
                         this.handleCloseDoneNewWill()
                     }, 10000)
                 })
