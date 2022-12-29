@@ -762,7 +762,7 @@ class NewWill extends Component {
                             </div>
                             <div className="modal-body__row">
 
-                                <div className='modal_title-time-will'>{"Provided that I will be inactive, starting from the moment of inheritance creation, more than:"}
+                                <div className='modal_title-time-will'>{"Provided that I will be inactive, starting from the moment of dWill creation, more than:"}
 
                                 </div>
                                 <div className="will-date">
