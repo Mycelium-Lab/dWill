@@ -1,14 +1,8 @@
-# Sample Hardhat Project
+## <b><a href="https://dwill.app/" target="_blank" rel="noreferrer">dWill</a></b> - the first fully decentralized way to bequeath your cryptocurrency.
+<br>
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+### <b>dWill</b> - the first decentralized non-custodial inheritance protocol. With dWill, you can bequeath any ERC-20 tokens from your cryptocurrency wallet to the trusted wallets of your family and friends (or, for example, to your reserve wallet)
 
-Try running some of the following tasks:
+<br>
 
-```shell
-npx hardhat help
-npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.js
-```
-# heritage-defi
+### Thanks to smart contract technology, <b>dWill</b> works completely in a decentralized way, reliably and autonomously. No one (no one at all, not even the project team) will have access to the funds you bequeathed.
