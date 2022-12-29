@@ -1772,6 +1772,10 @@ input::-webkit-inner-spin-button {
   font-weight: 400;
 }
 
+.your_inheritances h4 {
+  font-weight: 400;
+}
+
 @media (max-width: 767px) {
   .wills_list-my-wills {
     margin-top: 20px;
@@ -3410,7 +3414,8 @@ footer a {
   right: 0;
   left: auto;
   transform: translateX(0);
-  min-width: 100px;
+  /* width: 100%; */
+  min-width: 300px;
 }
 
 @media (max-width: 767px) {
@@ -3421,10 +3426,11 @@ footer a {
   }
 
   .your_inheritances_ul-text__head .your-wills__info-message:hover::after {
-    right: 0;
+    /* right: 0;
     left: auto;
     transform: translateX(0);
-    min-width: 100px;
+    min-width: 100px; */
+    width: 100%;
   }
 }
 
