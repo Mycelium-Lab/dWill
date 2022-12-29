@@ -9,7 +9,7 @@ For example: If you had 1000 USDC in your account at the time the dWill was acti
 
 For example: If you want to bequeath USDC on Ethereum and Polygon networks, you need to create a dWill on the Ethereum network, then switch dWill to the BSC network and create another dWill.
 `,
-    wallet: 'Wallet bla bla bla',
+    wallet: `Specify the wallet that will be able to collect tokens from your wallet after the expiration of the inactivity period that you specify below.`,
     time: `The heir dWill only be able to collect tokens from your wallet if the dWill is activated. The dWill is activated after the expiration of the term (timer) set by the testator when creating the dWill.
 It works the following way:
 1. When creating a dWill, the testator sets a timer indicating how many years, months and days must pass before the heir can pick up the dWill.
@@ -23,6 +23,6 @@ If you bequeathed tokens by setting a timer for a year and after 364 days reset 
     delivery: `After activating the dWill, the heir dWill need to go to dWill.app and pick up the inheritance using the "Receive" button. Activate this function to deliver tokens to the heir automatically after the dWill timer expires.`,
     notifications: `Set up dWill notifications in order not to forget to update the timer, pick up the dWill, etc.`,
     approve: `In order to create a dWill, you need to perform 2 transactions: Approve and Create a dWill`,
-    wills: 'Wills bla bla bla',
-    inheritances: 'Inheritances bla bla bla'
+    wills: `Here you can see the wills created by you and the remaining period of inactivity for each of them.`,
+    inheritances: `Here you can see a list of wills that are intended for you. You can receive a will after the period of inactivity of the testator's wallet exceeds the deadline set by him.`
 }
