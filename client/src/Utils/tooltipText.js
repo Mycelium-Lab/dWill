@@ -23,6 +23,6 @@ If you bequeathed tokens by setting a timer for a year and after 364 days reset 
     delivery: `After activating the dWill, the heir dWill need to go to dWill.app and pick up the inheritance using the "Receive" button. Activate this function to deliver tokens to the heir automatically after the dWill timer expires.`,
     notifications: `Set up dWill notifications in order not to forget to update the timer, pick up the dWill, etc.`,
     approve: `In order to create a dWill, you need to perform 2 transactions: Approve and Create a dWill`,
-    wills: `Here you can see the wills created by you and the remaining period of inactivity for each of them.`,
-    inheritances: `Here you can see a list of wills that are intended for you. You can receive a will after the period of inactivity of the testator's wallet exceeds the deadline set by him.`
+    wills: `Here you can see the dWills created by you and the remaining period of inactivity for each of them.`,
+    inheritances: `Here you can see a list of dWills that are intended for you. You can receive a dWill after the period of inactivity of the testator's wallet exceeds the deadline set by him.`
 }

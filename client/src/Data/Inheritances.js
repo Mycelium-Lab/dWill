@@ -406,7 +406,7 @@ class Inheritances extends Component {
                     <h3 className='your_inheritances-h3'>Your inheritances</h3>
                     <div className="your-wills__info-message" data-title={tooltipText.inheritances}>
                     <img src={infoBtn}></img>
-                </div>
+                    </div>
                 </div>
                 {
                     this.state.inheritances.length > 0
