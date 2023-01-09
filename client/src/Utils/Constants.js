@@ -36,7 +36,7 @@ export const chainRPCURL = {
     Mumbai: 'https://rpc-mumbai.maticvigil.com',
     BinanceTestnet: 'https://data-seed-prebsc-1-s1.binance.org:8545',
     BinanceMainnet: 'https://bsc-dataseed.binance.org',
-    EthereumMainnet: 'https://mainnet.infura.io/v3/',
+    EthereumMainnet: 'https://eth-mainnet.g.alchemy.com/v2/qH54waWkb7SvypR0UXSteTWZ5lvyFlJ0',
     Goerli: 'https://goerli.infura.io/v3/',
     AvalancheMainnet: 'https://rpc.ankr.com/avalanche',
     ArbitrumMainnet: 'https://rpc.ankr.com/arbitrum',
