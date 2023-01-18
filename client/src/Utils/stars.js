@@ -20,7 +20,7 @@ export function renderStars() {
     var canvas = document.getElementById("space");
     var c = canvas.getContext("2d");
 
-    var numStars = 5000;
+    var numStars = isMobile ? 1500 : 5000;
     var radius = '0.'+Math.floor(Math.random() * 9) + 1  ;
     var focalLength = canvas.width *2;
     var warp = 0;
