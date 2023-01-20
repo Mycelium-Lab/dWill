@@ -15,6 +15,7 @@ import discordLogo from './content/DiscordLogo.svg'
 import twitterLogo from './content/TwitterLogo.svg'
 import telegramLogo from './content/TelegramLogo.svg'
 import documentLogo from './content/document.svg'
+import logo from './content/logo2-2.svg'
 import Connect from './Utils/Connect';
 import TheWill from './Contract/TheWill.json'
 import { chainIDs, chainRPCURL, NetworkProviders, TheWillAddresses, TokenAddresses } from './Utils/Constants';
@@ -324,9 +325,12 @@ class App extends Component {
         <header className="header _container">
           <div className='header_boxes'>
             <div className="header_boxes-col">
-              <a href="/" className="logo-will">
+              <div>
+                <img src={logo}/>
+              </div>
+              {/* <a href="/" className="logo-will">
                 <span>dWILL</span>
-              </a>
+              </a> */}
               <div className="amount-will">
                 <div>
                   Total bequeathed:
