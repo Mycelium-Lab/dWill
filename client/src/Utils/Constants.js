@@ -32,15 +32,15 @@ export const chainIDs = {
     OptimismMainnet: 10
 }
 export const chainRPCURL = {
-    Polygon: 'https://polygon-mainnet.g.alchemy.com/v2/B0XeubnwCZAJmAmGXAqtYarQGn9VQL1A',
+    Polygon: 'https://polygon-mainnet.g.alchemy.com/v2/PdErp7XIFnF7-ZveImUZxGqI7zwqDvZ6',
     Mumbai: 'https://rpc-mumbai.maticvigil.com',
     BinanceTestnet: 'https://data-seed-prebsc-1-s1.binance.org:8545',
     BinanceMainnet: 'https://bsc-dataseed.binance.org',
-    EthereumMainnet: 'https://eth-mainnet.g.alchemy.com/v2/qH54waWkb7SvypR0UXSteTWZ5lvyFlJ0',
+    EthereumMainnet: 'https://eth-mainnet.g.alchemy.com/v2/XuX_l4hiqr_xf2CBBmdo7GMHcW0ZJ923',
     Goerli: 'https://goerli.infura.io/v3/',
     AvalancheMainnet: 'https://rpc.ankr.com/avalanche',
-    ArbitrumMainnet: 'https://rpc.ankr.com/arbitrum',
-    OptimismMainnet: 'https://mainnet.optimism.io'
+    ArbitrumMainnet: 'https://arb-mainnet.g.alchemy.com/v2/owpRYif1L9NLrHMysh6SPHg_c0eiCYFz',
+    OptimismMainnet: 'https://opt-mainnet.g.alchemy.com/v2/r2Y15pOCmYjzWruKk2eIKmJQEz1WhvDK'
 }
 export const NetworkProviders = {
     Polygon: 'https://explorer.matic.network',
