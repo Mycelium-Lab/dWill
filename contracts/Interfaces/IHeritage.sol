@@ -1,69 +1,61 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
-/// @title Interface for Inheritance
+import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+
 interface IHeritage {
 
-    struct InheritanceData {
+    struct WillData {
         uint256 ID;
         address owner;
         address heir;
-        address token; 
-        uint256 timeWhenWithdraw;
-        //if we said that the withdrawal time will be 25.02.2050, 
-        //when the time when we created the heritage is 25.02.2040 
-        //the time between will be 10 years
-        uint256 timeBetweenWithdrawAndStart;
+        IERC20 token; 
+        uint256 creationTime;
+        uint256 withdrawalTime;
+        uint256 timeInterval;
         uint256 amount;
         bool done;
     }
     
-    event AddAnHeir(
-        uint256 ID,
-        address owner,
-        address heir,
-        address token,
-        uint256 timeWhenWithdraw, 
+    event AddWill(
+        uint256 indexed ID,
+        address indexed owner,
+        address indexed heir,
+        IERC20 token,
+        uint256 withdrawalTime, 
         uint256 amount
     );
 
-    event UpdateWillTimeWhenWithdraw(
-        uint256 ID,
-        address owner,
-        address heir,
-        uint256 newTime
+    event UpdateWithdrawalTime(
+        uint256 indexed ID,
+        uint256 oldWithdrawalTime,
+        uint256 newWithdrawalTime
     );
 
-    event UpdateAnHeir(
-        uint256 ID,
-        address owner,
-        address newHeir
+    event UpdateHeir(
+        uint256 indexed ID,
+        address indexed oldHeir,
+        address indexed newHeir
     );
 
     event UpdateAmount(
-        uint256 ID,
-        address owner,
+        uint256 indexed ID,
+        uint256 oldAmount,
         uint256 newAmount
     );
 
     event RemoveWill(
-        uint256 ID,
-        address owner,
-        address heir
+        uint256 indexed ID,
+        address indexed owner,
+        address indexed heir
     );
 
     event Withdraw(
-        uint256 ID, 
-        address owner, 
-        address heir, 
-        uint256 timeWhenWithdrawn,
+        uint256 indexed ID, 
+        address indexed owner, 
+        address indexed heir, 
+        IERC20 token,
+        uint256 time,
         uint256 amount
     );
-
-    event ResetTimers(
-        uint256[] IDs,
-        address owner,
-        uint256[] newTimes
-    );
-
 }

@@ -7,33 +7,33 @@
       "anonymous": false,
       "inputs": [
         {
-          "indexed": false,
+          "indexed": true,
           "internalType": "uint256",
           "name": "ID",
           "type": "uint256"
         },
         {
-          "indexed": false,
+          "indexed": true,
           "internalType": "address",
           "name": "owner",
           "type": "address"
         },
         {
-          "indexed": false,
+          "indexed": true,
           "internalType": "address",
           "name": "heir",
           "type": "address"
         },
         {
           "indexed": false,
-          "internalType": "address",
+          "internalType": "contract IERC20",
           "name": "token",
           "type": "address"
         },
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "timeWhenWithdraw",
+          "name": "withdrawalTime",
           "type": "uint256"
         },
         {
@@ -43,26 +43,26 @@
           "type": "uint256"
         }
       ],
-      "name": "AddAnHeir",
+      "name": "AddWill",
       "type": "event"
     },
     {
       "anonymous": false,
       "inputs": [
         {
-          "indexed": false,
+          "indexed": true,
           "internalType": "uint256",
           "name": "ID",
           "type": "uint256"
         },
         {
-          "indexed": false,
+          "indexed": true,
           "internalType": "address",
           "name": "owner",
           "type": "address"
         },
         {
-          "indexed": false,
+          "indexed": true,
           "internalType": "address",
           "name": "heir",
           "type": "address"
@@ -75,41 +75,16 @@
       "anonymous": false,
       "inputs": [
         {
-          "indexed": false,
-          "internalType": "uint256[]",
-          "name": "IDs",
-          "type": "uint256[]"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256[]",
-          "name": "newTimes",
-          "type": "uint256[]"
-        }
-      ],
-      "name": "ResetTimers",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
+          "indexed": true,
           "internalType": "uint256",
           "name": "ID",
           "type": "uint256"
         },
         {
           "indexed": false,
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
+          "internalType": "uint256",
+          "name": "oldAmount",
+          "type": "uint256"
         },
         {
           "indexed": false,
@@ -125,83 +100,83 @@
       "anonymous": false,
       "inputs": [
         {
-          "indexed": false,
+          "indexed": true,
           "internalType": "uint256",
           "name": "ID",
           "type": "uint256"
         },
         {
-          "indexed": false,
+          "indexed": true,
           "internalType": "address",
-          "name": "owner",
+          "name": "oldHeir",
           "type": "address"
         },
         {
-          "indexed": false,
+          "indexed": true,
           "internalType": "address",
           "name": "newHeir",
           "type": "address"
         }
       ],
-      "name": "UpdateAnHeir",
+      "name": "UpdateHeir",
       "type": "event"
     },
     {
       "anonymous": false,
       "inputs": [
         {
-          "indexed": false,
+          "indexed": true,
           "internalType": "uint256",
           "name": "ID",
           "type": "uint256"
         },
         {
           "indexed": false,
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "heir",
-          "type": "address"
+          "internalType": "uint256",
+          "name": "oldWithdrawalTime",
+          "type": "uint256"
         },
         {
           "indexed": false,
           "internalType": "uint256",
-          "name": "newTime",
+          "name": "newWithdrawalTime",
           "type": "uint256"
         }
       ],
-      "name": "UpdateWillTimeWhenWithdraw",
+      "name": "UpdateWithdrawalTime",
       "type": "event"
     },
     {
       "anonymous": false,
       "inputs": [
         {
-          "indexed": false,
+          "indexed": true,
           "internalType": "uint256",
           "name": "ID",
           "type": "uint256"
         },
         {
-          "indexed": false,
+          "indexed": true,
           "internalType": "address",
           "name": "owner",
           "type": "address"
         },
         {
-          "indexed": false,
+          "indexed": true,
           "internalType": "address",
           "name": "heir",
           "type": "address"
         },
         {
           "indexed": false,
+          "internalType": "contract IERC20",
+          "name": "token",
+          "type": "address"
+        },
+        {
+          "indexed": false,
           "internalType": "uint256",
-          "name": "timeWhenWithdrawn",
+          "name": "time",
           "type": "uint256"
         },
         {
