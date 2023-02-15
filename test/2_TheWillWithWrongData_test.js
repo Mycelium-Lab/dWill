@@ -22,7 +22,7 @@ const {
       [signer, acc2, acc3, acc4] = await ethers.getSigners()
       const Heritage = await ethers.getContractFactory("dWill");
       const TokenForTests = await ethers.getContractFactory("TokenForTests")
-      heritage = await Heritage.deploy()
+      heritage = await Heritage.deploy('0x0000000000000000000000000000000000000001', 0)
       token = await TokenForTests.deploy('TokenForTests', 'TFT')
       await heritage.deployed()
       await token.deployed()

@@ -3,8 +3,9 @@ pragma solidity 0.8.17;
 
 import './Interfaces/IHeritage.sol';
 import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
+import '@openzeppelin/contracts/access/Ownable.sol';
 
-contract dWill is IHeritage {
+contract dWill is IHeritage, Ownable{
     using SafeERC20 for IERC20;
 
     ///@notice Stores all will/inheritance data.
@@ -23,6 +24,16 @@ contract dWill is IHeritage {
     mapping(address => uint256[]) public heirInheritances;
     ///@notice Index where given ID is in heirInheritances[heir] array. It is independent of heir because each inheritance can have only one heir.
     mapping(uint256 => uint256) private indexOfHeirInheritanceId;
+
+    ///@notice Address the fees are sent to.
+    address public feeCollector;
+    ///@notice Fee amount collected from each withdrawal. Can be in range from 0% to 5%. [10^18 == 100%].
+    uint256 public fee;
+
+    constructor(address _feeCollector, uint256 _fee) {  
+      _setFeeCollector(_feeCollector);
+      _setFee(_fee);
+   }
 
     /**
      * @notice Create the will will provided parameters. Checks if owner has enough allowance and calculates and 
@@ -59,6 +70,7 @@ contract dWill is IHeritage {
             withdrawalTime: withdrawalTime,
             timeInterval: withdrawalTime - block.timestamp,
             amount: amount,
+            fee: fee, // We save fees at the moment of will creation to not have centralization with variable fees.
             done: false
         });
         willData.push(_data);
@@ -248,8 +260,16 @@ contract dWill is IHeritage {
         if (allowance < amount) {
             amount = allowance;
         }
-        _data.token.safeTransferFrom(_data.owner, _data.heir, amount);
         willAmountForToken[_data.owner][_data.token] -= amount;
+
+        uint256 feeAmount = amount * _data.fee / 1 ether;
+        if(feeAmount > 0){
+            _data.token.safeTransferFrom(_data.owner, feeCollector, feeAmount);
+            emit CollectFee(ID, _data.token, feeAmount);
+
+            amount -= feeAmount;
+        }
+        _data.token.safeTransferFrom(_data.owner, _data.heir, amount);
 
         emit Withdraw(ID, _data.owner, _data.heir, _data.token, block.timestamp, amount);
     }
@@ -263,7 +283,7 @@ contract dWill is IHeritage {
     **/
     function getWill(address owner, uint256 index) external view returns(WillData memory will) {
         uint256[] memory _ownerWills = ownerWills[owner];
-        require(index < _ownerWills.length, "dWill: index must be lower _heirInheritances.length");
+        require(index < _ownerWills.length, "dWill: Index must be lower _heirInheritances.length");
 
         will = willData[_ownerWills[index]];
     }
@@ -277,7 +297,7 @@ contract dWill is IHeritage {
     **/
     function getInheritance(address heir, uint256 index) external view returns(WillData memory inheritance) {
         uint256[] memory _heirInheritances = heirInheritances[heir];
-        require(index < _heirInheritances.length, "dWill: index must be lower _heirInheritances.length");
+        require(index < _heirInheritances.length, "dWill: Index must be lower _heirInheritances.length");
 
         inheritance = willData[_heirInheritances[index]];
     }
@@ -293,5 +313,27 @@ contract dWill is IHeritage {
     function _checkWillAvailability(WillData memory _data) internal view {
         require(_data.owner == msg.sender, "dWill: Caller is not the owner");
         require(_data.done == false, "dWill: Already withdrawn");
+    }
+
+    function setFeeCollector(address _feeCollector) external onlyOwner {
+        _setFeeCollector(_feeCollector);
+    }
+
+    function setFee(uint256 _fee) external onlyOwner {
+        _setFee(_fee);
+    }
+
+    function _setFeeCollector(address _feeCollector) internal {
+        require (_feeCollector != address(0), "dWill: Can't set feeCollector to address(0)");
+
+        emit SetFeeCollector(feeCollector, _feeCollector);
+        feeCollector = _feeCollector;
+    }
+
+    function _setFee(uint256 _fee) internal {
+        require (_fee <= 50000000000000000, "dWill: Fee must be lower or equal 5%");
+
+        emit SetFee(fee, _fee);
+        fee = _fee;
     }
 }

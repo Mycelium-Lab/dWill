@@ -14,6 +14,7 @@ struct WillData {
   uint256 withdrawalTime;
   uint256 timeInterval;
   uint256 amount;
+  uint256 fee;
   bool done;
 }
 ```
@@ -52,6 +53,24 @@ event RemoveWill(uint256 ID, address owner, address heir)
 
 ```solidity
 event Withdraw(uint256 ID, address owner, address heir, contract IERC20 token, uint256 time, uint256 amount)
+```
+
+### CollectFee
+
+```solidity
+event CollectFee(uint256 ID, contract IERC20 token, uint256 amount)
+```
+
+### SetFeeCollector
+
+```solidity
+event SetFeeCollector(address oldFeeCollector, address newFeeCollector)
+```
+
+### SetFee
+
+```solidity
+event SetFee(uint256 oldFee, uint256 newFee)
 ```
 
 ## dWill
@@ -105,6 +124,28 @@ mapping(uint256 => uint256) indexOfHeirInheritanceId
 ```
 
 Index where given ID is in heirInheritances[heir] array. It is independent of heir because each inheritance can have only one heir.
+
+### feeCollector
+
+```solidity
+address feeCollector
+```
+
+Address the fees are sent to.
+
+### fee
+
+```solidity
+uint256 fee
+```
+
+Fee amount collected from each withdrawal. Can be in range from 0% to 5%. [10^18 == 100%].
+
+### constructor
+
+```solidity
+constructor(address _feeCollector, uint256 _fee) public
+```
 
 ### addWill
 
@@ -298,6 +339,30 @@ function getInheritancesLength(address heir) external view returns (uint256 _len
 
 ```solidity
 function _checkWillAvailability(struct IHeritage.WillData _data) internal view
+```
+
+### setFeeCollector
+
+```solidity
+function setFeeCollector(address _feeCollector) external
+```
+
+### setFee
+
+```solidity
+function setFee(uint256 _fee) external
+```
+
+### _setFeeCollector
+
+```solidity
+function _setFeeCollector(address _feeCollector) internal
+```
+
+### _setFee
+
+```solidity
+function _setFee(uint256 _fee) internal
 ```
 
 ## TokenForTests

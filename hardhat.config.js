@@ -3,6 +3,9 @@ require('dotenv').config()
 require('solidity-docgen')
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
+  etherscan: {
+    apiKey: process.env.ETHERSCAN,
+  },
   networks: {
     testnet: {
       url: "http://127.0.0.1:8545",

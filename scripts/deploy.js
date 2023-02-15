@@ -9,7 +9,7 @@ const hre = require("hardhat");
 async function main() {
   const dWill = await hre.ethers.getContractFactory("dWill");
   // const Token = await hre.ethers.getContractFactory("TokenForTests");
-  const _dWill = await dWill.deploy()
+  const _dWill = await dWill.deploy('0xE8D562606F35CB14dA3E8faB1174F9B5AE8319c4', '30000000000000000')
   // const tokenForTests = await Token.deploy("TokenForTests", "TFT")
   await _dWill.deployed()
   // await tokenForTests.deployed()

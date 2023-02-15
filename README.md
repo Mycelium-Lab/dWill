@@ -13,6 +13,8 @@ Thanks to smart contract technology, *dWill* works completely in a decentralized
 
 3. Compile all contracts before running migrations `npx hardhat compile`
 
+4. Deploy with `npx hardhat run ./scripts/deploy.js --network <network>`
+
 
 ## Testing
 

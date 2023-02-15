@@ -14,6 +14,7 @@ interface IHeritage {
         uint256 withdrawalTime;
         uint256 timeInterval;
         uint256 amount;
+        uint256 fee;
         bool done;
     }
     
@@ -57,5 +58,21 @@ interface IHeritage {
         IERC20 token,
         uint256 time,
         uint256 amount
+    );
+
+    event CollectFee(
+        uint256 indexed ID, 
+        IERC20 indexed token,
+        uint256 amount
+    );
+
+    event SetFeeCollector(
+        address indexed oldFeeCollector,
+        address indexed newFeeCollector
+    );
+
+    event SetFee(
+        uint256 oldFee,
+        uint256 newFee
     );
 }
