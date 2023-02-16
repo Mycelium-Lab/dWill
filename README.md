@@ -26,6 +26,14 @@ Docs to all dWill functions are located in `/docs/index.md`.
 `dWill.sol` also contains comments to all functions describing what the function does, parameters and return values.
 
 
+## Deployments
+1. polygon: `0xe131144eE7E77a34e102048C62Eca81f50CF8E0e`
+2. bnb: `0x4d55f19efa3488f8d258c66154179Bd9CDD02821`
+3. arbitrum: `0x6979155bF48667DF8B809E8BBc4986B20DB612ED`
+4. avalanche: `0xf7a10daA5fE909012f4D13A89c5988e9FfCf5d79`
+5. optimism: `0x6979155bF48667DF8B809E8BBc4986B20DB612ED`
+
+
 # Frontend
 
 ........
