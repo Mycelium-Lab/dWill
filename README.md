@@ -27,17 +27,9 @@ Docs to all dWill functions are located in `/docs/index.md`.
 
 
 ## Deployments
-1. polygon: `0xe131144eE7E77a34e102048C62Eca81f50CF8E0e`
-2. bnb: `0x4d55f19efa3488f8d258c66154179Bd9CDD02821`
-3. arbitrum: `0x6979155bF48667DF8B809E8BBc4986B20DB612ED`
-4. avalanche: `0xf7a10daA5fE909012f4D13A89c5988e9FfCf5d79`
-5. optimism: `0x6979155bF48667DF8B809E8BBc4986B20DB612ED`
-
-
-# Frontend
-
-........
-
-# Backend
-
-........
+1. polygon: `0x5f193874FBbEbc4bF792CDb51B763e90596773F6`
+2. bnb: `0xE93519C3a0Df81D47AD044bc93e7e041E2ff564A`
+3. arbitrum: `0x9E9C2F2E5B4B2456F9D63F6eFC163A889E71d777`
+4. avalanche: `0x79707Aa99190db9403d911BA5e432d90772b5367`
+5. optimism: still in deployment
+6. ethereum: still in deployment [tx: `0x9585d68658be6a5a8cf970991ed7b82c912bbd3b21198bf1ea453c12174eaa0f`]

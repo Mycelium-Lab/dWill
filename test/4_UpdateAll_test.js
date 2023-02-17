@@ -55,4 +55,38 @@ const {
         assert(_updatedHeritage.withdrawalTime.toString() == withdrawalTime.toString(), 'Time updated')
         assert(_updatedHeritage.amount.toString() == ethers.utils.parseEther(tokenAmountPerOne.toString()).toString(), 'Amount updated')
     })
+
+    it('should update amount to unlimited', async () => {
+        //create allowance to contract
+        await token.increaseAllowance(heritage.address, ethers.constants.MaxUint256)
+        heir = acc2
+        await heritage.addWill(heir.address, token.address, withdrawalTime, ethers.utils.parseEther(tokenAmountPerOne.toString()));
+        //new amount
+        await heritage.update(
+            ID,                  //ID
+            withdrawalTime,   //newTime
+            heir.address,       //_heir
+            ethers.constants.MaxUint256,  //amount
+        )
+        const _updatedHeritage = await heritage.willData(ID)
+        assert(_updatedHeritage.amount.toString() === ethers.constants.MaxUint256.toString(), 'Amount updated')
+        await expect(heritage.addWill(heir.address, token.address, withdrawalTime, 1))
+            .to.be.revertedWith("dWill: Total will for token is more than max uint256")
+    })
+
+    it('should update amount to unlimited', async () => {
+        //create allowance to contract
+        await token.increaseAllowance(heritage.address, ethers.constants.MaxUint256)
+        heir = acc2
+        await heritage.addWill(heir.address, token.address, withdrawalTime, 10);
+        await heritage.addWill(heir.address, token.address, withdrawalTime, 10);
+        //new amount
+        await expect(heritage.update(
+            ID,                  //ID
+            withdrawalTime,   //newTime
+            heir.address,       //_heir
+            ethers.constants.MaxUint256,  //amount
+        )).to.be.revertedWith("dWill: Total will for token is more than max uint256")
+    })
+
 })

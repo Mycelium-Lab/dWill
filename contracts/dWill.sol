@@ -57,7 +57,10 @@ contract dWill is IHeritage, Ownable{
         require(amount != 0, "dWill: Amount is 0");
 
         uint256 allowance = token.allowance(msg.sender, address(this));
-        willAmountForToken[msg.sender][token] += amount;
+        unchecked {
+            willAmountForToken[msg.sender][token] += amount;
+            require(willAmountForToken[msg.sender][token] >= amount, "dWill: Total will for token is more than max uint256");
+        }
         require(allowance >= willAmountForToken[msg.sender][token], 'dWill: Not enough allowance');
        
         ID = willData.length;
@@ -157,7 +160,13 @@ contract dWill is IHeritage, Ownable{
         _checkWillAvailability(_data);
         
         uint256 allowance = _data.token.allowance(_data.owner, address(this));
-        willAmountForToken[_data.owner][_data.token] = willAmountForToken[_data.owner][_data.token] + _amount - _data.amount;
+
+        unchecked {
+            willAmountForToken[_data.owner][_data.token] = willAmountForToken[_data.owner][_data.token] - _data.amount + _amount;
+            if(_amount > _data.amount){// If increased
+                require(willAmountForToken[_data.owner][_data.token] >= _amount - _data.amount, "dWill: Total will for token is more than max uint256");
+            }
+        }
         require(allowance >= willAmountForToken[_data.owner][_data.token], 'dWill: Not enough allowance');
 
         emit UpdateAmount(ID, _data.amount, _amount);
