@@ -73,14 +73,6 @@ event SetFeeCollector(address oldFeeCollector, address newFeeCollector)
 event SetFee(uint256 oldFee, uint256 newFee)
 ```
 
-## TokenForTests
-
-### constructor
-
-```solidity
-constructor(string name, string symbol) public
-```
-
 ## dWill
 
 ### willData
@@ -371,5 +363,13 @@ function _setFeeCollector(address _feeCollector) internal
 
 ```solidity
 function _setFee(uint256 _fee) internal
+```
+
+## TokenForTests
+
+### constructor
+
+```solidity
+constructor(string name, string symbol) public
 ```
 
