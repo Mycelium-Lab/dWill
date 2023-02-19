@@ -2,290 +2,347 @@
 pragma solidity 0.8.17;
 
 import './Interfaces/IHeritage.sol';
-import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
+import '@openzeppelin/contracts/access/Ownable.sol';
 
-///@title Inheritance
-///@notice Allows you to transfer ERC-20 tokens to inheritance
-contract dWill is IHeritage {
+contract dWill is IHeritage, Ownable{
+    using SafeERC20 for IERC20;
 
-    ///@notice stores all (wills) inheritances data
-    InheritanceData[] public inheritanceData;
+    ///@notice Stores all will/inheritance data.
+    /// For clarity we use "will" to refer to wills created by owner and "inheritance" to refer to inheritance intended for heir,
+    /// however "will" and "inheritance" refer to the same data types.
+    WillData[] public willData;
     
-    ///@notice the IDs of wills (inheritance) made by a person
-    mapping(address => uint256[]) public inheritancesOwner;
+    ///@notice The IDs of wills made by a person.
+    mapping(address => uint256[]) public ownerWills;
+    ///@notice Index where given ID is in ownerWills[owner] array. It is independent of owner because each will can have only one owner.
+    mapping(uint256 => uint256) private indexOfOwnerWillsId;
+    ///@notice Owner's token amounts in all their wills. Used to check if owner has enough allowance for new will/to increase will amount.
+    mapping(address => mapping(IERC20 => uint256)) public willAmountForToken;
 
-    ///@notice the IDs of wills intended for a person
-    mapping(address => uint256[]) public inheritancesHeir;
+    ///@notice The IDs of inheritances intended for a person.
+    mapping(address => uint256[]) public heirInheritances;
+    ///@notice Index where given ID is in heirInheritances[heir] array. It is independent of heir because each inheritance can have only one heir.
+    mapping(uint256 => uint256) private indexOfHeirInheritanceId;
 
-    ///@notice creates the will (heritage)
-    ///@param heir address to whom the tokens are intended
-    ///@param token address of token to send
-    ///@param timeWhenWithdraw the time when the heir can take the tokens
-    ///@param amount amount of tokens to send
-    function addNewWill(
-        address heir, 
-        address token,
-        uint256 timeWhenWithdraw,
+    ///@notice Address the fees are sent to.
+    address public feeCollector;
+    ///@notice Fee amount collected from each withdrawal. Can be in range from 0% to 5%. [10^18 == 100%].
+    uint256 public fee;
+
+    constructor(address _feeCollector, uint256 _fee) {  
+      _setFeeCollector(_feeCollector);
+      _setFee(_fee);
+   }
+
+    /**
+     * @notice Create the will will provided parameters. Checks if owner has enough allowance and calculates and 
+        calculates time interval for future use in resetTimers(). Emits AddWill event.
+     * @param heir - Address to whom the tokens are inherited to.
+     * @param token - Token to use in will.
+     * @param withdrawalTime - Time when the heir will be able to withdraw tokens.
+     * @param amount - Amount of tokens to send.
+     *
+     * @return ID - Id of the created will
+    **/
+    function addWill(
+        address heir,
+        IERC20 token,
+        uint256 withdrawalTime,
         uint256 amount
-    ) public {
+    ) external returns (uint256 ID){
         require(heir != address(0), "dWill: Heir is address(0)");
-        require(token != address(0), "dWill: Token is address(0)");
-        require(timeWhenWithdraw > block.timestamp, "dWill: Time when withdraw is lower then now");
-        require(amount != 0, "dWill: Amount 0");
-        IERC20 _token = IERC20(token);
-        uint256 allWillsOwnerAmountThisToken = getAllWillsAmountThisToken(msg.sender, token);
-        uint256 allowance = _token.allowance(msg.sender, address(this));
-        //check if allowance enough for all wills
-        require(allowance >= amount + allWillsOwnerAmountThisToken, 'dWill: Not enough allowance');
-        uint256 _dataLength = inheritanceData.length;
-        //create new data
-        InheritanceData memory _data = InheritanceData(
-            _dataLength, //ID
-            msg.sender, //owner
-            heir,
-            token,
-            timeWhenWithdraw,
-            timeWhenWithdraw - block.timestamp,
-            amount,
-            false       //done
-        );
-        inheritancesOwner[msg.sender].push(_dataLength);
-        inheritancesHeir[heir].push(_dataLength);
-        //add to storage
-        inheritanceData.push(_data);
-        emit AddAnHeir(_dataLength, msg.sender, heir, token, timeWhenWithdraw, amount);
-    }
+        require(address(token) != address(0), "dWill: Token is address(0)");
+        require(withdrawalTime > block.timestamp, "dWill: Withdrawal time has already expired");
+        require(amount != 0, "dWill: Amount is 0");
 
-    ///@notice reset timers to all person wills
-    ///@custom:example if we said that the withdrawal time will be 25.02.2050,
-    ///@custom:example and the time when we created the heritage is 25.02.2040 
-    ///@custom:example the time between will be 10 years
-    ///@custom:example but if in 25.02.2041 we will reset timers
-    ///@custom:example withdrawal time will be 25.02.2051
-    ///@custom:example still 10 years
-    ///@dev in the loop of senders will new time when withraw will be will.timeBetweenWithdrawAndStart + block.timestamp
-    function resetTimers() public {
-        uint256[] memory _inheritancesOwner = inheritancesOwner[msg.sender];
-        uint256[] memory _newTimes = new uint256[](_inheritancesOwner.length);
-        for (uint256 i; i < _inheritancesOwner.length; i++) {
-            InheritanceData memory _data = inheritanceData[_inheritancesOwner[i]];
-            uint256 _newTimeWhenWithdraw = _data.timeBetweenWithdrawAndStart + block.timestamp;
-            _data.timeWhenWithdraw = _newTimeWhenWithdraw;
-            _newTimes[i] = _newTimeWhenWithdraw;
-            inheritanceData[_inheritancesOwner[i]] = _data;
+        uint256 allowance = token.allowance(msg.sender, address(this));
+        unchecked {
+            willAmountForToken[msg.sender][token] += amount;
+            require(willAmountForToken[msg.sender][token] >= amount, "dWill: Total will for token is more than max uint256");
         }
-        emit ResetTimers(_inheritancesOwner, msg.sender, _newTimes);
+        require(allowance >= willAmountForToken[msg.sender][token], 'dWill: Not enough allowance');
+       
+        ID = willData.length;
+        WillData memory _data = WillData({
+            ID: ID,
+            owner: msg.sender,
+            heir: heir,
+            token: token,
+            creationTime: block.timestamp,
+            withdrawalTime: withdrawalTime,
+            timeInterval: withdrawalTime - block.timestamp,
+            amount: amount,
+            fee: fee, // We save fees at the moment of will creation to not have centralization with variable fees.
+            done: false
+        });
+        willData.push(_data);
+
+        // We write indexes of ID in ownerWills/heirInheritances arrays to the mappings to get rid of for-loops later.
+        indexOfOwnerWillsId[ID] = ownerWills[msg.sender].length;
+        indexOfHeirInheritanceId[ID] = heirInheritances[heir].length;
+
+        ownerWills[msg.sender].push(ID);
+        heirInheritances[heir].push(ID);
+
+        emit AddWill(ID, msg.sender, heir, token, withdrawalTime, amount);
     }
 
-    ///@notice reset timers to only one person will
-    ///@param ID of the will that needs to reset timers
-    function resetTimersAtOne(uint256 ID) public {
-        InheritanceData memory _data = inheritanceData[ID];
-        require(_data.owner == msg.sender, "dWill: You not owner");
-        uint256 _newTimeWhenWithdraw = _data.timeBetweenWithdrawAndStart + block.timestamp;
-        _data.timeWhenWithdraw = _newTimeWhenWithdraw;
-        inheritanceData[ID] = _data;
-        uint256[] memory _newTimes = new uint256[](1);
-        _newTimes[0] = _newTimeWhenWithdraw;
-        uint256[] memory _IDs = new uint256[](1);
-        _IDs[0] = ID;
-        emit ResetTimers(_IDs, msg.sender, _newTimes);
+    /**
+     * @notice Reset timers for all sender's wills depending on calculated timeInterval. Emits UpdateWithdrawalTime events.
+     * @param IDs - IDs of wills to reset timers for.
+     * @custom:example If heritage was created on 25.02.2040 and the timeInterval is 10 years
+     * @custom:example then the withdrawal time is 25.02.2050,
+     * @custom:example but if in 25.02.2041 the resetTimers is called
+     * @custom:example withdrawal time will be 25.02.2051 (25.02.2041 + timeInterval)
+    **/
+    function resetTimers(uint256[] memory IDs) external {
+        for (uint256 i; i < IDs.length; i++) {
+            WillData storage _data = willData[IDs[i]];
+            _checkWillAvailability(_data);
+
+            uint256 _withdrawalTime = _data.timeInterval + block.timestamp;
+            emit UpdateWithdrawalTime(IDs[i], _data.withdrawalTime, _withdrawalTime);
+            _data.withdrawalTime = _withdrawalTime;
+        }
     }
 
-    ///@notice update time when heir can withdraw
-    ///@param ID of the will that needs to update time when withdraw
-    ///@param newTime new time when withdraw
-    ///@dev we are also updating the time between the withdrawal of funds and the start, because the new withdrawal time will be increased
-    function updateWillTimeWhenWithdraw(uint256 ID, uint256 newTime) public {
-        InheritanceData memory _data = inheritanceData[ID];
-        require(_data.owner == msg.sender, "dWill: You not owner");
-        require(newTime > block.timestamp, "dWill: Time when withdraw is lower then now");
-        require(_data.done == false, "dWill: Already withdrawn");
-        //get time when created
-        uint256 _timeWhenCreated = _data.timeWhenWithdraw - _data.timeBetweenWithdrawAndStart;
-        _data.timeWhenWithdraw = newTime;
-        //set new time when created
-        _data.timeBetweenWithdrawAndStart = newTime - _timeWhenCreated;
-        inheritanceData[ID] = _data;
-        emit UpdateWillTimeWhenWithdraw(ID, msg.sender, _data.heir, newTime);
+    /**
+     * @notice Update time when heir can withdraw their tokens and timeInterval. Emits UpdateWithdrawalTime event.
+     * @param ID - ID of will to update.
+     * @param _withdrawalTime - New withdrawal time.
+    **/
+    function updateWithdrawalTime(uint256 ID, uint256 _withdrawalTime) public {
+        WillData storage _data = willData[ID];
+        _checkWillAvailability(_data);
+        require(_withdrawalTime > _data.creationTime, "dWill: Withdrawal time has already expired");
+
+        emit UpdateWithdrawalTime(ID, _data.withdrawalTime, _withdrawalTime);
+        _data.withdrawalTime = _withdrawalTime;
+        _data.timeInterval = _withdrawalTime - _data.creationTime;
     }
 
-    ///@notice set new heir to the will
-    ///@param ID id of the will to update
-    ///@param _heir new heir of the will
-    function updateAnHeir(uint256 ID, address _heir) public {
-        InheritanceData memory _data = inheritanceData[ID];
-        require(_data.owner == msg.sender, "dWill: You not owner");
-        require(_data.heir != _heir, "dWill: Same heir");
-        require(_data.heir != address(0), "dWill: Heir is address(0)");
-        require(_data.done == false, "dWill: Already withdrawn");
-        uint256[] memory _inheritancesHeir = inheritancesHeir[_data.heir];
-        for (uint256 i; i < _inheritancesHeir.length; i++) {
-            if (_inheritancesHeir[i] == ID) {
-                inheritancesHeir[_data.heir][i] = _inheritancesHeir[_inheritancesHeir.length-1];
-                inheritancesHeir[_data.heir].pop();
+    /**
+     * @notice Sets new heir to the will. Emits UpdateHeir event.
+     * @param ID - Id of the will to update.
+     * @param _heir - New heir of the will.
+    **/
+    function updateHeir(uint256 ID, address _heir) public {
+        WillData storage _data = willData[ID];
+        _checkWillAvailability(_data);
+        require(_data.heir != _heir, "dWill: New heir is the same");
+        require(_heir != address(0), "dWill: Heir is address(0)");
+
+        uint256[] storage _heirInheritances = heirInheritances[_data.heir];
+
+        uint256 i = indexOfHeirInheritanceId[ID];
+        uint256 _length = _heirInheritances.length - 1;
+        if(i != _length){
+            _heirInheritances[i] = _heirInheritances[_length];
+            indexOfHeirInheritanceId[_heirInheritances[i]] = i;
+        }
+        _heirInheritances.pop();
+
+        indexOfHeirInheritanceId[ID] = heirInheritances[_heir].length;
+        heirInheritances[_heir].push(ID);
+
+        emit UpdateHeir(ID, _data.heir, _heir);
+        _data.heir = _heir;
+    }
+
+    /**
+     * @notice Set new amount to the will. Checks if owner has enough allowance. Emits UpdateAmount event.
+     * @param ID - Id of the will to update.
+     * @param _amount - New amount of the will.
+    **/
+    function updateAmount(uint256 ID, uint256 _amount) public {
+        WillData storage _data = willData[ID];
+        _checkWillAvailability(_data);
+        
+        uint256 allowance = _data.token.allowance(_data.owner, address(this));
+
+        unchecked {
+            willAmountForToken[_data.owner][_data.token] = willAmountForToken[_data.owner][_data.token] - _data.amount + _amount;
+            if(_amount > _data.amount){// If increased
+                require(willAmountForToken[_data.owner][_data.token] >= _amount - _data.amount, "dWill: Total will for token is more than max uint256");
             }
         }
-        inheritancesHeir[_heir].push(ID);
-        _data.heir = _heir;
-        inheritanceData[ID] = _data;
-        emit UpdateAnHeir(ID, msg.sender, _heir);
+        require(allowance >= willAmountForToken[_data.owner][_data.token], 'dWill: Not enough allowance');
+
+        emit UpdateAmount(ID, _data.amount, _amount);
+        _data.amount = _amount;
     }
 
-    ///@notice set new amount to the will
-    ///@param ID id of the will to update
-    ///@param amount new amount of the will
-    function updateAmount(uint256 ID, uint256 amount) public {
-        InheritanceData memory _data = inheritanceData[ID];
-        require(_data.owner == msg.sender, "dWill: You not owner");
-        require(_data.done == false, "dWill: Already withdrawn");
-        require(amount != 0, "dWill: Amount 0");
-        require(amount != _data.amount, "dWill: Amount is the same");
-        IERC20 _token = IERC20(_data.token);
-        uint256 allowance = _token.allowance(msg.sender, address(this));
-        if (amount > _data.amount) {
-            uint256 allWillsOwnerAmountThisToken = getAllWillsAmountThisToken(msg.sender, _data.token);
-            //check if allowance enough for all wills
-            require(allowance >= allWillsOwnerAmountThisToken - _data.amount + amount, 'dWill: Not enough allowance');
-        } else {
-            require(allowance >= amount, 'dWill: Not enough allowance');
-        }
-        _data.amount = amount;
-        inheritanceData[ID] = _data;
-        emit UpdateAmount(ID, _data.owner, amount);
-    }
-
-    ///@notice update time when withdraw, heir, amount - calls when boolean variables >= 2
-    ///@param ID id of the will to update
-    ///@param newTime new time when withdraw
-    ///@param _heir new heir of the will
-    ///@param amount new amount of the will
-    ///@param _updateTime to see if we need to update time
-    ///@param _updateHeir to see if we need to update heir
-    ///@param _updateAmount to see if we need to update amount
+    /**
+     * @notice Batch update will values.
+     * @param ID - Id of the inheritwillance to update.
+     * @param _withdrawalTime - New will withdrawal time.
+     * @param _heir - New heir of the will.
+     * @param _amount - New amount of the will.
+    **/
     function update(
         uint256 ID, 
-        uint256 newTime, 
+        uint256 _withdrawalTime, 
         address _heir, 
-        uint256 amount,
-        bool _updateTime,
-        bool _updateHeir,
-        bool _updateAmount
-    ) public {
-        if (_updateTime == true) {
-            updateWillTimeWhenWithdraw(ID, newTime);
+        uint256 _amount
+    ) external {
+        WillData memory _data = willData[ID];
+        if(_withdrawalTime != _data.withdrawalTime){
+            updateWithdrawalTime(ID, _withdrawalTime);
         }
-        if (_updateHeir == true) {
-            updateAnHeir(ID, _heir);
+        if (_heir != _data.heir) {
+            updateHeir(ID, _heir);
         }
-        if (_updateAmount == true) {
-            updateAmount(ID, amount);
+        if (_amount != _data.amount) {
+            updateAmount(ID, _amount);
         }
     }
 
-    ///@notice remove will from storage
-    ///@param ID id of the will to remove
-    ///@dev we're also updating inheritancesOwner and inheritancesHeir and transfering token to owner
-    function removeWill(uint256 ID) public {
-        InheritanceData memory _data = inheritanceData[ID];
-        require(_data.owner == msg.sender, "dWill: You not owner");
-        require(_data.done == false, "dWill: Already withdrawn");
-        uint256[] memory _inheritancesOwner = inheritancesOwner[msg.sender];
-        uint256[] memory _inheritancesHeir = inheritancesHeir[_data.heir];
-        for (uint256 i; i < _inheritancesOwner.length; i++) {
-            if (_inheritancesOwner[i] == ID) {
-                inheritancesOwner[msg.sender][i] = _inheritancesOwner[_inheritancesOwner.length-1];
-                inheritancesOwner[msg.sender].pop();
-            }
+    /**
+     * @notice Remove will from storage. Emits UpdaRemoveWillteHeir event.
+     * @param ID - Id of the will to remove.
+    **/
+    function removeWill(uint256 ID) external {
+        WillData memory _data = willData[ID];
+        _checkWillAvailability(_data);
+
+        uint256[] storage _ownerWills = ownerWills[_data.owner];
+        uint256 i = indexOfOwnerWillsId[ID];
+        uint256 _length = _ownerWills.length - 1;
+        if(i != _length){
+            _ownerWills[i] = _ownerWills[_length];
+            indexOfOwnerWillsId[_ownerWills[i]] = i;
         }
-        for (uint256 i; i < _inheritancesHeir.length; i++) {
-            if (_inheritancesHeir[i] == ID) {
-                inheritancesHeir[_data.heir][i] = _inheritancesHeir[_inheritancesHeir.length-1];
-                inheritancesHeir[_data.heir].pop();
-            }
+        _ownerWills.pop();
+
+        uint256[] storage _heirInheritances = heirInheritances[_data.heir];
+        i = indexOfHeirInheritanceId[ID];
+        _length = _heirInheritances.length - 1;
+        if(i != _length){
+            _heirInheritances[i] = _heirInheritances[_length];
+            indexOfHeirInheritanceId[_heirInheritances[i]] = i;
         }
-        delete inheritanceData[ID];
-        emit RemoveWill(ID, msg.sender, _data.heir);
+        _heirInheritances.pop();
+
+        delete willData[ID];
+        willAmountForToken[_data.owner][_data.token] -= _data.amount;
+        emit RemoveWill(ID, _data.owner, _data.heir);
     }
 
-    ///@notice function for heir to withdraw tokens
-    ///@param ID id of the will to withdraw
-    ///@dev we're also updating inheritancesOwner and inheritancesHeir
-    function withdraw(uint256 ID) public {
-        InheritanceData memory _data = inheritanceData[ID];
-        require(msg.sender == _data.heir, "dWill: You not heir");
-        require(block.timestamp >= _data.timeWhenWithdraw, "dWill: Time is not over yet");
+    /**
+     * @notice Withdraw tokens to heir. Emits Withdraw event.
+     * @param ID - Id of the inheritance to withdraw.
+     *
+     * @return amount - Amount withdrawn.
+    **/
+    function withdraw(uint256 ID) external returns(uint256 amount){
+        WillData storage _data = willData[ID];
+        require(block.timestamp >= _data.withdrawalTime, "dWill: Withdrawal is not yet available");
+        require(msg.sender == _data.heir, "dWill: Caller is not the heir");
         require(_data.done == false, "dWill: Already withdrawn");
+
         _data.done = true;
-        uint256[] memory _inheritancesOwner = inheritancesOwner[_data.owner];
-        uint256[] memory _inheritancesHeir = inheritancesHeir[_data.heir];
-        for (uint256 i; i < _inheritancesOwner.length; i++) {
-            if (_inheritancesOwner[i] == ID) {
-                inheritancesOwner[_data.owner][i] = _inheritancesOwner[_inheritancesOwner.length-1];
-                inheritancesOwner[_data.owner].pop();
-            }
+        uint256[] storage _ownerWills = ownerWills[_data.owner];
+        uint256 i = indexOfOwnerWillsId[ID];
+        uint256 _length = _ownerWills.length - 1;
+        if(i != _length){
+            _ownerWills[i] = _ownerWills[_length];
+            indexOfOwnerWillsId[_ownerWills[i]] = i;
         }
-        for (uint256 i; i < _inheritancesHeir.length; i++) {
-            if (_inheritancesHeir[i] == ID) {
-                inheritancesHeir[_data.heir][i] = _inheritancesHeir[_inheritancesHeir.length-1];
-                inheritancesHeir[_data.heir].pop();
-            }
+        _ownerWills.pop();
+
+        uint256[] storage _heirInheritances = heirInheritances[_data.heir];
+        i = indexOfHeirInheritanceId[ID];
+        _length = _heirInheritances.length - 1;
+        if(i != _length){
+            _heirInheritances[i] = _heirInheritances[_length];
+            indexOfHeirInheritanceId[_heirInheritances[i]] = i;
         }
-        IERC20 _token = IERC20(_data.token);
-        uint256 allowance = _token.allowance(_data.owner, address(this));
-        uint256 balance = _token.balanceOf(_data.owner);
-        uint256 amount;
-        if (balance < _data.amount) {
-            _token.transferFrom(_data.owner, _data.heir, balance);
+        _heirInheritances.pop();
+
+        uint256 balance = _data.token.balanceOf(_data.owner);
+        uint256 allowance = _data.token.allowance(_data.owner, address(this));
+        amount = _data.amount;
+        if (balance < amount) {
             amount = balance;
-        } else if (allowance < _data.amount) {
-            _token.transferFrom(_data.owner, _data.heir, allowance);
+        } 
+        if (allowance < amount) {
             amount = allowance;
-        } else {
-            _token.transferFrom(_data.owner, _data.heir, _data.amount);
-            amount = _data.amount;
         }
-        emit Withdraw(ID, _data.owner, msg.sender, block.timestamp, amount);
-        inheritanceData[ID] = _data;
+        willAmountForToken[_data.owner][_data.token] -= amount;
+
+        uint256 feeAmount = amount * _data.fee / 1 ether;
+        if(feeAmount > 0){
+            _data.token.safeTransferFrom(_data.owner, feeCollector, feeAmount);
+            emit CollectFee(ID, _data.token, feeAmount);
+
+            amount -= feeAmount;
+        }
+        _data.token.safeTransferFrom(_data.owner, _data.heir, amount);
+
+        emit Withdraw(ID, _data.owner, _data.heir, _data.token, block.timestamp, amount);
     }
 
-    ///@notice returns all user's wills amount
-    ///@param owner owner of the wills
-    ///@return uint256 amount
-    function getAllWillsAmountThisToken(address owner, address token) public view returns(uint256) {
-        uint256[] memory _inheritancesOwner = inheritancesOwner[owner];
-        uint256 _amount;
-        for (uint256 i; i < _inheritancesOwner.length; i++) {
-            InheritanceData memory _data = inheritanceData[_inheritancesOwner[i]];
-            if (token == _data.token) {
-                _amount += inheritanceData[_inheritancesOwner[i]].amount;
-            } 
-        }
-        return _amount;
+    /**
+     * @notice Returns owner's will at index.
+     * @param owner - Owner of the will.
+     * @param index - Index of the will in ownerWills to return.
+     *
+     * @return will - Info on will.
+    **/
+    function getWill(address owner, uint256 index) external view returns(WillData memory will) {
+        uint256[] memory _ownerWills = ownerWills[owner];
+        require(index < _ownerWills.length, "dWill: Index must be lower _heirInheritances.length");
+
+        will = willData[_ownerWills[index]];
     }
 
-    ///@notice returns all user's wills
-    ///@param owner owner of the wills
-    ///@return InheritanceData[]
-    function getAllWills(address owner) public view returns(InheritanceData[] memory) {
-        uint256[] memory _inheritancesOwner = inheritancesOwner[owner];
-        InheritanceData[] memory _data = new InheritanceData[](_inheritancesOwner.length);
-        for (uint256 i; i < _inheritancesOwner.length; i++) {
-            _data[i] = inheritanceData[_inheritancesOwner[i]];
-        }
-        return _data;
+    /**
+     * @notice Returns user's inheritance  at index.
+     * @param heir - Heir of the inheritance.
+     * @param index - Index of the inheritance in heirInheritances to return.
+     *
+     * @return inheritance - Info on inheritance.
+    **/
+    function getInheritance(address heir, uint256 index) external view returns(WillData memory inheritance) {
+        uint256[] memory _heirInheritances = heirInheritances[heir];
+        require(index < _heirInheritances.length, "dWill: Index must be lower _heirInheritances.length");
+
+        inheritance = willData[_heirInheritances[index]];
     }
 
-    ///@notice returns all user's inheritances
-    ///@param heir heir of the inheritances
-    ///@return InheritanceData[]
-    function getAllInheritances(address heir) public view returns(InheritanceData[] memory) {
-        uint256[] memory _inheritancesHeir = inheritancesHeir[heir];
-        InheritanceData[] memory _data = new InheritanceData[](_inheritancesHeir.length);
-        for (uint256 i; i < _inheritancesHeir.length; i++) {
-            _data[i] = inheritanceData[_inheritancesHeir[i]];
-        }
-        return _data;
+    function getWillsLength(address owner) external view returns(uint256 _length) {
+        _length = ownerWills[owner].length;
     }
 
+    function getInheritancesLength(address heir) external view returns(uint256 _length) {
+        _length = heirInheritances[heir].length;
+    }
+
+    function _checkWillAvailability(WillData memory _data) internal view {
+        require(_data.owner == msg.sender, "dWill: Caller is not the owner");
+        require(_data.done == false, "dWill: Already withdrawn");
+    }
+
+    function setFeeCollector(address _feeCollector) external onlyOwner {
+        _setFeeCollector(_feeCollector);
+    }
+
+    function setFee(uint256 _fee) external onlyOwner {
+        _setFee(_fee);
+    }
+
+    function _setFeeCollector(address _feeCollector) internal {
+        require (_feeCollector != address(0), "dWill: Can't set feeCollector to address(0)");
+
+        emit SetFeeCollector(feeCollector, _feeCollector);
+        feeCollector = _feeCollector;
+    }
+
+    function _setFee(uint256 _fee) internal {
+        require (_fee <= 50000000000000000, "dWill: Fee must be lower or equal 5%");
+
+        emit SetFee(fee, _fee);
+        fee = _fee;
+    }
 }

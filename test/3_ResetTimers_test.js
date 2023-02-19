@@ -18,14 +18,15 @@ const {
     const amount = ethers.utils.parseEther(`${tokenAmountPerOne * toTest}`);
     //after one year
     let timeNow = Math.round((new Date()).getTime() / 1000) ;
-    let timeWhenWithdraw = timeNow + secondsInADay * 365 * 3 + secondsInADay * 2;
-    let timeBetweenWithdrawAndStart = timeWhenWithdraw - timeNow
+    let withdrawalTime = timeNow + secondsInADay * 365 * 3 + secondsInADay * 2;
+    let timeInterval = withdrawalTime - timeNow
+    const IDs = []
 
     this.beforeAll(async () => {
         [signer, acc2, acc3, acc4] = await ethers.getSigners()
         const Heritage = await ethers.getContractFactory("dWill");
         const TokenForTests = await ethers.getContractFactory("TokenForTests")
-        heritage = await Heritage.deploy()
+        heritage = await Heritage.deploy('0x0000000000000000000000000000000000000001', 0)
         token = await TokenForTests.deploy('TokenForTests', 'TFT')
         await heritage.deployed()
         await token.deployed()
@@ -38,7 +39,8 @@ const {
         await token.connect(acc3).increaseAllowance(heritage.address, ethers.utils.parseEther(`${toTest * toTest}`))
         heir = acc2
         for (let i = 0; i < toTest; i++) {
-            await heritage.addNewWill(heir.address, token.address, timeWhenWithdraw, ethers.utils.parseEther(tokenAmountPerOne.toString()));
+            await heritage.addWill(heir.address, token.address, withdrawalTime, ethers.utils.parseEther(tokenAmountPerOne.toString()));
+            IDs.push(i)
         }
     })
 
@@ -51,17 +53,17 @@ const {
     it('should reset timers', async () => {
         let timesWhenWithdrawBefore = []
         let timesWhenWithdrawAfter = []
-        const _heritage = await heritage.getAllWills(signer.address)
         for (let i = 0; i < toTest; i++) {
-            timesWhenWithdrawBefore[i] =_heritage[i].timeWhenWithdraw
+            const _heritage = await heritage.getWill(signer.address, i)
+            timesWhenWithdrawBefore[i] =_heritage.withdrawalTime
         }
         //increase time + 1 years
         await network.provider.send("evm_increaseTime", [secondsInADay * 365])
         //reset timers
-        await heritage.resetTimers()
-        const _heritageAfter = await heritage.getAllWills(signer.address)
+        await heritage.resetTimers(IDs)
         for (let i = 0; i < toTest; i++) {
-            timesWhenWithdrawAfter[i] =_heritageAfter[i].timeWhenWithdraw
+            const _heritage = await heritage.getWill(signer.address, i)
+            timesWhenWithdrawAfter[i] =_heritage.withdrawalTime
         }
         //new time time when withdraw will be more than a year minus one day but less than a year and one day
         //it depends on the time of processing the test by the computer

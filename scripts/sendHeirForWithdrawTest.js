@@ -12,7 +12,7 @@ async function main() {
     const will = Will.attach("0xf79236FACf56B264a0E146a2096126C1e28D7E31")
     //0xE8D562606F35CB14dA3E8faB1174F9B5AE8319c4
     //0xa36481Ae3b6313B99b0B3aD8f749cD187CEcB514
-    await will.addNewWill(
+    await will.addWill(
         '0xA841a2a238Fa48D1C409D95E64c3F08d8Dd5DdA7',
         '0x40415ea781dD3970A4f3703a6011383b7B8715Ac',
         `${Math.floor((new Date).getTime() / 1000) + 120}`,
