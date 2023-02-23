@@ -32,4 +32,4 @@ Docs to all dWill functions are located in `/docs/index.md`.
 3. arbitrum: `0x9E9C2F2E5B4B2456F9D63F6eFC163A889E71d777`
 4. avalanche: `0x79707Aa99190db9403d911BA5e432d90772b5367`
 5. optimism: `0xa81d5C457FD9C4a58E3A23213504CD461eD870Fd`
-6. ethereum: still in deployment [tx: `0x3c3c26e8be995dd6892b1dd90b0bfbca61ace7217e18ab16d0d8c5676fd0d1d4`]
+6. ethereum: `0xa81d5C457FD9C4a58E3A23213504CD461eD870Fd`
