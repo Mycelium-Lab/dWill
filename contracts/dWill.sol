@@ -31,8 +31,24 @@ contract dWill is IHeritage, Ownable{
     uint256 public fee;
 
     constructor(address _feeCollector, uint256 _fee) {  
-      _setFeeCollector(_feeCollector);
-      _setFee(_fee);
+        _setFeeCollector(_feeCollector);
+        _setFee(_fee);
+
+        //Create dummy willData at index 0 with ID 0 to avoid collisions with default data type values.
+        WillData memory _data = WillData({
+            ID: 0,
+            owner: address(0),
+            heir: address(0),
+            token: IERC20(address(0)),
+            creationTime: 0,
+            withdrawalTime: 0,
+            timeInterval: 0,
+            amount: 0,
+            fee: 0,
+            done: true
+        });
+        willData.push(_data);
+        emit AddWill(0, address(0), address(0), IERC20(address(0)), 0, 0);
    }
 
     /**
@@ -133,15 +149,7 @@ contract dWill is IHeritage, Ownable{
         require(_data.heir != _heir, "dWill: New heir is the same");
         require(_heir != address(0), "dWill: Heir is address(0)");
 
-        uint256[] storage _heirInheritances = heirInheritances[_data.heir];
-
-        uint256 i = indexOfHeirInheritanceId[ID];
-        uint256 _length = _heirInheritances.length - 1;
-        if(i != _length){
-            _heirInheritances[i] = _heirInheritances[_length];
-            indexOfHeirInheritanceId[_heirInheritances[i]] = i;
-        }
-        _heirInheritances.pop();
+        _deleteIDHeirInheritances(ID, _data.heir);
 
         indexOfHeirInheritanceId[ID] = heirInheritances[_heir].length;
         heirInheritances[_heir].push(ID);
@@ -199,30 +207,15 @@ contract dWill is IHeritage, Ownable{
     }
 
     /**
-     * @notice Remove will from storage. Emits UpdaRemoveWillteHeir event.
+     * @notice Remove will from storage. Emits RemoveWill event.
      * @param ID - Id of the will to remove.
     **/
     function removeWill(uint256 ID) external {
         WillData memory _data = willData[ID];
         _checkWillAvailability(_data);
 
-        uint256[] storage _ownerWills = ownerWills[_data.owner];
-        uint256 i = indexOfOwnerWillsId[ID];
-        uint256 _length = _ownerWills.length - 1;
-        if(i != _length){
-            _ownerWills[i] = _ownerWills[_length];
-            indexOfOwnerWillsId[_ownerWills[i]] = i;
-        }
-        _ownerWills.pop();
-
-        uint256[] storage _heirInheritances = heirInheritances[_data.heir];
-        i = indexOfHeirInheritanceId[ID];
-        _length = _heirInheritances.length - 1;
-        if(i != _length){
-            _heirInheritances[i] = _heirInheritances[_length];
-            indexOfHeirInheritanceId[_heirInheritances[i]] = i;
-        }
-        _heirInheritances.pop();
+        _deleteIDOwnerWills(ID, _data.owner);
+        _deleteIDHeirInheritances(ID, _data.heir);
 
         delete willData[ID];
         willAmountForToken[_data.owner][_data.token] -= _data.amount;
@@ -241,25 +234,6 @@ contract dWill is IHeritage, Ownable{
         require(msg.sender == _data.heir, "dWill: Caller is not the heir");
         require(_data.done == false, "dWill: Already withdrawn");
 
-        _data.done = true;
-        uint256[] storage _ownerWills = ownerWills[_data.owner];
-        uint256 i = indexOfOwnerWillsId[ID];
-        uint256 _length = _ownerWills.length - 1;
-        if(i != _length){
-            _ownerWills[i] = _ownerWills[_length];
-            indexOfOwnerWillsId[_ownerWills[i]] = i;
-        }
-        _ownerWills.pop();
-
-        uint256[] storage _heirInheritances = heirInheritances[_data.heir];
-        i = indexOfHeirInheritanceId[ID];
-        _length = _heirInheritances.length - 1;
-        if(i != _length){
-            _heirInheritances[i] = _heirInheritances[_length];
-            indexOfHeirInheritanceId[_heirInheritances[i]] = i;
-        }
-        _heirInheritances.pop();
-
         uint256 balance = _data.token.balanceOf(_data.owner);
         uint256 allowance = _data.token.allowance(_data.owner, address(this));
         amount = _data.amount;
@@ -269,18 +243,29 @@ contract dWill is IHeritage, Ownable{
         if (allowance < amount) {
             amount = allowance;
         }
-        willAmountForToken[_data.owner][_data.token] -= amount;
 
-        uint256 feeAmount = amount * _data.fee / 1 ether;
-        if(feeAmount > 0){
-            _data.token.safeTransferFrom(_data.owner, feeCollector, feeAmount);
-            emit CollectFee(ID, _data.token, feeAmount);
+        if(amount != 0){
+            _data.amount -= amount;
+            willAmountForToken[_data.owner][_data.token] -= amount;
 
-            amount -= feeAmount;
+            uint256 feeAmount = amount * _data.fee / 1 ether;
+            if(feeAmount > 0){
+                _data.token.safeTransferFrom(_data.owner, feeCollector, feeAmount);
+                emit CollectFee(ID, _data.token, feeAmount);
+    
+                amount -= feeAmount;
+            }
+            _data.token.safeTransferFrom(_data.owner, _data.heir, amount);
+    
+            emit Withdraw(ID, _data.owner, _data.heir, _data.token, block.timestamp, amount);
         }
-        _data.token.safeTransferFrom(_data.owner, _data.heir, amount);
 
-        emit Withdraw(ID, _data.owner, _data.heir, _data.token, block.timestamp, amount);
+        //If no amount left delete will from _ownerWills && _heirInheritances
+        if(_data.amount == 0){
+            _data.done = true;
+            _deleteIDOwnerWills(ID, _data.owner);
+            _deleteIDHeirInheritances(ID, _data.heir);
+        }
     }
 
     /**
@@ -292,7 +277,7 @@ contract dWill is IHeritage, Ownable{
     **/
     function getWill(address owner, uint256 index) external view returns(WillData memory will) {
         uint256[] memory _ownerWills = ownerWills[owner];
-        require(index < _ownerWills.length, "dWill: Index must be lower _heirInheritances.length");
+        require(index < _ownerWills.length, "dWill: Index must be lower than _ownerWills.length");
 
         will = willData[_ownerWills[index]];
     }
@@ -306,7 +291,7 @@ contract dWill is IHeritage, Ownable{
     **/
     function getInheritance(address heir, uint256 index) external view returns(WillData memory inheritance) {
         uint256[] memory _heirInheritances = heirInheritances[heir];
-        require(index < _heirInheritances.length, "dWill: Index must be lower _heirInheritances.length");
+        require(index < _heirInheritances.length, "dWill: Index must be lower than _heirInheritances.length");
 
         inheritance = willData[_heirInheritances[index]];
     }
@@ -322,6 +307,28 @@ contract dWill is IHeritage, Ownable{
     function _checkWillAvailability(WillData memory _data) internal view {
         require(_data.owner == msg.sender, "dWill: Caller is not the owner");
         require(_data.done == false, "dWill: Already withdrawn");
+    }
+
+    function _deleteIDOwnerWills(uint256 ID, address owner) internal {
+        uint256[] storage _ownerWills = ownerWills[owner];
+        uint256 i = indexOfOwnerWillsId[ID];
+        uint256 _length = _ownerWills.length - 1;
+        if(i != _length){
+            _ownerWills[i] = _ownerWills[_length];
+            indexOfOwnerWillsId[_ownerWills[i]] = i;
+        }
+        _ownerWills.pop();
+    }
+
+    function _deleteIDHeirInheritances(uint256 ID, address heir) internal {
+        uint256[] storage _heirInheritances = heirInheritances[heir];
+        uint256 i = indexOfHeirInheritanceId[ID];
+        uint256 _length = _heirInheritances.length - 1;
+        if(i != _length){
+            _heirInheritances[i] = _heirInheritances[_length];
+            indexOfHeirInheritanceId[_heirInheritances[i]] = i;
+        }
+        _heirInheritances.pop();
     }
 
     function setFeeCollector(address _feeCollector) external onlyOwner {
@@ -340,7 +347,7 @@ contract dWill is IHeritage, Ownable{
     }
 
     function _setFee(uint256 _fee) internal {
-        require (_fee <= 50000000000000000, "dWill: Fee must be lower or equal 5%");
+        require (_fee <= 0.05 ether, "dWill: Fee must be lower or equal 5%");
 
         emit SetFee(fee, _fee);
         fee = _fee;

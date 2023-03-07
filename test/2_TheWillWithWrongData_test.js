@@ -75,16 +75,16 @@ const {
       //create heritage
       await heritage.addWill(acc2.address, token.address, withdrawalTime, amount);
       await expect(
-        heritage.connect(acc2).withdraw(0)
+        heritage.connect(acc2).withdraw(1)
       ).to.be.rejectedWith("dWill: Withdrawal is not yet available")
       //increate time to one year + 1 day
       await network.provider.send("evm_increaseTime", [secondsInADay * 366])
       await expect(
-        heritage.connect(acc3).withdraw(0)
+        heritage.connect(acc3).withdraw(1)
       ).to.be.rejectedWith("dWill: Caller is not the heir")
-      await heritage.connect(acc2).withdraw(0)
+      await heritage.connect(acc2).withdraw(1)
       await expect(
-        heritage.connect(acc2).withdraw(0)
+        heritage.connect(acc2).withdraw(1)
       ).to.be.rejectedWith("dWill: Already withdrawn")
     })
   

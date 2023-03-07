@@ -38,8 +38,9 @@ const {
         await token.transfer(acc3.address, ethers.utils.parseEther(`${toTest * toTest}`))
         await token.connect(acc3).increaseAllowance(heritage.address, ethers.utils.parseEther(`${toTest * toTest}`))
         heir = acc2
-        for (let i = 0; i < toTest; i++) {
-            await heritage.addWill(heir.address, token.address, withdrawalTime, ethers.utils.parseEther(tokenAmountPerOne.toString()));
+        await time.increaseTo(100000000000);
+        for (let i = 1; i < (toTest + 1); i++) {
+            await heritage.addWill(heir.address, token.address, 100000002000, ethers.utils.parseEther(tokenAmountPerOne.toString()));
             IDs.push(i)
         }
     })
@@ -58,17 +59,21 @@ const {
             timesWhenWithdrawBefore[i] =_heritage.withdrawalTime
         }
         //increase time + 1 years
-        await network.provider.send("evm_increaseTime", [secondsInADay * 365])
+        //await network.provider.send("evm_increaseTime", [secondsInADay * 365])
         //reset timers
+        const _time = 100000001000
+        await time.setNextBlockTimestamp(_time)
         await heritage.resetTimers(IDs)
         for (let i = 0; i < toTest; i++) {
+            await time.setNextBlockTimestamp(_time + i + 1)
             const _heritage = await heritage.getWill(signer.address, i)
             timesWhenWithdrawAfter[i] =_heritage.withdrawalTime
         }
-        //new time time when withdraw will be more than a year minus one day but less than a year and one day
-        //it depends on the time of processing the test by the computer
-        assert((timesWhenWithdrawAfter[0] - timesWhenWithdrawBefore[0]) >= secondsInADay * 365 - secondsInADay)
-        assert((timesWhenWithdrawAfter[0] - timesWhenWithdrawBefore[0]) < secondsInADay * 365 + secondsInADay)
+        //new time time when withdraw will be 100000001000 + (100000002000 - 100000000000) = 100000003000. 100000003000 - 100000002000 = 1000
+        //also each iteration is decreased by 1
+        for (let i = 0; i < toTest; i++) {
+            assert(timesWhenWithdrawAfter[i] - timesWhenWithdrawBefore[i] == 1000 - i - 1)
+        }
     })
 
 })

@@ -13,12 +13,6 @@ describe("TheWillUpdate", function () {
     let heir;
     let signer, acc2, acc3, acc4;
     const secondsInADay = 86400
-    const toTest = 100;
-    let tokenAmountPerOne = 1;
-    const ID = 0
-    // const amount = ethers.utils.parseEther(`${tokenAmountPerOne * toTest}`);
-    //after one year
-    // let timeBetweenWithdrawAndStart = timeWhenWithdraw - timeNow
 
     this.beforeEach(async () => {
         [signer, acc2, acc3, acc4, acc5, acc6] = await ethers.getSigners()
@@ -43,7 +37,7 @@ describe("TheWillUpdate", function () {
             acc2.address, token.address, timeWhenWithdraw, amountMoreThanBalance.toString()
         )
 		await network.provider.send("evm_increaseTime", [secondsInADay])
-        await heritage.connect(acc2).withdraw(0)
+        await heritage.connect(acc2).withdraw(1)
         const balanceAfterWithdrawOwner = await token.balanceOf(signer.address)
         const balanceAfterWithdrawHeir = await token.balanceOf(acc2.address)
         assert(currentBalanceOwner == balanceAfterWithdrawHeir, `We sent to heir`)
@@ -67,7 +61,7 @@ describe("TheWillUpdate", function () {
         //check if current allowance is lower than before
         assert(currentAllowance < currentBalanceOwner, 'Allowance lower')
 		await network.provider.send("evm_increaseTime", [secondsInADay * 3])
-        await heritage.connect(acc2).withdraw(0)
+        await heritage.connect(acc2).withdraw(1)
         const balanceAfterWithdrawHeir = await token.balanceOf(acc2.address)
         const balanceAfterWithdrawOwner = await token.balanceOf(signer.address)
         assert(currentAllowance.toString() === balanceAfterWithdrawHeir.toString(), `We sent to heir allowance`)
@@ -90,10 +84,10 @@ describe("TheWillUpdate", function () {
             acc2.address, token.address, timeWhenWithdraw, currentHalfBalanceOwner.toString()
         )
 		await network.provider.send("evm_increaseTime", [secondsInADay * 3])
-        await heritage.connect(acc2).withdraw(0)
+        await heritage.connect(acc2).withdraw(1)
         const balanceAfterWithdrawHeir = await token.balanceOf(acc2.address)
         assert(balanceAfterWithdrawHeir.toString() === currentHalfBalanceOwner.toString(), 'return only data amount')
-        await heritage.connect(acc2).withdraw(1)
+        await heritage.connect(acc2).withdraw(2)
         const balanceAfterWithdrawHeir2 = await token.balanceOf(acc2.address)
         assert(balanceAfterWithdrawHeir2.toString() === (currentHalfBalanceOwner + currentHalfBalanceOwner).toString(), 'return only data amount')
     })
@@ -116,10 +110,17 @@ describe("TheWillUpdate", function () {
         const allowance = await token.allowance(signer.address, heritage.address)
 
 		await network.provider.send("evm_increaseTime", [secondsInADay])
-        await heritage.connect(acc2).withdraw(0)
+        await heritage.connect(acc2).withdraw(1)
         const balanceAfterWithdrawOwner = await token.balanceOf(signer.address)
         const balanceAfterWithdrawHeir = await token.balanceOf(acc2.address)
         assert(allowance.toString() == balanceAfterWithdrawHeir, `We sent allowance to heir`)
         assert(balanceAfterWithdrawOwner.toString() == (currentBalanceOwner - BigInt(allowance)).toString(), `We sent only our allowance w/o error`)
+    
+        const increaseAmount = BigInt('1000')
+        await token.increaseAllowance(heritage.address, increaseAmount)
+        await heritage.connect(acc2).withdraw(1)
+
+        const balanceAfterWithdrawHeir2 = await token.balanceOf(acc2.address)
+        assert((BigInt(balanceAfterWithdrawHeir2) - BigInt(balanceAfterWithdrawHeir)).toString() == increaseAmount.toString(), `second withdraw success`)
     })
 })

@@ -34,13 +34,13 @@ describe("TheWill", function () {
     await token.increaseAllowance(heritage.address, amount)
     //create heritage
     heir = acc2
-    const ID = 0
+    const ID = 1
     await expect(heritage.addWill(heir.address, token.address, withdrawalTime, amount))
       .to.emit(heritage, "AddWill")
       .withArgs(ID, signer.address, heir.address, token.address, withdrawalTime, amount);
     const _heritage = await heritage.willData(ID);
-    const IDOfAddedGameOwner = await heritage.ownerWills(signer.address, ID)
-    const IDOfAddedGameHeir = await heritage.heirInheritances(heir.address, ID)
+    const IDOfAddedGameOwner = await heritage.ownerWills(signer.address, 0)
+    const IDOfAddedGameHeir = await heritage.heirInheritances(heir.address, 0)
     //check if created
     assert.equal(_heritage.ID.toString(), ID.toString(), "Added heritage id right")
     assert.equal(_heritage.owner, signer.address, "Added heritage owner right")
@@ -58,44 +58,47 @@ describe("TheWill", function () {
   })
 
   it('Should update time', async () => {
-    const _heritage = await heritage.willData(0);
+    const ID = 1
+    const _heritage = await heritage.willData(ID);
     const newTime = parseInt(_heritage.withdrawalTime) + secondsInADay
-    await expect(heritage.updateWithdrawalTime(0, 0)).to.be.revertedWith("dWill: Withdrawal time has already expired")
-    await expect(heritage.connect(heir).updateWithdrawalTime(0, newTime)).to.be.revertedWith('dWill: Caller is not the owner')
-    await expect(heritage.updateWithdrawalTime(0, newTime))
+    await expect(heritage.updateWithdrawalTime(ID, 0)).to.be.revertedWith("dWill: Withdrawal time has already expired")
+    await expect(heritage.connect(heir).updateWithdrawalTime(ID, newTime)).to.be.revertedWith('dWill: Caller is not the owner')
+    await expect(heritage.updateWithdrawalTime(ID, newTime))
       .to.emit(heritage, "UpdateWithdrawalTime")
-      .withArgs(0, _heritage.withdrawalTime, newTime);
-    const _heritageUpdated = await heritage.willData(0);
+      .withArgs(ID, _heritage.withdrawalTime, newTime);
+    const _heritageUpdated = await heritage.willData(ID);
     assert(newTime.toString() == _heritageUpdated.withdrawalTime.toString(), "Time updated")
   })
 
   it('Should set new heir', async () => {
+    const ID = 1
     assert(heir.address != acc3.address, "Heir not same")
-    await expect(heritage.updateHeir(0, "0x0000000000000000000000000000000000000000")).to.be.revertedWith("dWill: Heir is address(0)")
-    await expect(heritage.connect(heir).updateHeir(0, acc3.address)).to.be.revertedWith('dWill: Caller is not the owner')
-    await expect(heritage.updateHeir(0, acc3.address))
+    await expect(heritage.updateHeir(ID, "0x0000000000000000000000000000000000000000")).to.be.revertedWith("dWill: Heir is address(0)")
+    await expect(heritage.connect(heir).updateHeir(ID, acc3.address)).to.be.revertedWith('dWill: Caller is not the owner')
+    await expect(heritage.updateHeir(ID, acc3.address))
       .to.emit(heritage, "UpdateHeir")
-      .withArgs(0, heir.address, acc3.address);
-    await expect(heritage.updateHeir(0, acc3.address)).to.be.revertedWith("dWill: New heir is the same")
+      .withArgs(ID, heir.address, acc3.address);
+    await expect(heritage.updateHeir(ID, acc3.address)).to.be.revertedWith("dWill: New heir is the same")
 
-    const _heritageUpdated = await heritage.willData(0);
+    const _heritageUpdated = await heritage.willData(ID);
     heir = acc3
     assert(heir.address == _heritageUpdated.heir, "Heir updated")
     const _inheritance = await heritage.heirInheritances(heir.address, 0)
-    assert(_inheritance.toString() == '0', "Inheritance updated")
+    assert(_inheritance.toString() == ID.toString(), "Inheritance updated")
   })
 
   it('Should update amount', async () => {
+    const ID = 1
     const amountBefore = amount
     const badAmount = ethers.utils.parseEther('1001'); // more than approval
-    await expect(heritage.updateAmount(0, badAmount)).to.be.revertedWith('dWill: Not enough allowance')
+    await expect(heritage.updateAmount(ID, badAmount)).to.be.revertedWith('dWill: Not enough allowance')
 
     amount = ethers.utils.parseEther('789');
-    await expect(heritage.connect(heir).updateAmount(0, amount)).to.be.revertedWith('dWill: Caller is not the owner')
-    await expect(heritage.updateAmount(0, amount))
+    await expect(heritage.connect(heir).updateAmount(ID, amount)).to.be.revertedWith('dWill: Caller is not the owner')
+    await expect(heritage.updateAmount(ID, amount))
       .to.emit(heritage, "UpdateAmount")
-      .withArgs(0, amountBefore, amount);
-    const _heritageUpdated = await heritage.willData(0);
+      .withArgs(ID, amountBefore, amount);
+    const _heritageUpdated = await heritage.willData(ID);
 
     assert(_heritageUpdated.amount.toString() == amount.toString(), "Amount updated")
   })
@@ -105,7 +108,7 @@ describe("TheWill", function () {
     await token.increaseAllowance(heritage.address, amount)
     const allowanceBefore = await token.allowance(signer.address, heritage.address)
     //create heritage
-    const ID = 1
+    const ID = 2
     await expect(heritage.addWill(acc4.address, token.address, withdrawalTime, amount))
       .to.emit(heritage, "AddWill")
       .withArgs(ID, signer.address, acc4.address, token.address, withdrawalTime, amount);
@@ -128,7 +131,7 @@ describe("TheWill", function () {
     //reverted because we deleted this will from owner and heir
     await expect(heritage.ownerWills(signer.address, ID)).to.be.revertedWithoutReason()
     await expect(heritage.heirInheritances(acc4.address, ID)).to.be.revertedWithoutReason()
-    const _heritageAfter = await heritage.willData(1);
+    const _heritageAfter = await heritage.willData(ID);
     const zeroAddress = "0x0000000000000000000000000000000000000000"
     //check if removed
     assert.equal(_heritageAfter.owner, zeroAddress, "Removed heritage owner right")
@@ -141,25 +144,26 @@ describe("TheWill", function () {
   })
 
   it('Should withdraw an heir', async () => {
+    const ID = 1
     //increate time to one year + 1 day
 		await network.provider.send("evm_increaseTime", [secondsInADay * 366])
     const tokenAmountBefore = await token.balanceOf(heir.address)
     //tokens before equals 0
     assert(tokenAmountBefore == 0, "Tokens before")
     //withdraw
-    await expect(heritage.connect(signer).withdraw(0)).to.be.revertedWith('dWill: Caller is not the heir')
-    await heritage.connect(heir).withdraw(0)
+    await expect(heritage.connect(signer).withdraw(ID)).to.be.revertedWith('dWill: Caller is not the heir')
+    await heritage.connect(heir).withdraw(ID)
     //tokens after have to be equals amount
     const tokenAmountAfter = await token.balanceOf(heir.address)
     //get updated data
-    const _heritage = await heritage.willData(0);
+    const _heritage = await heritage.willData(ID);
     //heritage is done
     assert.equal(_heritage.done, true, "Added heritage done right")
     assert(tokenAmountAfter.toString() == amount.toString(), "Tokens sent")
 
-    await expect(heritage.updateWithdrawalTime(0, 0)).to.be.revertedWith("dWill: Already withdrawn")
-    await expect(heritage.updateHeir(0, "0x0000000000000000000000000000000000000000")).to.be.revertedWith("dWill: Already withdrawn")
-    await expect(heritage.updateAmount(0, 0)).to.be.revertedWith('dWill: Already withdrawn')
-    await expect(heritage.removeWill(0)).to.be.revertedWith('dWill: Already withdrawn')
+    await expect(heritage.updateWithdrawalTime(ID, 0)).to.be.revertedWith("dWill: Already withdrawn")
+    await expect(heritage.updateHeir(ID, "0x0000000000000000000000000000000000000000")).to.be.revertedWith("dWill: Already withdrawn")
+    await expect(heritage.updateAmount(ID, 0)).to.be.revertedWith('dWill: Already withdrawn')
+    await expect(heritage.removeWill(ID)).to.be.revertedWith('dWill: Already withdrawn')
   })
 });

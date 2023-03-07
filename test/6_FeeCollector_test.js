@@ -77,9 +77,9 @@ describe("TheWill", function () {
     const feeCollectorBefore = await token.balanceOf(acc4.address)
     assert(tokenAmountBefore == 0, "Tokens before")
     assert(feeCollectorBefore == 0, "FeeCollector tokens before")
-    await expect(heritage.connect(heir).withdraw(0))
+    await expect(heritage.connect(heir).withdraw(1))
       .to.emit(heritage, "CollectFee")
-      .withArgs(0, token.address, (BigInt(amount) * BigInt(fee2) / BigInt(oneEther)).toString());
+      .withArgs(1, token.address, (BigInt(amount) * BigInt(fee2) / BigInt(oneEther)).toString());
     const tokenAmountAfter = await token.balanceOf(heir.address)
     const feeCollectorAfter = await token.balanceOf(acc4.address)
 

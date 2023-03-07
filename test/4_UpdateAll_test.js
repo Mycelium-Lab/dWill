@@ -15,12 +15,8 @@ const {
     const secondsInADay = 86400
     const toTest = 100;
     let tokenAmountPerOne = 1;
-    const ID = 0
+    const ID = 1
     const amount = ethers.utils.parseEther(`${tokenAmountPerOne * toTest}`);
-    //after one year
-    let timeNow = Math.round((new Date()).getTime() / 1000) ;
-    let withdrawalTime = timeNow + secondsInADay * 365 * 5 + secondsInADay * 2;
-    let timeInterval = withdrawalTime - timeNow
 
     this.beforeEach(async () => {
         [signer, acc2, acc3, acc4, acc5, acc6] = await ethers.getSigners()
@@ -30,6 +26,8 @@ const {
         token = await TokenForTests.deploy('TokenForTests', 'TFT')
         await heritage.deployed()
         await token.deployed()
+        const timeNow = (await ethers.provider.getBlock(await ethers.provider.getBlockNumber())).timestamp;
+        withdrawalTime = timeNow + secondsInADay * 365 * 5 + secondsInADay * 2;
     })
 
     it('should create will and update all', async () => {
