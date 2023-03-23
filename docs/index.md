@@ -253,7 +253,7 @@ Batch update will values.
 function removeWill(uint256 ID) external
 ```
 
-Remove will from storage. Emits UpdaRemoveWillteHeir event.
+Remove will from storage. Emits RemoveWill event.
 
 #### Parameters
 
@@ -339,6 +339,18 @@ function getInheritancesLength(address heir) external view returns (uint256 _len
 
 ```solidity
 function _checkWillAvailability(struct IHeritage.WillData _data) internal view
+```
+
+### _deleteIDOwnerWills
+
+```solidity
+function _deleteIDOwnerWills(uint256 ID, address owner) internal
+```
+
+### _deleteIDHeirInheritances
+
+```solidity
+function _deleteIDHeirInheritances(uint256 ID, address heir) internal
 ```
 
 ### setFeeCollector
